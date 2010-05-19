@@ -1,0 +1,34 @@
+<div id="option_light_box">
+    <% form_for(:glossary, @glossary, :url => {:action => :update}, :html => {:id => 'glossary_form', :method => :post, :class=> "lightbox"}) do |form| %>
+      <%= form.hidden_field :id %>
+      <%= hidden_field_tag :source_url, request.env['HTTP_REFERER'] %>
+      
+      <fieldset style="padding:10px;">
+          <legend>
+              <h2>Glossary Term Details</h2>
+          </legend>
+          <table class="admin_table">
+              <tr>
+                  <th>
+                      Keyword:
+                  </th>
+                  <td>
+                      <%= form.text_field :keyword, :style=>"width:500px;" %>
+                  </td>
+              </tr>
+              <tr>
+                  <th valign="top">
+                      Description:
+                  </th>
+                  <td>
+                      <%= form.text_area :description, :style=>"width:500px; height:300px;" %>
+                  </td>
+              </tr>
+          </table>
+      </fieldset>
+      <div class="buttons">
+          <input onclick="$('glossary_form').submit();" type="submit" name="submit" value="Save" />
+          &nbsp;&nbsp;<a href="#" class="panel_action" rel="close">Cancel</a>
+      </div>
+    <% end %>
+</div>

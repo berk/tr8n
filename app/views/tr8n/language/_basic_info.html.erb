@@ -1,0 +1,51 @@
+<div id="basic_info_container">
+  <%=render(:partial => "header", :locals => {:section => "basic_info", :label => "Basic Information", :description => "", :mode => mode})%>
+  
+  <% form_for(:language, tr8n_current_language, :url => {:action => :index}, :html => {:id => 'basic_info_form', :method => :post}) do |f| %>
+    <div class="section_box colored">
+      <div style="float:right; padding-right:5px;">
+          <%=tr8n_help_icon_tag %>
+      </div>
+      <div ondblclick="switchSectionMode('basic_info', 'edit')">
+        <table cellpadding="5" cellspacing="5">
+          <tr>
+            <th style="width:120px;"><%=trl("Native Name:", "Language native name")%></th>
+            <td>
+              <% if mode == :edit %>
+                <%=f.text_field(:native_name)%>
+              <% else %>
+                <%=tr8n_current_language.native_name%>
+              <% end %>
+            </td>
+          </tr>
+          <tr>
+            <th><%=trl("Direction:", "Language direction")%></th>
+            <td>
+              <% if mode == :edit %>
+                <%=f.check_box(:right_to_left, :style=>"align:top") %> <%=trl("This language is read from right to left")%>
+              <% else %>  
+                <% if tr8n_current_language.right_to_left? %>  
+                  <%=trl("This language is read from right to left")%>
+                <% else %>
+                  <%=trl("This language is read from left to right")%>
+                <% end %>  
+              <% end %>  
+            </td>
+          </tr>
+          <% unless tr8n_current_language.default? %>
+          <tr>
+            <th><%=trl("Fallback Language:", "Language to fall back onto if the language phrase is not translated")%></th>
+            <td>
+              <% if mode == :edit %>
+                <%=select_tag("language[fallback_language_id]", options_for_select(Tr8n::Language.options, @fallback_language.id.to_s))%>
+              <% else %>
+                <%=@fallback_language.english_name%>
+              <% end %>  
+            </td>
+          </tr>
+          <% end %>
+        </table>
+      </div>
+    </div>
+  <% end %>
+</div>

@@ -1,0 +1,45 @@
+<%= render :partial => "/tr8n/common/header" %>
+
+<div class="section_box colored">
+  <div style="float:right; padding-right:5px;">
+    <%=tr8n_help_icon_tag %>
+  </div>
+  <% form_tag({:action => :index}, {:method => :get, :id => "glossary_search_form"}) do %>
+    <%=image_tag("/tr8n/images/find.png")%>
+    <%=text_field_tag(:search, params[:search], {:style => "width:400px;height:20px;font-size:14px;"})%>
+    
+    <button type="submit" class="translator_btn translator_small_btn" onClick="$('glossary_search_form').submit(); return false;">
+        <span><%=trl("Search")%></span>
+    </button>
+  <% end %>
+</div>
+
+<div class="section_box">
+  <div style="padding-top:10px;padding-bottom:10px;">
+    <table style="width:100%;">
+      <tr>
+        <td align='left'><%= will_paginate(@terms, :skip_decorations => true) %></td>
+        <td align='right'><%= page_entries_info(@terms, :entry_name => "term", :skip_decorations => true) %></td>
+      </tr>
+    </table>
+  </div>
+
+  <table style="width:100%">
+    <tr style="border-bottom:1px solid #ccc;">
+       <td style="width:20%;padding:5px;background: #f9f8f7; font-size:16px; color:grey; font-weight:bold; ">
+          <%=trl("Term")%>
+       </td>
+       <td style="width:80%;padding:5px; font-size:16px; color:grey; font-weight:bold; " colspan="2">
+        <%=trl("Description") %>
+       </td>
+    </tr>  
+    <% @terms.each_with_index do |term, index| %>
+      <tr style="border-bottom:1px dotted #ccc;">
+        <td style="vertical-align:top;padding:5px;background: #f9f8f7;"><strong><%=term.keyword%></strong></td>
+        <td style="vertical-align:top;padding:5px;"><%=term.description.gsub("\n", "<br>")%></td>
+      </tr>
+    <% end %>
+  </table>
+</div>
+
+<%= render :partial => "/tr8n/common/footer" %>

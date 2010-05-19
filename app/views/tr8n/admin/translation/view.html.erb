@@ -1,0 +1,96 @@
+<%= render :partial => "/tr8n/admin/common/header" %>
+
+<h1>Translation Details</h1>
+<table class="admin_table">
+    <tr>
+        <th width="160">
+            Translation Id
+        </th>
+        <td>
+            <%=@translation.id %>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Translation Key Label
+        </th>
+        <td>
+            <%=link_to(@translation.translation_key.label, "/tr8n/admin/translation_key/view?key_id=#{@translation.translation_key.id}") %>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Translation Key Description
+        </th>
+        <td>
+            <%=@translation.translation_key.description %>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Translated Label
+        </th>
+        <td>
+            <%=@translation.label %>
+        </td>
+    </tr>    
+    <tr>
+        <th>
+            Context
+        </th>
+        <td>
+            <%=@translation.context %>
+        </td>
+    </tr>    
+    <tr>
+        <th>
+            Language
+        </th>
+        <td>
+            <%=link_to(@translation.language.english_name, "/tr8n/admin/language/view?key_id=#{@translation.language.id}") %>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Rank
+        </th>
+        <td>
+            <%=@translation.rank %>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Translator
+        </th>
+        <td>
+            <%=@translation.translator.name %>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Created At
+        </th>
+        <td>
+            <%=@translation.created_at %>
+        </td>
+    </tr>    
+    <tr>
+        <th>
+            Updated At
+        </th>
+        <td>
+            <%=@translation.updated_at %>
+        </td>
+    </tr>    
+    <tr>
+        <th>
+            
+        </th>
+        <td>
+          <%=link_to("View Translation Key", "/tr8n/admin/translation_key/view?key_id=#{@translation.translation_key.id}") %>
+          |          
+          <%=link_to("Delete", {:action => :delete, :translation_id => @translation.id, :source => :translation}, {:confirm => "Are you sure you want to delete this translation?"}) %>
+        </td>
+    </tr>    
+</table>
+<%= render :partial => "/tr8n/admin/common/footer" %>

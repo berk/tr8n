@@ -1,0 +1,45 @@
+<div class="section_title">
+  <%=trl("Start a New Discussion Topic For #{tr8n_current_language.english_name} Language")%> 
+</div>
+
+<div class="section_box colored">
+  <% form_tag({:action => :topic}, {:method => :post, :id => "forum_topic_form"}) do %>
+    <%=hidden_field_tag(:language_id, params[:language_id])%>
+    
+    <table style="width:99%">
+      <tr>
+        <td style="width:80px; text-align:right; padding-right:10px; font-weight:bold;">
+          <%=trl("Topic:")%>
+        </td>
+        <td>
+          <%=text_field_tag(:topic, "", :style=>"width:99%")%>
+        </td>
+      </tr>
+      <tr>
+        <td style="width:80px; text-align:right; padding-right:10px; font-weight:bold;">
+          <%=trl("Message:") %>
+        </td>
+        <td>
+          <%=text_area_tag(:message, "", :style=>"width:99%; height:50px;")%>
+        </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td style="color:grey; font-size:12px; padding-top:10px; padding-bottom:10px;">
+           <%=trl("If your computer is not configured with your language keyboard, click on CTR+K to enable keyboards in foreign languages.")%>
+        </td>
+      </tr>
+    </table>
+    
+    <div style="padding-top:20px; padding-bottom:10px;text-align:center">
+        <button type="submit" class="translator_btn translator_submit_btn" onClick=" $('forum_topic_form').submit(); return false;">
+            <span><%=trl("Start a New Discussion")%></span>
+        </button>
+        <% if include_cancel_button %>
+        or 
+        <%=link_to(trl("Cancel"), :action => :index)%>
+        <% end %>  
+    </div>
+  <% end %>
+</div>
+  

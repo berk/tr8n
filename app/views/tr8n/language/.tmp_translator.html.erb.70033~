@@ -1,0 +1,16 @@
+<% if params[:stem_type] %>
+  <% left_right = params[:stem_type].index("right") ? "right" : "left" %>  
+  <%=image_tag("tr8n/top_left_stem.png", :class => "stem #{params[:stem_type]}", :style => "#{left_right}:#{params[:stem_offset]}px")%>
+<% end %>  
+
+<div class="hd">
+  <div class="supplemental">
+    <%=link_to_function(image_tag("tr8n/close.gif", :title=>trl("Close")), "tr8nTranslator.hide()")%>
+  </div>
+  <%=image_tag("tr8n/flags/#{tr8n_current_language.flag}.png", :title=>trl("#{tr8n_current_language.english_name} flag"))%>&nbsp;
+  <%= trl("Inline Translator for #{tr8n_current_language.english_name} Language") %>
+</div>
+
+<div id="translator_container" class="bd">
+  <%= render(:partial => "translator_#{@mode}") %>
+</div>  

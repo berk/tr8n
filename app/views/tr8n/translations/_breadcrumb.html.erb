@@ -1,0 +1,9 @@
+<% if @section_key %>
+  <div style="padding-top:5px;padding-bottom:15px;text-align:left;font-size:12px;">
+      <%=link_to(tr("Site Map"), :action => :map)%> 
+      >> <%=link_to(tr(@section[:label], @section[:desc]), :action => :index, :section_key => @section[:key]) %>
+      <% if @translation_key %>
+      >> <%=link_to(@translation_key.label, :action => :key, :translation_key_id => @translation_key.id, :section_key => @section[:key]) %>
+      <% end %>
+  </div>
+<% end %>

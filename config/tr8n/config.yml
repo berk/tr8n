@@ -1,0 +1,145 @@
+#############################################################################
+# Tr8n Configuration
+#
+# Default settings for all environments
+# 
+# You can overload any feature for any environment by changing the 
+# environment settings at the bottom of the file. 
+#
+# Alternatively, you can overload any of the methods of Tr8n::Config
+#############################################################################
+
+defaults: &defaults
+  enable_tr8n:                true
+  enable_key_source_tracking: true
+  enable_glossary_hints:      true
+  enable_software_keyboard:   true
+  enable_google_suggestions:  true
+  enable_inline_translations: true
+  enable_keyboard_shortcuts:  true
+  
+  #############################################################################
+  # If you would like to run tr8n on a different database, 
+  # you can overload the remote setting and provide the database details
+  # for each environment by using a database symbol
+  #############################################################################
+  use_remote_database:        false
+
+  #############################################################################
+  # By default, Tr8n will use its own logger. If you set it to false,  
+  # it will use default Rails logger.
+  #############################################################################
+  use_tr8n_logger:            true
+  tr8n_log_path:              log/tr8n.log
+  enable_paranoia_mode:       true
+
+  #############################################################################
+  # Site Integration Settings
+  #############################################################################
+  site_info:  
+    enable_tr8n_method:       enable_tr8n?   # enables/disables tr8n
+    current_user_method:      current_user   # provides current user object
+    title:                    Tr8n            
+    default_url:              /home
+    default_locale:           en-US
+    sitemap_json:             /config/tr8n/default_sitemap.json
+    admin_layout:             admin
+    tr8n_layout:              application
+    user_info:  
+      enabled:                true
+      class_name:             User
+      methods:  
+        id:                   id
+        name:                 name
+        admin:                admin?
+        guest:                guest?
+        mugshot:              mugshot
+        link:                 link
+
+  #############################################################################
+  # Rules Engine Settings
+  #############################################################################
+  rules_engine:  
+    language_rule_classes:  
+      gender:                 Tr8n::GenderRule
+      numeric:                Tr8n::NumericRule
+    viewing_user_token:       viewing_user
+    numeric_token:  
+      suffixes:               [count, num, age, hours, minutes, years, seconds]
+      method:                 to_i
+    gender_token:  
+      suffixes:               [user, profile, actor, target, partner, parent, child, sibling]
+      method:                 gender
+      values:  
+        female:               f
+        male:                 m
+        neutral:              n
+        unknown:              u
+    minimal_translation_rank: 1
+    translation_rank_styles:  
+      -1000..-5:              color:red;font-weight:bold;
+      -4..-1:                 color:red;
+      1..10:                  color:green;
+      11..1000:               color:green;font-weight:bold;
+  
+  #############################################################################
+  # API Engine Settings
+  #############################################################################
+  api:  
+    enabled:                  true
+    response_encoding:        json
+    allow_key_registration:   true
+    restricted_domain_list:   [localhost] 
+
+  #############################################################################
+  # Localization Settings
+  #############################################################################
+  localization:  
+    default_day_names:        [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]
+    default_abbr_day_names:   [Sun, Mon, Tue, Wed, Thu, Fri, Sat]
+    default_month_names:      [January, February, March, April, May, June, July, August, September, October, November, December]
+    default_abbr_month_names: [Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec]
+    custom_date_formats:  
+      default:                '%m/%d/%Y'            # 07/4/2008
+      short_numeric:          '%m/%d'               # 07/4
+      short_numeric_year:     '%m/%d/%y'            # 07/4/08
+      long_numeric:           '%m/%d/%Y'            # 07/4/2008
+      verbose:                '%A, %B %d, %Y'       # Friday, July  4, 2008
+      monthname:              '%B %d'               # July 4
+      monthname_year:         '%B %d, %Y'           # July 4, 2008
+      monthname_abbr:         '%b %d'               # Jul 4
+      monthname_abbr_year:    '%b %d, %Y'           # Jul 4, 2008
+      date_time:              '%m/%d/%Y at %H:%M'   # 01/03/1010 at 5:30
+ 
+#############################################################################
+# Environment Settings
+# You can overload any feature defined in the defaults for any environment
+#############################################################################
+development:
+  <<: *defaults
+  
+test:
+  <<: *defaults
+      
+qa:
+  <<: *defaults
+
+stage:
+  <<: *defaults
+
+production:
+  <<: *defaults
+
+  # an example of how to overload the databse settings for production 
+  use_remote_database:        true
+  database:
+    host:                     localhost
+    database:                 tr8n
+    adapter:                  postgresql
+    username:                 tr8n
+    password:
+    port:                     5432
+    encoding:                 utf8  
+
+  # alternatively you can specify it by referencing an existing database config
+  # database:                 production1 

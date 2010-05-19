@@ -1,0 +1,95 @@
+#############################################################################
+# Tr8n Features Configuration
+#
+# Default settings for all environments
+# 
+# You can overload any feature for any environment by changing the 
+# environment settings at the bottom of the file
+#############################################################################
+
+defaults: &defaults
+  enabled_features: [translations, sitemap, awards, forum, glossary, rules, help]
+  
+  translations:
+    title:            Translations
+    link:             /tr8n/translations
+    controller:       translations
+    actions:          [index, key, view]
+    default_language: false
+    manager_only:     false
+    
+  sitemap:
+    title:            Site Map
+    link:             /tr8n/translations/map
+    controller:       translations
+    actions:          [map, index, key, view]
+    default_language: false
+    manager_only:     false
+    
+  awards:
+    title:            Translator Awards
+    link:             /tr8n/awards
+    controller:       awards
+    actions:          [index]
+    default_language: true
+    manager_only:     false
+  
+  forum:
+    title:            Discussion Forum
+    link:             /tr8n/forum
+    controller:       forum
+    actions:          [index, topic, message]
+    default_language: true
+    manager_only:     false
+  
+  glossary:
+    title:            Glossary
+    link:             /tr8n/glossary
+    controller:       glossary
+    actions:          [index]
+    default_language: true
+    manager_only:     false
+  
+  rules:
+    title:            Language Rules
+    link:             /tr8n/language
+    controller:       language
+    actions:          [index]
+    default_language: true
+    manager_only:     true
+  
+  help:
+    title:            Help
+    link:             /tr8n/help
+    controller:       help
+    actions:          [index]
+    default_language: true
+    manager_only:     false
+
+  test:
+    title:            Test
+    link:             http://www.google.com
+    controller:       test
+    actions:          [index]
+    default_language: true
+    manager_only:     false
+    
+    
+#############################################################################
+# Environment Settings
+# You can overload any feature defined in the defaults for any environment
+#############################################################################
+development:
+  <<: *defaults
+
+test:
+  <<: *defaults
+      
+qa:
+  <<: *defaults
+
+stage:
+  <<: *defaults
+
+production:
+  <<: *defaults

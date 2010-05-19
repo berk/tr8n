@@ -1,0 +1,27 @@
+<div style="padding:10px; padding-bottom:0px;">
+  <%= render(:partial => "translator_header")%>
+  
+  <div class="section">
+    <div class="small_section_title">
+      <div class="supplemental small">
+        <%=link_to(image_tag("/tr8n/images/table_edit.png"), {:controller => "/tr8n/translations", :action => :key, :translation_key_id => @translation_key.id}) %>
+      </div>
+      <strong><%=trl("Vote on Translations")%></strong>
+    </div>
+  
+    <div id="translation_votes_for_<%=@translation_key.key%>" class="votes_container">
+      <%= render :partial => "/tr8n/common/translation_votes", :locals => {:translation_key => @translation_key, :translations => @translations, :section_key => @section_key} %>
+    </div>
+  
+    <div style="padding-top:10px;font-size:11px">
+      <%=trl("Don't like any of these?")%> 
+      <%=link_to_function(trl('Translate it yourself.'), "tr8nTranslator.switchTranslatorMode('#{@translation_key.id}', 'submit', '#{@source_url}')")%>
+    </div>
+  </div>
+</div>
+
+<div id="translator_buttons_container" class="buttons_container">
+  <button type="submit" class="translator_btn translator_submit_btn" onClick="tr8nTranslator.hide(); return false;">
+    <span><%=trl("Hide")%></span>
+  </button>
+</div>

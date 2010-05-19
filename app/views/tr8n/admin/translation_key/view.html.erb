@@ -1,0 +1,80 @@
+<%= render :partial => "/tr8n/admin/common/header" %>
+
+<h1>Translation Key Details</h1>
+<table class="admin_table">
+    <tr>
+        <th width="160">
+            Translation Key Id
+        </th>
+        <td>
+            <%=@key.id %>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Access Key
+        </th>
+        <td>
+            <%=@key.key %>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Label
+        </th>
+        <td>
+            <%=@key.label %>
+        </td>
+    </tr>    
+    <tr>
+        <th>
+            Description
+        </th>
+        <td>
+            <%=@key.description %>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Created At
+        </th>
+        <td>
+            <%=@key.created_at %>
+        </td>
+    </tr>    
+    <tr>
+        <th>
+            Updated At
+        </th>
+        <td>
+            <%=@key.updated_at %>
+        </td>
+    </tr>    
+    <tr>
+        <th>
+            
+        </th>
+        <td>
+          <%=link_to("View translations", "/tr8n/admin/translation/index?mf_c_0=translation_key_id&mf_co_0=is&mf_cv_0_0=#{@key.id}") %>
+          |          
+          <%=link_to("Delete", {:action => :delete, :key_id => @key.id, :source => :key}, {:confirm => "Are you sure you want to delete this key?"}) %>
+        </td>
+    </tr>    
+</table>
+
+<h1>Sources</h1>
+<table class="admin_table">
+<thead>
+  <tr>
+    <th style="">Source</th>
+  </tr>
+</thead>
+<tbody>
+  <% @key.translation_sources.each do |source| -%>
+    <tr>
+      <td><%=source.source%></td>
+    </tr>
+  <% end -%>
+</tbody>
+</table>
+<%= render :partial => "/tr8n/admin/common/footer" %>

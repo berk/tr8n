@@ -1,0 +1,84 @@
+<%= render :partial => "/tr8n/admin/common/header" %>
+<%= will_filter %>
+<br/>
+
+<%=link_to("Calculate Completeness", {:action => :calculate_completeness}, :confirm => "Are you sure you want to run this opperation?")%>
+|
+<%=link_to("View Metrics and Charts", {:action => :metrics})%>
+
+<br/>
+
+<%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @languages} %>
+
+<table class="admin_table">
+  <tr>
+    <th align="left">
+      Flag
+    </th>
+    <th align="left">
+      Locale
+    </th>
+    <th align="left">
+      English Name
+    </th>
+    <th align="left">
+      Native Name
+    </th>
+    <th align="left">
+      Right to Left
+    </th>
+    <th style="text-align:right">
+      Completeness
+    </th>
+    <th></th>
+  </tr>  
+  <% @languages.each_with_index do |lang, index| %>
+    <tr>
+      <td><%=image_tag("/tr8n/images/flags/#{lang.flag}.png")%></td>
+      <td>  
+        <% if lang.enabled? %>
+          <span style="color:green">
+        <% else %>    
+          <span style="color:red">
+        <% end %>
+            <%=lang.locale%>
+          </span>
+      </td>
+      <td><%=lang.english_name%></td>
+      <td><%=lang.native_name%></td>
+      <td>
+        <% if lang.right_to_left? %>
+          <span style="color:red">
+        <% else %>    
+          <span style="color:green">
+        <% end %>
+           <%=lang.right_to_left? %>
+        </span>
+      </td>
+      <td style="text-align:right">
+        <% if lang.completeness == 100 %>
+          <span style="color:green">
+        <% else %>    
+          <span style="color:red">
+        <% end %>
+          <%=lang.completeness ? lang.completeness : '0' %>%
+        </span>
+      </td>
+      <td style="text-align:right">
+        <%=link_to("View", :action => :view, :lang_id => lang.id) %>
+        
+        <% unless lang.default? %>
+           |  
+          <% if lang.enabled? %>
+            <%=link_to("Disable", :action => :disable, :lang_id => lang.id) %>
+          <% else %>
+            <%=link_to("Enable", :action => :enable, :lang_id => lang.id) %>
+          <% end %>
+        <% end %> 
+      </td>
+    </tr>
+  <% end %>
+</table>
+
+<%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @languages} %>
+<%= render :partial => "/tr8n/admin/common/footer" %>

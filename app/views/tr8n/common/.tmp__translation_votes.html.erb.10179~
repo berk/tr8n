@@ -1,0 +1,47 @@
+<div style="padding-bottom:5px;">
+  <table style="width:100%;border-collapse: collapse;" cellpadding="5px" cellspacing="0px;" >
+    <% if translations.empty? %>
+        <tr>
+          <td colspan="3" style="color:black; font-size:10px; padding:3px;">
+            <%= trl("There are no translations for this phrase.") %> 
+            <%= trl("Be the first one to [link: translate it].", "", 
+                    :link => lambda{|str| link_to(str, :controller => "/tr8n/translations", :action => :key, :translation_key_id => translation_key.id, :section_key => section_key)}  ) %>
+          </td>
+        </tr>
+    <% else %>   
+      <tr style="border-bottom:1px dotted #ccc;">
+        <td style="width:15px; color:grey; font-size:10px; padding:5px;"><%=trl("Rank")%></td>
+        <td style="width:65px; color:grey; font-size:10px; text-align:middle; padding:5px;"><%=trl("Your Vote")%></td>
+        <td style="color:grey; font-size:10px; padding:5px;"><%=trl("Translation")%></td>
+      </tr>  
+      <% translations[0..9].each do |trn| %>
+        <% style = "border-bottom:1px dotted #ccc;" unless translations.last == trn %>
+        <tr style="<%=style%>">
+          <td style="text-align:right;vertical-align:top; padding:3px;">
+            <div id="spinner_for_<%=trn.id%>" style="display:none">
+              <%=image_tag("tr8n/spinner.gif")%>
+            </div>  
+            <div id="votes_for_<%=trn.id%>" style="font-size:12px;">
+              <%= trn.rank_label %> 
+            </div>  
+          </td>  
+          <td style="text-align:center;vertical-align:top;">
+            <% unless trn.translation_key.locked? %>
+              <%=link_to_function(image_tag("tr8n/thumb_up.png"), "tr8nTranslator.voteOnTranslation('#{trn.translation_key.key}', '#{trn.id}', 1)")%> 
+              <%=link_to_function(image_tag("tr8n/thumb_down.png"), "tr8nTranslator.voteOnTranslation('#{trn.translation_key.key}','#{trn.id}', -1)")%> 
+              <%=link_to_function(image_tag("tr8n/exclamation.png"), "tr8nTranslator.reportTranslation('#{trn.translation_key.key}','#{trn.id}')")%>
+            <% end %>   
+          </td>
+          <td style="text-align:left;vertical-align:top;font-size:11px;">
+            <%= trn.label %>
+            <% if trn.context %>
+              <div style="font-size: 10px; color: grey; padding-top:3px;">
+                <%=trl("Context:")%> <%= trn.context %>  
+              </div>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    <% end %>
+  </table>
+</div>

@@ -1,0 +1,71 @@
+<div id="translation_tokens" style="padding-top:10px; padding-bottom:5px; font-size:10px;">
+  <div class="section_title">
+  	 <%=trl("Translation Tokens and Dependencies")%>
+	</div>
+  
+  <% if @translation_key.sanitized_tokens? %>
+      <% @translation_key.sanitized_tokens.each do |token| %>
+        <%= link_to_function(token, "tr8nTranslator.insertAtCaret('translation_label_#{@translation_key.id}', '#{token}');") %> 
+      <% end %>
+      <div style="color:grey; font-size:10px; padding-top:10px; padding-bottom:10px;">
+			   <%=trl("Click on a token to insert it into the label")%>
+			</div>
+  <% end %>
+
+  <% if tr8n_current_language.has_rules? %>
+	  <div id="rules_trigger" style="<%=(@translation_rules.empty? ? '' : 'display:none')%>">
+      <%=trl("Does this translation depend on any of the token values?")%> 
+			<strong><%=link_to_function(trl("Yes"), "$('has_dependency_rules').value='true'; $('rules_trigger').hide(); $('translation_rules').show();") %></strong>
+	  </div>
+		
+    <div id="translation_rules" style="<%=(@translation_rules.empty? ? 'display:none' : '')%>">
+      <div style="font-size:14px; font-weight:bold;">
+			   <%=trl("Token Dependency Rules")%>
+			</div>
+      
+      <%=hidden_field_tag("has_dependency_rules", "true") %>
+
+			<div style="padding-top:10px;padding-bottom:5px;">
+				<table style="border:1px; width:auto;">
+				  <tr style="border-bottom:1px dotted #ccc;">
+				    <td style=""></td>
+				    <td style="font-size:10px; font-weight:bold; padding:5px;">Token</td>
+				    <td style="font-size:10px; font-weight:bold; padding:5px;">Options</td>        
+				  </tr>
+				
+				<% @translation_key.dependency_tokens.each_with_index do |token, index| %>
+				  <% 
+				    rules = []
+				    Tr8n::Config.language_rule_types.each do |type|
+				      if @translation_key.can_have_dependency?(tr8n_current_language, token, type)
+				        rules =  tr8n_current_language.default_rules_for(type)
+				      end 
+				    end
+				    next if rules.empty?
+				    
+				    rule_options = rules.collect{|rule| [rule.describe, rule.id.to_s]}
+				  %>
+				  <tr>
+				    <td style="padding:3px; vertical-align:middle;">
+				      <%=check_box_tag("translation_rules[#{token}][selected]", "true", (@translation_rules[token]!=nil), :id => "check_#{index}")%>     
+				    </td>
+				    <td style="font-size:10px; padding:3px; vertical-align:middle;">
+				      <%=token %>     
+				    </td>
+				    <td style="font-size:10px; padding:5px; vertical-align:middle;">
+				      <%=select_tag("translation_rules[#{token}][language_rule_id]", options_for_select(rule_options, @translation_rules[token].to_s), :onChange => "$('check_#{index}').checked = true;")%>      
+				    </td>
+				  </tr>
+				<% end %>
+				</table>
+			</div>
+			
+			<div style="color:grey; font-size:10px; padding-top:10px;"><%=trl("Select all rules that apply to this translation")%></div>
+			
+			<div style="padding-top:10px;font-size:10px;">
+        <%=link_to_function(trl("Click here if the translation does not depend on the token values."), "$('has_dependency_rules').value='false'; $('translation_rules').hide(); $('rules_trigger').show(); ") %>
+			</div>
+    </div>
+  <% end %>
+  
+</div>

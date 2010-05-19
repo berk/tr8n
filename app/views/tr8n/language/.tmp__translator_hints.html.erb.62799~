@@ -1,0 +1,55 @@
+<div id="translator_hints_more" style="padding-top:5px;">
+  <%=link_to_function("#{trl("show hints")} &raquo;", "$('translator_hints_more').hide(); $('translator_hints').show(); $('translator_hints_less').show()")%>
+</div>
+
+<div id="translator_hints" style="display:none;padding-right:5px; margin-right:5px;">
+  <div id="translation_suggestion_container_<%=@translation_key.id%>" style="display:none;" class="section">
+  
+    <% if Tr8n::Config.enable_google_suggestions? %>  
+        <div class="small_section_title">
+          <strong><%=trl("Google Translation Suggestion")%></strong>
+        </div>
+      
+        <%=image_tag("tr8n/left_quote.png", :style=>"text-align:bottom;padding-bottom:5px;") %>
+        <a onclick="$('translator_text_area').value=$('translation_suggestion_<%=@translation_key.id%>').innerHTML; return false;" href="#">
+          <span class="small" id="translation_suggestion_<%=@translation_key.id%>" title="<%=trl("Click to insert this suggested translation above")%>"></span>
+        </a>
+        <%=image_tag("tr8n/right_quote.png", :style=>"text-align:bottom;padding-top:5px;") %>
+      
+        <script type="text/javascript">
+          suggestTranslation("<%=@translation_key.id %>", "<%=@translation_key.tokenless_label %>", "<%=tr8n_current_language.locale%>");
+        </script>
+        <div class="tip"><%=trl("Click on the suggested translation to insert it above")%></div>
+      </div>
+   <% end %> 
+  
+   <% if Tr8n::Config.enable_glossary_hints? and @translation_key.glossary? %>  
+      <div id="translation_glossary" class="section">
+        <div style="margin-bottom:3px;">
+          <span style="font-size:12px;font-weight:bold;"><%=trl("{site_title} Glossary", "Translator glossary section title", :site_title => Tr8n::Config.site_title) %></span>
+          <span style="color:#999 !important,font-size:10px !important;font-weight:normal;"><%= trl("{count} {_terms}", "Glossary term count", :count => @translation_key.glossary.size, :_terms => "term".pluralize_for(@translation_key.glossary.size)) %></span>
+        </div>
+        
+        <div class="glossary_table" style="max-height:100px;overflow:auto;border:solid 1px #ccc;">
+          <table>
+            <% @translation_key.glossary.each do |term| %>
+              <% border_style = "border-bottom: 1px dotted #ccc;" unless @translation_key.glossary.last == term %>
+              <tr style="<%=border_style%>">
+                <td><strong><%=term.keyword %></strong></td>
+                <td><%=term.description %></td>
+              </tr>
+            <% end %>
+          </table>
+        </div>
+        <div class="tip"><%=trl("Review glossary definitions to enhance your translation")%></div>
+      </div>
+      <script>
+        $("translator_hints_container").show();
+      </script>
+  <% end %>
+  
+</div>
+
+<div id="translator_hints_less" style="display:none">
+  <%=link_to_function("&laquo; #{trl("hide hints")}", "$('translator_hints').hide(); $('translator_hints_less').hide(); $('translator_hints_more').show();")%>
+</div>

@@ -1,0 +1,46 @@
+<table style="width:100%;" cellpadding="5">
+  <tr style="border-bottom: 1px solid black;">
+    <th style="width:80px;color:grey;"><%=trl("Award")%></th>
+    <th style="width:200px;color:grey;"><%=trl("Name")%></th>
+    <th style="text-align:right;color:grey;"><%=trl("Total Translations")%></th>
+    <th style="text-align:right;color:grey;"><%=trl("Total Votes")%></th>
+  </tr>
+  
+  <% metrics.each_with_index do |tm, index| %>
+    <% style = "border-bottom: 1px dotted #ccc;" unless metrics.last == tm %>
+    <tr style="<%=style%>">
+      <td>
+        <% if show_medals %> 
+          <% if index == 0 %>
+            <%=image_tag("tr8n/medals/gold.png", :style => "height:60px", :title => trl("Gold Medal"))%>
+          <% elsif index == 1 %>
+            <%=image_tag("tr8n/medals/silver.png", :style => "height:60px", :title => trl("Silver Medal"))%>
+          <% elsif index == 2 %>
+            <%=image_tag("tr8n/medals/bronze.png", :style => "height:60px", :title => trl("Bronze Medal"))%>
+          <% end %>
+        <% else %>
+            <%=image_tag("tr8n/medals/runner.png", :style => "height:60px", :title => trl("Runner-Up"))%>
+        <% end %>  
+      </td>
+      <td>
+        <table>
+          <tr>
+            <td style="vertical-align:top;padding:5px;">
+              <%=tr8n_user_mugshot_tag(tm.translator, :linked => true)%>
+            </td>
+            <td style="vertical-align:top;padding:5px;">
+              <%=tr8n_user_tag(tm.translator, :linked => true)%>
+            </td>
+          </tr>
+        </table>        
+      </td>
+      <td style="text-align:right;padding:5px;">
+        <%=tm.total_translations%>
+      </td>
+      <td style="text-align:right;padding:5px;">
+        <%=tm.total_votes%>
+        (<span style="color:green"><%=tm.positive_votes || 0 %></span>/<span style="color:red"><%=tm.negative_votes || 0 %></span>)
+      </td>
+    </tr>
+  <% end %>
+</table>

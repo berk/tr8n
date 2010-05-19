@@ -1,0 +1,246 @@
+/****************************************/
+/*** Classes for the translatable elements
+/****************************************/
+
+.not_translated                           {border-bottom: 2px solid red;}
+.translated                               {border-bottom: 2px solid green;}
+.fallback                                 {border-bottom: 2px solid yellow;}
+
+/****************************************/
+/*** Classes for the popup windows
+/****************************************/
+
+.section_title                            {padding-top:10px; border-bottom: 1px solid #ccc; margin-bottom:10px; color:black;font-size:18px;}  
+.section_box                              {border: 1px dotted #ccc; padding:10px; margin-top:10px; margin-bottom:15px;}
+.section_box.colored                      {background: #f9f8f7;}
+.section_box.locked                       {background: #F1FFEF;}
+     
+.small_section_title                      {padding-top:5px; border-bottom: 1px solid #ccc; margin-bottom:10px; color:black; font-size:12px; font-weight: bold;}  
+
+.topic_header                             {color: grey; padding-bottom:5px;}
+.topic_value                              {padding-top:5px; padding-bottom:5px;}
+
+.translator                               {position: absolute;top: 0;left: 0;font-family: verdana; font-size:11px; width: 400px;background: #f4f4f4;border:solid 1px #e8e8e8;border-color:#e8e8e8 #bababa #bababa #e8e8e8;padding: 0;margin: 0;z-index: 10000;-webkit-box-shadow:2px 2px 3px rgba(0,0,0,0.6);-moz-box-shadow:2px 2px 3px rgba(0,0,0,0.6);box-shadow:2px 2px 3px rgba(0,0,0,0.6);}
+.translator img                           {vertical-align:text-top !important;}
+.translator a                             {text-decoration:none; color:#16b; outline:none; border:0px;}
+.translator a:hover                       {text-decoration:underline}
+.translator a img                         {border:0px}
+.translator .supplemental                 {float:right; padding:2px;}
+.translator .quiet                        {color: #666;}  
+.translator .small                        {font-size:11px;}  
+.translator .desc                         {color:grey;font-size:10px;padding-left:5px;padding-top:1px;border-left:solid 1px #ccc;margin-left:3px;}
+.translator .strong                       {font-weight:bold;}
+.translator .stem                         {position:absolute;margin:0;}
+.translator .stem.top_left                {top:-12px;}
+.translator .stem.top_right               {top:-12px;-moz-transform: scaleX(-1); -webkit-transform: scaleX(-1); transform: scaleX(-1); filter: fliph;}
+.translator .stem.bottom_left             {bottom:-12px;-moz-transform: scaleY(-1); -webkit-transform: scaleY(-1); transform: scaleY(-1); filter: flipv;}
+.translator .stem.bottom_right            {bottom:-12px;-moz-transform: scaleX(-1), scaleY(-1); -webkit-transform: scaleX(-1), scaleY(-1); transform: scaleX(-1), scaleY(-1); filter: fliph, flipv;}
+.translator .original_text                {background-color:#f9f8f7;border: 1px dotted #ccc;padding:5px;margin-bottom:5px;}
+.translator .quote                        {padding:10px;}
+.translator .quote img                    {vertical-align:middle !important}
+.translator .keyboardInput                {width:368px;padding:5px;height:60px;background:#feffef;margin:5px 0;border:solid 1px #ccc}
+.translator .section                      {margin:10px 0 15px 0}
+.translator .section_title                {border-bottom:solid 1px #ccc;padding:5px 0;margin-bottom:10px;}
+.translator .tip                          {color:grey; font-size:10px; padding-top:10px;}
+.translator .actions                      {font-size:10px; border-bottom:dotted 1px #ccc; overflow:hidden;list-style-type:none; margin:0px;padding:0px;padding-bottom:5px; margin-top:10px;}
+.translator .actions li                   {padding-left:0px; padding-top:5px;font-weight:bold}
+.translator .hd                           {font-size:10px;text-transform: uppercase;color:#444;padding:5px;margin: 5px;}
+.translator .bd                           {border:solid 1px #bababa;border-color:#bababa #e8e8e8 #e8e8e8 #bababa;margin:5px;background-color: white;}
+.translator .spinner                      {text-align:center;padding:10px;}
+.translator .votes_container              {border-bottom:1px dotted #ccc; max-height:350px; overflow:auto; font-size:11px;}
+.translator .hints_container              {font-size:10px; padding-left:10px;}
+.translator .tokens_container             {padding-top:10px; font-size:10px; padding-bottom:5px; border-bottom:dotted 1px #ccc;}
+.translator .buttons_container            {padding-top:10px; padding-bottom:15px;text-align:center;}
+  
+.translator_btn                           {position:relative;border:0;padding:0;margin:0 2px 0 -2px;cursor:pointer;overflow:visible;background:transparent url('/tr8n/images/site_sprite.gif') no-repeat right -100px;font-size:11px;font-weight:bold;text-align:center;font-family:Arial;vertical-align:middle;}
+.translator_btn span                      {position:relative;display:block;white-space:nowrap;background:transparent url('/tr8n/images/site_sprite.gif') no-repeat left top;}
+button::-moz-focus-inner                  {border:none;}
+.translator_submit_btn                    {padding:0 10px 0 0;background-position:right -35px;}
+.translator_submit_btn span               {padding:0px 0 0px 10px;line-height:30px;height:30px;background-position:left 0;color:#fff;font-size:14px;}
+.translator_small_btn                     {padding:0 10px 0 0;background-position:right -35px;}
+.translator_small_btn span                {padding:0px 0 0px 10px;line-height:30px;height:30px;background-position:left 0;color:#fff;font-size:12px;}
+
+.language_selector_trigger                {cursor: pointer; font-family:arial; font-size:12px; vertical-algin:middle}
+.language_selector                        {position: absolute;top: 0;left: 0;font-family: verdana;width: 14em;background: #f9f8f7;padding: 0;}
+
+.languages_panel                          {position: absolute; top: 0; left: 0; border:solid 1px #e8e8e8;border-color:#e8e8e8 #bababa #bababa #e8e8e8;border-width:1px 2px 2px 1px;padding:0 5px;text-align:left;width:300px;background:#f4f4f4 !important;font-size:10px;font-family:arial;}
+.languages_panel .inner                   {background:#fff;border:solid 1px #bababa;border-color:#bababa #e8e8e8 #e8e8e8 #bababa;padding:5px;-moz-border-radius:2px;-webkit-border-radius:2px;border-radius:2px;font-size:11px;}
+.languages_panel .head                    {font-size:10px;text-transform: uppercase;color:#444;padding:5px;background:url('/tr8n/images/language_selector_logo.gif') no-repeat 0 center;padding-left:20px;}
+.languages_panel .action                  {float:right}
+.languages_panel .foot                    {text-align:left;padding:5px;font-size:11px;}
+.languages_panel a                        {text-decoration:none; color:#16b; outline:none; border:0px;}
+.languages_panel a img                    {border:0px;}
+.languages_panel a:hover                  {text-decoration:underline}
+
+.language_list                            {overflow:hidden;list-style-type:none;margin:0px;padding:0px;}
+.language_list li                         {background: white;font-size:11px;font-family:verdana;border-bottom:solid 1px #eee;margin-bottom:-1px;margin:0px;padding:2px;cursor:pointer;}
+.language_list li:hover                   {background: #F1F5FF;}
+
+.glossary_table                           {}
+.glossary_table td                        {padding:4px;vertical-align:top; font-size:10px;}
+
+.tr8n                                     {width:100%; font-size:11px; font-family:arial;}
+.tr8n a                                   {text-decoration:none; color:#16b; outline:none; border:0px;}
+.tr8n a:hover                             {text-decoration:underline}
+.tr8n a img                               {border:0px;}
+.tr8n table                               {width:100%;border-collapse: collapse; font-size:12px; padding:0px; margin:0px;}
+.tr8n td                                  {vertical-align:top;}
+.tr8n th                                  {vertical-align:top;text-align:left;}
+.tr8n input                               {border:1px solid #ccc; padding:3px;}    
+.tr8n textarea                            {border:1px solid #ccc; padding:3px;}    
+.tr8n select                              {border:1px solid #ccc; padding:3px;}    
+
+/****************************************/
+/*** Classes for the feature tabs
+/****************************************/
+   
+.translations_navigation                  {height:70px; position:relative; padding:15px 15px 0px; background-color:#f1f4f9; border-bottom:1px solid #ccc; border-top:1px solid #ccc; border-left:1px solid #ccc; border-right:1px solid #ccc; margin:0px; margin-bottom:10px;}
+
+.translations_tab_nav                     {list-style-type:none;bottom:-1px !important;position:absolute;margin:0px;padding:0px;font-family:arial;}
+.translations_tab_nav li                  {float:left;margin-right:2px;cursor:pointer;text-align:bottom;}
+.translations_tab_nav li a                {display:block;padding:6px 0px 6px 10px; outline:none;}
+
+.translations_tabs                        {margin-left:5px;zoom:1}
+.translations_tabs li                     {background: url('/tr8n/images/site_sprite.gif') no-repeat right -255px;font-size:12px;font-weight:bold;margin:0;position:relative;z-index:1}
+.translations_tabs li a                   {padding:13px 30px 6px 6px;color:#1166bb;cursor:pointer;text-decoration:none;line-height:14px;}
+.translations_tabs li a:hover             {text-decoration:none}
+.translations_tabs li.current             {margin-left: -30px;background-position:right -360px;z-index:2}
+.translations_tabs li.current a           {padding-left:30px;background: url('/tr8n/images/site_sprite.gif') no-repeat left -325px;color: #333;font-size:13px;}
+.translations_tabs li.last                {background-position:right -290px;}
+.translations_tabs li.last a              {padding-right:30px;}
+.translations_tabs li.last_current        {margin-left: -25px;background-position:right -430px;}
+.translations_tabs li.last_current a      {padding-left:30px;color: #000;}
+.translations_tabs li.first a             {padding-left:30px;background:url('/tr8n/images/site_sprite.gif') no-repeat 0 -220px;}
+.translations_tabs li.first_current       {margin:0}
+.translations_tabs li.first_current a     {background-position:0 -395px;color: #000;}
+
+
+/****************************************/
+/*** Classes for the admin user page
+/****************************************/
+
+.admin_table {
+  width: 100%;
+  font-size: 12px;
+  border: 1px #e5e5e5 solid;
+  border-collapse: collapse;
+  background-color: white;
+  margin-bottom: 10px;
+}
+
+.admin_table th {
+  background-color: #efefef;
+  border: none;
+  border: 1px #e5e5e5 solid;
+  font-weight:bold;
+}
+
+.admin_table tr:hover {
+  background-color: #eee;
+}
+
+.admin_table td {
+  padding: 5px;
+  border: 1px solid #e5e5e5;
+}
+
+.admin_table td.numeric,
+.admin_table th.numeric {
+  text-align: right;
+}
+
+.admin_table span.description {
+  color: #aaaaaa;
+  font-weight: normal;
+  font-size: 11px;
+}
+
+.admin_table td.key {
+  vertical-align:top;
+  width: 33%;
+  color: #666666;
+  font-weight: bold;
+  text-align: right;
+  padding-left: 10px;
+}
+
+.admin_table td.value {
+  vertical-align:top;
+}
+
+.admin_table td.value ul {
+  margin-top:0px;
+  margin-left:1.5em;
+}
+
+.admin_table td.value li {
+  line-height:1em;
+  margin-top:8px;
+  margin-left:0;
+  text-indent:-0.25em;
+}
+
+.admin_table td.value .detail {
+  font-size:11px;
+  color:#666;
+}
+
+.admin_table td .action_link {
+  float:right;
+  font-size:11px;
+}
+
+.admin_table p.status {
+  font-weight:bold;
+}
+
+.admin_table p.closed {
+  color:Red;
+}
+
+.admin_table p.claimed {
+  color:Green;
+}
+
+.admin_table .obscured {
+  background-color:Black;
+  padding:2px 6px;
+}
+
+.admin_table .obscured:hover {
+  background-color:#eee;
+}
+
+.admin_actions {
+  width: 100%;
+  background-color: #fffeee;
+  border: 1px #e5e5e5 solid;
+  margin-bottom: 10px;
+}
+
+.admin_actions th {
+  border: 1px #e5e5e5 solid;
+  font-weight:bold;
+}
+
+.admin_actions td {
+  padding: 5px;
+}
+
+.admin_actions td a {
+  text-decoration: none;
+  display:block;
+  display:inline-block;
+  width: 100%;
+}
+
+.admin_actions td a:hover {
+  text-decoration: underline;
+}
+
+.admin_table .expand_link {
+  float:right;
+}
+
+.admin_footer_edit {font-size:11px;margin-left:10px;margin-bottom:10px;font-weight:normal;height:20px;padding:5px;background-color:#feffef;border:solid 1px #e4e3c9;}
+
