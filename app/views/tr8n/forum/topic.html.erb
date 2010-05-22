@@ -12,7 +12,7 @@
     </div>
     <div style="color:grey;font-size:12px;font-style:italic;padding-top:3px;padding-bottom:3px;">
        <%= trl("Started by {user} on {date}", "", 
-            {:user => [@topic.translator.user, tr8n_user_tag(@topic.translator, :linked => true)], :date => tr8n_current_language.localize_date(@topic.created_at, :default, :skip_decorations => true)}) %>
+            {:user => [@topic.translator.user, tr8n_user_tag(@topic.translator, :linked => true)], :date => @topic.created_at.trl}) %>
      </div>
   </div>
   <%= render :partial => "messages" %>

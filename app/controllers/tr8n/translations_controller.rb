@@ -16,7 +16,7 @@ class Tr8n::TranslationsController < Tr8n::BaseController
     end
 
     if params[:translation_has_dependencies] == "true" # comes from inline translator only
-      @translation_key.process_dependency_combinations(tr8n_current_language, tr8n_current_translator, params[:dependencies])
+      @translation_key.generate_rule_permutations(tr8n_current_language, tr8n_current_translator, params[:dependencies])
       trfn("We have created all possible combinations of the values for the tokens. Please provide a translation for each combination.")
       return redirect_to(:controller => "/tr8n/translations", :action => :key, :translation_key_id => @translation_key.id, :translator_id => tr8n_current_translator.id)
     end
@@ -28,6 +28,7 @@ class Tr8n::TranslationsController < Tr8n::BaseController
     end
     
     @translation.label = sanitize_label(params[:translation][:label])
+    @translation.rules = parse_rules
     
     unless @translation.can_be_edited_by?(tr8n_current_translator)
       tr8n_current_translator.tried_to_perform_unauthorized_action!("tried to update translation which is locked or belongs to another translator")
@@ -42,7 +43,6 @@ class Tr8n::TranslationsController < Tr8n::BaseController
     end
 
     @translation.save_with_log!(tr8n_current_translator)
-    @translation.add_context_rules!(parse_translation_rules)
     @translation.reset_votes!(tr8n_current_translator)
 
     redirect_to(@source_url)
@@ -147,9 +147,11 @@ class Tr8n::TranslationsController < Tr8n::BaseController
     @cancel_url = @source_url
     @cancel_url = {:action => :index, :section_key => @section_key} if params[:source]
     
-    @translation_rules = {}
-    @translation.translation_rules.each do |rule|
-      @translation_rules[rule.token] = rule.language_rule_id
+    @rules = {}
+    if @translation.rules
+      @translation.rules.each do |rule|
+        @rules[rule[:token]] = rule[:rule_id]
+      end
     end
   end
   
@@ -229,15 +231,14 @@ private
     end
   end  
   
-  def parse_translation_rules
-    rulz = []
-    return rulz unless params[:has_dependency_rules] == "true" and params[:translation_rules] 
+  def parse_rules
+    return nil unless params[:has_rules] == "true" and params[:rules] 
     
-    params[:translation_rules].keys.each do |token|
-      next unless params[:translation_rules][token][:selected] == "true" 
-      rulz << Tr8n::TranslationRule.new(:token => token, :language_rule_id => params[:translation_rules][token][:language_rule_id])
+    rulz = []
+    params[:rules].keys.each do |token|
+      next unless params[:rules][token][:selected] == "true" 
+      rulz << {:token => token, :rule_id => params[:rules][token][:rule_id]}
     end
-
     rulz
   end
 

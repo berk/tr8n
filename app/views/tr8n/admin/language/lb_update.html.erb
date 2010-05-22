@@ -1,0 +1,50 @@
+<% form_for(:language, @language, :url => {:action => :update}, :html => {:id => 'tr8n_form', :method => :post, :class => "tr8n"}) do |form| %>
+  <%= form.hidden_field :id %>
+  <%= hidden_field_tag :source_url, request.env['HTTP_REFERER'] %>
+  
+  <h2>Language Details</h2>
+  <table class="admin_table">
+      <tr>
+          <th>
+              Locale:
+          </th>
+          <td>
+              <%= form.text_field :locale, :style=>"width:100%;" %>
+          </td>
+      </tr>
+      <tr>
+          <th>
+              English Name:
+          </th>
+          <td>
+              <%= form.text_field :english_name, :style=>"width:100%;" %>
+          </td>
+      </tr>
+      <tr>
+          <th>
+              Native Name:
+          </th>
+          <td>
+              <%= form.text_field :native_name, :style=>"width:100%;" %>
+          </td>
+      </tr>
+      <tr>
+          <th>
+              Right to Left:
+          </th>
+          <td>
+              <%= form.check_box :right_to_left %>
+          </td>
+      </tr>
+      <tr>
+          <th>
+              Enabled:
+          </th>
+          <td>
+              <%= form.check_box :enabled %>
+          </td>
+      </tr>
+  </table>
+
+  <%= render :partial => "/tr8n/admin/common/lightbox_buttons" %>
+<% end %>

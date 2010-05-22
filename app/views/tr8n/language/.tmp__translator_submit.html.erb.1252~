@@ -25,7 +25,7 @@
               <div id="translator_tokens_container" class="tokens_container">
                 Tokens: 
                 <% @translation_key.sanitized_tokens.each do |token| %>
-                  <%= link_to_function(token, "tr8nTranslator.insertAtCaret('translator_text_area', '#{token}');", :title => trl("Tip: Click to insert this token above") ) %>
+                  <%= link_to_function(token, "translator.insertAtCaret('translator_text_area', '#{token}');", :title => trl("Tip: Click to insert this token above") ) %>
                 <% end %>
               </div>
             <% end %>
@@ -33,7 +33,7 @@
             <% if tr8n_current_language.has_rules? %>
               <ul class="actions">
                 
-              <% if @translation_key.language_rules_dependant_tokens.size > 1 %>
+              <% if @translation_key.dependency_tokens(tr8n_current_language).size > 1 %>
                   <li><span style="font-weight:normal;"><%=trl("Does this translation depend on any of the token values?")%></span> <%=link_to_function(trl("YES"), "tr8nTranslator.switchTranslatorMode('#{@translation_key.id}', 'dependencies', '#{@source_url}')", :class=>"translation_action") %></li>
               <% elsif tr8n_current_language.has_gender_rules? %>
                   <%=hidden_field_tag("dependencies[viewing_user][gender]", "true")%>

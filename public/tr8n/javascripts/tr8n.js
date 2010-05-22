@@ -7,7 +7,7 @@ Tr8n.Translator = Class.create({
     }, arguments[0] || { });
     
     this.translation_key_id = null;
-    this.container = new Element('div', {id:'translator', className: 'translator', style: 'display:none;'});
+    this.container = new Element('div', {id:'tr8n_translator', className: 'tr8n_translator', style: 'display:none;'});
     
     $(document.body).insert(this.container.observe('contextmenu', Event.stop));
     document.observe(Prototype.Browser.Opera ? 'click' : 'contextmenu', function(e){
@@ -17,7 +17,7 @@ Tr8n.Translator = Class.create({
       
       // find the first element with translatable class
       // Safari has an issue with links, so we need a custom fix
-      var translatable_node = Event.findElement(e, ".translatable");
+      var translatable_node = Event.findElement(e, ".tr8n_translatable");
       var link_node = Event.findElement(e, "A");
 
       if (translatable_node == null) return;
@@ -42,7 +42,7 @@ Tr8n.Translator = Class.create({
   show: function(translatable_node) {
     tr8nLanguageSelector.hide();
     
-    $("translator").innerHTML = "<div style='font-size:18px;text-align:left;padding:10px;'><img src='/tr8n/images/indicator_white_large.gif' style='vertical-align:middle'> Loading...</div>";
+    $("tr8n_translator").innerHTML = "<div style='font-size:18px;text-align:left;padding:10px;'><img src='/tr8n/images/indicator_white_large.gif' style='vertical-align:middle'> Loading...</div>";
     
     var viewport_dimensions = document.viewport.getDimensions();
     var container_dimensions = this.container.getDimensions();
@@ -73,8 +73,8 @@ Tr8n.Translator = Class.create({
     this.container.setStyle(container_position);
     Effect.Appear(this.container, {duration: 0.25});
     
-    this.translation_key_id = translatable_node.getAttribute('translation_key');
-    new Ajax.Updater('translator', '/tr8n/language/translator', {
+    this.translation_key_id = translatable_node.getAttribute('translation_key_id');
+    new Ajax.Updater('tr8n_translator', '/tr8n/language/translator', {
       parameters: {translation_key_id: this.translation_key_id, stem_type:(stem.v + "_" + stem.h), stem_offset:stem_offset},
       evalScripts: true,
       method: 'get'
@@ -135,8 +135,8 @@ Tr8n.Translator = Class.create({
       var range = document.selection.createRange(); 
       range.moveStart ('character', -txtarea.value.length); 
       range.moveStart ('character', strPos); 
-      range.moveEnd ('character', 0); range.select(); } 
-    else if (br == "ff") { 
+      range.moveEnd ('character', 0); range.select(); 
+	 }  else if (br == "ff") { 
       txtarea.selectionStart = strPos; 
       txtarea.selectionEnd = strPos; 
       txtarea.focus(); 
@@ -194,7 +194,7 @@ Tr8n.Translator = Class.create({
         }
       });
   }  
-})
+});
 
 Tr8n.LanguageSelector = Class.create({
   initialize: function() {
@@ -206,11 +206,11 @@ Tr8n.LanguageSelector = Class.create({
     this.keyboardMode = false;
     this.loaded = false;
     
-    this.container = new Element('div', {id:'language_selector', className: 'languages_panel', style: 'display:none'});
+    this.container = new Element('div', {id:'tr8n_language_selector', className: 'tr8n_language_selector', style: 'display:none'});
     $(document.body).insert(this.container);
   },
   toggle: function() {
-    ($("language_selector").getStyle("display") == "none") ? this.show() : this.hide();  
+    ($("tr8n_language_selector").getStyle("display") == "none") ? this.show() : this.hide();  
   },
   hide: function() {
     Effect.Fade(this.container, {duration: 0.25});
@@ -231,7 +231,7 @@ Tr8n.LanguageSelector = Class.create({
     tr8nTranslator.hide();
     
     if (!this.loaded) {
-      $("language_selector").innerHTML = "<div style='font-size:18px;text-align:left;padding:10px;'><img src='/tr8n/images/indicator_white_large.gif' style='vertical-align:middle'> Loading...</div>";
+      $("tr8n_language_selector").innerHTML = "<div style='font-size:18px;text-align:left;padding:10px;'><img src='/tr8n/images/indicator_white_large.gif' style='vertical-align:middle'> Loading...</div>";
     }
     
     var trigger = $('language_selector_trigger');
@@ -257,7 +257,7 @@ Tr8n.LanguageSelector = Class.create({
     Effect.Appear(this.container, {duration: 0.25});
     
     if (!this.loaded) {
-      new Ajax.Updater('language_selector', '/tr8n/language/select', {
+      new Ajax.Updater('tr8n_language_selector', '/tr8n/language/select', {
         method: 'get',
         evalScripts: true
       });
@@ -310,6 +310,45 @@ Tr8n.LanguageSelector = Class.create({
   }
 })
 
+Tr8n.Lightbox = Class.create({
+  initialize: function() {
+    this.container = new Element('div', {id:'tr8n_lightbox', className: 'tr8n_lightbox', style: 'display:none'});
+    $(document.body).insert(this.container);
+    this.overlay = new Element('div', {id:'tr8n_lightbox_overlay', className: 'tr8n_black_overlay', style: 'display:none'});
+    $(document.body).insert(this.overlay);
+  },
+  hide: function() {
+    Effect.Fade(this.container, {duration: 0.25});
+		this.overlay.setStyle("display:none");
+  },
+  show: function(url, opts) {
+    tr8nTranslator.hide();
+    tr8nLanguageSelector.hide();
+		
+    $("tr8n_lightbox").innerHTML = "<div style='font-size:18px;text-align:left;padding:10px;'><img src='/tr8n/images/indicator_white_large.gif' style='vertical-align:middle'> Loading...</div>";
+
+    var viewport_dimensions = document.viewport.getDimensions();
+		var overlay_height = viewport_dimensions.height < screen.availHeight ? screen.availHeight : viewport_dimensions.height;
+    var overlay_width = viewport_dimensions.width < screen.availWidth ? screen.availWidth : viewport_dimensions.width;
+    this.overlay.setStyle("top:0px; left:0px; display:inline; width:" + overlay_width + "px; height:" + overlay_height + "px;");
+
+		opts = opts || {}
+		opts["width"] = opts["width"] || (screen.availWidth / 2);
+		opts["height"] = opts["height"] || (screen.availHeight / 2);
+    opts["left"] = (document.body.scrollLeft + screen.width - opts["width"])/2;
+    opts["top"] = (document.body.scrollTop + screen.height - opts["height"])/2 - 100;
+
+		var style = "top:" + opts["top"] + "px;left:" + opts["left"] + "px;width:" + opts["width"] + "px;height:" + opts["height"] + "px;";
+    this.container.setStyle(style);
+    Effect.Appear(this.container, {duration: 0.25});
+    
+    new Ajax.Updater('tr8n_lightbox', url, {
+      method: 'get',
+      evalScripts: true
+    });
+  }
+})
+
 var translation_suggestion_key_id = null;
 function suggestTranslation(translation_key_id, original, lang) {
   translation_suggestion_key_id = translation_key_id;
@@ -325,10 +364,12 @@ function suggestTranslation(translation_key_id, original, lang) {
 
 var tr8nTranslator = null;
 var tr8nLanguageSelector = null;
+var tr8nLightbox = null;
 
 function initializeTr8n() {
   tr8nTranslator = new Tr8n.Translator();
   tr8nLanguageSelector = new Tr8n.LanguageSelector();
+	tr8nLightbox = new Tr8n.Lightbox();
 }
 
 function initializeTr8nShortcuts() {

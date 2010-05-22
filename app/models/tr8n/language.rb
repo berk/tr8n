@@ -10,8 +10,6 @@ class Tr8n::Language < ActiveRecord::Base
   has_many :translation_votes,      :class_name => 'Tr8n::TranslationKey',      :dependent => :destroy
   has_many :translation_key_locks,  :class_name => 'Tr8n::TranslationKeyLock',  :dependent => :destroy
   has_many :language_metrics,       :class_name => 'Tr8n::LanguageMetric'
-  has_many :gender_rules,           :class_name => Tr8n::Config.language_rule_classes[:gender]
-  has_many :numeric_rules,          :class_name => Tr8n::Config.language_rule_classes[:numeric]
   
   alias :rules :language_rules
   alias :users :language_users
@@ -43,6 +41,10 @@ class Tr8n::Language < ActiveRecord::Base
   
   def flag
     locale
+  end
+  
+  def has_rules?
+    not rules.empty?
   end
   
   def full_name
@@ -97,27 +99,25 @@ class Tr8n::Language < ActiveRecord::Base
     translation_key.translate(self, tokens.merge(:viewing_user => Tr8n::Config.current_user), options)
   end
   alias :tr :translate
-  
-  def default_rules_for(type)
-    return numeric_rules if type.to_sym == :numeric
-    return gender_rules if type.to_sym == :gender
-    []
-  end
 
   def default_rule
-    @default_rule ||= Tr8n::Config.language_rule_class_for("gender").new(:language => self, :multipart => false, :translator => Tr8n::Config.current_translator)
+    @default_rule ||= Tr8n::Config.language_rule_classes.first.new(:language => self, :definition => {})
   end
   
-  def has_rules?
-    rules.any?
+  def rule_classes  
+    @rule_classes ||= rules.collect{|r| r.class}.uniq
+  end
+
+  def dependencies  
+    @dependencies ||= rule_classes.collect{|r| r.dependency}.uniq
+  end
+
+  def default_rules_for(dependency)
+    rules.select{|r| r.class.dependency == dependency}
   end
 
   def has_gender_rules?
-    gender_rules.any?
-  end
-
-  def has_numeric_rules?
-    numeric_rules.any?
+    dependencies.include?("gender")
   end
 
   def calculate_completeness!(keys = Tr8n::TranslationKey.all)
@@ -192,67 +192,14 @@ class Tr8n::Language < ActiveRecord::Base
     
     true
   end
-  
-  def self.localize_date(date, format = :default, options = {})
-    Tr8n::Config.current_language.localize_date(date, format, options)
-  end
-  
-  def format_for(key)
-    Tr8n::Config.default_date_formats[key.to_s].clone
-  end
-  
-  def localize_date(d, format = :default, options = {})
-    label = (format.is_a?(String) ? format.clone : format_for(format))
-    label.gsub!("%a", "{short_week_day_name}")
-    label.gsub!("%A", "{week_day_name}")
-    label.gsub!("%b", "{short_month_name}")
-    label.gsub!("%B", "{month_name}")
-    label.gsub!("%p", "{am_pm}")
-    label.gsub!("%d", "{days}")
-    label.gsub!("%j", "{year_days}")
-    label.gsub!("%m", "{months}")
-    label.gsub!("%W", "{week_num}")
-    label.gsub!("%w", "{week_days}")
-    label.gsub!("%y", "{short_years}")
-    label.gsub!("%Y", "{years}")
-
-    tokens = {:days => (d.day < 10 ? "0#{d.day}" : d.day), 
-              :year_days => (d.yday < 10 ? "0#{d.yday}" : d.yday),
-              :months => (d.month < 10 ? "0#{d.month}" : d.month), 
-              :week_num => d.wday, 
-              :week_days => d.strftime("%w"), 
-              :short_years => d.strftime("%y"), 
-              :years => d.year,
-              :short_week_day_name => tr(Tr8n::Config.default_abbr_day_names[d.wday], "Short name for a day of a week", {}, options),
-              :week_day_name => tr(Tr8n::Config.default_day_names[d.wday], "Day of a week", {}, options),
-              :short_month_name => tr(Tr8n::Config.default_abbr_month_names[d.month - 1], "Short month name", {}, options),
-              :month_name => tr(Tr8n::Config.default_month_names[d.month - 1], "Month name", {}, options),
-              :am_pm => tr(d.strftime("%p"), "Meridian indicator", {}, options)}
-    
-    if d.is_a?(Time)
-      label.gsub!("%H", "{full_hours}")
-      label.gsub!("%I", "{short_hours}")
-      label.gsub!("%M", "{minutes}")
-      label.gsub!("%S", "{seconds}")
-      tokens.merge!(:full_hours => d.hour, 
-                    :short_hours => d.strftime("%I"), 
-                    :minutes => d.min, 
-                    :seconds => d.sec)
-    end    
-                     
-    tr(label, nil, tokens, options)
-  end
 
   def generate_default_rules
-    gender_rules.each{|r| r.destroy}
-    numeric_rules.each{|r| r.destroy}
+    rules.each{|r| r.destroy}
     
-    Tr8n::Config.default_gender_rules(locale).each do |rule| 
-      Tr8n::Config.language_rule_class_for("gender").create(rule.merge(:language => self))
-    end
-    
-    Tr8n::Config.default_numeric_rules(locale).each do |rule|
-      Tr8n::Config.language_rule_class_for("numeric").create(rule.merge(:language => self))
+    Tr8n::Config.language_rule_classes.each do |rule_class|
+      rule_class.default_rules_for(self).each do |definition|
+        rule_class.create(:language => self, :definition => definition)
+      end
     end
   end
   

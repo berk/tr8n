@@ -7,19 +7,18 @@
         <%=tr8n_help_icon_tag %>
       </div>
       <div id="language_rules">
-      	
-        <% if @rules.empty? %>
-          <%=trl("There are no language rules defined for this language.")%>
-        <% end %>
-				
         <% if mode == :edit %>
-            <%= render(:partial => "rules") %>  
+          <%=render :partial => "rules" %>
         <% else %>
+          <% if @rules.empty? %>
+            This language has no rules.
+          <% else %>        
             <ol style="font-size: 12px; padding-left:10px; margin:1em; list-style-type:square; margin-top:0px;">
             <% @rules.each_with_index do |rule, index| %>
-              <li style=""><%=rule.token_description %></li>
+              <li style=""><%=rule.describe_rule %></li>
             <% end %>
             </ol>
+          <% end %> 
         <% end %>  
       </div>
     </div>

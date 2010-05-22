@@ -30,18 +30,21 @@
 				  <tr style="border-bottom:1px dotted #ccc;">
 				    <td style=""></td>
 				    <td style="font-size:10px; font-weight:bold; padding:5px;">Token</td>
-				    <td style="font-size:10px; font-weight:bold; padding:5px;">Rule Options</td>        
+				    <td style="font-size:10px; font-weight:bold; padding:5px;">Options</td>        
 				  </tr>
 				
-				<% @translation_key.language_rules_dependant_tokens.each_with_index do |token, index| %>
+				<% @translation_key.dependency_tokens.each_with_index do |token, index| %>
 				  <% 
-            rule_options = []
-            tr8n_current_language.rule_classes.each do |rule_class| 
-	            if rule_class.dependant?(token)
-	               rule_options += rule_class.for(tr8n_current_language).collect{|rule| [rule.description, rule.id.to_s]}
-	            end  
-            end 
-          %>
+				    rules = []
+				    Tr8n::Config.language_rule_types.each do |type|
+				      if @translation_key.can_have_dependency?(tr8n_current_language, token, type)
+				        rules =  tr8n_current_language.default_rules_for(type)
+				      end 
+				    end
+				    next if rules.empty?
+				    
+				    rule_options = rules.collect{|rule| [rule.describe, rule.id.to_s]}
+				  %>
 				  <tr>
 				    <td style="padding:3px; vertical-align:middle;">
 				      <%=check_box_tag("rules[#{token}][selected]", "true", (@rules[token]!=nil), :id => "check_#{index}")%>     

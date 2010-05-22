@@ -1,50 +1,21 @@
 <div style="padding-bottom:5px;">
-<% if @rules.empty? %>
-  <%=trl("There are no language rules defined for this language.")%>
-<% end %>
-
-<% @rules.each_with_index do |rule, index| %>
-  <div style="padding-bottom:3px;">
-    <input type="button" value=" + " onClick="addLanguageRule('<%=index%>')" style="cursor:pointer">
-    <input type="button" value=" - " onClick="deleteLanguageRule('<%=index%>')" style="cursor:pointer">
-
-    <%=hidden_field_tag("rules[#{index}][id]", rule.id)%>
-    <%=select_tag("rules[#{index}][type]", options_for_select(Tr8n::LanguageRule.options, rule.class.name), :onChange=>"$('rule_#{index}_reset_values').value='true'; updateLanguageRules()")%>
-    <%=select_tag("rules[#{index}][part1]", options_for_select(rule.rule_options, rule.part1), :style => "width:120px", :onChange=>"updateLanguageRules()")%>
-    <%=hidden_field_tag("rules[#{index}][reset_values]", "false", :id => "rule_#{index}_reset_values")%>
-
-    <% if rule.value1_type == "text" %>
-      <%=text_field_tag("rules[#{index}][value1]", rule.humanize_values(rule.value1), :id => "rules_#{index}_value1", :style => "width:90px")%>
-    <% else %>
-      <%=select_tag("rules[#{index}][value1]", options_for_select(rule.value1_options, rule.value1), :id => "rules_#{index}_value1", :style => "width:100px", :onChange=>"updateLanguageRules()")%>
-    <% end %>  
-
-    <% if rule.can_have_multiple_parts? %>
-      <% link_style = 'display:none' if rule.multipart? %>
-      <span id="extension_link_<%=index%>" style="vertical-align:bottom;<%= link_style %>">
-        <%=link_to_function("#{trl("more")} &raquo;", "$('rule_#{index}_second_part').show(); $('extension_link_#{index}').hide(); $('rule_#{index}_multipart').value='true';")%>
-      </span>
+  <% @rules.each_with_index do |rule, index| %>
+    <div style="padding-bottom:3px;">
+      <input type="button" value=" + " onClick="addLanguageRule('<%=index%>')" style="cursor:pointer">
+      <input type="button" value=" - " onClick="deleteLanguageRule('<%=index%>')" style="cursor:pointer">
       
-      <% second_part_style = 'display:none' unless rule.multipart? %>
-      <span id="rule_<%=index%>_second_part" style="<%= second_part_style %>">
-        <%=hidden_field_tag("rules[#{index}][multipart]", rule.multipart?, :id => "rule_#{index}_multipart")%>
-        <%=select_tag("rules[#{index}][operator]", options_for_select(rule.operator_options, rule.operator), :onChange=>"updateLanguageRules()")%>
-        <%=select_tag("rules[#{index}][part2]", options_for_select(rule.rule_options, rule.part2), :style => "width:120px", :onChange=>"updateLanguageRules()")%>
-        <%=text_field_tag("rules[#{index}][value2]", rule.humanize_values(rule.value2), :style => "width:90px")%>
-        
-        <span id="extension_link_<%=index%>" style="vertical-align:bottom;">
-          <%=link_to_function("&laquo; #{trl("less")}", "$('rule_#{index}_second_part').hide(); $('extension_link_#{index}').show(); $('rule_#{index}_multipart').value='false';")%>
-        </span>
-      </span>
-    <% else %>  
-        <%=hidden_field_tag("rules[#{index}][multipart]", "false", :id => "rule_#{index}_multipart")%>
-    <% end %>  
-  </div>
-<% end %>
+      <% rule.definition ||= {} %>
+      
+      <%=hidden_field_tag("rules[#{index}][id]", rule.id)%>
+      <%=select_tag("rules[#{index}][type]", options_for_select(Tr8n::LanguageRule.options, rule.class.name), :onChange=>"$('rule_#{index}_reset_values').value='true'; updateLanguageRules()")%>
+      <%=hidden_field_tag("rules[#{index}][reset_values]", "false", :id => "rule_#{index}_reset_values")%>
+      
+      <%=render :partial=> "#{rule.class.dependency}_rule", :locals => {:rule => rule, :index => index} %>
+    </div>
+  <% end %>
 </div>
 
 <%= link_to_function(trl("+ Add Language Rule", "Add language rule"), "addLanguageRule('#{@rules.size}')") %>
-
 <% unless @rules.empty? %>
   | <%= link_to_function(trl("Clear All", "Clear all language rules"), "clearLanguageRules()") %>
 <% end %>

@@ -30,7 +30,7 @@
                 <td style="vertical-align:top">
                   <%=tr8n_user_tag(topic.translator, :linked => true)%>
                   <div style="color:grey;">
-                      <%=tr8n_current_language.localize_date(topic.created_at, :date_time, {:skip_decorations => true}) %>
+                      <%=topic.created_at.trl(:date_time) %>
                   </div>
                   <div style="font-size:10px;">
                     <% if tr8n_current_user_is_translator? and topic.translator == tr8n_current_translator %>  
@@ -50,7 +50,7 @@
           </td>
           <td class="topic_value">
             <% if topic.last_post %>
-               <div style="font-size:10px;"><%=tr8n_current_language.localize_date(topic.last_post.created_at, :date_time, {:skip_decorations => true}) %> 
+               <div style="font-size:10px;"><%=topic.last_post.created_at.trl(:date_time) %> 
                 <%=trl("by {user}", "Name of the publisher", :user => [topic.translator.user, tr8n_user_tag(topic.translator, :linked => true)])%>
                </div> 
                <% 

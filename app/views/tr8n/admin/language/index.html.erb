@@ -2,7 +2,11 @@
 <%= will_filter %>
 <br/>
 
+<%=link_to_function("+ Add Language", "tr8nLightbox.show('/tr8n/admin/language/lb_update', {height:300})") %>
+|
 <%=link_to("Calculate Completeness", {:action => :calculate_completeness}, :confirm => "Are you sure you want to run this opperation?")%>
+|
+<%=link_to("Calculate Recent Metrics", {:action => :calculate_metrics}, :confirm => "Are you sure you want to run this opperation?")%>
 |
 <%=link_to("View Metrics and Charts", {:action => :metrics})%>
 
@@ -12,19 +16,19 @@
 
 <table class="admin_table">
   <tr>
-    <th align="left">
+    <th>
       Flag
     </th>
-    <th align="left">
+    <th>
       Locale
     </th>
-    <th align="left">
+    <th>
       English Name
     </th>
-    <th align="left">
+    <th>
       Native Name
     </th>
-    <th align="left">
+    <th>
       Right to Left
     </th>
     <th style="text-align:right">
@@ -44,7 +48,7 @@
             <%=lang.locale%>
           </span>
       </td>
-      <td><%=lang.english_name%></td>
+      <td><%=link_to(lang.english_name, :action => :view, :lang_id => lang.id) %></td>
       <td><%=lang.native_name%></td>
       <td>
         <% if lang.right_to_left? %>
@@ -66,7 +70,8 @@
       </td>
       <td style="text-align:right">
         <%=link_to("View", :action => :view, :lang_id => lang.id) %>
-        
+				|
+        <%=link_to_function("Update", "tr8nLightbox.show('/tr8n/admin/language/lb_update?lang_id=#{lang.id}', {height:300})") %>
         <% unless lang.default? %>
            |  
           <% if lang.enabled? %>

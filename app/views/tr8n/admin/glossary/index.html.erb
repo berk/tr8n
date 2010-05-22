@@ -2,27 +2,27 @@
 <%= will_filter %>
 <br>
 
-<%= link_to("+ Add Glossary Term", {:action => :lb_update}, {:class=>"lbOn"}) %>
+<%=link_to_function("+ Add Glossary Term", "tr8nLightbox.show('/tr8n/admin/glossary/lb_update', {height:450})") %>
 <br>
 
 <%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @terms} %>
 
 <table class="admin_table">
   <tr>
-    <th align="left">
+    <th>
       Keyword
     </th>
-    <th align="left">
+    <th>
       Description
     </th>
     <th></th>
   </tr>  
   <% @terms.each_with_index do |term, index| %>
     <tr>
-      <td style="vertical-align:top;"><strong><%=term.keyword%></strong></td>
-      <td style="vertical-align:top;"><%=term.description.gsub("\n", "<br>")%></td>
-      <td style="text-align:right; vertical-align:top; width:100px">
-        <%=link_to("Update", {:action => :lb_update, :glossary_id => term.id}, {:class=>"lbOn"}) %>
+      <td><strong><%=term.keyword%></strong></td>
+      <td><%=term.description.gsub("\n", "<br>")%></td>
+      <td style="text-align:right; width:100px">
+        <%=link_to_function("Update", "tr8nLightbox.show('/tr8n/admin/glossary/lb_update?glossary_id=#{term.id}', {height:450})") %>
         | 
         <%=link_to("Delete", {:action => :delete, :glossary_id => term.id}, {:confirm => "Are you sure you want to delete this glossary term?"}) %>
       </td>

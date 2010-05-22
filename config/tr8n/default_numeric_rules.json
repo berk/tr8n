@@ -5,6 +5,6 @@
 ], 
 "ru": [
       {"multipart": true,   "part1": "ends_in",  "value1": "1",            "operator": "and",  "part2": "does_not_end_in",  "value2": "11"},
-      {"multipart": true,   "part1": "ends_in",  "value1": "2,3,4",        "operator": "and",  "part2": "is_not",           "value2": "12,13,14"},
+      {"multipart": true,   "part1": "ends_in",  "value1": "2,3,4",        "operator": "and",  "part2": "does_not_end_in",  "value2": "12,13,14"},
       {"multipart": false,  "part1": "ends_in",  "value1": "0,5,6,7,8,9,11,12,13,14"}
 ]}

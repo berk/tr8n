@@ -37,7 +37,13 @@ defaults: &defaults
   # Site Integration Settings
   #############################################################################
   site_info:  
-    enable_tr8n_method:       enable_tr8n?   # enables/disables tr8n
+    ###########################################################################
+    # You can provide a custom method for enabling/disabling tr8n by setting:
+    # 
+    # enable_tr8n_method:     MySiteConfig.enable_tr8n?
+    # 
+    # if set, this method will be evaluated instead of the enable_tr8n above      
+    ###########################################################################
     current_user_method:      current_user   # provides current user object
     title:                    Tr8n            
     default_url:              /home
@@ -60,22 +66,20 @@ defaults: &defaults
   # Rules Engine Settings
   #############################################################################
   rules_engine:  
-    language_rule_classes:  
-      gender:                 Tr8n::GenderRule
-      numeric:                Tr8n::NumericRule
-    viewing_user_token:       viewing_user
-    numeric_token:  
-      suffixes:               [count, num, age, hours, minutes, years, seconds]
-      method:                 to_i
-    gender_token:  
-      suffixes:               [user, profile, actor, target, partner, parent, child, sibling]
-      method:                 gender
-      values:  
-        female:               f
-        male:                 m
-        neutral:              n
-        unknown:              u
+    language_rule_classes:    [Tr8n::NumericRule, Tr8n::GenderRule]
+    numeric_rule:  
+      token_suffixes:         [count, num, age, hours, minutes, years, seconds]
+      object_method:          to_i
+    gender_rule:  
+      token_suffixes:         [user, profile, actor, target, partner, parent, child, sibling]
+      object_method:          gender
+      method_values:  
+        female:               female
+        male:                 male
+        neutral:              neutral
+        unknown:              unknown
     minimal_translation_rank: 1
+    viewing_user_token:       viewing_user
     translation_rank_styles:  
       -1000..-5:              color:red;font-weight:bold;
       -4..-1:                 color:red;

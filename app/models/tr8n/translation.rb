@@ -7,13 +7,11 @@ class Tr8n::Translation < ActiveRecord::Base
   belongs_to :translator,       :class_name => "Tr8n::Translator"
   
   has_many   :translation_votes, :class_name => "Tr8n::TranslationVote", :dependent => :destroy
-  has_many   :translation_rules, :class_name => "Tr8n::TranslationRule", :order => "token asc", :dependent => :destroy
-
-  serialize :dependencies
+  
+  serialize :rules
     
   alias :key :translation_key
   alias :votes :translation_votes
-  alias :rules :translation_rules
   
   def vote!(translator, score)
     vote = Tr8n::TranslationVote.find_or_create(self, translator)
@@ -47,48 +45,68 @@ class Tr8n::Translation < ActiveRecord::Base
     "<span style='#{rank_style(rank)}'>#{prefix}#{rank}</span>" 
   end
 
-  def context
-    return nil if translation_rules.empty?
-    @context ||= begin
-      rules = []  
-      translation_rules.each do |rule|
-        rules << rule.describe
+  # populate language rules from the internal rules hash
+  def rules
+    return nil if super.nil?
+    
+    @loaded_rules ||= begin
+      rulz = []
+      super.each do |rule|
+        language_rule = Tr8n::LanguageRule.find_by_id(rule[:rule_id])
+        rulz << rule.merge({:rule => language_rule}) if language_rule  
       end
-      "#{rules.join(" and ")}."
+      rulz
     end
   end
 
-  def matched_conditions?(token_values)
-    return true if translation_rules.empty?
+  def rules_hash
+    return nil if rules.nil?
     
-    translation_rules.each do |translation_rule|
-      result = translation_rule.evaluate(token_values)
+    @rules_hash ||= begin
+      rulz = {}
+      rules.each do |rule|
+        rulz[rule[:token]] = rule[:rule_id]  
+      end
+      rulz
+    end
+  end
+
+  def context
+    return nil if rules.empty?
+    
+    @context ||= begin
+      context_rules = []  
+      rules.each do |rule|
+        context_rules << "<strong>#{rule[:token]}</strong> #{rule[:rule].description}" 
+      end
+      "#{context_rules.join(" and ")}."
+    end
+  end
+
+  def matches_rules?(token_values)
+    return true if rules.nil? # doesn't have any rules
+    return false if rules.empty?  # had some rules that have been removed
+    
+    rules.each do |rule|
+      token_value = token_values[rule[:token].to_sym]
+      token_value = token_value.first if token_value.is_a?(Array)
+      result = rule[:rule].evaluate(token_value)
       return false unless result
     end
     
     true
   end
+  
+  def matches_rule_definitions?(new_rules_hash)
+    rules_hash == new_rules_hash
+  end
 
   def self.default_translation(translation_key, language, translator)
     trans = find(:first, 
-      :conditions => ["translation_key_id = ? and language_id = ? and translator_id = ? and dependencies is null", 
+      :conditions => ["translation_key_id = ? and language_id = ? and translator_id = ? and rules is null", 
                        translation_key.id, language.id, translator.id], :order => "rank desc")
     trans ||= new(:translation_key => translation_key, :language => language, :translator => translator, :label => translation_key.sanitized_label)
     trans  
-  end
-  
-  # the translation rules can always be recreated for the translation
-  # they are just links between language rules and translation
-  def add_context_rules!(rules)
-    translation_rules.each{|rule| rule.destroy}
-    new_dependencies = {}
-    rules.each do |rule|
-      new_dependencies.merge!(rule.dependency)
-      rule.translation = self
-      rule.save
-    end
-    self.dependencies = (new_dependencies.empty? ? nil : new_dependencies)  
-    save
   end
   
   def clean?

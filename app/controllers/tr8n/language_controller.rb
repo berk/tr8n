@@ -173,6 +173,7 @@ class Tr8n::LanguageController < Tr8n::BaseController
     
 private
 
+  # parse with safety - we don't want to disconnect existing translations from those rules
   def parse_language_rules
     rulz = []
     return rulz unless params[:rules]
@@ -180,25 +181,21 @@ private
     index = 0  
     while params[:rules]["#{index}"]
       rule_params = params[:rules]["#{index}"]
+      rule_definition = params[:rules]["#{index}"][:definition]
+      
       if rule_params.delete(:reset_values) == "true"
-        rule_params[:value1] = nil
-        rule_params[:value2] = nil
+        rule_definition = {}
       end
 
-      rule_class = rule_params.delete(:type)
-      rule_id = rule_params.delete(:id)
+      rule_class = rule_params[:type]
+      rule_id = rule_params[:id]
       
       if rule_id.blank?
-        rulz << rule_class.constantize.new(rule_params)
+        rulz << rule_class.constantize.new(:definition => rule_definition)
       else
         rule = rule_class.constantize.find_by_id(rule_id)
-        unless rule
-          rule = rule_class.constantize.new
-        else  
-          rule_params.each do |name, value|
-            rule.send(name.to_s + '=', value)
-          end
-        end
+        rule = rule_class.constantize.new unless rule
+        rule.definition = rule_definition
         rulz << rule
       end
       index += 1

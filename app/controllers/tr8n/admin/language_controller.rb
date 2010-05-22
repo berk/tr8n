@@ -37,5 +37,33 @@ class Tr8n::Admin::LanguageController < Tr8n::Admin::BaseController
   def metrics
     
   end
+
+  def calculate_metrics
+    Tr8n::LanguageMetric.calculate_language_metrics
     
+    trfn("Languages metrics have been recalculated")
+    redirect_to_source
+  end
+  
+  def lb_update
+    @language = Tr8n::Language.find_by_id(params[:lang_id]) unless params[:lang_id].blank?
+    @language = Tr8n::Language.new unless @language
+    
+    render :layout => false
+  end
+
+  def update
+    language = Tr8n::Language.find_by_id(params[:language][:id]) unless params[:language][:id].blank?
+    
+    if language
+      trfn("The language has been updated")
+      language.update_attributes(params[:language])
+    else
+      trfn("The new language has been addeded")
+      language = Tr8n::Language.create(params[:language])
+    end
+    
+    redirect_to_source
+  end
+  
 end

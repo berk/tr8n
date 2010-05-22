@@ -17,12 +17,7 @@ class CreateTr8nTables < ActiveRecord::Migration
       t.integer :language_id, :null => false
       t.integer :translator_id
       t.string  :type
-      t.boolean :multipart
-      t.string  :part1
-      t.string  :value1
-      t.string  :operator
-      t.string  :part2
-      t.string  :value2
+      t.text    :definition
       t.timestamps
     end
     add_index :tr8n_language_rules, [:language_id]
@@ -125,20 +120,12 @@ class CreateTr8nTables < ActiveRecord::Migration
       t.text    :label,               :null => false
       t.integer :rank,                :default => 0
       t.integer :approved_by_id,      :limit => 8
-      t.text    :dependencies      
+      t.text    :rules      
       t.timestamps
     end
     add_index :tr8n_translations, [:translator_id]
     add_index :tr8n_translations, [:translation_key_id, :translator_id, :language_id]
     add_index :tr8n_translations, [:created_at]
-  
-    create_table :tr8n_translation_rules do |t|
-      t.integer :translation_id, :null => false
-      t.integer :language_rule_id, :null => false
-      t.string  :token
-      t.timestamps
-    end
-    add_index :tr8n_translation_rules, [:translation_id]
   
     create_table :tr8n_translation_votes do |t|
       t.integer :translation_id,      :null => false

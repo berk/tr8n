@@ -9,11 +9,6 @@ module Tr8n::CommonMethods
   def init_tr8n
     session[:locale] = 'en-US' unless session[:locale]
     session[:locale] = params[:locale] if params[:locale]
-
-    if self.respond_to?(Tr8n::Config.enable_tr8n_method)
-      self.send(Tr8n::Config.enable_tr8n_method) ? Tr8n::Config.enable! : Tr8n::Config.disable!
-    end
-
     Tr8n::Config.init(session[:locale], self.send(Tr8n::Config.current_user_method))
   end
 

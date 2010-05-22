@@ -70,7 +70,7 @@ class Tr8n::TranslatorLog < ActiveRecord::Base
     elsif [:deleted_language_rule, :added_language_rule, :updated_language_rule].include?(act)
       rule = Tr8n::LanguageRule.find_by_id(reference) unless reference.blank?
       html << " for " << rule.language.english_name if rule and rule.language
-      html << " : " << rule.describe if rule
+      html << " : " << rule.description if rule
     elsif [:used_abusive_language].include?(act)
       lang = Tr8n::Language.find_by_id(reference) unless reference.blank?
       html << " in " << lang.english_name if lang

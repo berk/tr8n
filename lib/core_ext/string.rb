@@ -1,6 +1,6 @@
 class String
 
-  def translate(language = Tr8n::Config.current_language, desc = "", tokens = {}, options = {})
+  def translate(desc = "", tokens = {}, options = {}, language = Tr8n::Config.current_language)
 #    options.merge!(:skip_decorations => true) if options[:skip_decorations].blank?
     language.translate(self, desc, tokens, options)
   end
@@ -8,6 +8,10 @@ class String
   def pluralize_for(count, plural = nil)
     return self if count==1
     plural || pluralize
+  end
+
+  def trl(desc = "", tokens = {}, options = {}, language = Tr8n::Config.current_language)
+    translate(desc, tokens, options.merge!(:skip_decorations => true), language)
   end
 
 end

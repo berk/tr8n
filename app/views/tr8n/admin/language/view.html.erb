@@ -79,6 +79,8 @@
             
         </th>
         <td>
+        	<%=link_to_function("Update", "tr8nLightbox.show('/tr8n/admin/language/lb_update?lang_id=#{@lang.id}', {height:300})") %>
+					|
           <%=link_to("View Translations", "/tr8n/admin/translation/index?mf_c_0=language_id&mf_co_0=is&mf_cv_0_0=#{@lang.id}") %>
           |
           <%=link_to("View Translators", "/tr8n/admin/translator/index?mf_c_0=language_id&mf_co_0=is&mf_cv_0_0=#{@lang.id}") %>

@@ -50,8 +50,9 @@ class Tr8n::TokenizedLabel
   end
 
   def self.parse_lambda_token(token)
-    token_name, token_param = token.gsub("[", "").gsub("]", "").split(":")
-    [token_name.strip.to_sym, token_param.strip]
+    lambda_parts = token.gsub("[", "").gsub("]", "").split(":")
+    return [nil, nil] if lambda_parts.size != 2
+    [lambda_parts.first.strip.to_sym, lambda_parts.last.strip]
   end
 
   def parse_lambda_token(token)
@@ -61,9 +62,13 @@ class Tr8n::TokenizedLabel
   def self.strip_token(token)
     token.gsub("{", "").gsub("}", "")
   end
-  
+
   def strip_token(token)
     self.class.strip_token(token)
+  end
+
+  def self.token_suffix(token)
+    strip_token(token).split("_").last
   end
   
   def humanize_token(token)

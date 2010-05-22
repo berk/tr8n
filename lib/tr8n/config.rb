@@ -72,18 +72,22 @@ class Tr8n::Config
   # will clean all tables and initialize default values
   # never ever do it on live !!!
   def self.reset_all!
-    [ 
-      Tr8n::LanguageRule, Tr8n::LanguageUser, Tr8n::Language, Tr8n::LanguageMetric,
-      Tr8n::TranslationKey, Tr8n::TranslationKeySource, Tr8n::TranslationSource,
-      Tr8n::Translation, Tr8n::TranslationRule, Tr8n::TranslationVote, 
-      Tr8n::Translator, Tr8n::TranslatorLog, Tr8n::TranslatorMetric,
-      Tr8n::LanguageForumTopic, Tr8n::LanguageForumMessage, Tr8n::LanguageForumAbuseReport   
-    ].each do |cls|
+    models.each do |cls|
       cls.delete_all
     end
 
     Tr8n::Language.populate_defaults
     Tr8n::Glossary.populate_defaults
+  end
+
+  def self.models
+    [ 
+      Tr8n::LanguageRule, Tr8n::LanguageUser, Tr8n::Language, Tr8n::LanguageMetric,
+      Tr8n::TranslationKey, Tr8n::TranslationKeySource, Tr8n::TranslationSource,
+      Tr8n::Translation, Tr8n::TranslationVote, 
+      Tr8n::Translator, Tr8n::TranslatorLog, Tr8n::TranslatorMetric,
+      Tr8n::LanguageForumTopic, Tr8n::LanguageForumMessage, Tr8n::LanguageForumAbuseReport   
+    ]    
   end
   
   # json support
@@ -134,18 +138,10 @@ class Tr8n::Config
       feats
     end
   end
-
-  def self.disable!
-    @enabled = false
-  end
-
-  def self.enable!
-    @enabled = true
-  end
   
   def self.enabled?
-    return @enabled unless @enabled.nil?
-    @enabled ||= config[:enable_tr8n] 
+    return eval(site_info[:enable_tr8n_method]) if site_info[:enable_tr8n_method]
+    config[:enable_tr8n] 
   end
   
   def self.disabled?
@@ -289,46 +285,17 @@ class Tr8n::Config
   
   #########################################################
   # rules engine
+  
+  def self.language_rule_classes
+    @language_rule_classes ||= rules_engine[:language_rule_classes].collect{|lrc| lrc.constantize}
+  end
+  
   def self.viewing_user_token
     rules_engine[:viewing_user_token]
   end
 
   def self.minimal_translation_rank
     rules_engine[:minimal_translation_rank]
-  end
-
-  def self.language_rule_classes
-    rules_engine[:language_rule_classes]
-  end
-
-  def self.language_rule_class_for(type)
-    language_rule_classes[type].constantize
-  end
-
-  def self.language_rule_types
-    language_rule_classes.keys
-  end
-
-  def self.number_based_tokens
-    rules_engine[:numeric_token][:suffixes]
-  end
-
-  def self.numeric_token_value(token)
-    return nil unless token and token.respond_to?(rules_engine[:numeric_token][:method])
-    token.send(rules_engine[:numeric_token][:method])
-  end
-  
-  def self.gender_based_tokens
-    rules_engine[:gender_token][:suffixes]
-  end
-
-  def self.gender_token_value(token)
-    return nil unless token and token.respond_to?(rules_engine[:gender_token][:method])
-    token.send(rules_engine[:gender_token][:method])
-  end
-
-  def self.gender_token_value_for(type)
-    rules_engine[:gender_token][:values][type]
   end
 
   def self.default_rank_styles

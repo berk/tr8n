@@ -30,7 +30,7 @@
 				  <tr style="border-bottom:1px dotted #ccc;">
 				    <td style=""></td>
 				    <td style="font-size:10px; font-weight:bold; padding:5px;">Token</td>
-				    <td style="font-size:10px; font-weight:bold; padding:5px;">Rule Options</td>        
+				    <td style="font-size:10px; font-weight:bold; padding:5px;">Options</td>        
 				  </tr>
 				
 				<% @translation_key.language_rules_dependant_tokens.each_with_index do |token, index| %>

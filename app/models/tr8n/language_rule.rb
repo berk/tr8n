@@ -5,47 +5,30 @@ class Tr8n::LanguageRule < ActiveRecord::Base
   belongs_to :language, :class_name => "Tr8n::Language"   
   belongs_to :translator, :class_name => "Tr8n::Translator"   
   
-  has_many   :translation_rules, :class_name => "Tr8n::TranslationRule", :dependent => :destroy
+  serialize :definition
   
-  def self.options
-    [["token object may be a number, which", "Tr8n::NumericRule"], 
-     ["token object may have a gender, which", "Tr8n::GenderRule"]]
+  def self.for(language)
+    find(:all, :conditions => ["language_id = ?", language.id])
   end
   
-  def rule_options
-    raise Tr8n::Exception.new("This method must be implemented in the extending rule") 
+  def self.options
+    @options ||= Tr8n::Config.language_rule_classes.collect{|kls| [kls.description, kls.name]}
   end
   
   def evaluate(token_value)
     raise Tr8n::Exception.new("This method must be implemented in the extending rule") 
   end
   
-  def describe
+  def description
     raise Tr8n::Exception.new("This method must be implemented in the extending rule") 
   end
   
-  def describe_rule
+  def token_description
     raise Tr8n::Exception.new("This method must be implemented in the extending rule") 
   end
   
   def dependency
     raise Tr8n::Exception.new("This method must be implemented in the extending rule") 
-  end
-  
-  def value1_type
-    "text"
-  end
-
-  def value2_type
-    "text"
-  end
-  
-  def operator_options
-    ["and", "or"]
-  end
-  
-  def can_have_multiple_parts?
-    false
   end
   
   def save_with_log!(new_translator)
