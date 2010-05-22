@@ -71,7 +71,7 @@ defaults: &defaults
       token_suffixes:         [count, num, age, hours, minutes, years, seconds]
       object_method:          to_i
     gender_rule:  
-      token_suffixes:         [user, profile, actor, target, partner, parent, child, sibling]
+      token_suffixes:         [user, profile, actor, target, partner, parent, child, sibling, manager]
       object_method:          gender
       method_values:  
         female:               female

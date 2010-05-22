@@ -34,7 +34,7 @@ class Tr8n::NumericRule < Tr8n::LanguageRule
     return false unless token_value
     
     result1 = evaluate_partial_rule(token_value.to_s, definition[:part1].to_sym, sanitize_values(definition[:value1]))
-    return result1 if definition[:multipart] == "false"
+    return result1 if definition[:multipart].to_s == "false"
     
     result2 = evaluate_partial_rule(token_value.to_s, definition[:part2].to_sym, sanitize_values(definition[:value2]))
     return (result1 or result2) if definition[:operator] == "or"
@@ -88,7 +88,7 @@ class Tr8n::NumericRule < Tr8n::LanguageRule
   # used to describe a context of a given translation
   def description
     rule_desc = describe_partial_rule(definition[:part1].to_sym, definition[:value1])
-    return rule_desc if definition[:multipart] == "false"
+    return rule_desc if definition[:multipart].to_s == "false"
     
     rule_desc << " " << definition[:operator] << " " 
     rule_desc << describe_partial_rule(definition[:part2].to_sym, definition[:value2])
