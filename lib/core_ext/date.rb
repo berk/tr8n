@@ -16,17 +16,17 @@ class Date
     label.gsub!("%Y", "{years}")
 
     tokens = {
-              :days                 => (d.day < 10 ? "0#{d.day}" : d.day), 
-              :year_days            => (d.yday < 10 ? "0#{d.yday}" : d.yday),
-              :months               => (d.month < 10 ? "0#{d.month}" : d.month), 
-              :week_num             => d.wday, 
-              :week_days            => d.strftime("%w"), 
-              :short_years          => d.strftime("%y"), 
-              :years                => d.year,
-              :short_week_day_name  => language.tr(Tr8n::Config.default_abbr_day_names[d.wday], "Short name for a day of a week", {}, options),
-              :week_day_name        => language.tr(Tr8n::Config.default_day_names[d.wday], "Day of a week", {}, options),
-              :short_month_name     => language.tr(Tr8n::Config.default_abbr_month_names[d.month - 1], "Short month name", {}, options),
-              :month_name           => language.tr(Tr8n::Config.default_month_names[d.month - 1], "Month name", {}, options)
+              :days                 => (day < 10 ? "0#{day}" : day), 
+              :year_days            => (yday < 10 ? "0#{yday}" : yday),
+              :months               => (month < 10 ? "0#{month}" : month), 
+              :week_num             => wday, 
+              :week_days            => strftime("%w"), 
+              :short_years          => strftime("%y"), 
+              :years                => year,
+              :short_week_day_name  => language.tr(Tr8n::Config.default_abbr_day_names[wday], "Short name for a day of a week", {}, options),
+              :week_day_name        => language.tr(Tr8n::Config.default_day_names[wday], "Day of a week", {}, options),
+              :short_month_name     => language.tr(Tr8n::Config.default_abbr_month_names[month - 1], "Short month name", {}, options),
+              :month_name           => language.tr(Tr8n::Config.default_month_names[month - 1], "Month name", {}, options)
     }
     
     language.tr(label, nil, tokens, options)

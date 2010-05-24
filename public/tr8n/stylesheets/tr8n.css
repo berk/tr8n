@@ -123,9 +123,9 @@ button::-moz-focus-inner                        {border:none;}
 /****************************************/
 /*** Classes for the admin user page
 /****************************************/
-.tr8n_admin                               {font-size: 12px; font-family:arial}
-.tr8n_admin h1                            {font-size: 20px; font-weight:bold; border-bottom: 1px solid #ccc; margin-bottom: 10px; padding-bottom:3px; padding-top:5px; }
-.tr8n_admin h2                            {font-size: 16px; font-weight:bold; border-bottom: 1px solid #ccc; margin-bottom: 10px; padding-bottom:3px; padding-top:5px; }
+.tr8n_admin                                {font-size: 12px; font-family:arial}
+.tr8n_admin h1                             {font-size: 20px; font-weight:bold; border-bottom: 1px solid #ccc; margin-bottom: 10px; padding-bottom:3px; padding-top:5px; }
+.tr8n_admin h2                             {font-size: 16px; font-weight:bold; border-bottom: 1px solid #ccc; margin-bottom: 10px; padding-bottom:3px; padding-top:5px; }
 
 .tr8n .admin_table                         {width: 100%; font-size: 12px; border: 1px #e5e5e5 solid; border-collapse: collapse; background-color: white; margin-bottom: 10px; }
 .tr8n .admin_table td                      {padding: 5px; border: 1px solid #e5e5e5; vertical-align:top; text-align:left;}

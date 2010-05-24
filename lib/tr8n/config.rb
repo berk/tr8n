@@ -149,31 +149,31 @@ class Tr8n::Config
   end
 
   def self.enable_software_keyboard?
-    config[:enable_software_keyboard] || true
+    config[:enable_software_keyboard]
   end
 
   def self.enable_keyboard_shortcuts?
-    config[:enable_keyboard_shortcuts] || true
+    config[:enable_keyboard_shortcuts]
   end
 
   def self.enable_inline_translations?
-    config[:enable_inline_translations] || true
+    config[:enable_inline_translations]
   end
   
   def self.enabled_key_source_tracking?
-    config[:enable_key_source_tracking] || true
+    config[:enable_key_source_tracking]
   end
 
   def self.enable_paranoia_mode?
-    config[:enable_paranoia_mode] || true
+    config[:enable_paranoia_mode]
   end
 
   def self.enable_google_suggestions?
-    config[:enable_google_suggestions] || true
+    config[:enable_google_suggestions]
   end
 
   def self.enable_glossary_hints?
-    config[:enable_glossary_hints] || true
+    config[:enable_glossary_hints]
   end
 
   def self.use_remote_database?
@@ -185,6 +185,18 @@ class Tr8n::Config
     config[:database]
   end
 
+  def self.enable_caching?
+    config[:enable_caching]
+  end
+
+  def self.cache_store
+    config[:cache_store]
+  end
+  
+  def self.open_translator_mode?
+    config[:open_translator_mode]
+  end
+  
   #########################################################
   # Config Sections
   def self.site_info
@@ -197,6 +209,10 @@ class Tr8n::Config
 
   def self.localization
     config[:localization]
+  end
+
+  def self.api
+    config[:api]
   end
   
   #########################################################
@@ -343,4 +359,10 @@ class Tr8n::Config
     localization[:custom_date_formats]
   end
 
+  #########################################################
+  # localization
+  def self.enable_api?
+    api[:enabled]
+  end
+  
 end

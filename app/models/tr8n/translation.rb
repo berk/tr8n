@@ -47,7 +47,7 @@ class Tr8n::Translation < ActiveRecord::Base
 
   # populate language rules from the internal rules hash
   def rules
-    return nil if super.nil?
+    return nil if super.nil? or super.empty?
     
     @loaded_rules ||= begin
       rulz = []
@@ -60,7 +60,7 @@ class Tr8n::Translation < ActiveRecord::Base
   end
 
   def rules_hash
-    return nil if rules.nil?
+    return nil if rules.nil? or rules.empty? 
     
     @rules_hash ||= begin
       rulz = {}
@@ -72,7 +72,7 @@ class Tr8n::Translation < ActiveRecord::Base
   end
 
   def context
-    return nil if rules.empty?
+    return nil if rules.nil? or rules.empty? 
     
     @context ||= begin
       context_rules = []  
@@ -138,6 +138,10 @@ class Tr8n::Translation < ActiveRecord::Base
     translator.deleted_translation!(self)
     
     destroy
+  end
+  
+  def after_save
+    Tr8n::Cache.delete("translations_#{language.locale}_#{translation_key.key}")
   end
   
 end

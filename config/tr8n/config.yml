@@ -11,13 +11,21 @@
 
 defaults: &defaults
   enable_tr8n:                true
-  enable_key_source_tracking: true
+  enable_key_source_tracking: false
   enable_glossary_hints:      true
-  enable_software_keyboard:   true
-  enable_google_suggestions:  true
-  enable_inline_translations: true
-  enable_keyboard_shortcuts:  true
+  enable_software_keyboard:   true      # shows the soft keyboard icon  
+  enable_google_suggestions:  true      # uses google for suggestions
+  enable_keyboard_shortcuts:  true      # adds some keyboard shortcuts 
   
+  #############################################################################
+  # Set the following flag to true if you would like to allow any registered 
+  # user to become a translator. The users become translators as soon as they
+  # enable inline translation mode, submit a translation, or vote on a 
+  # translation. If the flag is set to false, then a user must be promoted to
+  # be a translator in order to participate in translations.
+  #############################################################################
+  open_translator_mode:       false
+
   #############################################################################
   # If you would like to run tr8n on a different database, 
   # you can overload the remote setting and provide the database details
@@ -26,12 +34,26 @@ defaults: &defaults
   use_remote_database:        false
 
   #############################################################################
+  # Tr8n best run with caching enabled 
+  # You can configure cache store parameters using either a single name value 
+  # or an array of camma separated values. All rails cache stores are supported. 
+  # For example:
+  #
+  # cache_store: memory_store
+  # cache_store: file_store
+  # cache_store: drb_store
+  # cache_store: [mem_cache_store, 'localhost:11211']
+  #############################################################################
+  enable_caching:             true
+  cache_store:                memory_store
+
+  #############################################################################
   # By default, Tr8n will use its own logger. If you set it to false,  
   # it will use default Rails logger.
   #############################################################################
   use_tr8n_logger:            true
-  tr8n_log_path:              log/tr8n.log
-  enable_paranoia_mode:       true
+  tr8n_log_path:              log/tr8n.log      # location of the log file
+  enable_paranoia_mode:       true              # logs every translator action
 
   #############################################################################
   # Site Integration Settings
@@ -42,7 +64,7 @@ defaults: &defaults
     # 
     # enable_tr8n_method:     MySiteConfig.enable_tr8n?
     # 
-    # if set, this method will be evaluated instead of the enable_tr8n above      
+    # This method will be evaluated instead of the default enable_tr8n setting      
     ###########################################################################
     current_user_method:      current_user   # provides current user object
     title:                    Tr8n            
@@ -87,12 +109,12 @@ defaults: &defaults
       11..1000:               color:green;font-weight:bold;
   
   #############################################################################
-  # API Engine Settings
+  # API Settings
   #############################################################################
   api:  
-    enabled:                  true
+    enabled:                  false
     response_encoding:        json
-    allow_key_registration:   true
+    allow_key_registration:   false
     restricted_domain_list:   [localhost] 
 
   #############################################################################
@@ -130,9 +152,13 @@ qa:
 
 stage:
   <<: *defaults
+  
+  enable_key_source_tracking: true
 
 production:
   <<: *defaults
+
+  enable_key_source_tracking: false
 
   # an example of how to overload the databse settings for production 
   use_remote_database:        true

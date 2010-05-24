@@ -16,12 +16,7 @@
   <% @logs.each do |log| -%>
     <tr>
       <td><%= log.created_at.strftime("%m/%d/%Y %H:%M:%S") %></td>
-      <td>
-      	<% if log.translator %>
-				  <%= link_to(log.translator.name, "/tr8n/admin/translator/view?translator_id=#{log.translator.id}") %>
-				<% else %>
-				  Deleted translator
-				<% end %>	
+      <td><%= link_to(log.translator.name, "/tr8n/admin/translator/view?translator_id=#{log.translator.id}") if log.translator.user %>
       <td style="<%=log.decoration%>"><%= log.describe %></td>
     </tr>
   <% end -%>

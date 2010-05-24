@@ -333,10 +333,10 @@ Tr8n.Lightbox = Class.create({
     this.overlay.setStyle("top:0px; left:0px; display:inline; width:" + overlay_width + "px; height:" + overlay_height + "px;");
 
 		opts = opts || {}
-		opts["width"] = opts["width"] || (screen.availWidth / 2);
-		opts["height"] = opts["height"] || (screen.availHeight / 2);
-    opts["left"] = (document.body.scrollLeft + screen.width - opts["width"])/2;
-    opts["top"] = (document.body.scrollTop + screen.height - opts["height"])/2 - 100;
+		opts["width"] = opts["width"] || (viewport_dimensions.width / 2);
+		opts["height"] = opts["height"] || (viewport_dimensions.height / 2);
+    opts["left"] = (document.body.scrollLeft + viewport_dimensions.width - opts["width"])/2;
+    opts["top"] = (document.body.scrollTop + viewport_dimensions.height - opts["height"])/2 - 100;
 
 		var style = "top:" + opts["top"] + "px;left:" + opts["left"] + "px;width:" + opts["width"] + "px;height:" + opts["height"] + "px;";
     this.container.setStyle(style);

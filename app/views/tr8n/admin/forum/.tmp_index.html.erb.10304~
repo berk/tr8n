@@ -1,32 +1,28 @@
 <%= render :partial => "/tr8n/admin/common/header" %>
 <%= will_filter %>
 <br>
-<%=link_to("View all messages", :action => :messages) %>
-<br>
 
 <%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @topics} %>
 
 <table class="admin_table">
   <tr>
-    <th style="width:10%">
+    <th>
       Author
-    </th>
-    <th style="width:15%">
-      Created At
     </th>
     <th>
       Topic
+    </th>
+    <th>
+      Created On
     </th>
     <th></th>
   </tr>  
   <% @topics.each_with_index do |topic, index| %>
     <tr>
       <td><%=topic.translator ? topic.translator.name : "Deleted user" %></td>
-      <td><%=topic.created_at%></td>
       <td><%=topic.topic%></td>
-      <td style="text-align:right; width:150px">
-        <%=link_to("View Messages", "/tr8n/admin/forum/messages?mf_c_0=language_forum_topic_id&mf_co_0=is&mf_cv_0_0=#{topic.id}") %>
-        | 			
+      <td><%=topic.created_at%></td>
+      <td style="text-align:right; width:50px">
         <%=link_to("Delete", {:action => :delete_topic, :topic_id => topic.id}, {:confirm => "Are you sure you want to delete this topic?"}) %>
       </td>
     </tr>

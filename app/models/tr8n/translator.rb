@@ -141,7 +141,12 @@ class Tr8n::Translator < ActiveRecord::Base
     lu = Tr8n::LanguageUser.find_or_create(user, language)
     lu.manager?
   end
-  
+
+  def manager_for_any_language?
+    return true if Tr8n::Config.user_is_admin?(user)
+    Tr8n::LanguageUser.find_all_by_user_id_and_manager(user.id, true).any?
+  end
+
   def last_logs
     Tr8n::TranslatorLog.find(:all, :conditions => ["translator_id = ?", self.id], :order => "created_at desc", :limit => 20)
   end

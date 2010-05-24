@@ -51,9 +51,7 @@
           <td class="topic_value">
             <% if topic.last_post %>
                <div style="font-size:10px;"><%=topic.last_post.created_at.trl(:date_time) %> 
-							  <% if topic.translator and topic.translator.user %>
-                  <%=trl("by {user}", "Name of the publisher", :user => [topic.translator.user, tr8n_user_tag(topic.translator, :linked => true)])%>
-								<% end %>
+                <%=trl("by {user}", "Name of the publisher", :user => [topic.translator.user, tr8n_user_tag(topic.translator, :linked => true)])%>
                </div> 
                <% 
                   message = topic.last_post.message[0..60]

@@ -12,12 +12,14 @@ class Tr8n::Admin::TranslatorController < Tr8n::Admin::BaseController
   def block
     @translator = Tr8n::Translator.find(params[:translator_id])
     @translator.block!(tr8n_current_user, params[:reason])
+    trfn("Translator has been blocked")
     redirect_to :action => :view, :translator_id => @translator.id
   end
 
   def unblock
     @translator = Tr8n::Translator.find(params[:translator_id])    
     @translator.unblock!(tr8n_current_user, params[:reason])
+    trfn("Translator has been unblocked")
     redirect_to :action => :view, :translator_id => @translator.id
   end
 
@@ -25,6 +27,7 @@ class Tr8n::Admin::TranslatorController < Tr8n::Admin::BaseController
     @translator = Tr8n::Translator.find(params[:translator_id])
     language = Tr8n::Language.find(params[:language_id])
     @translator.promote!(tr8n_current_user, language, params[:reason])
+    trfn("Translator has been promoted to be a manager of #{language.english_name} language")
     redirect_to :action => :view, :translator_id => @translator.id
   end
 
@@ -32,6 +35,7 @@ class Tr8n::Admin::TranslatorController < Tr8n::Admin::BaseController
     @translator = Tr8n::Translator.find(params[:translator_id])
     language = Tr8n::Language.find(params[:language_id])
     @translator.demote!(tr8n_current_user, language, params[:reason])
+    trfn("Translator has been demoted from managing #{language.english_name} language")
     redirect_to :action => :view, :translator_id => @translator.id
   end
   
@@ -41,6 +45,30 @@ class Tr8n::Admin::TranslatorController < Tr8n::Admin::BaseController
     end
   
     redirect_to :action => :index
+  end
+   
+  def lb_register
+    @translator = Tr8n::Translator.new    
+    render :layout => false
+  end
+
+  def register
+    user_class = Tr8n::Config.site_info[:user_info][:class_name]
+    user = user_class.constantize.find_by_id(params[:translator][:user_id])
+    unless user
+      trfe("#{user_class} (#{params[:translator][:user_id]}) not found")
+      return redirect_to_source
+    end
+    
+    translator = Tr8n::Translator.find_by_user_id(user.id)
+    if translator
+      trfe("#{user_class} (#{params[:translator][:user_id]}) is already a translator ")
+      return redirect_to_source
+    end
+    
+    Tr8n::Translator.create(:user_id => params[:translator][:user_id])
+    trfn("#{user_class} (#{params[:translator][:user_id]}) has been registered as a translator ")
+    redirect_to_source
   end
    
 end

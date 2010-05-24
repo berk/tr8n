@@ -56,14 +56,14 @@ module Tr8n::HelperMethods
   end
 
   def tr8n_user_tag(translator, options = {})
-    return unless translator.user
+    return unless translator and translator.user
     
     return "<a href='#{Tr8n::Config.user_link(translator.user)}'>#{Tr8n::Config.user_name(translator.user)}</a>" if options[:linked]
     Tr8n::Config.user_name(translator.user)
   end
 
   def tr8n_user_mugshot_tag(translator, options = {})
-    return unless translator.user
+    return unless translator and translator.user
     
     img_url = Tr8n::Config.user_mugshot(translator.user)
     return if img_url.blank?

@@ -13,6 +13,11 @@ tr8n engine is a Rails engine plugin for crowd-sourcing translations of any rail
    
   $ script/plugin install git://github.com/berk/tr8n.git
   $ rake tr8n:sync  
+  
+  $ script/generate tr8n_migration
   $ rake db:migrate 
   $ rake tr8n:init
+
+  $ cd public
+  $ ln -s ../vendor/plugins/tr8n/public/tr8n tr8n
 

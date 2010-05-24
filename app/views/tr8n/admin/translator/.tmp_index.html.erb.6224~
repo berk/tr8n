@@ -2,9 +2,7 @@
 <%= will_filter %>
 <br/>
 
-<%=link_to_function("+ Register new translator", "tr8nLightbox.show('/tr8n/admin/translator/lb_register', {height:150})") %>
- | 
-<%=link_to("Update translators stats", {:action => :update_stats}, :confirm => "Are you sure you want to run this opperation?")%>
+<%=link_to("Update Translators Stats", {:action => :update_stats}, :confirm => "Are you sure you want to run this opperation?")%>
 <br>
 
 <%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @translators} %>
@@ -15,10 +13,7 @@
       Name
     </th>
     <th>
-      Site Administrator
-    </th>  
-    <th>
-      Manages Languages
+      Manager
     </th>  
     <th>
       Blocked
@@ -37,10 +32,7 @@
         <%=link_to(translator.name, :action => :view, :translator_id => translator.id)%>
       </td>  
       <td>
-        <%=translator.admin?%>
-      </td>  
-      <td>
-        <%=translator.manager_for_any_language?%>
+        <%=translator.manager?%>
       </td>  
       <td>
         <%=translator.blocked?%>

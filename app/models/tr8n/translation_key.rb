@@ -14,13 +14,20 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   
   def self.find_or_create(label, desc = "", options = {})
     key = generate_key(label, desc)
-    tkey = find_by_key(key) || create(:key => key, :label => label, :description => desc)
-
+    
+    # translation keys don't ever change, so no real reason to invalidate them  
+    tkey = Tr8n::Cache.fetch("translation_key_#{key}") do 
+      find_by_key(key) || create(:key => key, :label => label, :description => desc)
+    end
+    
+    tkey.reset_local_cache!
+    
+    # we should disable this in production  
     if options[:source] and Tr8n::Config.enabled_key_source_tracking?
       Tr8n::TranslationKeySource.find_or_create(tkey, Tr8n::TranslationSource.find_or_create(options[:source]))
     end
     
-    tkey
+    tkey  
   end
   
   def self.generate_key(label, desc="")
@@ -28,8 +35,13 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     Digest::MD5.hexdigest(key)
   end
   
+  def reset_local_cache!
+    @tokenized_label = nil
+    @glossary = nil
+  end
+  
   def tokenized_label
-    @tokenized_label ||= Tr8n::TokenizedLabel.new(label)
+    Tr8n::TokenizedLabel.new(label)
   end
   
   delegate :tokens, :tokens?, :hidden_tokens, :hidden_tokens?, :sanitized_tokens, :sanitized_tokens?, :to => :tokenized_label
@@ -105,7 +117,9 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   
   # returns only the translations that meet the minimum rank
   def valid_translations_for(language)
-    translations_for(language, Tr8n::Config.minimal_translation_rank)
+    Tr8n::Cache.fetch("translations_#{language.locale}_#{self.key}") do
+      translations_for(language, Tr8n::Config.minimal_translation_rank)
+    end
   end
   
   def translation_with_such_rules_exist?(language_translations, translator, rules_hash)
@@ -311,12 +325,12 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   
   def decorate_translation(language, translated_label, translated = true, options = {})
     return translated_label if options[:skip_decorations]
-    return translated_label if locked?(language)
-
     return translated_label if Tr8n::Config.current_user_is_guest?
     return translated_label unless Tr8n::Config.current_user_is_translator?
     return translated_label unless Tr8n::Config.current_translator.enable_inline_translations?
       
+    return translated_label if locked?(language)
+
     classes = ['tr8n_translatable']
     
     if language.default?
@@ -332,7 +346,6 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     html << "</span>"
     html
   end
-
 
   # for API only
   def prepare_token_values(token_values, options) 
@@ -354,5 +367,9 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     return nil unless class_name and object_id
     class_name[1..-1].constantize.find_by_id(object_id)
   end    
+    
+  def after_save
+    Tr8n::Cache.delete("translation_key_#{key}")
+  end
     
 end

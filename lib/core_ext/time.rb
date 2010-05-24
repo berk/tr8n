@@ -1,6 +1,6 @@
 class Time
 
-  def translate(language = Tr8n::Config.current_language, format = :default, options = {})
+  def translate(format = :default, language = Tr8n::Config.current_language, options = {})
     label = (format.is_a?(String) ? format.clone : Tr8n::Config.default_date_formats[format].clone)
     label.gsub!("%a", "{short_week_day_name}")
     label.gsub!("%A", "{week_day_name}")
@@ -20,22 +20,22 @@ class Time
     label.gsub!("%S", "{seconds}")
 
     tokens = {
-              :days                 => (d.day < 10 ? "0#{d.day}" : d.day), 
-              :year_days            => (d.yday < 10 ? "0#{d.yday}" : d.yday),
-              :months               => (d.month < 10 ? "0#{d.month}" : d.month), 
-              :week_num             => d.wday, 
-              :week_days            => d.strftime("%w"), 
-              :short_years          => d.strftime("%y"), 
-              :years                => d.year,
-              :short_week_day_name  => language.tr(Tr8n::Config.default_abbr_day_names[d.wday], "Short name for a day of a week", {}, options),
-              :week_day_name        => language.tr(Tr8n::Config.default_day_names[d.wday], "Day of a week", {}, options),
-              :short_month_name     => language.tr(Tr8n::Config.default_abbr_month_names[d.month - 1], "Short month name", {}, options),
-              :month_name           => language.tr(Tr8n::Config.default_month_names[d.month - 1], "Month name", {}, options),
-              :am_pm                => language.tr(d.strftime("%p"), "Meridian indicator", {}, options),
-              :full_hours           => d.hour, 
-              :short_hours          => d.strftime("%I"), 
-              :minutes              => d.min, 
-              :seconds              => d.sec              
+              :days                 => (day < 10 ? "0#{day}" : day), 
+              :year_days            => (yday < 10 ? "0#{yday}" : yday),
+              :months               => (month < 10 ? "0#{month}" : month), 
+              :week_num             => wday, 
+              :week_days            => strftime("%w"), 
+              :short_years          => strftime("%y"), 
+              :years                => year,
+              :short_week_day_name  => language.tr(Tr8n::Config.default_abbr_day_names[wday], "Short name for a day of a week", {}, options),
+              :week_day_name        => language.tr(Tr8n::Config.default_day_names[wday], "Day of a week", {}, options),
+              :short_month_name     => language.tr(Tr8n::Config.default_abbr_month_names[month - 1], "Short month name", {}, options),
+              :month_name           => language.tr(Tr8n::Config.default_month_names[month - 1], "Month name", {}, options),
+              :am_pm                => language.tr(strftime("%p"), "Meridian indicator", {}, options),
+              :full_hours           => hour, 
+              :short_hours          => strftime("%I"), 
+              :minutes              => min, 
+              :seconds              => sec              
     }
 
 #    options.merge!(:skip_decorations => true) if options[:skip_decorations].blank?

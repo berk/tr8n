@@ -1,0 +1,112 @@
+<%= render :partial => "/tr8n/admin/common/header" %>
+
+<h1><%=@lang.english_name %> Language</h1>
+<table class="admin_table">
+    <tr>
+        <th width="160">
+            Language Id
+        </th>
+        <td>
+            <%=@lang.id %>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Locale
+        </th>
+        <td>
+            <%=@lang.locale %>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            English Name
+        </th>
+        <td>
+            <%=@lang.english_name %>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Native Name
+        </th>
+        <td>
+            <%=@lang.native_name %>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Enabled
+        </th>
+        <td>
+            <%=@lang.enabled? %>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Right to Left
+        </th>
+        <td>
+            <%=@lang.right_to_left? %>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Completeness
+        </th>
+        <td>
+            <%=@lang.completeness || 0 %>%
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Created At
+        </th>
+        <td>
+            <%=@lang.created_at %>
+        </td>
+    </tr>    
+    <tr>
+        <th>
+            Updated At
+        </th>
+        <td>
+            <%=@lang.updated_at %>
+        </td>
+    </tr>    
+    <tr>
+        <th>
+            
+        </th>
+        <td>
+        	<%=link_to_function("Update", "tr8nLightbox.show('/tr8n/admin/language/lb_update?lang_id=#{@lang.id}', {height:300})") %>
+					|
+          <%=link_to("View Translations", "/tr8n/admin/translation/index?mf_c_0=language_id&mf_co_0=is&mf_cv_0_0=#{@lang.id}") %>
+          |
+          <%=link_to("View Translators", "/tr8n/admin/translator/index?mf_c_0=language_id&mf_co_0=is&mf_cv_0_0=#{@lang.id}") %>
+        </td>
+    </tr>    
+</table>
+
+
+<h1>Language Rules</h1>
+<table class="admin_table">
+<thead>
+  <tr>
+    <th style="">Description</th>
+    <th style="">Translator</th>
+    <th style="">Created At</th>
+  </tr>
+</thead>
+<tbody>
+  <% @lang.rules.each do |rule| -%>
+    <tr>
+      <td><%= rule.describe %></td>
+      <td><%= rule.translator ? rule.translator.name : "System generated" %></td>
+      <td><%= rule.created_at %></td>
+    </tr>
+  <% end -%>
+</tbody>
+</table>
+
+<%= render :partial => "/tr8n/admin/common/footer" %>

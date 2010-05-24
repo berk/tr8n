@@ -2,8 +2,6 @@ namespace :tr8n do
   desc "Sync extra files from tr8n plugin."
   task :sync do
     system "rsync -ruv vendor/plugins/tr8n/config ."
-    system "rsync -ruv vendor/plugins/tr8n/db/migrate db"
-    system "rsync -ruv vendor/plugins/tr8n/public ."
   end
   
   desc "Initializes all of the tables with default data"
