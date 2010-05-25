@@ -1,6 +1,5 @@
 class Tr8n::Translator < ActiveRecord::Base
   set_table_name :tr8n_translators
-  establish_connection(Tr8n::Config.database) if Tr8n::Config.use_remote_database?
 
   belongs_to :user, :class_name => Tr8n::Config.user_class_name, :foreign_key => :user_id
   
@@ -13,7 +12,9 @@ class Tr8n::Translator < ActiveRecord::Base
     
   def self.for(user)
     return nil unless user and user.id
-    find_by_user_id(user.id)
+    Tr8n::Cache.fetch("translator_for_#{user.id}") do 
+      find_by_user_id(user.id)
+    end
   end
   
   def self.find_or_create(user)
@@ -137,13 +138,13 @@ class Tr8n::Translator < ActiveRecord::Base
   
   # all admins are always manager for all languages
   def manager?(language = Tr8n::Config.current_language)
-    return true if Tr8n::Config.user_is_admin?(user)
+    return true if Tr8n::Config.admin_user?(user)
     lu = Tr8n::LanguageUser.find_or_create(user, language)
     lu.manager?
   end
 
   def manager_for_any_language?
-    return true if Tr8n::Config.user_is_admin?(user)
+    return true if Tr8n::Config.admin_user?(user)
     Tr8n::LanguageUser.find_all_by_user_id_and_manager(user.id, true).any?
   end
 
@@ -168,12 +169,16 @@ class Tr8n::Translator < ActiveRecord::Base
 
   def admin?
     return false unless user
-    Tr8n::Config.user_is_admin?(user)
+    Tr8n::Config.admin_user?(user)
   end  
 
   def guest?
     return true unless user
     Tr8n::Config.guest_user?(user)
   end  
+
+  def after_save
+    Tr8n::Cache.delete("translator_for_#{user_id}")
+  end
   
 end

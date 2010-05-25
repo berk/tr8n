@@ -10,9 +10,9 @@
 #############################################################################
 
 defaults: &defaults
-  enable_tr8n:                true
-  enable_key_source_tracking: false
-  enable_glossary_hints:      true
+  enable_tr8n:                true      # enables the engine
+  enable_key_source_tracking: false     # builds the site map sources
+  enable_glossary_hints:      true      # shows glossary in the translator    
   enable_software_keyboard:   true      # shows the soft keyboard icon  
   enable_google_suggestions:  true      # uses google for suggestions
   enable_keyboard_shortcuts:  true      # adds some keyboard shortcuts 
@@ -22,30 +22,48 @@ defaults: &defaults
   # user to become a translator. The users become translators as soon as they
   # enable inline translation mode, submit a translation, or vote on a 
   # translation. If the flag is set to false, then a user must be promoted to
-  # be a translator in order to participate in translations.
+  # be a translator in order to submit or vote on translations.
   #############################################################################
   open_translator_mode:       false
 
   #############################################################################
   # If you would like to run tr8n on a different database, 
   # you can overload the remote setting and provide the database details
-  # for each environment by using a database symbol
+  # for each environment by using a database symbol.
+  # 
+  # use_remote_database:        true
+  # database:
+  #   host:                     localhost
+  #   database:                 tr8n
+  #   adapter:                  postgresql
+  #   username:                 tr8n
+  #   password:
+  #   port:                     5432
+  #   encoding:                 utf8  
   #############################################################################
   use_remote_database:        false
 
   #############################################################################
   # Tr8n best run with caching enabled 
-  # You can configure cache store parameters using either a single name value 
-  # or an array of camma separated values. All rails cache stores are supported. 
-  # For example:
+  # You can configure cache adapter and store parameters by providing the 
+  # the name of your class implementation and the store settings. 
   #
-  # cache_store: memory_store
-  # cache_store: file_store
-  # cache_store: drb_store
-  # cache_store: [mem_cache_store, 'localhost:11211']
+  # For example: 
+  #  
+  # cache_adapter:  ActiveSupport::Cache
+  # cache_store:    memory_store
+  # cache_store:    file_store
+  # cache_store:    drb_store
+  # cache_store:    [mem_cache_store, 'localhost:11211']
+  #
+  # You can also provide your own implementation of the adapter:
+  #
+  # cache_adapter:  YOUR_CACHE_ADAPTER_CLASS
+  #
   #############################################################################
   enable_caching:             true
-  cache_store:                memory_store
+  cache_adapter:              ActiveSupport::Cache
+  cache_store:                [mem_cache_store, 'localhost:11211']
 
   #############################################################################
   # By default, Tr8n will use its own logger. If you set it to false,  
@@ -67,8 +85,8 @@ defaults: &defaults
     # This method will be evaluated instead of the default enable_tr8n setting      
     ###########################################################################
     current_user_method:      current_user   # provides current user object
-    title:                    Tr8n            
-    default_url:              /home
+    title:                    Tr8n           # site title, for customization 
+    default_url:              /home         
     default_locale:           en-US
     sitemap_json:             /config/tr8n/default_sitemap.json
     admin_layout:             admin

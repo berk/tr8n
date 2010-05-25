@@ -2,9 +2,13 @@ class Tr8n::Cache
   
   def self.cache
     @cache ||= begin
-      store_params = [Tr8n::Config.cache_store].flatten
-      store_params[0] = store_params[0].to_sym
-      ActiveSupport::Cache.lookup_store(*store_params)
+      if Tr8n::Config.cache_adapter == 'ActiveSupport::Cache'
+        store_params = [Tr8n::Config.config[:cache_store]].flatten
+        store_params[0] = store_params[0].to_sym
+        ActiveSupport::Cache.lookup_store(*store_params)
+      else
+        eval(Tr8n::Config.cache_adapter)  
+      end
     end
   end
   
@@ -13,7 +17,6 @@ class Tr8n::Cache
   end
   
   def self.fetch(key, options = {})
-#    pp "fetching #{key}"
     return yield unless enabled?
     cache.fetch(key, options) do 
       yield
@@ -21,7 +24,6 @@ class Tr8n::Cache
   end
 
   def self.delete(key, options = nil)
-#    pp "deleting #{key}"
     return unless enabled?
     cache.delete(key, options)
   end

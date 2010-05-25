@@ -1,6 +1,5 @@
 class Tr8n::LanguageUser < ActiveRecord::Base
   set_table_name :tr8n_language_users
-  establish_connection(Tr8n::Config.database) if Tr8n::Config.use_remote_database?
   
   belongs_to :user, :class_name => Tr8n::Config.user_class_name, :foreign_key => :user_id
   belongs_to :language, :class_name => "Tr8n::Language"

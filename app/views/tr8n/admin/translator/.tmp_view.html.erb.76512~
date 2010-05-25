@@ -20,7 +20,7 @@
             Global Manager / Admin
         </th>
         <td>
-            <%= (Tr8n::Config.admin_user?(@translator.user) != nil) %>
+            <%= (Tr8n::Config.user_is_admin?(@translator.user) != nil) %>
         </td>
     </tr>
     <tr>

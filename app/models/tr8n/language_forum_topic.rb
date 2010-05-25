@@ -1,6 +1,5 @@
 class Tr8n::LanguageForumTopic < ActiveRecord::Base
   set_table_name :tr8n_language_forum_topics
-  establish_connection(Tr8n::Config.database) if Tr8n::Config.use_remote_database?
 
   belongs_to :language, :class_name => "Tr8n::Language"    
   belongs_to :translator, :class_name => "Tr8n::Translator"    

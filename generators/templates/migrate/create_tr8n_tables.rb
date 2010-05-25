@@ -11,7 +11,7 @@ class CreateTr8nTables < ActiveRecord::Migration
       t.text    :curse_words      
       t.timestamps
     end
-    add_index :tr8n_languages, [:locale], :unique => true
+    add_index :tr8n_languages, [:locale]
     
     create_table :tr8n_language_rules do |t|
       t.integer :language_id, :null => false
@@ -108,7 +108,8 @@ class CreateTr8nTables < ActiveRecord::Migration
     create_table :tr8n_translation_key_locks do |t|
       t.integer :translation_key_id, :null => false
       t.integer :language_id, :null => false
-      t.integer :translator_id, :null => false
+      t.integer :translator_id
+      t.boolean :locked, :default => false
       t.timestamps
     end
     add_index :tr8n_translation_key_locks, [:translation_key_id, :language_id]

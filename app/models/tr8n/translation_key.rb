@@ -73,20 +73,24 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     not glossary.empty?
   end
   
-  def locked?(language = Tr8n::Config.current_language)
-    Tr8n::TranslationKeyLock.locked?(self, language)
+  def lock_for(language)
+    Tr8n::TranslationKeyLock.for(self, language)
   end
-
-  def unlocked?(language = Tr8n::Config.current_language)
-    not locked?
-  end
-
+  
   def lock!(language = Tr8n::Config.current_language, translator = Tr8n::Config.current_translator)
-    Tr8n::TranslationKeyLock.lock(self, language, translator)
+    lock_for(language).lock!(translator)
   end
 
   def unlock!(language = Tr8n::Config.current_language, translator = Tr8n::Config.current_translator)
-    Tr8n::TranslationKeyLock.unlock(self, language, translator)
+    lock_for(language).unlock!(translator)
+  end
+  
+  def locked?(language = Tr8n::Config.current_language)
+    lock_for(language).locked?
+  end
+
+  def unlocked?(language = Tr8n::Config.current_language)
+    not locked?(language)
   end
     
   def add_translation(label, rules = nil, language = Tr8n::Config.current_language, translator = Tr8n::Config.current_translator)

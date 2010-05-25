@@ -1,6 +1,5 @@
 class Tr8n::Language < ActiveRecord::Base
   set_table_name :tr8n_languages
-  establish_connection(Tr8n::Config.database) if Tr8n::Config.use_remote_database?
 
   belongs_to :fallback_language,    :class_name => 'Tr8n::Language', :foreign_key => :fallback_language_id
   
@@ -14,21 +13,14 @@ class Tr8n::Language < ActiveRecord::Base
   alias :rules :language_rules
   alias :users :language_users
 
-  def self.populate_defaults
-    # we do not want to delete existing languages, ever!
-    Tr8n::Config.default_languages.each do |l|
-      lang = find_or_create(l[0], l[1])
-      lang.update_attributes(:english_name => l[1], :native_name => l[2], :enabled => l[3], :right_to_left => l[4])
-      lang.generate_default_rules
-    end
-  end
-
   def self.find_or_create(lcl, english_name)
     find_by_locale(lcl) || create(:locale => lcl, :english_name => english_name) 
   end
   
   def self.for(locale)
-    find_by_locale(locale)
+    Tr8n::Cache.fetch("language_#{locale}") do 
+      find_by_locale(locale)
+    end
   end
 
   def current?
@@ -187,14 +179,8 @@ class Tr8n::Language < ActiveRecord::Base
     true
   end
 
-  def generate_default_rules
-    rules.each{|r| r.destroy}
-    
-    Tr8n::Config.language_rule_classes.each do |rule_class|
-      rule_class.default_rules_for(self).each do |definition|
-        rule_class.create(:language => self, :definition => definition)
-      end
-    end
+  def after_save
+    Tr8n::Cache.delete("language_#{locale}")
   end
   
 end

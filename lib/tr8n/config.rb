@@ -76,8 +76,22 @@ class Tr8n::Config
       cls.delete_all
     end
 
-    Tr8n::Language.populate_defaults
-    Tr8n::Glossary.populate_defaults
+    default_languages.each do |l|
+      lang = Tr8n::Language.find_or_create(l[0], l[1])
+      lang.update_attributes(:english_name => l[1], :native_name => l[2], :enabled => l[3], :right_to_left => l[4])
+      lang.rules.delete_all
+      
+      language_rule_classes.each do |rule_class|
+        rule_class.default_rules_for(lang).each do |definition|
+          rule_class.create(:language => lang, :definition => definition)
+        end
+      end
+    end
+    
+    Tr8n::Glossary.delete_all
+    default_glossary.each do |g|
+      Tr8n::Glossary.create(:keyword => g[0], :description => g[1])
+    end
   end
 
   def self.models
@@ -189,10 +203,10 @@ class Tr8n::Config
     config[:enable_caching]
   end
 
-  def self.cache_store
-    config[:cache_store]
+  def self.cache_adapter
+    config[:cache_adapter]
   end
-  
+
   def self.open_translator_mode?
     config[:open_translator_mode]
   end
@@ -277,17 +291,13 @@ class Tr8n::Config
     user.send(site_user_info[:methods][:link])
   end
 
-  def self.user_admin(user)
-    return unless user and site_user_info_enabled?
+  def self.admin_user?(user = current_user)
+    return false unless user and site_user_info_enabled?
     user.send(site_user_info[:methods][:admin])
   end
 
-  def self.user_is_admin?(user = current_user)
-    user_admin(user)
-  end
-
   def self.current_user_is_admin?
-    user_is_admin?
+    admin_user?
   end
   
   def self.guest_user?(user = current_user)

@@ -1,6 +1,5 @@
 class Tr8n::TranslatorMetric < ActiveRecord::Base
   set_table_name :tr8n_translator_metrics
-  establish_connection(Tr8n::Config.database) if Tr8n::Config.use_remote_database?
 
   belongs_to :translator, :class_name => "Tr8n::Translator"
   belongs_to :language, :class_name => "Tr8n::Language"
