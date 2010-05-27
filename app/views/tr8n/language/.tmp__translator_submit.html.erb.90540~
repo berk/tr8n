@@ -33,10 +33,10 @@
             <% if tr8n_current_language.has_rules? %>
               <div style="font-size:10px; padding-top:10px;">
               <% if @translation_key.language_rules_dependant_tokens.size > 1 %>
-                  <%=link_to_function(trl("Click here if the translation depends on any of the {token} values or the viewing user's gender", "", :token => "{token}"), "tr8nTranslator.switchTranslatorMode('#{@translation_key.id}', 'dependencies', '#{@source_url}')", :class=>"translation_action") %>
+                  <span style="font-weight:normal;"><%=trl("Does this translation depend on any of the token values?")%></span> <%=link_to_function(trl("YES"), "tr8nTranslator.switchTranslatorMode('#{@translation_key.id}', 'dependencies', '#{@source_url}')", :class=>"translation_action") %>
               <% elsif tr8n_current_language.has_gender_rules? %>
                   <%=hidden_field_tag("dependencies[viewing_user][gender]", "true")%>
-                  <%=link_to_function(trl("Click here if the translation depends on the viewing user's gender"), "tr8nTranslator.submitViewingUserDependency()") %>
+                  <span style="font-weight:normal;"><%=trl("Does this translation depend on the viewing user's gender?")%></span> <%=link_to_function(trl("YES"), "tr8nTranslator.submitViewingUserDependency()", :class=>"translation_action") %>
               <% end %>
               </div>
             <% end %>        

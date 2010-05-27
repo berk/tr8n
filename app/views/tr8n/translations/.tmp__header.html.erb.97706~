@@ -1,5 +1,5 @@
-<% color = @translation_key.locked? ? "#ECFFEF" : "#FDFFF0" %>
-<div class="section_box" style="margin-bottom:5px;background-color:<%=color%>">
+<% locked = "locked" if @translation_key.locked? %>
+<div class="section_box colored <%=locked%>">
   <div style="float:right; font-size:10px; padding-right:5px;">
     <% if tr8n_current_user_is_translator? and tr8n_current_translator.manager? %>
       <% if @translation_key.locked? %>

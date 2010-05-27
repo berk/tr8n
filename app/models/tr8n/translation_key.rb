@@ -41,7 +41,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   end
   
   def tokenized_label
-    Tr8n::TokenizedLabel.new(label)
+    @tokenized_label ||= Tr8n::TokenizedLabel.new(label)
   end
   
   delegate :tokens, :tokens?, :hidden_tokens, :hidden_tokens?, :sanitized_tokens, :sanitized_tokens?, :to => :tokenized_label

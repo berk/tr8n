@@ -24,14 +24,14 @@
               <%= trn.rank_label %> 
             </div>  
           </td>  
-          <td style="text-align:center;vertical-align:top; padding:3px;">
+          <td style="text-align:center;vertical-align:top;">
             <% unless trn.translation_key.locked? %>
               <%=link_to_function(image_tag("/tr8n/images/thumb_up.png"), "tr8nTranslator.voteOnTranslation('#{trn.translation_key.key}', '#{trn.id}', 1)")%> 
               <%=link_to_function(image_tag("/tr8n/images/thumb_down.png"), "tr8nTranslator.voteOnTranslation('#{trn.translation_key.key}','#{trn.id}', -1)")%> 
               <%=link_to_function(image_tag("/tr8n/images/exclamation.png"), "tr8nTranslator.reportTranslation('#{trn.translation_key.key}','#{trn.id}')")%>
             <% end %>   
           </td>
-          <td style="text-align:left;vertical-align:top;font-size:11px; padding:3px;">
+          <td style="text-align:left;vertical-align:top;font-size:11px;">
             <%= trn.label %>
             <% if trn.context %>
               <div style="font-size: 10px; color: grey; padding-top:3px;">

@@ -8,7 +8,15 @@
 #############################################################################
 
 defaults: &defaults
-  enabled_features: [translations, sitemap, awards, forum, glossary, rules, help]
+  enabled_features: [dashboard, translations, sitemap, awards, forum, glossary, rules, help]
+  
+  dashboard:
+    title:            Dashboard
+    link:             /tr8n/dashboard
+    controller:       dashboard
+    actions:          [index]
+    default_language: true
+    manager_only:     false
   
   translations:
     title:            Translations
@@ -27,7 +35,7 @@ defaults: &defaults
     manager_only:     false
     
   awards:
-    title:            Translator Awards
+    title:            Awards
     link:             /tr8n/awards
     controller:       awards
     actions:          [index]
@@ -35,7 +43,7 @@ defaults: &defaults
     manager_only:     false
   
   forum:
-    title:            Discussion Forum
+    title:            Discussions
     link:             /tr8n/forum
     controller:       forum
     actions:          [index, topic, message]
@@ -51,7 +59,7 @@ defaults: &defaults
     manager_only:     false
   
   rules:
-    title:            Language Rules
+    title:            Manage Language
     link:             /tr8n/language
     controller:       language
     actions:          [index]

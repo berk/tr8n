@@ -4,28 +4,45 @@
 
 <div class="section_box" style="margin-bottom:10px; background-color:#EFF8FF;">
   <% form_tag({:action => :key}, {:method => :get, :id => "translations_search_form"}) do %>
-      <%=hidden_field_tag(:section_key, @section_key) %>
-      <%=hidden_field_tag(:translation_key_id, @translation_key.id) %>
-	    <%=trl("Show translations for this phrase submitted by")%>
-	    <%=select_tag(:submitted_by, options_for_select([["anyone", "anyone"], ["me", "me"]], params[:submitted_by]), :onchange => "$('translations_search_form').submit(); return false;")%>
-	    <%=trl("created on")%>
-	    <%=select_tag(:submitted_on, options_for_select([["any date", "any"], ["today", "today"], ["yesterday", "yesterday"], ["in the last week", "last_week"]], params[:submitted_on]), :onchange => "$('translations_search_form').submit(); return false;")%>
-      <%=trl("ordered by")%>
-      <%=select_tag(:ordered_by, options_for_select([["rank", "rank"], ["date", "created_at"]], params[:ordered_by]), :onchange => "$('translations_search_form').submit(); return false;")%>
-      <%=trl("and")%>
-      <%=select_tag(:grouped_by, options_for_select([["not grouped by context rule", "none"], ["grouped by context rule", "context"]], params[:grouped_by]), :onchange => "$('translations_search_form').submit(); return false;")%>
+     <%=hidden_field_tag(:section_key, @section_key) %>
+     <%=hidden_field_tag(:translation_key_id, @translation_key.id) %>
+     <table>
+      <tr>
+        <td><%=text_field_tag(:search, params[:search], {:style => "width:800px;height:20px;font-size:14px;"})%></td>
+        <td>
+          <button type="submit" class="translator_btn translator_small_btn" onClick="$('translations_search_form').submit(); return false;">
+              <span><%=trl("Search")%></span>
+          </button>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <%=trl("Show translations for this phrase submitted by")%>
+          <%=select_tag(:submitted_by, options_for_select([["anyone", "anyone"], ["me", "me"]], params[:submitted_by]))%>
+          <%=trl("created on")%>
+          <%=select_tag(:submitted_on, options_for_select([["any date", "any"], ["today", "today"], ["yesterday", "yesterday"], ["in the last week", "last_week"]], params[:submitted_on]))%>
+        </td>
+      </tr>
+     </table>
   <% end %>
 </div>
 
 <div class="section_box">
+	<div style="padding-top:10px;padding-bottom:10px;">
+	  <table style="width:100%;">
+	    <tr>
+	      <td align='left'><%= will_paginate(@translations, :skip_decorations => true) %></td>
+	      <td align='right'><%= page_entries_info(@translations, :skip_decorations => true, :entry_name => "translation") %></td>
+	    </tr>
+	  </table>
+	</div>
+	
   <table style="width:100%;" cellpadding="5px" cellspacing="3px">
     <tr style="border-bottom:1px solid #ccc;">
       <td style="width:25px; color:grey; font-size:14px; padding:5px; font-weight:bold;"><%=trl("Rank")%></td>
       <td style="width:80px; color:grey; font-size:14px; padding:5px; font-weight:bold;"><%=trl("Your Vote")%></td>
       <td style="color:grey; font-size:14px; padding:5px; font-weight:bold;"><%=trl("Translation")%></td>
-      <td style="width:100px; color:grey; font-size:14px; padding:5px; font-weight:bold;"><%=trl("Created On")%></td>
-      <td style="width:200px; color:grey; font-size:14px; padding:5px; font-weight:bold;"><%=trl("Translator")%></td>
-			<td style="width:50px;">&nbsp;</td>
+			<td>&nbsp;</td>
     </tr>  
   
     <% @translations.each do |trn| %>

@@ -5,23 +5,12 @@
       <% @user_languages.each do |user_language|%>
         <% language = user_language.language %>  
         <li>
-            <span style="font-size:8px; float:right; color:#ccc;">
-						  <% if language.default? %>
-							   default
-							<% else %>
-                 <%="#{language.completeness || 0}%"%>
-                 <% unless user_language.manager? %>
-	                 <%=link_to_function(image_tag("/tr8n/images/close.gif", :style=>"width:5px; padding:3px; padding-top:5px;"), "tr8nLanguageSelector.removeLanguage('#{language.id}');") %>
- 								 <% end %>
-		          <% end %>  
-    			 </span>
+          <% unless language.default? or user_language.manager? %>
+            <%=link_to_function(image_tag("/tr8n/images/close.gif", :style=>"width:5px; padding:3px; float:right;"), "tr8nLanguageSelector.removeLanguage('#{language.id}');") %>
+          <% end %>  
           <div onClick="$('language_selector_locale').value='<%=language.locale%>'; $('language_selector_form').submit();">
             <%=image_tag("/tr8n/images/flags/#{language.flag}.png", :style=>"vertical-align:middle")%>
-						<% if language == tr8n_current_language %>
-						  <strong><%=language.full_name%></strong>
-            <% else %>
-              <%=language.full_name%>
-						<% end %>
+            <%=language.full_name%>
           </div>
         </li>
       <% end %>

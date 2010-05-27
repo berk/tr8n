@@ -6,6 +6,7 @@
      <%=hidden_field_tag(:section_key, @section_key) %>
 	   <table>
 	   	<tr>
+	   		<td><%=image_tag("/tr8n/images/find.png")%></td>
 				<td><%=text_field_tag(:search, params[:search], {:style => "width:800px;height:20px;font-size:14px;"})%></td>
 				<td>
 			    <button type="submit" class="translator_btn translator_small_btn" onClick="$('translations_search_form').submit(); return false;">
@@ -14,6 +15,7 @@
 				</td>
 	   	</tr>
 			<tr>
+				<td></td>
 				<td>
           <%=trl("Show phrases")%>
           <%=select_tag(:with_translations, options_for_select([["with or without translations", "any"], ["with translations", "with"], ["without translations", "without"]], params[:with_translations]), :onChange => "toggleFilterOptions()")%>

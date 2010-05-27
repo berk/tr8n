@@ -17,29 +17,31 @@
 <% unless tr8n_current_user_is_guest? %>
 <div style="padding:0px 5px 5px 5px">
     <% unless tr8n_current_language.default? %> 
-	      <% if @inline_translations_allowed %> 
-	        <div style="padding-top:5px;font-size: 11px; ">
-	          <% if @inline_translations_enabled %>
-	            <%=link_to_function(trl("Disable Inline Translations"), "tr8nLanguageSelector.disableInlineTranslations();")%><br>
-	          <% else %>
-	            <%=link_to_function(trl("Enable Inline Translations"), "tr8nLanguageSelector.enableInlineTranslations();")%><br>
-	          <% end %>
-	        
-	          <span style="font-size: 11px;"><%=trl("Use right-mouse-click or ctr+click to translate the site.")%></span>
-	        </div>
-	      <% end %>
-    <% end %>
+      <% if @translator_tools_allowed %> 
+        <div style="padding-top:5px; ">
+          <% if @inline_translations_enabled %>
+            <%=link_to_function(trl("Disable Inline Translations"), "tr8nLanguageSelector.disableInlineTranslations();")%><br>
+          <% else %>
+            <%=link_to_function(trl("Enable Inline Translations"), "tr8nLanguageSelector.enableInlineTranslations();")%><br>
+          <% end %>
+        
+          <span style="font-size: 11px;"><%=trl("Use right-mouse-click or ctr+click to translate the site.")%></span>
+        </div>
   
-	  <% if tr8n_current_user_is_translator? %> 
-	    <div style="padding-top:5px;font-size: 11px;">
-	      <%=link_to_function(trl("Translation Tools"), "tr8nLanguageSelector.openTranslations()")%><br>
-	
-	      <span style="font-size: 11px;"><%=trl("Search for translations by other users, vote on translations or add your own translations.")%></span>
-	    </div>
+        <div style="padding-top:5px;">
+          <%=link_to_function(trl("Translation Tools"), "tr8nLanguageSelector.openTranslations()")%><br>
+    
+          <span style="font-size: 11px;"><%=trl("Search for translations by other users, vote on translations or add your own translations.")%></span>
+        </div>
+        
+        <script>
+          $("translator_tools_trigger").show();
+        </script>
+      <% end %>
     <% end %>
-		
+    
     <% if tr8n_current_user_is_admin? or (tr8n_current_user_is_translator? and tr8n_current_translator.manager?) %>
-      <div style="padding-top:5px;font-size: 11px;">
+      <div style="padding-top:5px;">
         <%=link_to_function(trl("Manage Language"), "tr8nLanguageSelector.openLanguage()")%> 
 				<span style="color: grey; font-size: 10px; padding-left:0.5em;">Language admins only</span>
 				<br>
@@ -49,7 +51,7 @@
     <% end %>
       
     <% if tr8n_current_user_is_admin? %>
-      <div style="padding-top:5px;font-size: 11px;">
+      <div style="padding-top:5px;">
         <%=link_to(trl("Configure tr8n"), "/tr8n/admin/language")%> 
         <span style="color: grey; font-size: 10px; padding-left:0.5em;">tr8n admins only</span>
         <br>

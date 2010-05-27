@@ -1,12 +1,6 @@
 <div class="translations_navigation">
   <div style="font-size:22px; font-weight: bold;padding-bottom:15px;">
-	 <%=trl("Translation Tools") %>
-	 <% unless tr8n_current_language.default? %> 
-		 - <%=trl("#{tr8n_current_language.english_name} Language")%>
-			 <% if tr8n_current_user_is_manager? %>
-			   <%=link_to("manage", "/tr8n/language", :style => "font-size:12px;")%>
-			 <% end %>
-	 <% end %>  
+	 <%=trl("Translation Tools - #{tr8n_current_language.english_name} Language")%>
 	</div>
   
   <ul class="translations_tab_nav translations_tabs">

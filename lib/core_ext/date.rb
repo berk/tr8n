@@ -1,5 +1,10 @@
 class Date
 
+  def with_leading_zero(num, options = {})
+    return (num < 10 ? "0#{num}" : num) if options[:with_leading_zero]
+    num
+  end
+  
   def translate(format = :default, language = Tr8n::Config.current_language, options = {})
     label = (format.is_a?(String) ? format.clone : Tr8n::Config.default_date_formats[format].clone)
     label.gsub!("%a", "{short_week_day_name}")
@@ -16,9 +21,9 @@ class Date
     label.gsub!("%Y", "{years}")
 
     tokens = {
-              :days                 => (day < 10 ? "0#{day}" : day), 
-              :year_days            => (yday < 10 ? "0#{yday}" : yday),
-              :months               => (month < 10 ? "0#{month}" : month), 
+              :days                 => with_leading_zero(day, options), 
+              :year_days            => with_leading_zero(yday, options),
+              :months               => with_leading_zero(month, options), 
               :week_num             => wday, 
               :week_days            => strftime("%w"), 
               :short_years          => strftime("%y"), 

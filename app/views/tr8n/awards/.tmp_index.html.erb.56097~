@@ -4,17 +4,17 @@
   <div style="float:right; font-size:12px; padding-top:5px;">
   <% unless tr8n_current_language.default? %>
     <% if params[:mode] == "all" %>
-        <%=link_to(trl("Awards for #{tr8n_current_language.english_name} Language"), :mode => :current) %> 
+        <%=link_to(trl("View Leaders for #{tr8n_current_language.english_name} Language"), :mode => :current) %> 
     <% else %>
-        <%=link_to(trl("Awards for All Languages"), :mode => :all) %> 
+        <%=link_to(trl("View Leaders for All Languages"), :mode => :all) %> 
     <% end %>
   <% end %>  
   </div>
   
   <% if params[:mode] == "all" %> 
-    <%=trl("Awards for All Languages")%>
+    <%=trl("Leaders Score Board for All Languages")%>
   <% else %>
-    <%=trl("Awards for #{tr8n_current_language.english_name} Language") %>
+    <%=trl("Leaders Score Board for #{tr8n_current_language.english_name} Language") %>
   <% end %>  
 </div>
 

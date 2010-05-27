@@ -18,7 +18,7 @@ class Tr8n::TranslationsController < Tr8n::BaseController
     if params[:translation_has_dependencies] == "true" # comes from inline translator only
       @translation_key.generate_rule_permutations(tr8n_current_language, tr8n_current_translator, params[:dependencies])
       trfn("We have created all possible combinations of the values for the tokens. Please provide a translation for each combination.")
-      return redirect_to(:controller => "/tr8n/translations", :action => :key, :translation_key_id => @translation_key.id, :translator_id => tr8n_current_translator.id)
+      return redirect_to(:controller => "/tr8n/translations", :action => :key, :translation_key_id => @translation_key.id, :submitted_by => :me, :submitted_on => :today)
     end
     
     if params[:translation_id].blank?
@@ -72,6 +72,40 @@ class Tr8n::TranslationsController < Tr8n::BaseController
       conditions << "%#{params[:search]}%"  
     end
     
+    if params[:with_translations] == "with"
+      conditions[0] << " and " unless conditions[0].blank?
+      conditions[0] << "tr8n_translation_keys.id in (select tr8n_translations.translation_key_id from tr8n_translations where tr8n_translations.language_id = ? "
+      conditions << tr8n_current_language.id
+      
+      if params[:submitted_by] == "me"
+        conditions[0] << " and tr8n_translations.translator_id = ?" 
+        conditions << tr8n_current_translator.id
+      end
+
+      if params[:submitted_on] == "today"
+        date = Date.today
+        conditions[0] << " and tr8n_translations.created_at >= ? and tr8n_translations.created_at < ?" 
+        conditions << date
+        conditions << (date + 1.day)
+      elsif params[:submitted_on] == "yesterday"
+        date = Date.today - 1.day
+        conditions[0] << " and tr8n_translations.created_at >= ? and tr8n_translations.created_at < ?" 
+        conditions << date
+        conditions << (date + 1.day)
+      elsif params[:submitted_on] == "last_week"
+        date = Date.today - 7.days
+        conditions[0] << " and tr8n_translations.created_at >= ? and tr8n_translations.created_at < ?" 
+        conditions << date
+        conditions << Date.today
+      end
+      
+      conditions[0] << ")"
+    elsif params[:with_translations] == "without"
+      conditions[0] << " and " unless conditions[0].blank?
+      conditions[0] << "tr8n_translation_keys.id not in (select tr8n_translations.translation_key_id from tr8n_translations where tr8n_translations.language_id = ?)"
+      conditions << tr8n_current_language.id
+    end
+    
     unless params[:section_key].blank?
       source_names = sitemap_sources_for(@section_key)
       sources = Tr8n::TranslationSource.find(:all, :conditions => ["source in (?)", source_names])
@@ -90,13 +124,47 @@ class Tr8n::TranslationsController < Tr8n::BaseController
   end
     
   def key
-    @translation_key = Tr8n::TranslationKey.find_by_id(params[:translation_key_id]) 
-    @translation_key = Tr8n::TranslationKey.random if params[:dir] == "random" 
+    @translation_key = Tr8n::TranslationKey.find_by_id(params[:translation_key_id])
+    @translation_key = Tr8n::TranslationKey.random if params[:dir] == "random"
     @translations = @translation_key.translations_for(tr8n_current_language)
-
     if @translations.empty? and not @translation_key.locked?
-      redirect_to(:action => :view, :translation_key_id => @translation_key.id, :source => :translations, :section_key => @section_key)
+      return redirect_to(:action => :view, :translation_key_id => @translation_key.id, :source => :translations, :section_key => @section_key)
     end
+    
+    conditions = ["tr8n_translations.language_id = ? and tr8n_translations.translation_key_id = ?"]
+    conditions << tr8n_current_language.id
+    conditions << @translation_key.id
+    
+    unless params[:search].blank?
+      conditions[0] << " and tr8n_translations.label like ?" 
+      conditions << "%#{params[:search]}%"
+    end
+    
+    if params[:submitted_by] == "me"
+      conditions[0] << " and tr8n_translations.translator_id = ?" 
+      conditions << tr8n_current_translator.id
+    end
+
+    if params[:submitted_on] == "today"
+      date = Date.today
+      conditions[0] << " and tr8n_translations.created_at >= ? and tr8n_translations.created_at < ?" 
+      conditions << date
+      conditions << (date + 1.day)
+    elsif params[:submitted_on] == "yesterday"
+      date = Date.today - 1.day
+      conditions[0] << " and tr8n_translations.created_at >= ? and tr8n_translations.created_at < ?" 
+      conditions << date
+      conditions << (date + 1.day)
+    elsif params[:submitted_on] == "last_week"
+      date = Date.today - 7.days
+      conditions[0] << " and tr8n_translations.created_at >= ? and tr8n_translations.created_at < ?" 
+      conditions << date
+      conditions << Date.today
+    end
+    
+    order = params[:ordered_by] || "rank"
+    group = params[:grouped_by] || "none"
+    @translations = Tr8n::Translation.find(:all, :conditions => conditions, :order => "#{order} desc")
   end
 
   #  ajax based method for updating individual translations

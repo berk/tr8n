@@ -65,7 +65,7 @@ button::-moz-focus-inner                        {border:none;}
 
 .tr8n_language_selector                         {position: absolute; top: 0; left: 0; border:solid 1px #e8e8e8;border-color:#e8e8e8 #bababa #bababa #e8e8e8;border-width:1px 2px 2px 1px;padding:0 5px;text-align:left;width:300px;background:#f4f4f4 !important;font-size:10px;font-family:arial;}
 .tr8n_language_selector .inner                  {background:#fff;border:solid 1px #bababa;border-color:#bababa #e8e8e8 #e8e8e8 #bababa;padding:5px;-moz-border-radius:2px;-webkit-border-radius:2px;border-radius:2px;font-size:11px;}
-.tr8n_language_selector .head                   {font-size:10px;text-transform: uppercase;color:#444;padding:5px;background:url('/tr8n/images/language_selector_logo.gif') no-repeat 0 center;padding-left:20px;}
+.tr8n_language_selector .head                   {font-size:10px;text-transform: uppercase;color:#444;padding-bottom:5px;}
 .tr8n_language_selector .action                 {float:right}
 .tr8n_language_selector .foot                   {text-align:left;padding:5px;font-size:11px;}
 .tr8n_language_selector a                       {text-decoration:none; color:#16b; outline:none; border:0px;}

@@ -91,19 +91,19 @@ class Tr8n::LanguageController < Tr8n::BaseController
   
   # language selector window
   def select
-    @translator_tools_allowed = false
+    @inline_translations_allowed = false
     @inline_translations_enabled = false
     
     if tr8n_current_user_is_translator? 
       unless tr8n_current_translator.blocked?
-        @translator_tools_allowed = true
+        @inline_translations_allowed = true
         @inline_translations_enabled = tr8n_current_translator.enable_inline_translations?
       end
     else
-      @translations_allowed = Tr8n::Config.open_translator_mode?
+      @inline_translations_allowed = Tr8n::Config.open_translator_mode?
     end
     
-    @translator_tools_allowed = true if tr8n_current_user_is_admin?
+    @inline_translations_allowed = true if tr8n_current_user_is_admin?
     
     @all_languages = Tr8n::Language.enabled_languages
     @user_languages = Tr8n::LanguageUser.languages_for(tr8n_current_user) unless tr8n_current_user_is_guest?

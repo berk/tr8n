@@ -275,7 +275,7 @@ Tr8n.LanguageSelector = Class.create({
     location = "/tr8n/language/switch?language_action=toggle_inline_mode&source_url=" + location;
   },
   openTranslations: function() {
-    location = "/tr8n/translations"
+    location = "/tr8n/dashboard"
   },
   openSiteMap: function() {
     location = "/tr8n/translations/map"

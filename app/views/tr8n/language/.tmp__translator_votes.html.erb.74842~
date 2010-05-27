@@ -3,8 +3,8 @@
   
   <div class="section">
     <div class="small_section_title">
-      <div style="float:right;font-style:normal;">
-        <%=link_to(trl("view all"), {:controller => "/tr8n/translations", :action => :key, :translation_key_id => @translation_key.id}) %>
+      <div style="float:right;">
+        <%=link_to(image_tag("/tr8n/images/table_edit.png", :style=>"width:13px; padding-bottom:5px;"), {:controller => "/tr8n/translations", :action => :key, :translation_key_id => @translation_key.id}) %>
       </div>
       <strong><%=trl("Vote on Translations")%></strong>
     </div>
@@ -15,7 +15,13 @@
   
     <div style="padding-top:10px;font-size:11px">
       <%=trl("Don't like any of these?")%> 
-			<%=link_to(trl('Translate it yourself.'), {:controller => "/tr8n/translations", :action => :key, :translation_key_id => @translation_key.id}) %>
+      <%=link_to_function(trl('Translate it yourself.'), "tr8nTranslator.switchTranslatorMode('#{@translation_key.id}', 'submit', '#{@source_url}')")%>
     </div>
   </div>
+</div>
+
+<div id="translator_buttons_container" class="buttons_container">
+  <button type="submit" class="translator_btn translator_submit_btn" onClick="tr8nTranslator.hide(); return false;">
+    <span><%=trl("Hide")%></span>
+  </button>
 </div>

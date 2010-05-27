@@ -32,16 +32,7 @@
     </div>
   <% end %>
 </td>
-<td style="padding:3px;">
-	<%=translation.created_at.trl(:date_time)%>
-</td>	
-
-<td style="padding:3px;">
-  <%=tr8n_user_mugshot_tag(translation.translator, :linked => true)%>
-  <%=tr8n_user_tag(translation.translator, :linked => true)%>
-</td>
-
-<td style="width:50px;text-align:right;vertical-align:top; padding:3px;">
+<td style="width:100px;text-align:right;vertical-align:top; padding:3px;">
   <% if translation.can_be_edited_by?(tr8n_current_translator) %>
     <% if mode.to_s == "view" %>
       <%=link_to_function(image_tag("/tr8n/images/table_edit.png"), "editTranslationRow('#{translation.id}', '#{@section_key}')")%>
