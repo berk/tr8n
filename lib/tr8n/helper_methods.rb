@@ -1,14 +1,30 @@
 module Tr8n::HelperMethods
   include Tr8n::CommonMethods
 
-
-
   def tr8n_language_selector_tag
     render(:partial => '/tr8n/common/header_menu')    
   end
   
   def tr8n_footer_scripts_tag
     render(:partial => '/tr8n/common/footer_scripts')    
+  end
+
+  def tr8n_translator_rank_tag(translator)
+    return "" unless translator
+    
+    html = ""
+    rank = translator.rank || 0
+    1.upto(5) do |i|
+      if rank > i * 20 - 10  and rank < i * 20  
+        html << image_tag("/tr8n/images/rating_star05.png")
+      elsif rank < i * 20 - 10 
+        html << image_tag("/tr8n/images/rating_star0.png")
+      else
+        html << image_tag("/tr8n/images/rating_star1.png")
+      end 
+    end
+    
+    html    
   end
   
   def tr8n_help_icon_tag(anchor = "top")

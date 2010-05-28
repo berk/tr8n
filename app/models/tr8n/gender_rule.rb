@@ -46,6 +46,10 @@ class Tr8n::GenderRule < Tr8n::LanguageRule
     false    
   end
 
+  def to_hash
+    {:type => self.class.dependency, :operator => definition[:part1], :value => definition[:value1]}
+  end
+
   # used by language rules setup page
   def token_description
     if definition[:part1] == "is"

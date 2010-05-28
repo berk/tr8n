@@ -80,6 +80,14 @@ class Tr8n::NumericRule < Tr8n::LanguageRule
     false
   end
 
+  def to_hash
+    { :type => self.class.dependency, 
+      :multipart => definition[:multipart], :operator => definition[:operator],  
+      :part1 => definition[:part1], :value1 => definition[:value1],
+      :part2 => definition[:part2], :value2 => definition[:value2]
+    }
+  end
+
   # used by language rules setup page
   def token_description
     "#{self.class.description} <strong>#{description}</strong>"

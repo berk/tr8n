@@ -320,8 +320,12 @@ class Tr8n::Config
     rules_engine[:viewing_user_token]
   end
 
-  def self.minimal_translation_rank
-    rules_engine[:minimal_translation_rank]
+  def self.translation_threshold
+    rules_engine[:translation_threshold]
+  end
+
+  def self.translator_threshold
+    rules_engine[:translator_threshold]
   end
 
   def self.default_rank_styles

@@ -4,7 +4,7 @@
 	 <% unless tr8n_current_language.default? %> 
 		 - <%=trl("#{tr8n_current_language.english_name} Language")%>
 			 <% if tr8n_current_user_is_manager? %>
-			   <%=link_to("manage", "/tr8n/language", :style => "font-size:12px;")%>
+			   <%=link_to(trl("manage"), "/tr8n/language", :style => "font-size:12px;")%>
 			 <% end %>
 	 <% end %>  
 	</div>

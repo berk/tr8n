@@ -181,4 +181,11 @@ class Tr8n::Translator < ActiveRecord::Base
     Tr8n::Cache.delete("translator_for_#{user_id}")
   end
   
+  def update_rank!
+    total = Tr8n::Translation.count(:conditions => ["translator_id = ?", self.id])
+    acceptable = Tr8n::Translation.count(:conditions => ["translator_id = ? and rank >= ?", self.id,  Tr8n::Config.translator_threshold])
+    rank = (total == 0 ? 0 : (acceptable * 100.0/total))
+    update_attributes(:rank => rank)
+  end
+  
 end

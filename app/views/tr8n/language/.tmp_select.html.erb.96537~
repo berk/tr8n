@@ -53,7 +53,7 @@
         <%=link_to(trl("Configure tr8n"), "/tr8n/admin/language")%> 
         <span style="color: grey; font-size: 10px; padding-left:0.5em;">tr8n admins only</span>
         <br>
-        <span style="font-size: 11px;"><%=trl("Manage translators, languages and translations.")%></span>
+        <span style="font-size: 11px;"><%=trl("For site administrators only")%></span>
       </div>
     <% end %> 
 <div>		

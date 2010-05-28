@@ -1,21 +1,4 @@
-<td style="text-align:left; vertical-align:top; padding-top:3px;">
-  <table>
-    <tr>
-      <td style="vertical-align:top;padding-right:2px;">
-        <%=tr8n_user_mugshot_tag(translation.translator, :linked => true)%>
-      </td>
-      <td style="vertical-align:top">
-        <%=tr8n_user_tag(translation.translator, :linked => true)%>
-        <div style="color:grey;">
-            <%=translation.created_at.trl(:date_time) %>
-        </div>
-				<%=tr8n_translator_rank_tag(translation.translator)%>
-      </td>
-    </tr>
-  </table>
-</td>
-
-<td style="text-align:right; vertical-align:top; padding-top:3px;">
+<td style="width:15px;text-align:right;vertical-align:top; padding:3px;">
 
   <%=tr8n_spinner_tag("spinner_for_#{translation.id}", "", "")%>
 
@@ -23,16 +6,14 @@
     <%= translation.rank_label %> 
   </div>  
 </td>  
-
-<td style="text-align:center; vertical-align:top; color:grey; padding-top:3px;">
+<td style="width:58px;text-align:center;vertical-align:top; color:grey; padding:3px;">
   <% unless translation.translation_key.locked? %>
     <%=link_to_function(image_tag("/tr8n/images/thumb_up.png"), "tr8nTranslator.voteOnTranslation('#{translation.translation_key.key}', '#{translation.id}', 1)")%> 
     <%=link_to_function(image_tag("/tr8n/images/thumb_down.png"), "tr8nTranslator.voteOnTranslation('#{translation.translation_key.key}','#{translation.id}', -1)")%> 
     <%=link_to_function(image_tag("/tr8n/images/exclamation.png"), "tr8nTranslator.reportTranslation('#{translation.translation_key.key}','#{translation.id}')")%>
   <% end %>   
 </td>
-
-<td style="text-align:left; vertical-align:top; padding-top:3px;">
+<td style="text-align:left;vertical-align:top; padding:3px;">
   <% if mode.to_s == "view" %>
     <% if translation.can_be_edited_by?(tr8n_current_translator) %>
       <span onDblClick="updateTranslationRow('<%=translation.id%>', 'edit')">
@@ -46,17 +27,25 @@
   <% end %>
   
   <% if translation.context %>
-    <div style="font-size: 11px; color: grey; padding-top:3px;">
+    <div style="font-size: 10px; color: grey; padding-top:3px;">
       <%=trl("Context:")%> <%= translation.context %>  
     </div>
   <% end %>
 </td>
+<td style="padding:3px;">
+	<%=translation.created_at.trl(:date_time)%>
+</td>	
 
-<td style="text-align:right; vertical-align:top; padding-top:3px;">
+<td style="padding:3px;">
+  <%=tr8n_user_mugshot_tag(translation.translator, :linked => true)%>
+  <%=tr8n_user_tag(translation.translator, :linked => true)%>
+</td>
+
+<td style="width:50px;text-align:right;vertical-align:top; padding:3px;">
   <% if translation.can_be_edited_by?(tr8n_current_translator) %>
     <% if mode.to_s == "view" %>
-      <%=link_to_function(image_tag("/tr8n/images/pencil.png"), "updateTranslationRow('#{translation.id}', 'edit')")%>
-      <%=link_to_function(image_tag("/tr8n/images/cross.png"), "deleteTranslationRow('#{translation.id}', '#{@section_key}')")%>
+      <%=link_to_function(image_tag("/tr8n/images/table_edit.png"), "editTranslationRow('#{translation.id}', '#{@section_key}')")%>
+      <%=link_to_function(image_tag("/tr8n/images/delete.png"), "deleteTranslationRow('#{translation.id}', '#{@section_key}')")%>
     <% else %>
       <%=link_to_function(image_tag("/tr8n/images/disk.png"), "submitTranslationRow('#{translation.id}')")%>
       <%=link_to_function(image_tag("/tr8n/images/cancel.png"), "updateTranslationRow('#{translation.id}', 'view')")%>

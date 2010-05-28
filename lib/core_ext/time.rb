@@ -14,6 +14,7 @@ class Time
     label.gsub!("%p", "{am_pm}")
     label.gsub!("%d", "{days}")
     label.gsub!("%j", "{year_days}")
+    label.gsub!("%l", "{trimed_hour}")
     label.gsub!("%m", "{months}")
     label.gsub!("%W", "{week_num}")
     label.gsub!("%w", "{week_days}")
@@ -39,6 +40,7 @@ class Time
               :am_pm                => language.tr(strftime("%p"), "Meridian indicator", {}, options),
               :full_hours           => hour, 
               :short_hours          => strftime("%I"), 
+              :trimed_hour          => strftime("%l"),
               :minutes              => min, 
               :seconds              => sec              
     }

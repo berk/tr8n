@@ -11,7 +11,7 @@
 
 defaults: &defaults
   enable_tr8n:                true      # enables the engine
-  enable_key_source_tracking: false     # builds the site map sources
+  enable_key_source_tracking: true      # builds the site map sources
   enable_glossary_hints:      true      # shows glossary in the translator    
   enable_software_keyboard:   true      # shows the soft keyboard icon  
   enable_google_suggestions:  true      # uses google for suggestions
@@ -61,7 +61,7 @@ defaults: &defaults
   # cache_adapter:  YOUR_CACHE_ADAPTER_CLASS
   #
   #############################################################################
-  enable_caching:             true
+  enable_caching:             false
   cache_adapter:              ActiveSupport::Cache
   cache_store:                [mem_cache_store, 'localhost:11211']
 
@@ -118,7 +118,13 @@ defaults: &defaults
         male:                 male
         neutral:              neutral
         unknown:              unknown
-    minimal_translation_rank: 1
+    
+    # minimal rank makes the translation acceptable for subsitution
+    translation_threshold:    1
+    
+    # the translation rank that counts towards the translator rank
+    translator_threshold:     1             
+    
     viewing_user_token:       viewing_user
     translation_rank_styles:  
       -1000..-5:              color:red;font-weight:bold;
@@ -130,10 +136,9 @@ defaults: &defaults
   # API Settings
   #############################################################################
   api:  
-    enabled:                  false
-    response_encoding:        json
-    allow_key_registration:   false
-    restricted_domain_list:   [localhost] 
+    enabled:                  true
+    response_encoding:        json     # options: xml, json
+    allow_key_registration:   true
 
   #############################################################################
   # Localization Settings
@@ -164,9 +169,12 @@ development:
   
 test:
   <<: *defaults
+  enable_key_source_tracking: false
       
 qa:
   <<: *defaults
+
+  enable_key_source_tracking: true
 
 stage:
   <<: *defaults

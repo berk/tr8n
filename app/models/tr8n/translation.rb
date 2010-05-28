@@ -16,6 +16,7 @@ class Tr8n::Translation < ActiveRecord::Base
     vote = Tr8n::TranslationVote.find_or_create(self, translator)
     vote.update_attributes(:vote => score.to_i)
     update_rank!
+    self.translator.update_rank! if self.translator
     translator.voted_on_translation!(self)
     translator.update_metrics!(language)
   end
@@ -65,6 +66,17 @@ class Tr8n::Translation < ActiveRecord::Base
       rulz = {}
       rules.each do |rule|
         rulz[rule[:token]] = rule[:rule_id]  
+      end
+      rulz
+    end
+  end
+
+  def rules_definitions
+    return nil if rules.nil? or rules.empty? 
+    @rules_definitions ||= begin
+      rulz = {}
+      rules.each do |rule|
+        rulz[rule[:token].clone] = rule[:rule].to_hash  
       end
       rulz
     end

@@ -11,7 +11,7 @@
 							<% else %>
                  <%="#{language.completeness || 0}%"%>
                  <% unless user_language.manager? %>
-	                 <%=link_to_function(image_tag("/tr8n/images/close.gif", :style=>"width:5px; padding-right:3px; padding-left:3px;"), "tr8nLanguageSelector.removeLanguage('#{language.id}');") %>
+	                 <%=link_to_function(image_tag("/tr8n/images/close.gif", :style=>"width:5px; padding:3px; padding-top:5px;"), "tr8nLanguageSelector.removeLanguage('#{language.id}');") %>
  								 <% end %>
 		          <% end %>  
     			 </span>

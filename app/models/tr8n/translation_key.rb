@@ -17,10 +17,16 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     
     # translation keys don't ever change, so no real reason to invalidate them  
     tkey = Tr8n::Cache.fetch("translation_key_#{key}") do 
-      find_by_key(key) || create(:key => key, :label => label, :description => desc)
+      existing_key = find_by_key(key) 
+      
+      unless existing_key
+        if options[:api] and (not Tr8n::Config.api[:allow_key_registration])
+          raise Tr8n::KeyRegistrationException.new("Key registration through API is disabled!")  
+        end
+      end
+
+      existing_key || create(:key => key, :label => label, :description => desc)
     end
-    
-    tkey.reset_local_cache!
     
     # we should disable this in production  
     if options[:source] and Tr8n::Config.enabled_key_source_tracking?
@@ -33,11 +39,6 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   def self.generate_key(label, desc="")
     key = "#{label};;;#{desc}"
     Digest::MD5.hexdigest(key)
-  end
-  
-  def reset_local_cache!
-    @tokenized_label = nil
-    @glossary = nil
   end
   
   def tokenized_label
@@ -122,7 +123,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   # returns only the translations that meet the minimum rank
   def valid_translations_for(language)
     Tr8n::Cache.fetch("translations_#{language.locale}_#{self.key}") do
-      translations_for(language, Tr8n::Config.minimal_translation_rank)
+      translations_for(language, Tr8n::Config.translation_threshold)
     end
   end
   
@@ -167,7 +168,39 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   def self.random
     find(:first, :offset => rand(count - 1))
   end
-  
+
+  # returns back grouped by context
+  def find_all_valid_translations(translations)
+    if translations.empty?
+      return {:key => self.key, :label => self.label}
+    end
+    
+    # if the first translation does not depend on any of the context rules
+    # use it... we don't care about the rest of the rules.
+    if translations.first.rules_hash.blank?
+      return {:key => self.key, :label => translations.first.label}
+    end
+    
+    # build a context hash for every kind of context rules combinations
+    # only the first one in the list should be used
+    context_hash_matches = {}
+    valid_translations = []
+    translations.each do |translation|
+      context_key = translation.rules_hash || ""
+      next if context_hash_matches[context_key]
+      context_hash_matches[context_key] = true
+      if translation.rules_definitions
+        valid_translations << {:label => translation.label, :context => translation.rules_definitions.clone}
+      else
+        valid_translations << {:label => translation.label}
+      end
+    end
+
+    # always add the default one at the end, so if none of the rules matched, use the english one
+    valid_translations << {:label => self.label} unless context_hash_matches[""]
+    {:key => self.key, :labels => valid_translations}
+  end
+
   def find_first_valid_translation(translations, token_values)
     translations.each do |translation|
       return translation if translation.matches_rules?(token_values)
@@ -176,7 +209,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   end
   
   def translate(language = Tr8n::Config.current_language, token_values = {}, options = {})
-    prepare_token_values(token_values, options)
+    return find_all_valid_translations(valid_translations_for(language)) if options[:api]
     
     if Tr8n::Config.disabled? or language.default?
       return substitute_tokens(label, token_values, options.merge(:fallback => false))
@@ -350,28 +383,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     html << "</span>"
     html
   end
-
-  # for API only
-  def prepare_token_values(token_values, options) 
-    return unless options[:api]
-    
-    token_values.each do |name, value|
-      token_values[name.to_sym] = value
-
-      if value.is_a?(String) and value.first == "~"
-        token_values[name.to_sym] = create_token_object(value)
-      elsif value.is_a?(Array) and value.first.is_a?(String) and value.first.first == "~"
-        token_values[name.to_sym][0] = create_token_object(value.first)
-      end
-    end
-  end
-  
-  def create_token_object(token)
-    class_name, object_id = token.split("@")
-    return nil unless class_name and object_id
-    class_name[1..-1].constantize.find_by_id(object_id)
-  end    
-    
+      
   def after_save
     Tr8n::Cache.delete("translation_key_#{key}")
   end

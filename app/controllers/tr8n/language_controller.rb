@@ -4,24 +4,52 @@ class Tr8n::LanguageController < Tr8n::BaseController
   before_filter :validate_language_management, :only => [:index]
   
   def translate
-    render(:text => "Api is disabled") unless Tr8n::Config.enable_api?
-    
+    return sanitize_api_response({"error" => "Api is disabled"}) unless Tr8n::Config.enable_api?
+    return sanitize_api_response({"error" => "You must be logged in to use the api"}) if tr8n_current_user_is_guest?
+
     language = Tr8n::Language.for(params[:language]) || tr8n_current_language
-    return render(:text => translate_phrase(language, params)) if params[:label]
+    source = params[:source] || "API" 
+    return sanitize_api_response(translate_phrase(language, params, {:source => source})) if params[:label]
     
-    if params[:phrases]
+    # API signature
+    # {:source => "", :language => "", :phrases => [{:label => ""}]}
+    
+    # get all phrases for the specified source
+    if params[:batch] == "true"
+      if params[:sources].blank? and params[:source].blank?
+        return sanitize_api_response({"error" => "No source/sources have been provided for the batch request."})
+      end
+      
+      source_names = params[:sources] || [params[:source]]
+      sources = Tr8n::TranslationSource.find(:all, :conditions => ["source in (?)", source_names])
+      source_ids = sources.collect{|source| source.id}
+      
+      if source_ids.empty?
+        conditions = ["1=2"]
+      else
+        conditions = ["(id in (select distinct(translation_key_id) from tr8n_translation_key_sources where translation_source_id in (?)))"]
+        conditions << source_ids.uniq
+      end
+      
+      translations = []
+      Tr8n::TranslationKey.find(:all, :conditions => conditions).each_with_index do |tkey, index|
+        trn = tkey.translate(language, {}, {:api => true})
+        translations << trn 
+      end
+      
+      return sanitize_api_response({:phrases => translations})
+    elsif params[:phrases]
       translations = []
       params[:phrases].each do |phrase|
-        if phrase.is_a?(String) and not phrase.strip.blank?
-          translations << tr8n_current_language.translate(phrase, "", {}, {:source => "API", :skip_decorations => true})
-        elsif phrase.is_a?(Hash) and not phrase[:label].strip.blank?
-          translations << translate_phrase(current_language, phrase)
-        end
+        phrase = {:label => phrase} if phrase.is_a?(String)
+        translations << translate_phrase(language, phrase, {:source => source})
       end
-      return render(:text => translations.to_json)    
+      return sanitize_api_response({:phrases => translations})    
     end
     
-    render(:text => "")    
+    sanitize_api_response({"error" => "Invalid API request. Please read the documentation and try again."})
+  rescue Tr8n::KeyRegistrationException => ex
+    sanitize_api_response({"error" => ex.message})
   end
   alias :tr :translate
   
@@ -210,30 +238,16 @@ private
     rulz
   end
 
-  def translate_phrase(language, phrase)
+  def translate_phrase(language, phrase, opts = {})
     return "" if phrase[:label].strip.blank?
-
-    begin
-      tokens = JSON.parse(params[:tokens]) unless phrase[:tokens].blank?
-    rescue 
-      return "Invalid tokens parameter"
-    end
-
-    begin
-      options = JSON.parse(params[:options]) unless phrase[:options].blank?
-    rescue 
-      return "Invalid options parameter"
-    end
-    
-    label                       = phrase[:label]
-    description               ||= phrase[:description] || ""   
-    tokens                    ||= {}   
-    options                   ||= {}
-    options[:api]               = true
-    options[:source]            = "API"
-    options[:skip_decorations]  = true
-    
-    tr8n_current_language.translate(label, description, tokens, options)
+    language.translate(phrase[:label], phrase[:description], {}, {:api => true, :source => opts[:source]})
   end
   
+  def sanitize_api_response(response)
+    if Tr8n::Config.api[:response_encoding] == "xml"
+      render(:text => response.to_xml)
+    else
+      render(:text => response.to_json)
+    end      
+  end
 end

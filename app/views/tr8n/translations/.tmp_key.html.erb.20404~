@@ -20,11 +20,12 @@
 <div class="section_box">
   <table style="width:100%;" cellpadding="5px" cellspacing="3px">
     <tr style="border-bottom:1px solid #ccc;">
-      <td class="topic_header" style="width:200px;"><%=trl("Translator")%></td>
-      <td class="topic_header" style="width:25px;"><%=trl("Rank")%></td>
-      <td class="topic_header" style="width:80px;text-align:center"><%=trl("Your Vote")%></td>
-      <td class="topic_header" style=""><%=trl("Translation")%></td>
-			<td class="topic_header" style="width:50px;">&nbsp;</td>
+      <td style="width:25px; color:grey; font-size:14px; padding:5px; font-weight:bold;"><%=trl("Rank")%></td>
+      <td style="width:80px; color:grey; font-size:14px; padding:5px; font-weight:bold;"><%=trl("Your Vote")%></td>
+      <td style="color:grey; font-size:14px; padding:5px; font-weight:bold;"><%=trl("Translation")%></td>
+      <td style="width:100px; color:grey; font-size:14px; padding:5px; font-weight:bold;"><%=trl("Created On")%></td>
+      <td style="width:200px; color:grey; font-size:14px; padding:5px; font-weight:bold;"><%=trl("Translator")%></td>
+			<td style="width:50px;">&nbsp;</td>
     </tr>  
   
     <% @translations.each do |trn| %>
