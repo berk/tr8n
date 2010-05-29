@@ -1,0 +1,31 @@
+<%=stylesheet_link_tag("/stylesheets/will_filter.css") %>
+<%=javascript_include_tag("/javascripts/will_filter.js") %>
+
+<div class="translations_navigation">
+  <div style="font-size:22px; font-weight: bold;padding-bottom:15px;"><%=trl("Tr8n Admin Tools")%></div>
+
+  <ul class="translations_tab_nav translations_tabs">
+      <% tr8n_admin_tabs.each do |tab| %>
+        <%  classes = []
+            current = (tab["controller"] == controller.controller_name)
+
+            classes << "current" if current
+            if tr8n_admin_tabs.first == tab
+              classes << "first" 
+              classes << "first_current" if current
+            elsif tr8n_admin_tabs.last == tab
+              classes << "last"
+              classes << "last_current" if current
+            end   
+        %>
+        
+        <li class="<%=classes.join(' ') %>">
+          <%=link_to(trl(tab["title"], tab["description"]), "/tr8n/admin/#{tab["controller"]}")%>
+        </li>
+
+      <% end %>
+  </ul>
+</div>
+
+<div class="tr8n tr8n_admin">
+  

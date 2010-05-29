@@ -19,28 +19,28 @@ class Tr8n::TranslatorLog < ActiveRecord::Base
     return unless Tr8n::Config.enable_paranoia_mode?
     log = create(:translator => translator, :user => (user || translator.user), 
         :action => action.to_s, :action_level => ADMIN_LEVEL, :reason => reason, :reference => reference.to_s)
-    Tr8n::Config.logger.debug(log.full_description)
+    Tr8n::Logger.debug(log.full_description)
   end
 
   def self.log_manager(translator, action, reference = nil, user = nil)
     return unless Tr8n::Config.enable_paranoia_mode?
     log = create(:translator => translator, :user => (user || translator.user), 
         :action => action.to_s, :action_level => MANAGER_LEVEL, :reference => reference.to_s)
-    Tr8n::Config.logger.debug(log.full_description)
+    Tr8n::Logger.debug(log.full_description)
   end
   
   def self.log(translator, action, reference = nil, user = nil)
     return unless Tr8n::Config.enable_paranoia_mode?
     log = create(:translator => translator, :user => (user || translator.user), 
         :action => action.to_s, :action_level => TRANSLATOR_LEVEL, :reference => reference.to_s)
-    Tr8n::Config.logger.debug(log.full_description)
+    Tr8n::Logger.debug(log.full_description)
   end
 
   def self.log_abuse(translator, action, reference = nil, user = nil)
     return unless Tr8n::Config.enable_paranoia_mode?
     log = create(:translator => translator, :user => (user || translator.user), 
         :action => action.to_s, :action_level => ABUSE_LEVEL, :reference => reference.to_s)
-    Tr8n::Config.logger.debug(log.full_description)
+    Tr8n::Logger.debug(log.full_description)
   end
   
   def decoration

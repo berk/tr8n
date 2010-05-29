@@ -31,19 +31,6 @@ class Tr8n::Config
     Thread.current[:current_translator] != nil
   end
   
-  def self.logger
-    return Rails.logger unless config[:use_tr8n_logger]
-    @logger ||= begin
-      logfile_path = config[:tr8n_log_path] if config[:tr8n_log_path].first == '/' 
-      logfile_path = "#{RAILS_ROOT}/#{config[:tr8n_log_path]}" unless logfile_path
-      logfile_dir = logfile_path.split("/")[0..-2].join("/")
-      FileUtils.mkdir_p(logfile_dir) unless File.exist?(logfile_dir)
-      logfile = File.open(logfile_path, 'a')
-      logfile.sync = true
-      Tr8n::Logger.new(logfile)
-    end
-  end
-  
   # when this method is called, we create the translator record right away
   # and from this point on, will track the user
   # this can happen any time user tries to translate something or enables inline translations

@@ -1,9 +1,10 @@
 <%= render :partial => "/tr8n/admin/common/header" %>
+
+<h1>Glossary</h1>
+
 <%= will_filter %>
-<br>
 
 <%=link_to_function("+ Add glossary term", "tr8nLightbox.show('/tr8n/admin/glossary/lb_update', {height:450})") %>
-<br>
 
 <%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @terms} %>
 

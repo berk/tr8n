@@ -1,7 +1,32 @@
 <%= render :partial => "/tr8n/common/header" %>
 
-For default language
 
+<div class="section_title">
+  <%=tr8n_current_translator.name%>
+</div>
+
+<div class="section_box colored">
+  Your rank: <%=tr8n_translator_rank_tag(tr8n_current_translator)%>
+	<br>
+	Total number of translations: 
+	<br>
+	Total number of votes:
+	<br>
+	Place in the list of awards:
+</div>
+
+<% tr8n_current_translator.languages.each do |lang| %>
+	<% next if lang.default? %>
+	<div class="section_title">
+    <%=image_tag("/tr8n/images/flags/#{lang.flag}.png", :title=>trl("#{lang.english_name} flag"))%>&nbsp;
+    <%=lang.english_name%> 
+	</div>
+	
+	<div class="section_box">
+    <%=image_tag("/tr8n/images/flags/#{lang.flag}.png", :title=>trl("#{lang.english_name} flag"))%>&nbsp;
+		<%=lang.english_name%> 
+	</div>
+<% end %>
 
 
 For translators
@@ -11,12 +36,10 @@ global stats and ranks
 * view you translator rank (place among other translators)
 
 per langauge in your languages list
-* indicate if you are translator for the language
 * language completion overall
 * view you translator rank (place among other translators)
 * list new topics in the discussions
 * most recent translation votes (top 50) (with filters for getting votes on your translations)
-
 
 
 For managers
@@ -29,8 +52,6 @@ For managers
 * view translation violations
 * shortcut links to any tabs 
 * most recently active translator 
-
-
 
 
 ideas:

@@ -12,12 +12,12 @@ class Tr8n::LanguageMetric < ActiveRecord::Base
     metric_date = last_daily_metric.nil? ? Date.new(2010, 5, 1) : last_daily_metric.metric_date
 
     Tr8n::Language.all.each do |lang|
-      Tr8n::Config.logger.debug("Processing #{lang.english_name} language...")
+      Tr8n::Logger.debug("Processing #{lang.english_name} language...")
       
       start_date = metric_date
       months=[]
       while start_date <= Date.today do
-        Tr8n::Config.logger.debug("Generating daily data for #{start_date}...")
+        Tr8n::Logger.debug("Generating daily data for #{start_date}...")
         
         months << Date.new(start_date.year, start_date.month, 1)
         lang.update_daily_metrics_for(start_date)
@@ -25,11 +25,11 @@ class Tr8n::LanguageMetric < ActiveRecord::Base
       end
       
       months.uniq.each do |month|
-        Tr8n::Config.logger.debug("Generating monthly data for #{month}...")
+        Tr8n::Logger.debug("Generating monthly data for #{month}...")
         lang.update_monthly_metrics_for(month)
       end
       
-      Tr8n::Config.logger.debug("Generating total data...")
+      Tr8n::Logger.debug("Generating total data...")
       lang.update_total_metrics
     end    
   end

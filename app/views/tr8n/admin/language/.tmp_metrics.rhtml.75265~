@@ -1,0 +1,50 @@
+<%= render :partial => "/tr8n/admin/common/header" %>
+<%= will_filter %>
+<br/>
+<%=link_to("View charts", {:action => :charts})%>
+| 
+<%=link_to("Calculate recent metrics", {:action => :calculate_metrics}, :confirm => "Are you sure you want to run this opperation?")%>
+<br>
+
+<%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @metrics} %>
+
+
+<table class="admin_table">
+  <tr>
+    <th style="width:10%">
+      Language
+    </th>
+    <th style="width:15%">
+      Metric Date
+    </th>
+    <th class="numeric">
+      User Count
+    </th>
+    <th class="numeric">
+      Translator Count
+    </th>
+    <th class="numeric">
+      Translation Count
+    </th>
+    <th class="numeric">
+      Key Count
+    </th>
+    <th class="numeric">
+      Locked Key Count
+    </th>
+  </tr>  
+  <% @metrics.each_with_index do |metric, index| %>
+    <tr>
+      <td><%=metric.language.english_name%></td>
+      <td><%=metric.metric_date%></td>
+      <td class="numeric"><%=metric.user_count%></td>
+      <td class="numeric"><%=metric.translator_count%></td>
+      <td class="numeric"><%=metric.translation_count%></td>
+      <td class="numeric"><%=metric.key_count%></td>
+      <td class="numeric"><%=metric.locked_key_count%></td>
+    </tr>
+  <% end %>
+</table>
+
+<%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @metrics} %>
+<%= render :partial => "/tr8n/admin/common/footer" %>

@@ -1,6 +1,14 @@
 <%= render :partial => "/tr8n/admin/common/header" %>
+
+<h1>
+	<span style="font-size:12px; float:right; padding-top:10px;">
+		<%=link_to("View Translation Key Sources", {:action => :sources})%> 
+    | <%=link_to("View Translation Key Locks", {:action => :locks})%>
+	</span> 
+	Translation Keys
+</h1>
+
 <%= will_filter %>
-<br/>
 
 <%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @keys} %>
 
@@ -16,9 +24,9 @@
       Tokens
     </th>
     <th style="text-align:right">
-      Translation Count
+      Translations
     </th>
-    <th></th>
+    <th style="width:80px"></th>
   </tr>  
   <% @keys.each_with_index do |key, index| %>
     <tr>

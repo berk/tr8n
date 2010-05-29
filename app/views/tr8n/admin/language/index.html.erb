@@ -1,14 +1,19 @@
 <%= render :partial => "/tr8n/admin/common/header" %>
+
+<h1>
+  <span style="font-size:12px; float:right; padding-top:10px;">
+    <%=link_to("View Users", {:action => :users})%> | 
+    <%=link_to("View Metrics", {:action => :metrics})%> | 
+    <%=link_to("View Charts", {:action => :charts})%>
+  </span> 
+	Languages
+</h1>
+
 <%= will_filter %>
-<br/>
 
 <%=link_to_function("+ Add new language", "tr8nLightbox.show('/tr8n/admin/language/lb_update', {height:300})") %>
 |
 <%=link_to("Calculate completeness", {:action => :calculate_completeness}, :confirm => "Are you sure you want to run this opperation?")%>
-|
-<%=link_to("View metrics and charts", {:action => :metrics})%>
-
-<br/>
 
 <%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @languages} %>
 

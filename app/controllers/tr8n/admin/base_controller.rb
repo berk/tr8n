@@ -19,8 +19,6 @@ private
         {"title" => "Translation Keys", "description" => "Admin tab", "controller" => "translation_key"},
         {"title" => "Translations", "description" => "Admin tab", "controller" => "translation"},
         {"title" => "Translators", "description" => "Admin tab", "controller" => "translator"},
-        {"title" => "Translator Logs", "description" => "Admin tab", "controller" => "translator_log"},
-        {"title" => "Translation Key Sources", "description" => "Admin tab", "controller" => "translation_key_source"},
         {"title" => "Glossary", "description" => "Admin tab", "controller" => "glossary"},
         {"title" => "Forum", "description" => "Admin tab", "controller" => "forum"}
     ]

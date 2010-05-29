@@ -1,0 +1,47 @@
+<%= render :partial => "/tr8n/admin/common/header" %>
+
+<h1>
+  <span style="font-size:12px; float:right; padding-top:10px;">
+    <%=link_to("View Translation Keys", {:action => :index})%>
+    | <%=link_to("View Translation Key Sources", {:action => :sources})%>
+  </span> 
+  Translation Key Locks
+</h1>
+
+<%= will_filter %>
+
+<%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @locks} %>
+
+<table class="admin_table">
+  <tr>
+    <th>
+      Language
+    </th>
+    <th>
+      Label
+    </th>
+    <th>
+      Description
+    </th>
+    <th>
+      Locked
+    </th>
+    <th style="text-align:right">
+      Updated At
+    </th>
+  </tr>  
+  <% @locks.each_with_index do |lock, index| %>
+    <tr>
+      <td><%=lock.language.english_name%></td>      
+      <td><%=lock.translation_key.label%></td>      
+      <td><%=lock.translation_key.description%></td>      
+      <td><%=lock.locked?%></td>      
+      <td style="text-align:right">
+        <%=lock.updated_at.trl(:date_time) %>
+      </td>      
+    </tr>
+  <% end %>
+</table>
+
+<%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @locks} %>
+<%= render :partial => "/tr8n/admin/common/footer" %>

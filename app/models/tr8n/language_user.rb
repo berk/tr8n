@@ -32,4 +32,7 @@ class Tr8n::LanguageUser < ActiveRecord::Base
     lu
   end
   
+  def translator?
+    translator != nil
+  end
 end

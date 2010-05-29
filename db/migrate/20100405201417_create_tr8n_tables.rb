@@ -43,6 +43,8 @@ class CreateTr8nTables < ActiveRecord::Migration
       t.integer :user_count,        :default => 0
       t.integer :translator_count,  :default => 0
       t.integer :translation_count, :default => 0
+      t.integer :key_count,         :default => 0
+      t.integer :locked_key_count,  :default => 0
       t.timestamps
     end
     add_index :tr8n_language_metrics, [:language_id]

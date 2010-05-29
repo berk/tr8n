@@ -4,10 +4,6 @@ class Tr8n::LanguageFilter < ModelFilter
     super('Tr8n::Language', identity)
   end
 
-  def exportable?
-    false
-  end
-
   def default_order
     'completeness'
   end

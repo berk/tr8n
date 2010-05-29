@@ -1,6 +1,12 @@
 <%= render :partial => "/tr8n/admin/common/header" %>
 
-<h1>Translation Details</h1>
+<h1>
+  <span style="font-size:12px; float:right; padding-top:10px;">
+    <%=link_to("View Translations", {:action => :index})%> 
+    | <%=link_to("View Translation Votes", {:action => :votes})%> 
+  </span> 
+	Translation Details
+</h1>
 <table class="admin_table">
     <tr>
         <th width="160">
@@ -63,7 +69,11 @@
             Translator
         </th>
         <td>
-            <%=@translation.translator.name %>
+	        <% if @translation.translator %>
+	          <%=link_to(@translation.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :translator_id => @translation.translator.id)%>
+	        <% else %>
+	          Unknown  
+	        <% end %>  
         </td>
     </tr>
     <tr>
@@ -89,8 +99,44 @@
         <td>
           <%=link_to("View Translation Key", "/tr8n/admin/translation_key/view?key_id=#{@translation.translation_key.id}") %>
           |          
+          <%=link_to("View Translation Votes", "/tr8n/admin/translation/votes?mf_c_0=translation_id&mf_co_0=is&mf_cv_0_0=#{@translation.id}") %>
+          |          
           <%=link_to("Delete", {:action => :delete, :translation_id => @translation.id, :source => :translation}, {:confirm => "Are you sure you want to delete this translation?"}) %>
         </td>
     </tr>    
 </table>
+
+<h1>
+  Recent Votes
+</h1>
+
+<table class="admin_table">
+  <tr>
+    <th>
+      Voter
+    </th> 
+    <th class="numeric">
+      Vote
+    </th>
+    <th></th>
+  </tr>  
+  <% @votes.each_with_index do |vote, index| %>
+    <tr>
+      <td>
+        <% if vote.translator %>
+          <%=link_to(vote.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :translator_id => vote.translator.id)%>
+        <% else %>
+          Unknown  
+        <% end %>  
+      </td>  
+      <td class="numeric">
+        <%= vote.vote %>
+      </td> 
+      <td style="text-align:right">
+        <%=link_to("Delete", {:action => :delete_vote, :vote_id => vote.id}, {:confirm => "Are you sure you want to delete this vote?"}) %>
+      </td>
+    </tr>
+  <% end %>
+</table>
+
 <%= render :partial => "/tr8n/admin/common/footer" %>

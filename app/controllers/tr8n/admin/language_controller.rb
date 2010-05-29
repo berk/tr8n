@@ -34,8 +34,18 @@ class Tr8n::Admin::LanguageController < Tr8n::Admin::BaseController
     redirect_to_source
   end
     
-  def metrics
+  def charts
     
+  end
+
+  def metrics
+    @model_filter = init_model_filter(Tr8n::LanguageMetricFilter)  
+    @metrics = Tr8n::LanguageMetric.paginate(:order=>@model_filter.order_clause, :page=>page, :per_page=>@model_filter.per_page, :conditions=>@model_filter.sql_conditions)
+  end
+
+  def users
+    @model_filter = init_model_filter(Tr8n::LanguageUserFilter)  
+    @users = Tr8n::LanguageUser.paginate(:order=>@model_filter.order_clause, :page=>page, :per_page=>@model_filter.per_page, :conditions=>@model_filter.sql_conditions)
   end
 
   def calculate_metrics

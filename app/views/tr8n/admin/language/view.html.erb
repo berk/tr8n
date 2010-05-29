@@ -1,6 +1,15 @@
 <%= render :partial => "/tr8n/admin/common/header" %>
 
-<h1><%=@lang.english_name %> Language</h1>
+<h1>
+  <span style="font-size:12px; float:right; padding-top:10px;">
+    <%=link_to("View Languages", {:action => :index})%> | 
+    <%=link_to("View Users", {:action => :users})%> | 
+    <%=link_to("View Metrics", {:action => :metrics})%> | 
+    <%=link_to("View Charts", {:action => :charts})%>
+  </span> 
+
+	<%=@lang.english_name %> Language
+</h1>
 <table class="admin_table">
     <tr>
         <th width="160">
@@ -82,8 +91,6 @@
         	<%=link_to_function("Update", "tr8nLightbox.show('/tr8n/admin/language/lb_update?lang_id=#{@lang.id}', {height:300})") %>
 					|
           <%=link_to("View Translations", "/tr8n/admin/translation/index?mf_c_0=language_id&mf_co_0=is&mf_cv_0_0=#{@lang.id}") %>
-          |
-          <%=link_to("View Translators", "/tr8n/admin/translator/index?mf_c_0=language_id&mf_co_0=is&mf_cv_0_0=#{@lang.id}") %>
         </td>
     </tr>    
 </table>
@@ -93,6 +100,8 @@
 <table class="admin_table">
 <thead>
   <tr>
+    <th style="">Type</th>
+    <th style="">Class</th>
     <th style="">Description</th>
     <th style="">Translator</th>
     <th style="">Created At</th>
@@ -101,7 +110,9 @@
 <tbody>
   <% @lang.rules.each do |rule| -%>
     <tr>
-      <td><%= rule.describe %></td>
+      <td><%= rule.class.dependency %></td>
+      <td><%= rule.class.name %></td>
+      <td><%= rule.description %></td>
       <td><%= rule.translator ? rule.translator.name : "System generated" %></td>
       <td><%= rule.created_at %></td>
     </tr>

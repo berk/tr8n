@@ -1,6 +1,7 @@
 <%= render :partial => "/tr8n/admin/common/header" %>
+<h1>Translator Logs</h1>
+
 <%= will_filter %>
-<br/>
 
 <%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @logs} %>
 
