@@ -3,7 +3,7 @@
   
   <div class="section">
     <div class="small_section_title">
-      <div style="float:right;font-style:normal;font-size:12px">
+      <div style="float:right;font-style:normal;">
         <%=link_to(trl("view all"), {:controller => "/tr8n/translations", :action => :key, :translation_key_id => @translation_key.id}) %>
       </div>
       <strong><%=trl("Vote on Translations")%></strong>

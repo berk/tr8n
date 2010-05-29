@@ -39,8 +39,15 @@ class Tr8n::LanguageController < Tr8n::BaseController
       
       return sanitize_api_response({:phrases => translations})
     elsif params[:phrases]
+      phrases = []
+      begin
+        phrases = HashWithIndifferentAccess.new({:data => JSON.parse(params[:phrases])})[:data]
+      rescue Exception => ex
+        return sanitize_api_response({"error" => "Invalid request. JSON parsing failed: #{ex.message}"})
+      end
+      
       translations = []
-      params[:phrases].each do |phrase|
+      phrases.each do |phrase|
         phrase = {:label => phrase} if phrase.is_a?(String)
         translations << translate_phrase(language, phrase, {:source => source})
       end
