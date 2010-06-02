@@ -14,21 +14,7 @@
         style = (message == @messages.last ? "" : "border-bottom:1px dotted #ccc;" )
       %>  
       <tr style="<%=style%>">
-        <td style="padding:5px; width:50px;"> 
-          <%=tr8n_user_mugshot_tag(message.translator, :linked => true)%>
-        </td>
-        <td style="padding:5px; width:100px;">
-          <%=tr8n_user_tag(message.translator, :linked => true)%>
-          <div style="color:grey;font-size:10px;"><%=message.created_at.trl(:date_time) %></div>
-          <div style="font-size:10px;">
-            <% if tr8n_current_user_is_translator? and message.translator == tr8n_current_translator %>  
-              <%=link_to(trl("Delete"), {:action => :delete_message, :message_id => message.id}, {:confirm => trl("Are you sure you want to delete this message?")})%>
-            <% end %>
-          </div>
-        </td>
-        <td style="padding:5px; width:700px;">
-          <%=message.message %>
-        </td>
+      	<%= render :partial => "message", :locals => {:message => message} %> 
       </tr>
     <% end %>
   </table>

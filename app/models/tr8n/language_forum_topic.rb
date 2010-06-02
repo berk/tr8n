@@ -6,6 +6,8 @@ class Tr8n::LanguageForumTopic < ActiveRecord::Base
   
   has_many :language_forum_messages, :class_name => "Tr8n::LanguageForumMessage", :dependent => :destroy
   
+  alias :messages :language_forum_messages
+  
   def post_count
     @post_count ||= Tr8n::LanguageForumMessage.count(:conditions => ["language_forum_topic_id = ?", self.id])
   end

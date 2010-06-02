@@ -16,7 +16,9 @@ class Tr8n::Translation < ActiveRecord::Base
     vote = Tr8n::TranslationVote.find_or_create(self, translator)
     vote.update_attributes(:vote => score.to_i)
     update_rank!
-    self.translator.update_rank! if self.translator
+    
+    self.translator.update_rank!(language) if self.translator
+    
     translator.voted_on_translation!(self)
     translator.update_metrics!(language)
   end

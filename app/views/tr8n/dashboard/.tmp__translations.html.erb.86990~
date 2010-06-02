@@ -1,0 +1,30 @@
+<% unless lang.recently_updated_translations.empty? %>
+	<div style="padding-top:10px; font-size:14px; border-bottom:1px solid #ccc; margin-bottom:5px;">
+    <div style="float:right; font-size:12px;">
+       <%=link_to("view all", :controller => "/tr8n/translations", :action => :index, :locale => lang.locale)%>
+    </div>
+
+	  Recently Updated Translations
+		<span style="color:#ccc; font-size:12px;">(last 5)</span>
+	</div>
+	
+	<table style="width:100%; background-color:white; border: 1px solid #ccc;" cellpadding="5px" cellspacing="3px">
+	  <tr style="border-bottom:1px solid #ccc;">
+	    <td class="topic_header" style="width:200px;"><%=trl("Translator")%></td>
+	    <td class="topic_header" style="width:25px;"><%=trl("Rank")%></td>
+	    <td class="topic_header" style="width:80px;text-align:center"><%=trl("Your Vote")%></td>
+	    <td class="topic_header" style=""><%=trl("Translation")%></td>
+	    <td class="topic_header" style="width:50px;">&nbsp;</td>
+	  </tr>  
+	
+	  <% lang.recently_updated_translations.each do |trn| %>
+	    <% style = "border-bottom:1px dotted #ccc;" unless lang.recently_updated_translations.last == trn %>
+	    <tr style="<%=style%>">
+	      <%= render :partial => "/tr8n/translations/translation", :locals => {:translation => trn, :mode => :view, :show_actions => false} %>
+				<td style="text-align:right">
+					<%=link_to("view", :controller => "/tr8n/translations", :action => :key, :locale => lang.locale, :translation_key_id => trn.key.id) %>
+				</td>
+	    </tr>
+	  <% end %>
+	</table>
+<% end %>	

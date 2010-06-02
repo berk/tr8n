@@ -38,19 +38,30 @@ class Tr8n::Translator < ActiveRecord::Base
     @total_metric ||= Tr8n::TranslatorMetric.find_or_create(self, nil)
   end
 
-  def update_total_metrics!
-    total_metric.update_metrics!
+  def metric_for(language)
+    Tr8n::TranslatorMetric.find_or_create(self, language)
   end
 
   def update_metrics!(language = Tr8n::Config.current_language)
     # calculate total metrics
-    update_total_metrics!
+    total_metric.update_metrics!
     
-    # calculate language specific
-    metric =  Tr8n::TranslatorMetric.find_or_create(self, language)
-    metric.update_metrics!
+    # calculate language specific metrics
+    metric_for(language).update_metrics!
   end
   
+  def update_rank!(language = Tr8n::Config.current_language)
+    # calculate total rank
+    total_metric.update_rank!
+    
+    # calculate language specific rank
+    metric_for(language).update_rank!
+  end
+    
+  def rank
+    total_metric.rank
+  end
+    
   def block!(actor, reason = "No reason given")
     update_attributes(:blocked => true, :inline_mode => false)
     Tr8n::TranslatorLog.log_admin(self, :got_blocked, actor, reason)
@@ -181,12 +192,5 @@ class Tr8n::Translator < ActiveRecord::Base
   def after_save
     Tr8n::Cache.delete("translator_for_#{user_id}")
   end
-  
-  def update_rank!
-    total = Tr8n::Translation.count(:conditions => ["translator_id = ?", self.id])
-    acceptable = Tr8n::Translation.count(:conditions => ["translator_id = ? and rank >= ?", self.id,  Tr8n::Config.translator_threshold])
-    rank = (total == 0 ? 0 : (acceptable * 100.0/total))
-    update_attributes(:rank => rank)
-  end
-  
+
 end

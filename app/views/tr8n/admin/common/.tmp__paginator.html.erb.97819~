@@ -1,0 +1,8 @@
+<div>
+  <table style="font-size:12px;width:100%; margin-top:10px; margin-bottom:10px;">
+    <tr>
+      <td align='left'><%= will_paginate(objects) %></td>
+      <td align='right'><%= page_entries_info(objects) %></td>
+    </tr>
+  </table>
+</div>

@@ -35,5 +35,17 @@ class Tr8n::Admin::ChartController < Tr8n::Admin::BaseController
     result = generate_chart_xml(:sets=>sets, :subject=>'Translation', :xAxisName=>'Language', :yAxisName=>'Translation Count')
     send_data(result, :type=>'text/xml', :charset=>'utf-8')
   end
+
+  def locked_keys_by_language
+    sets = []
+    Tr8n::Language.all.each do |lang|
+      metric = Tr8n::TotalLanguageMetric.find_by_language_id(lang.id)
+      next unless metric
+      sets << [lang.english_name, metric.locked_key_count]
+    end
+    
+    result = generate_chart_xml(:sets=>sets, :subject=>'Locked Key', :xAxisName=>'Language', :yAxisName=>'Locked Key Count')
+    send_data(result, :type=>'text/xml', :charset=>'utf-8')
+  end
   
 end

@@ -25,7 +25,7 @@
 			<div id="translations_by_language" align="center"></div>
 		</td>
 		<td>
-			<div id="locked_keys_by_language" align="center"></div>
+			<div id="translations_by_language" align="center"></div>
 		</td>
 	</tr>
 </table>
@@ -40,5 +40,4 @@
 	 createChart("users_by_language", "Pie3D", "/tr8n/admin/chart/users_by_language");
    createChart("translators_by_language", "Pie3D", "/tr8n/admin/chart/translators_by_language");
    createChart("translations_by_language", "Pie3D", "/tr8n/admin/chart/translations_by_language");
-   createChart("locked_keys_by_language", "Pie3D", "/tr8n/admin/chart/locked_keys_by_language");
 </script>

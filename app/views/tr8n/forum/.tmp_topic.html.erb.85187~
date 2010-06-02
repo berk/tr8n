@@ -1,0 +1,24 @@
+<%= render :partial => "/tr8n/common/header" %>
+
+<% if @topic %>
+  <div class="section_title">
+    <div style="float:right; padding-top:20px; font-size:12px; color: #ccc;">
+      <%=link_to("#{image_tag('/tr8n/images/reply.png')} #{trl("Reply", "Reply button for forum topics")}", :topic_id => @topic.id, :page => params[:page], :anchor => :reply_message) %> 
+      &nbsp; |  &nbsp; 
+      <%=link_to("#{image_tag('/tr8n/images/plus.png')} #{trl('Start a new discussion topic')}", :mode => :create) %>
+    </div>
+    <div style="color:grey;font-size:16px;font-weight:bold">
+      <%=link_to(trl(@topic.describe), :action => :index)%> &raquo; <%=link_to(@topic.topic, :topic_id => @topic.id)%>
+    </div>
+    <div style="color:grey;font-size:12px;font-style:italic;padding-top:3px;padding-bottom:3px;">
+       <%= trl("Started by {user} on {date}", "", 
+            {:user => [@topic.translator.user, tr8n_user_tag(@topic.translator, :linked => true)], :date => @topic.created_at.trl}) %>
+     </div>
+  </div>
+  <%= render :partial => "messages" %>
+  <%= render :partial => "new_message" %>  
+<% else %>
+  <%= render :partial => "new_topic", :locals => {:include_cancel_button => true} %>
+<% end %>
+
+<%= render :partial => "/tr8n/common/footer" %>

@@ -1,5 +1,0 @@
-<%= render :partial => "/tr8n/common/tabs" %>
-
-<div class="tr8n">
-  
-  

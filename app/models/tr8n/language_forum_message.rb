@@ -7,4 +7,6 @@ class Tr8n::LanguageForumMessage < ActiveRecord::Base
   
   has_many :language_forum_abuse_reports, :class_name => "Tr8n::LanguageForumAbuseReport", :dependent => :destroy
 
+  alias :topic :language_forum_topic
+  
 end

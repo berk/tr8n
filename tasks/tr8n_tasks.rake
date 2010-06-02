@@ -27,6 +27,10 @@ namespace :tr8n do
     end
   end
 
+  task :reset_metrics => :environment do
+    Tr8n::LanguageMetric.reset_metrics
+  end
+
   task :metrics => :environment do
     Tr8n::LanguageMetric.calculate_language_metrics
   end

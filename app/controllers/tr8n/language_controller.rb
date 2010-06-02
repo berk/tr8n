@@ -162,6 +162,12 @@ class Tr8n::LanguageController < Tr8n::BaseController
     render(:partial => "lists")  
   end
   
+  def remove
+    lu = Tr8n::LanguageUser.find(:first, :conditions => ["language_id = ? and user_id = ?", params[:language_id], tr8n_current_user.id])
+    lu.destroy if lu
+    redirect_to_source
+  end
+  
   # language selector processor
   def switch
     language_action = params[:language_action]

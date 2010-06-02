@@ -66,8 +66,6 @@
 </td>
 <% end %>
 
-<% if mode.to_s == "edit" %>
-	<script>
-	  VKI_attach(document.getElementById("translation_row_value_<%=translation.id%>"));
-	</script>
-<% end %>
+<script>
+  VKI_attach(document.getElementById("translation_row_value_<%=translation.id%>"));
+</script>

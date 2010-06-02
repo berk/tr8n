@@ -194,7 +194,7 @@ class Tr8n::TranslationsController < Tr8n::BaseController
 
       end
     end
-    render :partial => "translation", :locals => {:translation => @translation, :mode => mode}
+    render :partial => "translation", :locals => {:translation => @translation, :mode => mode, :show_actions => true}
   end  
   
   def view

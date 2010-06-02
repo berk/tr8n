@@ -30,7 +30,7 @@
     <% @translations.each do |trn| %>
       <% style = "border-bottom:1px dotted #ccc;" unless @translations.last == trn %>
       <tr style="<%=style%>" id="translation_row_<%=trn.id%>">
-        <%= render :partial => "translation", :locals => {:translation => trn, :mode => :view, :show_actions => true} %>
+        <%= render :partial => "translation", :locals => {:translation => trn, :mode => :view} %>
       </tr>
     <% end %>
   </table>

@@ -52,7 +52,6 @@
   <% end %>
 </td>
 
-<% if show_actions %>
 <td style="text-align:right; vertical-align:top; padding-top:3px;">
   <% if translation.can_be_edited_by?(tr8n_current_translator) %>
     <% if mode.to_s == "view" %>
@@ -64,10 +63,7 @@
     <% end %>  
   <% end %>   
 </td>
-<% end %>
 
-<% if mode.to_s == "edit" %>
-	<script>
-	  VKI_attach(document.getElementById("translation_row_value_<%=translation.id%>"));
-	</script>
-<% end %>
+<script>
+  VKI_attach(document.getElementById("translation_row_value_<%=translation.id%>"));
+</script>

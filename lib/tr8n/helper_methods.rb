@@ -9,11 +9,12 @@ module Tr8n::HelperMethods
     render(:partial => '/tr8n/common/footer_scripts')    
   end
 
-  def tr8n_translator_rank_tag(translator)
+  def tr8n_translator_rank_tag(translator, rank = nil)
     return "" unless translator
     
+    rank ||= translator.rank || 0
+    
     html = ""
-    rank = translator.rank || 0
     1.upto(5) do |i|
       if rank > i * 20 - 10  and rank < i * 20  
         html << image_tag("/tr8n/images/rating_star05.png")

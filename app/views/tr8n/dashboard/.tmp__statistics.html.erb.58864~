@@ -1,0 +1,88 @@
+<div style="font-size:14px; border-bottom:1px solid #ccc; margin-bottom:5px;">
+  <div style="float:right">
+    <%=tr8n_translator_rank_tag(tr8n_current_translator)%>
+  </div>
+  Language Statistics
+</div>
+
+<table style="width:100%">
+  <tr>
+    <td style="width:50%;padding-top:3px;padding-right:3px;">
+      <table style="width:100%; border:1px dotted #ccc; background-color:white;">
+          <tr>
+            <td colspan="2" style="text-align:center; font-size:14px; padding-top:3px;">
+              Your Translations 
+            </td>
+          </tr> 
+          <tr>
+            <td style="vertical-align:middle; padding-left:5px;">
+              <table style="" cellpadding="1px" cellspacing="1px">
+                <tr>
+                  <td style="width:20px;"> </td>
+                  <td style="width:50px;">Total Translations:</td>
+                  <td style="width:40px;"><%=translator_metric.total_translations || 0 %></td>
+                </tr>
+                <tr>
+                  <td style=" "><div style="height:15px; width:15px; background-color:green;"></div></td>
+                  <td style=" ">Accepted:</td>
+                  <td style=" "><%=translator_metric.accepted_translations || 0 %></td>
+                </tr>
+                <tr>
+                  <td style=" "><div style="height:15px; width:15px; background-color:yellow;"></div></td>
+                  <td style=" ">Pending Votes:</td>
+                  <td style=" "><%=translator_metric.pending_vote_translations || 0 %></td>
+                </tr>
+                <tr>
+                  <td style=" "><div style="height:15px; width:15px; background-color:red;"></div></td>
+                  <td style=" ">Rejected:</td>
+                  <td style=" "><%=translator_metric.rejected_translations || 0 %></td>
+                </tr>
+              </table>
+            </td>
+            <td style="vertical-align:middle; width:220px; text-align:center">
+              <div id="<%=lang.id%>_translator_chart"></div>     
+            </td>   
+          </tr>
+      </table>      
+    </td>       
+    <td style="width:50%; padding-top:3px;">
+      <table style="width:100%; border:1px dotted #ccc; background-color:white;">
+          <tr>
+            <td colspan="2" style="text-align:center; font-size:14px; padding-top:3px;">
+              Total Translations
+              <span style="font-size:10px;color:#ccc;">(<%=lang.total_metric.completeness%>% Complete)</span>
+            </td>
+          </tr> 
+          <tr>
+            <td style="vertical-align:middle; padding-left:5px;">
+              <table style="" cellpadding="1px"  cellspacing="1px">
+                <tr>
+                  <td style="width:20px;"> </td>
+                  <td style="width:50px;">Total Phrases:</td>
+                  <td style="width:40px;"><%=link_to(lang.total_metric.key_count, "/tr8n/translations?locale=#{lang.locale}") %></td>
+                </tr>
+                <tr>
+                  <td style="text-align:right; padding-right:3px;"><div style="height:15px; width:15px; background-color:green;"></div></td>
+                  <td style="">Approved:</td>
+                  <td style=""><%=link_to(lang.total_metric.locked_key_count, "/tr8n/translations?locale=#{lang.locale}&with_translations=with&submitted_by=anyone&submitted_on=any") %></td>
+                </tr>
+                <tr>
+                  <td style="text-align:right; padding-right:3px;"><div style="height:15px; width:15px; background-color:yellow;"></div></td>
+                  <td style="">Pending Approval:</td>
+                  <td style=""><%=link_to(lang.total_metric.pending_approval_count, "/tr8n/translations?locale=#{lang.locale}&with_translations=with&submitted_by=anyone&submitted_on=any") %></td>
+                </tr>
+                <tr>
+                  <td style="text-align:right; padding-right:3px;"><div style="height:15px; width:15px; background-color:red;"></div></td>
+                  <td style="">Not Translated:</td>
+                  <td style=""><%=link_to(lang.total_metric.not_translated_count, "/tr8n/translations?locale=#{lang.locale}&with_translations=without&submitted_by=anyone&submitted_on=any") %></td>
+                </tr>
+              </table>
+            </td>
+            <td style="vertical-align:middle; width:220px; text-align:center">
+              <div id="<%=lang.id%>_chart"></div>     
+            </td>
+         </tr>
+      </table>
+    </td>       
+  </tr>
+</table>  

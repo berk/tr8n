@@ -2,6 +2,8 @@ require "pp"
 
 class Tr8n::BaseController < ApplicationController
 
+  CHART_COLORS = ['AFD8F8', 'F6BD0F', '8BBA00', 'FF8E46', '008E8E', 'D64646', '8E468E', '588526', 'B3AA00', '008ED6', '9D080D', 'A186BE']
+
   before_filter :validate_current_user, :except => [:select, :switch]
   
   layout Tr8n::Config.site_info[:tr8n_layout]
@@ -136,4 +138,45 @@ private
       redirect_to_site_default_url
     end
   end
+  
+  def generate_chart_xml(opts)
+    limit = opts[:limit]
+    total = opts[:sets].sum{|set| set[1].to_i}
+    
+    opts[:colors] ||= CHART_COLORS
+
+    color_index = 0
+    counter = 0
+    
+    limit_label = "(top #{limit})" if limit
+    
+    result = ""
+    xml = Builder::XmlMarkup.new(:target=>result, :indent=>1)
+    xml.instruct!
+    xml.graph(:caption            =>  opts[:caption] || "#{opts[:subject].pluralize} by #{opts[:xAxisName]} #{limit_label}", 
+              :subcaption         =>  opts[:subcaption] || "Total #{total} #{opts[:subject].pluralize}",
+              :xAxisName          =>  opts[:xAxisName].pluralize, 
+              :yAxisName          =>  opts[:yAxisName], 
+              :showNames          =>  opts[:showNames] || '1', 
+              :decimalPrecision   =>  '0', 
+              :rotateNames        =>  '1',
+              :formatNumberScale  =>  '0') do
+      if total > 0           
+        opts[:sets].each do |set|
+          break if limit and counter >= limit
+
+          if set[1] and set[1].to_i > 0
+            xml.set("", :name=>set[0], :value=>set[1], :color=>opts[:colors][color_index]) 
+            counter += 1
+          end
+          
+          color_index = 0 if color_index >= opts[:colors].size
+          color_index += 1
+        end
+      end
+    end    
+    
+    result
+  end
+  
 end

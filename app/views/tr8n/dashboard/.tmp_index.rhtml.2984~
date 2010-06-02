@@ -1,12 +1,5 @@
 <%= render :partial => "/tr8n/common/header" %>
-<script language="JavaScript" src="/tr8n/javascripts/FusionCharts.js"></script>
-<script type="text/javascript">
-   function createChart(chartId, type, url) {
-      var chart = new FusionCharts("/tr8n/charts/FCF_" + type + ".swf", chartId, "150", "120");
-      chart.setDataURL(url);
-      chart.render(chartId);
-   }
-</script>
+
 
 <div class="section_title">
   <%=trl("{user}'s Dashboard", "", :user => [tr8n_current_translator.user, tr8n_current_translator.name]) %>
@@ -144,16 +137,22 @@
 	</div>
 <% end %>
 
-
+<script language="JavaScript" src="/tr8n/javascripts/FusionCharts.js"></script>
 <script type="text/javascript">
+   function createChart(chartId, type, url) {
+      var chart = new FusionCharts("/tr8n/charts/FCF_" + type + ".swf", chartId, "150", "120");
+      chart.setDataURL(url);
+      chart.render(chartId);
+   }
+
    createChart("translator_chart", "Pie3D", "/tr8n/chart/translator_rank");
-   
-  <% tr8n_current_translator.languages.each do |lang| %>
-	   <% next if lang.default? %>
-     createChart("translator_chart_<%=lang.id%>", "Pie3D", "/tr8n/chart/translator_rank?language_id=<%=lang.id%>");
-     createChart("language_chart_<%=lang.id%>", "Pie3D", "/tr8n/chart/language_completeness?language_id=<%=lang.id%>");
-  <% end %>
+	 
+<% tr8n_current_translator.languages.each do |lang| %>
+   createChart("<%=lang.id%>_translator_chart", "Pie3D", "/tr8n/chart/translator_rank?language_id=<%=lang.id%>");
+   createChart("<%=lang.id%>_chart", "Pie3D", "/tr8n/chart/language_completeness?language_id=<%=lang.id%>");
+<% end %>	 
 </script>
+
 
 <!-- 
 For translators

@@ -106,21 +106,6 @@ class Tr8n::Language < ActiveRecord::Base
     dependencies.include?("gender")
   end
 
-  def calculate_completeness!(keys = Tr8n::TranslationKey.all)
-    return update_attributes(:completeness => 100) if default?
-    
-    trans_count = Tr8n::Translation.count(:conditions => ["language_id = ?", id])
-    return update_attributes(:completeness => 0) if trans_count == 0
-  
-    trans_count = 0  
-    keys.each do |key|
-      trans_count += 1 if key.valid_translations_for(self).size > 0
-    end
-
-    self.completeness = (trans_count * 100 / keys.size)
-    save
-  end
-
   def update_daily_metrics_for(metric_date)
     metric = Tr8n::DailyLanguageMetric.find(:first, :conditions => ["language_id = ? and metric_date = ?", self.id, metric_date])
     metric ||= Tr8n::DailyLanguageMetric.create(:language_id => self.id, :metric_date => metric_date)
@@ -133,10 +118,19 @@ class Tr8n::Language < ActiveRecord::Base
     metric.update_metrics!
   end
 
+  def total_metric
+    @total_metric ||= begin
+      metric = Tr8n::TotalLanguageMetric.find(:first, :conditions => ["language_id = ?", self.id])
+      metric || Tr8n::TotalLanguageMetric.create(Tr8n::LanguageMetric.default_attributes.merge(:language_id => self.id))
+    end
+  end
+
   def update_total_metrics
-    metric = Tr8n::TotalLanguageMetric.find(:first, :conditions => ["language_id = ?", self.id])
-    metric ||= Tr8n::TotalLanguageMetric.create(:language_id => self.id)
-    metric.update_metrics!
+    total_metric.update_metrics!
+  end
+
+  def completeness
+    total_metric.completeness
   end
 
   def prohibited_words
@@ -182,5 +176,16 @@ class Tr8n::Language < ActiveRecord::Base
   def after_save
     Tr8n::Cache.delete("language_#{locale}")
   end
-  
+
+  def recently_added_forum_messages
+    @recently_added_forum_messages ||= Tr8n::LanguageForumMessage.find(:all, :conditions => ["language_id = ?", self.id], :order => "created_at desc", :limit => 5)    
+  end
+
+  def recently_added_translations
+    @recently_added_translations ||= Tr8n::Translation.find(:all, :conditions => ["language_id = ?", self.id], :order => "created_at desc", :limit => 5)    
+  end
+
+  def recently_updated_translations
+    @recently_updated_translations ||= Tr8n::Translation.find(:all, :conditions => ["language_id = ?", self.id], :order => "updated_at desc", :limit => 5)    
+  end
 end

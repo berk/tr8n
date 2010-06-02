@@ -12,9 +12,10 @@ class Tr8n::TranslatorMetric < ActiveRecord::Base
     end
     
     return tm if tm
-    create(:translator => translator, :language => language)
+    create(:translator => translator, :language => language, :total_translations => 0, :total_votes => 0, :positive_votes => 0, :negative_votes => 0)
   end
   
+  # updated when an action is done by the translator
   def update_metrics!
     if language
       self.total_translations = Tr8n::Translation.count(:conditions=>["translator_id = ? and language_id = ?", translator.id, language.id])
@@ -33,4 +34,27 @@ class Tr8n::TranslatorMetric < ActiveRecord::Base
     save
   end
   
+  # updated when an action is done to the translator's translations
+  def update_rank!
+    if language
+      self.accepted_translations = Tr8n::Translation.count(:conditions => ["translator_id = ? and language_id = ? and rank >= ?", translator.id, language.id, Tr8n::Config.translator_threshold])
+      self.rejected_translations = Tr8n::Translation.count(:conditions => ["translator_id = ? and language_id = ? and rank <= ?", translator.id, language.id, 0])
+    else
+      self.accepted_translations = Tr8n::Translation.count(:conditions => ["translator_id = ? and rank >= ?", translator.id, Tr8n::Config.translator_threshold])
+      self.rejected_translations = Tr8n::Translation.count(:conditions => ["translator_id = ? and rank <= ?", translator.id, 0])
+    end
+    
+    save
+  end  
+  
+  def rank 
+    return 0 unless total_translations and accepted_translations
+    
+    total_translations == 0 ? 0 : (accepted_translations * 100.0/total_translations)
+  end
+  
+  def pending_vote_translations
+    return total_translations unless accepted_translations and rejected_translations
+    total_translations - accepted_translations - rejected_translations
+  end
 end
