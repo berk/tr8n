@@ -1,0 +1,51 @@
+<%= render :partial => "/tr8n/common/header" %>
+<%= render :partial => "breadcrumb" %>
+
+<div class="section_box" style="margin-bottom:10px; background-color:#EFF8FF;">
+  <% form_tag({:action => :key}, {:method => :get, :id => "translations_search_form"}) do %>
+     <%=hidden_field_tag(:section_key, @section_key) %>
+     <table>
+      <tr>
+        <td><%=text_field_tag(:search, params[:search], {:style => "width:900px;height:20px;font-size:14px;"})%></td>
+        <td>
+          <button type="submit" class="translator_btn translator_small_btn" onClick="$('translations_search_form').submit(); return false;">
+              <span><%=trl("Search")%></span>
+          </button>
+        </td>
+      </tr>
+      <tr>
+        <td>	
+		      <%=trl("Show translations for this phrase submitted by")%>
+		      <%=select_tag(:submitted_by, options_for_select([["anyone", "anyone"], ["me", "me"]], params[:submitted_by]), :onchange => "$('translations_search_form').submit(); return false;")%>
+		      <%=trl("created on")%>
+		      <%=select_tag(:submitted_on, options_for_select([["any date", "any"], ["today", "today"], ["yesterday", "yesterday"], ["in the last week", "last_week"]], params[:submitted_on]), :onchange => "$('translations_search_form').submit(); return false;")%>
+		      <%=trl("ordered by")%>
+		      <%=select_tag(:ordered_by, options_for_select([["rank", "rank"], ["date", "created_at"]], params[:ordered_by]), :onchange => "$('translations_search_form').submit(); return false;")%>
+		      <%=trl("and")%>
+		      <%=select_tag(:grouped_by, options_for_select([["not grouped by context rule", "none"], ["grouped by context rule", "context"]], params[:grouped_by]), :onchange => "$('translations_search_form').submit(); return false;")%>
+				</td>
+			</tr>
+		</table>			
+  <% end %>
+</div>
+
+<div class="section_box">
+  <table style="width:100%;" cellpadding="5px" cellspacing="3px">
+    <tr style="border-bottom:1px solid #ccc;">
+      <td class="topic_header" style="width:200px;"><%=trl("Translator")%></td>
+      <td class="topic_header" style="width:25px;"><%=trl("Rank")%></td>
+      <td class="topic_header" style="width:80px;text-align:center"><%=trl("Your Vote")%></td>
+      <td class="topic_header" style=""><%=trl("Translation")%></td>
+      <td class="topic_header" style="width:50px;">&nbsp;</td>
+    </tr>  
+  
+    <% @translations.each do |trn| %>
+      <% style = "border-bottom:1px dotted #ccc;" unless @translations.last == trn %>
+      <tr style="<%=style%>" id="translation_row_<%=trn.id%>">
+        <%= render :partial => "translation", :locals => {:translation => trn, :mode => :view, :show_actions => true} %>
+      </tr>
+    <% end %>
+  </table>
+</div>
+
+<%= render :partial => "/tr8n/common/footer" %>

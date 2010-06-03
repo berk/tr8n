@@ -1,0 +1,33 @@
+<%= render :partial => "/tr8n/common/header" %>
+
+<%=render(:partial => "basic_info", :locals => {:mode => :view}) %>
+<%=render(:partial => "prohibited_words", :locals => {:mode => :view}) %>
+<% unless tr8n_current_language.default? %>
+  <%=render(:partial => "grammar", :locals => {:mode => :view}) %>
+<% end %>
+
+
+<script>
+  function switchSectionMode(section, mode) {
+    new Ajax.Updater(section + '_container', '/tr8n/language/update_language_section', {
+      parameters: {section:section, mode:mode},
+      method: 'get'
+    });
+  }
+  
+  function submitSection(section) {
+    if (section == "grammar") {
+      if (!confirm("<%=trl('Updating language rules may affect all existing translations for this language. Are you sure you want to do this?')%>"))
+        return;
+    }
+    
+    var params = $(section + '_form').serialize(true);
+    params['section'] = section;
+    new Ajax.Updater(section + '_container', '/tr8n/language/update_language_section', {
+      parameters: params,
+      method: 'post'
+    });
+  }
+</script>
+
+<%= render :partial => "/tr8n/common/footer" %>

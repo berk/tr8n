@@ -1,5 +1,5 @@
 <div id="translator_hints_more" style="padding-top:5px;">
-  <%=link_to_function("#{trl("show hints")} &raquo;", "$('translator_hints_more').hide(); $('translator_hints').show(); $('translator_hints_less').show()")%>
+  <%=link_to_function("#{trl("show hints")} &raquo;", "$('translator_hints_more').hide(); $('translator_hints_less').show(); Effect.BlindDown('translator_hints', { duration: 0.2 });")%>
 </div>
 
 <div id="translator_hints" style="display:none;padding-right:5px; margin-right:5px;">
@@ -51,5 +51,5 @@
 </div>
 
 <div id="translator_hints_less" style="display:none">
-  <%=link_to_function("&laquo; #{trl("hide hints")}", "$('translator_hints').hide(); $('translator_hints_less').hide(); $('translator_hints_more').show();")%>
+  <%=link_to_function("&laquo; #{trl("hide hints")}", "$('translator_hints_less').hide(); $('translator_hints_more').show(); Effect.BlindUp('translator_hints', { duration: 0.2 });")%>
 </div>

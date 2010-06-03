@@ -11,7 +11,7 @@ class Tr8n::Translation < ActiveRecord::Base
     
   alias :key :translation_key
   alias :votes :translation_votes
-  
+
   def vote!(translator, score)
     vote = Tr8n::TranslationVote.find_or_create(self, translator)
     vote.update_attributes(:vote => score.to_i)
@@ -157,4 +157,75 @@ class Tr8n::Translation < ActiveRecord::Base
     Tr8n::Cache.delete("translations_#{language.locale}_#{translation_key.key}")
   end
   
+  ###############################################################
+  ## Search Related Stuff
+  ###############################################################
+  
+  def self.search_status_options
+    [["all translations", "all"], 
+     ["accepted translations", "accepted"], 
+     ["pending translations", "pending"], 
+     ["rejected translations", "rejected"]]    
+  end
+  
+  def self.search_submitter_options
+    [["anyone", "anyone"], ["me", "me"]]
+  end
+  
+  def self.search_date_options
+    [["any date", "any"], 
+     ["today", "today"], 
+     ["yesterday", "yesterday"], 
+     ["in the last week", "last_week"]]
+  end
+  
+  def self.search_conditions_for(params)
+    conditions = [""]
+    
+    unless params[:search].blank?
+      conditions[0] << "label like ?" 
+      conditions << "%#{params[:search]}%"
+    end
+
+    if params[:with_status] == "accepted"
+      conditions[0] << " and " unless conditions[0].blank?
+      conditions[0] << " rank >= ? "
+      conditions << Tr8n::Config.translation_threshold
+    elsif params[:with_status] == "pending"
+      conditions[0] << " and " unless conditions[0].blank?
+      conditions[0] << " rank >= 0 and rank < ? "
+      conditions << Tr8n::Config.translation_threshold
+    elsif params[:with_status] == "rejected"
+      conditions[0] << " and " unless conditions[0].blank?
+      conditions[0] << " rank < 0 "
+    end
+    
+    if params[:submitted_by] == "me"
+      conditions[0] << " and " unless conditions[0].blank?
+      conditions[0] << " translator_id = ? "
+      conditions << Tr8n::Config.current_translator.id
+    end
+    
+    if params[:submitted_on] == "today"
+      date = Date.today
+      conditions[0] << " and " unless conditions[0].blank?
+      conditions[0] << "created_at >= ? and created_at < ?" 
+      conditions << date
+      conditions << (date + 1.day)
+    elsif params[:submitted_on] == "yesterday"
+      date = Date.today - 1.days
+      conditions[0] << " and " unless conditions[0].blank?
+      conditions[0] << "created_at >= ? and created_at < ?" 
+      conditions << date
+      conditions << (date + 1.day)
+    elsif params[:submitted_on] == "last_week"
+      date = Date.today - 7.days
+      conditions[0] << " and " unless conditions[0].blank?
+      conditions[0] << "created_at >= ? and created_at < ?" 
+      conditions << date
+      conditions << Date.today
+    end    
+    conditions
+  end 
+    
 end

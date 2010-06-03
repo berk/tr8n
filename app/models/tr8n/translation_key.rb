@@ -387,5 +387,59 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   def after_save
     Tr8n::Cache.delete("translation_key_#{key}")
   end
+
+  ###############################################################
+  ## Search Related Stuff
+  ###############################################################
+  
+  def self.search_phrase_type_options
+    [["all phrases", "any"], 
+     ["phrases without translations", "without"], 
+     ["phrases with translations", "with"]] 
+  end
+  
+  def self.search_phrase_status_options
+     [["anything", "any"],
+      ["pending approval", "pending"], 
+      ["approved", "approved"]]
+  end
+  
+  def self.search_conditions_for(params)
+    conditions = [""]
     
+    unless params[:search].blank?
+      conditions[0] << "(tr8n_translation_keys.label like ? or tr8n_translation_keys.description like ?)" 
+      conditions << "%#{params[:search]}%"
+      conditions << "%#{params[:search]}%"  
+    end
+
+    # for with and approved, allow user to specify the kinds
+    if params[:phrase_type] == "with"
+      conditions[0] << " and " unless conditions[0].blank?
+      conditions[0] << "tr8n_translation_keys.id in (select tr8n_translations.translation_key_id from tr8n_translations where tr8n_translations.language_id = ?) "
+      conditions << Tr8n::Config.current_language.id
+      
+      # if approved, ensure that translation key is locked
+      if params[:phrase_status] == "approved" 
+        conditions[0] << " and " unless conditions[0].blank?
+        conditions[0] << "tr8n_translation_keys.id in (select tr8n_translation_key_locks.translation_key_id from tr8n_translation_key_locks where tr8n_translation_key_locks.language_id = ? and tr8n_translation_key_locks.locked = ?) "
+        conditions << Tr8n::Config.current_language.id
+        conditions << true
+      
+        # if approved, ensure that translation key does not have a lock or unlocked
+      elsif params[:phrase_status] == "pending" 
+        conditions[0] << " and " unless conditions[0].blank?
+        conditions[0] << "tr8n_translation_keys.id not in (select tr8n_translation_key_locks.translation_key_id from tr8n_translation_key_locks where tr8n_translation_key_locks.language_id = ? and tr8n_translation_key_locks.locked = ?) "
+        conditions << Tr8n::Config.current_language.id
+        conditions << true
+      end
+            
+    elsif params[:phrase_type] == "without"
+      conditions[0] << " and " unless conditions[0].blank?
+      conditions[0] << "tr8n_translation_keys.id not in (select tr8n_translations.translation_key_id from tr8n_translations where tr8n_translations.language_id = ?)"
+      conditions << Tr8n::Config.current_language.id
+    end
+    
+    conditions
+  end    
 end

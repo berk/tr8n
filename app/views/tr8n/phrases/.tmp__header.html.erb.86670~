@@ -1,0 +1,34 @@
+<% locked = "locked" if @translation_key.locked? %>
+<div class="section_box colored <%=locked%>">
+  <div style="float:right; font-size:10px; padding-right:5px;">
+    <% if tr8n_current_user_is_translator? and tr8n_current_translator.manager? %>
+      <% if @translation_key.locked? %>
+        <span style="color:grey; padding-right:10px;"><%=trl("Translation key is locked")%></span>
+        <%=link_to(image_tag("tr8n/lock.png", :style=>"width:14px", :title => trl("Translation key is locked. Click here to unlock it.")), 
+                            {:action => :unlock_key, :translation_key_id => @translation_key.id},
+                            :confirm => trl("Once the key is unlocked, users will be able to submit or vote on translations for this key. \n\nAre you sure you want to unlock it?") ) %>
+
+      <% else %>  
+        <%=link_to(image_tag("tr8n/lock_open.png", :style=>"width:14px", :title => trl("Translation key is unlocked. Click here to lock it.")), 
+                            {:action => :lock_key, :translation_key_id => @translation_key.id}, 
+                            :confirm => trl("Once the key is locked, users will no longer be able to submit or vote on translations for this key. \n\nAre you sure you want to lock it?") ) %>
+      <% end %>
+    <% end %>    
+    <%=link_to(image_tag("tr8n/random2.png", :style=>"width:14px", :title => trl("Fetch random phrase")), :action => :key, :translation_key_id => @translation_key.id, :dir => :random) %>
+    <%=link_to(image_tag("tr8n/help.png", :style=>"", :title => trl("Help")), :target => "_new", :action => :help) %>
+  </div>
+  <div style="color:grey;font-size:20px;padding-bottom:10px;"><%=trl("Original Phrase in English")%></div>
+  
+  <div style="padding-top:5px;padding-bottom:10px;font-size:14px">
+      <%=image_tag("tr8n/left_quote.png", :style=>"text-align:bottom;padding-bottom:5px;") %>
+      <%=@translation_key.sanitized_label %>
+      <%=image_tag("tr8n/right_quote.png", :style=>"text-align:bottom;padding-top:5px;") %>
+  </div>
+  
+  <% unless @translation_key.description.blank? %>
+    <div style="color:grey;font-size:12px;padding-left:10px;padding-top:1px;padding-bottom:1px;border-left:solid 1px #ccc;margin-left:10px;">
+      <%=@translation_key.description %>
+    </div>
+  <% end %>
+</div>
+

@@ -119,11 +119,8 @@ defaults: &defaults
         neutral:              neutral
         unknown:              unknown
     
-    # minimal rank makes the translation acceptable for subsitution
+    # minimal rank makes the translation acceptable for subsitution and counts towards the translator rank
     translation_threshold:    1
-    
-    # the translation rank that counts towards the translator rank
-    translator_threshold:     1             
     
     viewing_user_token:       viewing_user
     translation_rank_styles:  

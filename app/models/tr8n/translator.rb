@@ -170,12 +170,14 @@ class Tr8n::Translator < ActiveRecord::Base
   end
 
   def user_mugshot
-    return "" unless user
-    Tr8n::Config.user_mugshot(user)
+    return Tr8n::Config.silhouette_image unless user
+    img_url = Tr8n::Config.user_mugshot(user)
+    return Tr8n::Config.silhouette_image if img_url.blank?
+    img_url
   end
 
   def user_link
-    return "" unless user
+    return Tr8n::Config.default_url unless user
     Tr8n::Config.user_link(user)
   end
 

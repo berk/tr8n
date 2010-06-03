@@ -37,8 +37,20 @@ module Tr8n::HelperMethods
     html << image_tag("/tr8n/images/spinner.gif")
     html << " #{trl(label)}" if label
     html << "</div>"
-    html
   end
+  
+  def tr8n_toggler_tag(content_id, label = "", open = true)
+    html = "<span id='#{content_id}_open' "
+    html << "style='display:none'" unless open
+    html << ">"
+    html << link_to_function("#{image_tag("/tr8n/images/arrow_down.gif", :style=>'text-align:center; vertical-align:middle')} #{label}", "$('#{content_id}_open').hide(); $('#{content_id}_closed').show(); Effect.BlindUp('#{content_id}', { duration: 0.2 });", :style=> "text-decoration:none")
+    html << "</span>" 
+    html << "<span id='#{content_id}_closed' "
+    html << "style='display:none'" if open
+    html << ">"
+    html << link_to_function("#{image_tag("/tr8n/images/arrow_right.gif", :style=>'text-align:center; vertical-align:middle')} #{label}", "$('#{content_id}_open').show(); $('#{content_id}_closed').hide(); Effect.BlindDown('#{content_id}', { duration: 0.2 });", :style=> "text-decoration:none")
+    html << "</span>" 
+  end  
   
   def tr8n_sitemap(sections, splitters, options = {})
     html = ""
@@ -51,45 +63,37 @@ module Tr8n::HelperMethods
     end 
     html << "</tr>"
     html << "</table>"
-    html
   end
   
-  def generate_sitemap(sections, options = {})
-    html = "<ul class='section_list'>"
-    sections.each do |section|
-      key = Tr8n::TranslationKey.generate_key(section[:label], section[:description])
-      
-      html << "<li class='section_list_item'>" 
-      html << "<a href='/tr8n/translations/index?section_key=#{key}'>" << Tr8n::Language.translate(section[:label], section[:description]) << "</a>"
-      html << "<a href='" << section[:link] << "' target='_new'><img src='/tr8n/images/bullet_go.png' style='border:0px; vertical-align:middle'></a>" if section[:link]
-      
-      if section[:sections] and section[:sections].size > 0
-        html << generate_sitemap(section[:sections], options)
-      end  
-      html << "</li>"
-    end
-    html << "</ul>"
-    html
+  def tr8n_footer_scripts_tag
+    render(:partial => '/tr8n/common/footer_scripts')    
   end
 
   def tr8n_user_tag(translator, options = {})
-    return unless translator and translator.user
+    return "Deleted Translator" unless translator
     
-    return "<a href='#{Tr8n::Config.user_link(translator.user)}'>#{Tr8n::Config.user_name(translator.user)}</a>" if options[:linked]
-    Tr8n::Config.user_name(translator.user)
+    if options[:linked]
+      link_to(translator.name, translator.user_link)
+    else
+      translator.name
+    end
   end
 
   def tr8n_user_mugshot_tag(translator, options = {})
-    return unless translator and translator.user
-    
-    img_url = Tr8n::Config.user_mugshot(translator.user)
-    return if img_url.blank?
+    if translator
+      img_url = translator.user_mugshot
+    else
+      img_url = Tr8n::Config.silhouette_image
+    end
     
     img_tag = "<img src='#{img_url}' style='width:48px'>"
-    return "<a href='#{Tr8n::Config.user_link(translator.user)}'>#{img_tag}</a>" if options[:linked]
-    img_tag
+    
+    if translator and options[:linked]
+      link_to(img_tag, translator.user_link)
+    else  
+      img_tag
+    end
   end  
-  
   
   # overloaded plugin methods 
   
@@ -128,6 +132,25 @@ module Tr8n::HelperMethods
 
   def will_filter
     render(:partial => "/model_filter/filter", :locals => {:model_filter => @model_filter})
+  end
+
+private
+
+  def generate_sitemap(sections, options = {})
+    html = "<ul class='section_list'>"
+    sections.each do |section|
+      key = Tr8n::TranslationKey.generate_key(section[:label], section[:description])
+      
+      html << "<li class='section_list_item'>" 
+      html << "<a href='/tr8n/phrases/index?section_key=#{key}'>" << Tr8n::Language.translate(section[:label], section[:description]) << "</a>"
+      html << "<a href='" << section[:link] << "' target='_new'><img src='/tr8n/images/bullet_go.png' style='border:0px; vertical-align:middle'></a>" if section[:link]
+      
+      if section[:sections] and section[:sections].size > 0
+        html << generate_sitemap(section[:sections], options)
+      end  
+      html << "</li>"
+    end
+    html << "</ul>"
   end
   
 end

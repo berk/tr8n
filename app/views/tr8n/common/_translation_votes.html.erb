@@ -5,7 +5,7 @@
           <td colspan="3" style="color:black; font-size:10px; padding:3px;">
             <%= trl("There are no translations for this phrase.") %> 
             <%= trl("Be the first one to [link: translate it].", "", 
-                    :link => lambda{|str| link_to(str, :controller => "/tr8n/translations", :action => :key, :translation_key_id => translation_key.id, :section_key => section_key)}  ) %>
+                    :link => lambda{|str| link_to(str, :controller => "/tr8n/phrases", :action => :view, :translation_key_id => translation_key.id, :section_key => section_key)}  ) %>
           </td>
         </tr>
     <% else %>   
@@ -25,7 +25,9 @@
             </div>  
           </td>  
           <td style="text-align:center;vertical-align:top; padding:3px;">
-            <% unless trn.translation_key.locked? %>
+            <% if trn.translation_key.locked? %>
+              <div style="text-align:center; padding-top:4px;"><%=image_tag("/tr8n/images/lock.png", :style=>"width:12px", :title => trl("This phrase is locked"))%></div>
+						<% else %>
               <%=link_to_function(image_tag("/tr8n/images/thumb_up.png"), "tr8nTranslator.voteOnTranslation('#{trn.translation_key.key}', '#{trn.id}', 1)")%> 
               <%=link_to_function(image_tag("/tr8n/images/thumb_down.png"), "tr8nTranslator.voteOnTranslation('#{trn.translation_key.key}','#{trn.id}', -1)")%> 
               <%=link_to_function(image_tag("/tr8n/images/exclamation.png"), "tr8nTranslator.reportTranslation('#{trn.translation_key.key}','#{trn.id}')")%>

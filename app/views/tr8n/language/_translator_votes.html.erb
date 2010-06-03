@@ -3,8 +3,8 @@
   
   <div class="section">
     <div class="small_section_title">
-      <div style="float:right;font-style:normal;font-size:12px">
-        <%=link_to(trl("view all"), {:controller => "/tr8n/translations", :action => :key, :translation_key_id => @translation_key.id}) %>
+      <div style="float:right;font-weight:normal;font-size:12px">
+        <%=link_to(trl("view all"), {:controller => "/tr8n/phrases", :action => :view, :translation_key_id => @translation_key.id}) %>
       </div>
       <strong><%=trl("Vote on Translations")%></strong>
     </div>
@@ -15,7 +15,7 @@
   
     <div style="padding-top:10px;font-size:11px">
       <%=trl("Don't like any of these?")%> 
-			<%=link_to(trl('Translate it yourself.'), {:controller => "/tr8n/translations", :action => :key, :translation_key_id => @translation_key.id}) %>
+			<%=link_to(trl('Translate it yourself.'), {:controller => "/tr8n/phrases", :action => :view, :translation_key_id => @translation_key.id}) %>
     </div>
   </div>
 </div>

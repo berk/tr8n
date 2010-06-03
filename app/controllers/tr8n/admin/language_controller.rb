@@ -22,17 +22,6 @@ class Tr8n::Admin::LanguageController < Tr8n::Admin::BaseController
     trfn("#{@language.english_name} language has been disabled")
     redirect_to_source
   end
-
-  def calculate_completeness
-    keys = Tr8n::TranslationKey.all 
-    
-    Tr8n::Language.all.each do |lang|
-      lang.calculate_completeness!(keys)
-    end
-    
-    trfn("Languages metrics have been recalculated")
-    redirect_to_source
-  end
     
   def charts
     

@@ -1,0 +1,26 @@
+<div class="section_box" style="margin-bottom:10px; background-color:#EFF8FF;">
+  <% form_tag({}, {:method => :get, :id => "translations_search_form"}) do %>
+     <%=hidden_field_tag(:section_key, @section_key) %>
+     <%=hidden_field_tag(:translation_key_id, @translation_key.id) if @translation_key %>
+     <table>
+      <tr>
+        <td><%=text_field_tag(:search, params[:search], {:style => "width:900px;height:20px;font-size:14px;"})%></td>
+        <td>
+          <button type="submit" class="translator_btn translator_small_btn" onClick="$('translations_search_form').submit(); return false;">
+              <span><%=trl("Search")%></span>
+          </button>
+        </td>
+      </tr>
+      <tr>
+        <td>  
+          <%=trl("Show")%>
+          <%=select_tag(:with_status, options_for_select(Tr8n::Translation.search_status_options, params[:with_status]))%>
+          <%=trl("submitted by")%>
+          <%=select_tag(:submitted_by, options_for_select(Tr8n::Translation.search_submitter_options, params[:submitted_by]))%>
+          <%=trl("created on")%>
+          <%=select_tag(:submitted_on, options_for_select(Tr8n::Translation.search_date_options, params[:submitted_on]))%>
+        </td>
+      </tr>
+    </table>      
+  <% end %>
+</div>

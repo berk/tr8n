@@ -5,18 +5,17 @@ class Tr8n::LanguageFilter < ModelFilter
   end
 
   def default_order
-    'completeness'
+    'english_name'
   end
   
   def default_order_type
-    'desc'
+    'asc'
   end
 
   def predefined_filters(profile)
     [
       ["Enabled Languages", "enabled"],
       ["Disabled Languages", "disabled"],
-      ["Completed Languages", "completed"],
       ["Left-to-Right Languages", "left"],
       ["Right-to-Left Languages", "right"]
     ]
@@ -33,11 +32,6 @@ class Tr8n::LanguageFilter < ModelFilter
 
     if (filter_name=="disabled")
       filter.add_condition(:enabled, :is, '0')
-      return filter
-    end
-
-    if (filter_name=="completed")
-      filter.add_condition(:completeness, :is, 100)
       return filter
     end
 

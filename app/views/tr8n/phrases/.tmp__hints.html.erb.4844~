@@ -1,0 +1,48 @@
+<% if Tr8n::Config.enable_google_suggestions? %>  
+  <div id="translation_suggestion_container_<%=@translation_key.id%>" style="display:none; padding-top:10px; padding-bottom:10px;">
+    <div class="section_title">
+        <%=trl("Translation Suggestion from Google")%>
+    </div>
+    
+    <%=image_tag("tr8n/left_quote.png", :style=>"text-align:bottom;padding-bottom:5px;") %>
+    <a onclick="$('translation_label_<%=@translation_key.id%>').value=$('translation_suggestion_<%=@translation_key.id%>').innerHTML; return false;" href="#">
+      <span id="translation_suggestion_<%=@translation_key.id%>" style="font-size:10px;"></span>
+    </a>
+    <%=image_tag("tr8n/right_quote.png", :style=>"text-align:bottom;padding-top:5px;") %>
+    
+    <script type="text/javascript">
+      function loadGoogleSuggestion() {
+        suggestTranslation("<%=@translation_key.id %>", "<%=@translation_key.tokenless_label %>", "<%=tr8n_current_language.locale%>");
+      }
+      Event.observe(window,'load',loadGoogleSuggestion);
+    </script>
+  
+    <div style="color:grey; font-size:10px; padding-top:10px;">
+       <%=trl("Click on the suggested translation to insert it into the label")%>
+    </div>
+  </div>
+<% end %>
+
+<% if Tr8n::Config.enable_glossary_hints? and @translation_key.glossary? %>
+  <div id="translation_glossary" style="padding-top:5px; padding-bottom:10px;">
+    <div class="section_title">
+      <%=trl("Glossary")%>
+    </div>
+    
+    <div style="max-height:300px; overflow:auto;">
+      <table style="width:100%">
+        <% @translation_key.glossary.each do |term| %>
+          <% border_style = "border-bottom: 1px dotted #ccc;" unless @translation_key.glossary.last == term %>
+          <tr style="<%=border_style%>">
+            <td style="padding-right:6px; padding-bottom:3px; vertical-align:top; font-size:10px;"><strong><%=term.keyword%></strong></td>
+            <td style="padding-bottom:3px; vertical-align:top; font-size:10px;"><%=term.description%></td>
+          </tr>
+        <% end %>
+      </table>
+    </div> 
+    
+    <div style="color:grey; font-size:10px; padding-top:10px;">
+       <%=trl("Review the glossary definition to make sure it fits well with the meaning of your translation")%>
+    </div>
+  </div>
+<% end %>

@@ -9,11 +9,6 @@
   <%=render(:partial => "lists") %>
 </div>
 
-<div style="margin-top:5px;padding-bottom:5px;">
-  <%=tr8n_help_icon_tag %>
-  <%=trl("Click this icon to view [link: translation help] in a new window.", "", :link => lambda{|txt| link_to(txt, {:controller => "tr8n/help", :action => :index}, :target => "new")})%>
-</div>
-
 <% unless tr8n_current_user_is_guest? %>
 <div style="padding:0px 5px 5px 5px">
     <% unless tr8n_current_language.default? %> 
@@ -58,6 +53,17 @@
     <% end %> 
 <div>		
 <% end %>
+
+<div style="margin-top:10px; padding-bottom:5px; border-top: 1px dotted #ccc; padding-top:3px;">
+  <table>
+  	<tr>
+  		<td style="vertical-align:middle"><%=tr8n_help_icon_tag %></td>
+			<td style="font-size:10px; font-family:arial; vertical-align:middle">&nbsp;
+        <%=trl("Click this icon to view [link: translation help] in a new window.", "", :link => lambda{|txt| link_to(txt, {:controller => "tr8n/help", :action => :index}, :target => "new")})%>
+			</td>
+  	</tr>
+  </table>
+</div>
 
 <% form_tag({:controller => :language, :action => :switch}, :id => "language_selector_form", :style=>"padding:0px;margin:0px;") do %>
     <%=hidden_field_tag(:source_url, request.env['HTTP_REFERER'])%>

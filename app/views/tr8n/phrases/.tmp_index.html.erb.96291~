@@ -1,0 +1,80 @@
+<%= render :partial => "/tr8n/common/header" %>
+<%= render :partial => "breadcrumb" %>
+
+<div style="background:#EFF8FF; border: 1px dotted #ccc; padding:10px;">
+  <% form_tag({:action => :index}, {:method => :get, :id => "translations_search_form"}) do %>
+     <%=hidden_field_tag(:section_key, @section_key) %>
+     <table>
+      <tr>
+        <td><%=text_field_tag(:search, params[:search], {:style => "width:900px;height:20px;font-size:14px;"})%></td>
+        <td>
+          <button type="submit" class="translator_btn translator_small_btn" onClick="$('translations_search_form').submit(); return false;">
+              <span><%=trl("Search")%></span>
+          </button>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <%=trl("Show")%>
+          <%=select_tag(:phrase_type, options_for_select(Tr8n::TranslationKey.search_phrase_type_options, params[:phrase_type]), :onChange => "toggleFilterOptions()")%>
+          <span id="extended_filter_options" style="<%='display:none' unless Tr8n::TranslationKey.search_phrases_with_translations.include?(params[:phrase_type]) %>">
+            <%=trl("that have")%>
+            <%=select_tag(:phrase_status, options_for_select(Tr8n::TranslationKey.search_phrase_status_options, params[:phrase_status]))%>
+						<%=trl("status")%>
+          </span>
+        </td>
+      </tr>
+     </table>
+  <% end %>
+</div>
+
+<div style="margin-top:10px; margin-bottom:10px; border: 1px dotted #ccc; padding:10px;">
+
+  <table style="width:100%">
+    <tr style="border-bottom:2px solid #ccc;">
+       <td style="width:30%;padding:5px; background: #f9f8f7; font-size:16px; color:grey; "><%=trl("English Phrase")%></td>
+       <td style="width:70%;padding:5px; font-size:16px; color:grey; " colspan="2"><%=trl("Top #{tr8n_current_language.english_name} Translations") %></td>
+    </tr>  
+    <% @translation_keys.each do |tk| %>
+      <tr style="border-bottom:1px solid #ccc;">
+        <% color = tk.locked? ? "#ECFFEF" : "#FDFFF0" %>
+        <td style="padding:5px; background: <%=color%>;">
+          <% if tk.locked? %>
+            <div style="float:right"><%=image_tag("/tr8n/images/lock.png", :style=>"width:12px", :title => trl("This phrase is locked"))%></div>
+          <% end %>
+          <%=link_to(tr8n_current_language.translate(tk.label, tk.description, {}, {:default_label => true}), :action => :key, :translation_key_id => tk.id, :section_key => @section_key)%>
+          <div style="color:grey;font-size:10px;padding-top:3px;"><%=tk.description%></div>
+        </td>
+        <td style="padding:5px; vertical-align:top">
+          <div id="translation_votes_for_<%=tk.key%>">
+            <%= render :partial => "/tr8n/common/translation_votes", :locals => {:translation_key => tk, :translations => tk.translations_for(tr8n_current_language)[0..4], :section_key => @section_key} %>
+          </div>  
+        </td>
+        <td style="padding-right:5px; padding-top:5px; vertical-align:top; width:10px;text-align:right">
+          <%=link_to(image_tag("/tr8n/images/table_edit.png"), :action => :key, :translation_key_id => tk.id, :section_key => @section_key)%>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+  
+  <div style="padding-top:10px;padding-bottom:10px;">
+    <table style="width:100%;">
+      <tr>
+        <td align='left'><%= will_paginate(@translation_keys, :skip_decorations => true) %></td>
+        <td align='right'><%= page_entries_info(@translation_keys, :skip_decorations => true, :entry_name => "phrase") %></td>
+      </tr>
+    </table>
+  </div>
+  
+</div>
+<%= render :partial => "/tr8n/common/footer" %>
+
+<script>
+  function toggleFilterOptions() {
+    if ($("phrase_type").value == "with") {
+      $("extended_filter_options").show();
+    } else {
+      $("extended_filter_options").hide();
+    }
+  }
+</script>

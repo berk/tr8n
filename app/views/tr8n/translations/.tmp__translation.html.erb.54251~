@@ -1,0 +1,73 @@
+<td style="text-align:left; vertical-align:top; padding-top:3px;">
+  <table>
+    <tr>
+      <td style="vertical-align:top;padding-right:2px;">
+        <%=tr8n_user_mugshot_tag(translation.translator, :linked => true)%>
+      </td>
+      <td style="vertical-align:top">
+        <%=tr8n_user_tag(translation.translator, :linked => true)%>
+        <div style="color:grey;">
+            <%=translation.created_at.trl(:date_time) %>
+        </div>
+				<%=tr8n_translator_rank_tag(translation.translator)%>
+      </td>
+    </tr>
+  </table>
+</td>
+
+<td style="text-align:right; vertical-align:top; padding-top:3px;">
+
+  <%=tr8n_spinner_tag("spinner_for_#{translation.id}", "", "")%>
+
+  <div id="votes_for_<%=translation.id%>" style="">
+    <%= translation.rank_label %> 
+  </div>  
+</td>  
+
+<td style="text-align:center; vertical-align:top; color:grey; padding-top:3px;">
+  <% unless translation.translation_key.locked? %>
+    <%=link_to_function(image_tag("/tr8n/images/thumb_up.png"), "tr8nTranslator.voteOnTranslation('#{translation.translation_key.key}', '#{translation.id}', 1)")%> 
+    <%=link_to_function(image_tag("/tr8n/images/thumb_down.png"), "tr8nTranslator.voteOnTranslation('#{translation.translation_key.key}','#{translation.id}', -1)")%> 
+    <%=link_to_function(image_tag("/tr8n/images/exclamation.png"), "tr8nTranslator.reportTranslation('#{translation.translation_key.key}','#{translation.id}')")%>
+  <% end %>   
+</td>
+
+<td style="text-align:left; vertical-align:top; padding-top:3px;">
+  <% if mode.to_s == "view" %>
+    <% if translation.can_be_edited_by?(tr8n_current_translator) %>
+      <span onDblClick="updateTranslationRow('<%=translation.id%>', 'edit')">
+        <%= translation.label %> 
+      </span>
+    <% else %>
+      <%= translation.label %>
+    <% end %>  
+  <% else %>
+    <%= text_area_tag("translation_row_value_#{translation.id}", translation.label, :style=>"width:99%;height:60px;border:1px solid #ccc;", :class => "keyboardInput" ) %>
+  <% end %>
+  
+  <% if translation.context %>
+    <div style="font-size: 11px; color: grey; padding-top:3px;">
+      <%=trl("Context:")%> <%= translation.context %>  
+    </div>
+  <% end %>
+</td>
+
+<% if show_actions %>
+<td style="text-align:right; vertical-align:top; padding-top:3px;">
+  <% if translation.can_be_edited_by?(tr8n_current_translator) %>
+    <% if mode.to_s == "view" %>
+      <%=link_to_function(image_tag("/tr8n/images/pencil.png"), "updateTranslationRow('#{translation.id}', 'edit')")%>
+      <%=link_to_function(image_tag("/tr8n/images/cross.png"), "deleteTranslationRow('#{translation.id}', '#{@section_key}')")%>
+    <% else %>
+      <%=link_to_function(image_tag("/tr8n/images/disk.png"), "submitTranslationRow('#{translation.id}')")%>
+      <%=link_to_function(image_tag("/tr8n/images/cancel.png"), "updateTranslationRow('#{translation.id}', 'view')")%>
+    <% end %>  
+  <% end %>   
+</td>
+<% end %>
+
+<% if mode.to_s == "edit" %>
+	<script>
+	  VKI_attach(document.getElementById("translation_row_value_<%=translation.id%>"));
+	</script>
+<% end %>

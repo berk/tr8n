@@ -8,7 +8,7 @@
 #############################################################################
 
 defaults: &defaults
-  enabled_features: [dashboard, translations, sitemap, awards, forum, glossary, rules, help]
+  enabled_features: [dashboard, phrases, translations, sitemap, awards, forum, glossary, rules, help]
   
   dashboard:
     title:            Dashboard
@@ -18,19 +18,27 @@ defaults: &defaults
     default_language: true
     manager_only:     false
   
+  phrases:
+    title:            Phrases
+    link:             /tr8n/phrases
+    controller:       phrases
+    actions:          [index, view]
+    default_language: false
+    manager_only:     false
+  
+  sitemap:
+    title:            Site Map
+    link:             /tr8n/phrases/map
+    controller:       phrases
+    actions:          [map, index, view]
+    default_language: false
+    manager_only:     false
+  
   translations:
     title:            Translations
     link:             /tr8n/translations
     controller:       translations
-    actions:          [index, key, view]
-    default_language: false
-    manager_only:     false
-    
-  sitemap:
-    title:            Site Map
-    link:             /tr8n/translations/map
-    controller:       translations
-    actions:          [map, index, key, view]
+    actions:          [index, view]
     default_language: false
     manager_only:     false
     

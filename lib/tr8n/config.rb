@@ -296,6 +296,10 @@ class Tr8n::Config
     guest_user?
   end
   
+  def self.silhouette_image
+    "/tr8n/images/photo_silhouette.gif"
+  end
+  
   #########################################################
   # rules engine
   
@@ -309,10 +313,6 @@ class Tr8n::Config
 
   def self.translation_threshold
     rules_engine[:translation_threshold]
-  end
-
-  def self.translator_threshold
-    rules_engine[:translator_threshold]
   end
 
   def self.default_rank_styles
