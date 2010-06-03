@@ -42,7 +42,12 @@ Tr8n.Translator = Class.create({
   show: function(translatable_node) {
     tr8nLanguageSelector.hide();
     
-    $("tr8n_translator").innerHTML = "<div style='font-size:18px;text-align:left;padding:10px;'><img src='/tr8n/images/indicator_white_large.gif' style='vertical-align:middle'> Loading...</div>";
+    var html = "";
+    html += "<div style='font-size:18px;text-align:center; margin:5px; padding:10px; background-color:black;'>";
+    html += "<img src='/tr8n/images/tr8n_logo.jpg' style='width:280px; vertical-align:middle;'>";
+    html += "<img src='/tr8n/images/loading3.gif' style='width:200px; height:20px; vertical-align:middle;'>";
+    html += "</div>"
+    $("tr8n_translator").innerHTML = html;
     
     var viewport_dimensions = document.viewport.getDimensions();
     var container_dimensions = this.container.getDimensions();
@@ -74,11 +79,30 @@ Tr8n.Translator = Class.create({
     Effect.Appear(this.container, {duration: 0.25});
     
     this.translation_key_id = translatable_node.getAttribute('translation_key_id');
-    new Ajax.Updater('tr8n_translator', '/tr8n/language/translator', {
-      parameters: {translation_key_id: this.translation_key_id, stem_type:(stem.v + "_" + stem.h), stem_offset:stem_offset},
-      evalScripts: true,
-      method: 'get'
-    });
+		var parameters = {translation_key_id: this.translation_key_id, stem_type:(stem.v + "_" + stem.h), stem_offset:stem_offset};
+		
+		window.setTimeout(function() {
+	    new Ajax.Request('/tr8n/language/translator', {
+				parameters: parameters,
+	      method: 'get',
+	      evalScripts: true,
+	      onSuccess: function(transport) {
+	        var data = transport.responseText;
+	        new Effect.Fade('tr8n_translator', {
+	          duration: 0.2,
+	          afterFinish: function() {
+	            $('tr8n_translator').update(data);
+	            new Effect.Appear('tr8n_translator', {duration: 0.2});
+	          }
+	        })
+	      }
+	    });
+		}, 500);
+//    new Ajax.Updater('tr8n_translator', '/tr8n/language/translator', {
+//      parameters: {translation_key_id: this.translation_key_id, stem_type:(stem.v + "_" + stem.h), stem_offset:stem_offset},
+//      evalScripts: true,
+//      method: 'get'
+//    });
   },
   reportTranslation: function(key, translation_id) {
     var msg = "Reporting this translation will remove it from this list and the translator will be put on a watch list. \n\nAre you sure you want to report this translation?"; 
@@ -231,7 +255,12 @@ Tr8n.LanguageSelector = Class.create({
     tr8nTranslator.hide();
     
     if (!this.loaded) {
-      $("tr8n_language_selector").innerHTML = "<div style='font-size:18px;text-align:left;padding:10px;'><img src='/tr8n/images/indicator_white_large.gif' style='vertical-align:middle'> Loading...</div>";
+			var html = "";
+			html += "<div style='font-size:18px;text-align:center; margin-top:5px; margin-bottom:5px; padding:10px; background-color:black;'>";
+			html += "<img src='/tr8n/images/tr8n_logo.jpg' style='width:280px; vertical-align:middle;'>";
+      html += "<img src='/tr8n/images/loading3.gif' style='width:200px; height:20px; vertical-align:middle;'>";
+			html += "</div>"
+      $("tr8n_language_selector").innerHTML = html;
     }
     
     var trigger = $('language_selector_trigger');
@@ -257,10 +286,26 @@ Tr8n.LanguageSelector = Class.create({
     Effect.Appear(this.container, {duration: 0.25});
     
     if (!this.loaded) {
-      new Ajax.Updater('tr8n_language_selector', '/tr8n/language/select', {
-        method: 'get',
-        evalScripts: true
-      });
+      window.setTimeout(function() {
+				  new Ajax.Request('/tr8n/language/select', {
+				  	method: 'get',
+				  	evalScripts: true,
+				  	onSuccess: function(transport) {
+				  		var data = transport.responseText;
+				  		new Effect.Fade('tr8n_language_selector', {
+								duration: 0.2,
+				  			afterFinish: function() {
+				  				$('tr8n_language_selector').update(data);
+				  				new Effect.Appear('tr8n_language_selector', {duration: 0.2});
+				  			}
+				  		})
+				  	}
+				   })
+			}, 500);
+//      new Ajax.Updater('tr8n_language_selector', '/tr8n/language/select', {
+//        method: 'get',
+//        evalScripts: true
+//      });
     }    
     
     this.loaded = true;

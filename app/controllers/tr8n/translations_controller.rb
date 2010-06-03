@@ -110,7 +110,7 @@ class Tr8n::TranslationsController < Tr8n::BaseController
       trfn("Your translation has been removed.")
     end
     
-    redirect_to(:action => :key, :translation_key_id => translation.translation_key.id, :section_key => @section_key)
+    redirect_to(:controller => "/tr8n/phrases", :action => :view, :translation_key_id => translation.translation_key.id, :section_key => @section_key)
   end
     
 private

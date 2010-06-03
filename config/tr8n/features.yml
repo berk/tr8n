@@ -8,7 +8,7 @@
 #############################################################################
 
 defaults: &defaults
-  enabled_features: [dashboard, phrases, translations, sitemap, awards, forum, glossary, rules, help]
+  enabled_features: [dashboard, phrases, translations, sitemap, awards, forum, help]
   
   dashboard:
     title:            Dashboard
