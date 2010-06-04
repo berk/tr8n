@@ -1,0 +1,32 @@
+<div style="background:#FDFFF0; border:1px #ccc dotted; margin-bottom:10px; padding:5px; ">
+  <% def_size = @definitions.values.sum{|v| v.size} %>
+  <%= trl("Found {definition_count} {_definitions} for {word_count} {_words}:", "", 
+      :definition_count => def_size, :_definitions => "definition".pluralize_for(def_size), 
+      :word_count => @definitions.keys.size, :_words => "word".pluralize_for(@definitions.keys.size)) %>
+			 
+  <%= (sorted_words = @definitions.keys.sort).collect{|w| "<strong>#{w}</strong>"}.join(", ") %>
+</div>
+
+<table style="width:100%">
+ <% sorted_words.each do |word| %>
+    <% @definitions[word].each do |definition| %>
+	   <tr style="border-bottom:1px solid #ccc;">
+	     <th style="text-align:left;color: #ccc;font-size:14px; font-family:arial; width:200px;">Word</th>
+	     <th style="text-align:left;color: #ccc;font-size:14px; font-family:arial;">Definition</th>
+	     <th style="text-align:left;color: #ccc;font-size:14px; font-family:arial;">Source</th>
+	   </tr>
+	    <tr style="border-bottom:1px dotted #ccc;">
+			  <td style="vertical-align:top; font-size:12px; font-family:arial; font-weight:bold;"><%=word%></td>
+        <td>
+        	 <pre style="font-size:12px; font-family:arial"><%=definition[:definition]%></pre>
+        </td>
+        <td style="vertical-align:top; font-size:12px; font-family:arial;">
+            <%=definition[:source]%>
+        </td>
+	    </tr>
+		<% end %>
+		
+ <% end %>
+</table>
+
+

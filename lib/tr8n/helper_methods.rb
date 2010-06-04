@@ -34,7 +34,7 @@ module Tr8n::HelperMethods
 
   def tr8n_spinner_tag(id = "spinner", label = nil, cls='spinner')
     html = "<div id='#{id}' class='#{cls}' style='display:none'>"
-    html << image_tag("/tr8n/images/spinner.gif")
+    html << image_tag("/tr8n/images/spinner.gif", :style => "vertical-align:middle;")
     html << " #{trl(label)}" if label
     html << "</div>"
   end

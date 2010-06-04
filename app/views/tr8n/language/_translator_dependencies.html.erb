@@ -1,4 +1,4 @@
-<% form_for(:translation, @translation, :url => {:controller => "/tr8n/translations", :action => :translate}, :html => {:id => 'translator_form', :method => :post}) do |f| %>
+<% form_for(:translation, @translation, :url => {:controller => "/tr8n/translations", :action => :translate}, :html => {:id => 'tr8n_translator_form', :method => :post}) do |f| %>
     <%= hidden_field_tag(:translation_key_id, @translation_key.id) %>
     <%= hidden_field_tag(:source_url, @source_url) %>
     <%= hidden_field_tag(:translation_has_dependencies, "true") %>
@@ -8,7 +8,7 @@
     <div style="padding:10px;">
       <%= render(:partial => "translator_header")%>
 
-      <div id="translator_dependencies_container">
+      <div id="tr8n_translator_dependencies_container">
          <div class="small_section_title">
             <%=trl("Translation Dependencies")%>
          </div>
@@ -47,7 +47,7 @@
     </div>
 <% end %>
 
-<div id="translator_buttons_container" class="buttons_container">
+<div id="tr8n_translator_buttons_container" class="buttons_container">
     <button type="submit" class="translator_btn translator_submit_btn" onClick="tr8nTranslator.submitDependencies(); return false;">
         <span><%=trl("Continue...")%></span>
     </button>

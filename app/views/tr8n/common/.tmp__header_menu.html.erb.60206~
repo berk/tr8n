@@ -1,0 +1,9 @@
+<% if Tr8n::Config.enabled? %>
+  <span class="language_selector_trigger">
+    <%=image_tag("/tr8n/images/flags/#{Tr8n::Config.current_language.flag}.png", :style=>"padding-bottom:0px;")%>
+    <span style="color:#1166bb; cursor:pointer;" onClick="tr8nLanguageSelector.toggle();">
+      <%= Tr8n::Config.current_language.native_name %>
+      <%= image_tag("/tr8n/images/language_selector_arrow.gif", :style=>"padding-bottom:2px;", :id=>"language_selector_trigger") %>
+    </span>
+  </span>
+<% end %>

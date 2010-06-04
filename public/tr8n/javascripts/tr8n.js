@@ -1,5 +1,9 @@
 var Tr8n = Tr8n || {};
 
+/****************************************************************************
+**** Tr8n Translator
+****************************************************************************/
+
 Tr8n.Translator = Class.create({
   initialize: function() {
     var e = Prototype.emptyFunction;
@@ -98,11 +102,6 @@ Tr8n.Translator = Class.create({
 	      }
 	    });
 		}, 500);
-//    new Ajax.Updater('tr8n_translator', '/tr8n/language/translator', {
-//      parameters: {translation_key_id: this.translation_key_id, stem_type:(stem.v + "_" + stem.h), stem_offset:stem_offset},
-//      evalScripts: true,
-//      method: 'get'
-//    });
   },
   reportTranslation: function(key, translation_id) {
     var msg = "Reporting this translation will remove it from this list and the translator will be put on a watch list. \n\nAre you sure you want to report this translation?"; 
@@ -110,11 +109,13 @@ Tr8n.Translator = Class.create({
     this.voteOnTranslation(key, translation_id, -1000);
   },
   voteOnTranslation: function(key, translation_id, vote) {
-    $('votes_for_' + translation_id).hide();
-    $('spinner_for_' + translation_id).show();
+    $('tr8n_votes_for_' + translation_id).hide();
+    $('tr8n_spinner_for_' + translation_id).show();
     
-    if ($('translation_votes_for_' + key)) {
-      new Ajax.Updater('translation_votes_for_' + key, '/tr8n/translations/vote', {
+		// the long version updates and reorders translations - used in translator and phrase list
+		// the short version only updates the total results - used everywhere else
+    if ($('tr8n_translator_votes_for_' + key)) {
+      new Ajax.Updater('tr8n_translator_votes_for_' + key, '/tr8n/translations/vote', {
         parameters: {
           translation_id: translation_id,
           vote: vote
@@ -122,7 +123,7 @@ Tr8n.Translator = Class.create({
         method: 'post'
       });
     } else {
-      new Ajax.Updater('votes_for_' + translation_id, '/tr8n/translations/vote', {
+      new Ajax.Updater('tr8n_votes_for_' + translation_id, '/tr8n/translations/vote', {
         parameters: {
           translation_id: translation_id,
           vote: vote,
@@ -130,8 +131,8 @@ Tr8n.Translator = Class.create({
         },
         method: 'post',
         onComplete: function() {
-          $('spinner_for_' + translation_id).hide();
-          $('votes_for_' + translation_id).show();
+          $('tr8n_spinner_for_' + translation_id).hide();
+          $('tr8n_votes_for_' + translation_id).show();
         }
       });
     }
@@ -168,28 +169,31 @@ Tr8n.Translator = Class.create({
     txtarea.scrollTop = scrollPos; 
   },
   switchTranslatorMode: function(translation_key_id, mode, source_url) {
-    new Ajax.Updater('translator_container', '/tr8n/language/translator', {
+    new Ajax.Updater('tr8n_translator', '/tr8n/language/translator', {
       parameters: {translation_key_id:translation_key_id, mode:mode, source_url:source_url},
       method: 'get',
       evalScripts: true
     });
   },
   submitTranslation: function() {
-    $('translator_translation_container').hide(); 
-    $('translator_hints_container').hide(); 
-    $('translator_buttons_container').hide(); 
-    $('translator_spinner').show(); 
-    $('translator_form').submit();
+    if ($("tr8n_translator_translation_label").value.trim() == "") {
+       return;
+    }
+    $('tr8n_translator_translation_container').hide(); 
+    $('tr8n_translator_hints_container').hide(); 
+    $('tr8n_translator_buttons_container').hide(); 
+    $('tr8n_translator_spinner').show(); 
+    $('tr8n_translator_form').submit();
   },  
   submitViewingUserDependency: function() {
-    $('translation_has_dependencies').value = "true";
+    $('tr8n_translator_translation_has_dependencies').value = "true";
     this.submitTranslation();  
   },
   submitDependencies: function() {
-    $('translator_buttons_container').hide(); 
-    $('translator_dependencies_container').hide(); 
-    $('translator_spinner').show(); 
-    $('translator_form').submit();
+    $('tr8n_translator_buttons_container').hide(); 
+    $('tr8n_translator_dependencies_container').hide(); 
+    $('tr8n_translator_spinner').show(); 
+    $('tr8n_translator_form').submit();
   },
   translate: function(label, callback, opts) {
       opts = opts || {}
@@ -217,8 +221,26 @@ Tr8n.Translator = Class.create({
             callback(request.responseText);
         }
       });
-  }  
+  },
+  suggestTranslation: function(translation_key_id, original, lang) {
+		  google.language.translate(original, "en", lang, function(result) {
+			    if (!result.error) {
+				      $("tr8n_translation_suggestion_" + translation_key_id).innerHTML = result.translation;
+				      $("tr8n_google_suggestion_container_" + translation_key_id).show();
+							
+							// for translator only
+							if ($("tr8n_translator_hints_container")) {
+								  $("tr8n_translator_hints_container").show();
+			        }
+			    }
+	    });
+  }
 });
+
+
+/****************************************************************************
+**** Tr8n Language Selector
+****************************************************************************/
 
 Tr8n.LanguageSelector = Class.create({
   initialize: function() {
@@ -240,13 +262,13 @@ Tr8n.LanguageSelector = Class.create({
     Effect.Fade(this.container, {duration: 0.25});
   },
   switchMode: function(mode) {
-    new Ajax.Updater('language_lists', '/tr8n/language/language_lists', {
+    new Ajax.Updater('tr8n_language_lists', '/tr8n/language/language_lists', {
       parameters: {mode:mode},
       method: 'get'
     });
   },
   removeLanguage: function(language_id) {
-    new Ajax.Updater('language_lists', '/tr8n/language/lists', {
+    new Ajax.Updater('tr8n_language_lists', '/tr8n/language/lists', {
       parameters: {language_action:'remove', language_id:language_id},
       method: 'post'
     });
@@ -263,7 +285,7 @@ Tr8n.LanguageSelector = Class.create({
       $("tr8n_language_selector").innerHTML = html;
     }
     
-    var trigger = $('language_selector_trigger');
+    var trigger = $('tr8n_language_selector_trigger');
 
     var viewport_dimensions = document.viewport.getDimensions();
     var container_dimensions = this.container.getDimensions();
@@ -302,10 +324,6 @@ Tr8n.LanguageSelector = Class.create({
 				  	}
 				   })
 			}, 500);
-//      new Ajax.Updater('tr8n_language_selector', '/tr8n/language/select', {
-//        method: 'get',
-//        evalScripts: true
-//      });
     }    
     
     this.loaded = true;
@@ -355,6 +373,10 @@ Tr8n.LanguageSelector = Class.create({
   }
 })
 
+/****************************************************************************
+**** Tr8n Lightbox
+****************************************************************************/
+
 Tr8n.Lightbox = Class.create({
   initialize: function() {
     this.container = new Element('div', {id:'tr8n_lightbox', className: 'tr8n_lightbox', style: 'display:none'});
@@ -394,18 +416,10 @@ Tr8n.Lightbox = Class.create({
   }
 })
 
-var translation_suggestion_key_id = null;
-function suggestTranslation(translation_key_id, original, lang) {
-  translation_suggestion_key_id = translation_key_id;
-  
-  google.language.translate(original, "en", lang, function(result) {
-    if (!result.error) {
-      $("translation_suggestion_" + translation_suggestion_key_id).innerHTML = result.translation;
-      $("translation_suggestion_container_" + translation_suggestion_key_id).show();
-      $("translator_hints_container").show();
-    }
-  });
-}
+
+/****************************************************************************
+**** Tr8n Initialization 
+****************************************************************************/
 
 var tr8nTranslator = null;
 var tr8nLanguageSelector = null;

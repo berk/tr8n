@@ -22,9 +22,9 @@
 		<table class="translations_table">
 		  <tr style="border-bottom:1px solid #ccc;">
 		    <td class="topic_header" style="width:200px;"><%=trl("Voter")%></td>
-        <td class="topic_header" style=""><%=trl("Translation")%></td>
         <td class="topic_header" style="width:25px;text-align:right;"><%=trl("Vote")%></td>
-        <td class="topic_header" style="width:100px;text-align:right"><%=trl("Translation Rank")%></td>
+        <td class="topic_header" style="width:80px;text-align:right"><%=trl("Total Rank")%></td>
+        <td class="topic_header" style=""><%=trl("Translation")%></td>
         <td class="topic_header" style="width:50px;">&nbsp;</td>
 		  </tr>  
 		
@@ -50,6 +50,14 @@
 						  </table>
 						</td>
 						
+            <td style="text-align:right; vertical-align:top; padding-top:3px;">
+                <%= vote.vote %> 
+            </td>  
+            
+            <td style="text-align:right; vertical-align:top; padding-top:3px;">
+                <%= translation.rank_label %> 
+            </td>
+						
             <td style="text-align:left; vertical-align:top; padding-top:3px;">
 				      <span title="Translation for: <%=translation.key.label%>">
 				        <%= translation.label %> 
@@ -60,15 +68,17 @@
                   <%=trl("Context:")%> <%= translation.context %>  
                 </div>
               <% end %>
+							
+					    <% color = translation.key.locked? ? "#ECFFEF" : "#FDFFF0" %>
+					    <div style="font-size: 11px; color: grey; margin-top:5px; margin-bottom:5px; padding:3px; background:<%=color%>; border:1px dotted #ccc;">
+					      <% if translation.key.locked? %>
+					        <div style="float:right"><%=image_tag("/tr8n/images/lock.png", :style=>"width:12px", :title => trl("This phrase is locked"))%></div>
+					      <% end %>
+					    
+					      <%=link_to(translation.key.label, :controller => "/tr8n/phrases", :action => :view, :locale => lang.locale, :translation_key_id => translation.key.id) %>
+					      <br><%= translation.key.description %>  
+					    </div>
             </td>
-						
-            <td style="text-align:right; vertical-align:top; padding-top:3px;">
-                <%= vote.vote %> 
-            </td>  
-						
-						<td style="text-align:right; vertical-align:top; padding-top:3px;">
-    				    <%= translation.rank_label %> 
-						</td>
 						  
 	          <td style="text-align:right; padding-right:5px;">
 	            <%=link_to(image_tag("/tr8n/images/table_edit.png"), :controller => "/tr8n/translations", :action => :key, :locale => lang.locale, :translation_key_id => translation.key.id) %>

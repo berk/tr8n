@@ -94,14 +94,14 @@ class Tr8n::TranslationsController < Tr8n::BaseController
 
       end
     end
-    render :partial => "translation", :locals => {:translation => @translation, :mode => mode, :show_actions => true}
+    render(:partial => "translation", :locals => {:language => tr8n_current_language, :translation => @translation, :mode => mode.to_sym})
   end  
   
   def delete
     translation = Tr8n::Translation.find(params[:translation_id])
     translator = translation.translator
 
-    unless translation.can_be_edited_by?(tr8n_current_translator)
+    unless translation.can_be_deleted_by?(tr8n_current_translator)
       tr8n_current_translator.tried_to_perform_unauthorized_action!("tried to delete translation that is not his")
       trfe("You are not authorized to delete this translation as you were not it's creator")
     else

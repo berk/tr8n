@@ -166,11 +166,10 @@ development:
   
 test:
   <<: *defaults
-  enable_key_source_tracking: false
+  enable_tr8n:                false 
       
 qa:
   <<: *defaults
-
   enable_key_source_tracking: true
 
 stage:

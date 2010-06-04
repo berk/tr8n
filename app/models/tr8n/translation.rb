@@ -132,6 +132,11 @@ class Tr8n::Translation < ActiveRecord::Base
   
   def can_be_edited_by?(editor)
     return false if translation_key.locked?
+    translator == editor
+  end
+
+  def can_be_deleted_by?(editor)
+    return false if translation_key.locked?
     return true if editor.manager?
     
     translator == editor

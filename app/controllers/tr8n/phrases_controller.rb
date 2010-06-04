@@ -27,7 +27,7 @@ class Tr8n::PhrasesController < Tr8n::BaseController
   def view
     @translation_key = Tr8n::TranslationKey.find_by_id(params[:translation_key_id])
     @translation_key = Tr8n::TranslationKey.random if params[:dir] == "random"
-    @has_translations = !@translation_key.translations_for(tr8n_current_language).empty?
+    @show_add_dialog = (params[:mode] == "add" or @translation_key.translations_for(tr8n_current_language).empty?)
 
     # for new translation
     @translation = Tr8n::Translation.new(:translation_key => @translation_key, :language => tr8n_current_language, :translator => tr8n_current_translator)
@@ -165,6 +165,12 @@ class Tr8n::PhrasesController < Tr8n::BaseController
 
   def map
     @section_key = "map"
+  end
+    
+  def dictionary
+    @translation_key = Tr8n::TranslationKey.find(params[:translation_key_id])
+    @definitions = Tr8n::Dictionary.load_definitions_for(@translation_key.words)
+    render :partial => "dictionary", :layout => false
   end
     
 private

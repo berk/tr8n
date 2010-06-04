@@ -9,23 +9,40 @@ module Tr8n::CommonMethods
   def init_tr8n
     session[:locale] = 'en-US' unless session[:locale]
     session[:locale] = params[:locale] if params[:locale]
-    Tr8n::Config.init(session[:locale], self.send(Tr8n::Config.current_user_method))
+    
+    tr8n_current_user = nil
+    begin
+      tr8n_current_user = self.send(Tr8n::Config.current_user_method)
+    rescue Exception => ex
+      raise Tr8n::Exception.new("Tr8n cannot be initialized because #{Tr8n::Config.current_user_method} failed with: #{ex.message}")
+    end
+    
+    Tr8n::Config.init(session[:locale], tr8n_current_user)
   end
 
   # translation functions
   def tr(label, desc = "", tokens = {}, options = {})
-    begin
-      if self.respond_to?(:controller)
-        source = "#{controller.controller_name}/#{controller.action_name}"
-      else
-        source = "#{controller_name}/#{action_name}"
-      end
-    rescue Exception => ex
-      source = self.class.name
+    unless desc.nil? or desc.is_a?(String)
+      raise Tr8n::Exception.new("The second parameter of the tr function must be a description")
     end
-
-    options.merge!(:source => source) unless options[:source]
-    return Tr8n::TranslationKey.substitute_tokens(label, tokens, options) unless Tr8n::Config.enabled?
+    
+    if Tr8n::Config.enabled_key_source_tracking?
+      begin
+        if self.respond_to?(:controller)
+          source = "#{controller.controller_name}/#{controller.action_name}"
+        else
+          source = "#{controller_name}/#{action_name}"
+        end
+      rescue Exception => ex
+        source = self.class.name
+      end
+      options.merge!(:source => source) unless options[:source]
+    end
+    
+    unless Tr8n::Config.enabled?
+      return Tr8n::TranslationKey.substitute_tokens(label, tokens, options)
+    end
+    
     Tr8n::Config.current_language.translate(label, desc, tokens, options)
   end
 

@@ -23,15 +23,7 @@
 </div>
 
 <div style="margin-top:10px; margin-bottom:10px; border: 1px dotted #ccc; padding:10px;">
-  
-	<div style="padding-bottom:10px;">
-    <table style="width:100%;">
-      <tr>
-        <td align='left'><%= will_paginate(@translation_keys, :skip_decorations => true) %></td>
-        <td align='right'><%= page_entries_info(@translation_keys, :skip_decorations => true, :entry_name => "phrase") %></td>
-      </tr>
-    </table>
-  </div>
+  <%= render :partial => "/tr8n/common/paginator", :locals => {:objects => @translation_keys, :subject => 'phrase'} %>
 
   <table style="width:100%">
     <tr style="border-bottom:2px solid #ccc;">
@@ -49,7 +41,7 @@
           <div style="color:grey;font-size:10px;padding-top:3px;"><%=tk.description%></div>
         </td>
         <td style="padding:5px; vertical-align:top">
-          <div id="translation_votes_for_<%=tk.key%>">
+          <div id="tr8n_translator_votes_for_<%=tk.key%>">
             <%= render :partial => "/tr8n/common/translation_votes", :locals => {:translation_key => tk, :translations => tk.translations_for(tr8n_current_language)[0..4], :section_key => @section_key} %>
           </div>  
         </td>
@@ -60,15 +52,7 @@
     <% end %>
   </table>
   
-  <div style="padding-top:10px;padding-bottom:10px;">
-    <table style="width:100%;">
-      <tr>
-        <td align='left'><%= will_paginate(@translation_keys, :skip_decorations => true) %></td>
-        <td align='right'><%= page_entries_info(@translation_keys, :skip_decorations => true, :entry_name => "phrase") %></td>
-      </tr>
-    </table>
-  </div>
-  
+  <%= render :partial => "/tr8n/common/paginator", :locals => {:objects => @translation_keys, :subject => 'phrase'} %>
 </div>
 <%= render :partial => "/tr8n/common/footer" %>
 

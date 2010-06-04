@@ -18,9 +18,9 @@
         <% style = "border-bottom:1px dotted #ccc;" unless translations.last == trn %>
         <tr style="<%=style%>">
           <td style="text-align:right;vertical-align:top; padding:3px;">
-					  <%=tr8n_spinner_tag("spinner_for_#{trn.id}", "", "")%>
+					  <%=tr8n_spinner_tag("tr8n_spinner_for_#{trn.id}", "", "")%>
 					 
-            <div id="votes_for_<%=trn.id%>" style="font-size:12px;">
+            <div id="tr8n_votes_for_<%=trn.id%>" style="font-size:12px;">
               <%= trn.rank_label %> 
             </div>  
           </td>  
