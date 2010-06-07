@@ -19,10 +19,6 @@
   <% end %>
 </table>
 
-<% if translations.empty? %>
-    <div style="text-align:center; padding:10px; font-size:12px;"><%=trl("No translations found")%></div>
-<% end %>
-
 <% if mode == :list %>
   <%= render :partial => "/tr8n/common/paginator", :locals => {:objects => translations, :subject => 'translation'} %>
 <% end %>	

@@ -74,6 +74,10 @@ class Tr8n::Language < ActiveRecord::Base
     find(:all, :conditions => ["enabled = ?", true], :order => "english_name asc")
   end
 
+  def self.featured_languages
+    find(:all, :conditions => ["enabled = ? and featured_index is not null and featured_index > 0", true], :order => "featured_index asc")
+  end
+
   def self.translate(label, desc = "", tokens = {}, options = {})
     return Tr8n::TranslationKey.substitute_tokens(label, tokens, options) unless Tr8n::Config.enabled?
     options.delete(:source) unless Tr8n::Config.enabled_key_source_tracking?

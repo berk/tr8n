@@ -56,10 +56,8 @@
         <div style="float:right"><%=image_tag("/tr8n/images/lock.png", :style=>"width:12px", :title => trl("This phrase is locked"))%></div>
       <% end %>
 		
-		  Original Phrase: <%=link_to(translation.key.label, :controller => "/tr8n/phrases", :action => :view, :locale => language.locale, :translation_key_id => translation.key.id) %>
-			<% unless translation.key.description.blank? %>
-        <br><%= translation.key.description %>
-			<% end %>  
+		  <%=link_to(translation.key.label, :controller => "/tr8n/phrases", :action => :view, :locale => language.locale, :translation_key_id => translation.key.id) %>
+      <br><%= translation.key.description %>  
     </div>
   <% end %>
 </td>

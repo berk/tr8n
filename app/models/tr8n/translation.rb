@@ -92,7 +92,7 @@ class Tr8n::Translation < ActiveRecord::Base
       rules.each do |rule|
         context_rules << "<strong>#{rule[:token]}</strong> #{rule[:rule].description}" 
       end
-      "#{context_rules.join(" and ")}."
+      context_rules.join(" and ")
     end
   end
 
@@ -166,22 +166,37 @@ class Tr8n::Translation < ActiveRecord::Base
   ## Search Related Stuff
   ###############################################################
   
-  def self.search_status_options
+  def self.filter_status_options
     [["all translations", "all"], 
      ["accepted translations", "accepted"], 
      ["pending translations", "pending"], 
-     ["rejected translations", "rejected"]]    
+     ["rejected translations", "rejected"]].collect{|option| [option.first.trl("Translation filter status option"), option.last]}    
   end
   
-  def self.search_submitter_options
-    [["anyone", "anyone"], ["me", "me"]]
+  def self.filter_submitter_options
+    [["anyone", "anyone"], 
+     ["me", "me"]].collect{|option| [option.first.trl("Translation filter submitter option"), option.last]}
   end
   
-  def self.search_date_options
+  def self.filter_date_options
     [["any date", "any"], 
      ["today", "today"], 
      ["yesterday", "yesterday"], 
-     ["in the last week", "last_week"]]
+     ["in the last week", "last_week"]].collect{|option| [option.first.trl("Translation filter date option"), option.last]}
+  end
+  
+  def self.filter_order_by_options
+    [["date", "date"], 
+     ["rank", "rank"]].collect{|option| [option.first.trl("Translation filter order by option"), option.last]}
+  end
+  
+
+  def self.filter_group_by_options
+    [["nothing", "nothing"], 
+     ["translator", "translator"], 
+     ["context rule", "context"], 
+     ["rank", "rank"], 
+     ["date", "date"]].collect{|option| [option.first.trl("Translation filter group by option"), option.last]}
   end
   
   def self.search_conditions_for(params)

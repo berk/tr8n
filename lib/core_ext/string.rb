@@ -1,7 +1,6 @@
 class String
 
   def translate(desc = "", tokens = {}, options = {}, language = Tr8n::Config.current_language)
-#    options.merge!(:skip_decorations => true) if options[:skip_decorations].blank?
     language.translate(self, desc, tokens, options)
   end
 

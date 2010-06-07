@@ -129,7 +129,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   
   def translation_with_such_rules_exist?(language_translations, translator, rules_hash)
     language_translations.each do |translation|
-      return true if translation.translator == translator and translation.matches_rule_definitions?(rules_hash)
+      return true if translation.matches_rule_definitions?(rules_hash)
     end
     false
   end
@@ -392,16 +392,16 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   ## Search Related Stuff
   ###############################################################
   
-  def self.search_phrase_type_options
+  def self.filter_phrase_type_options
     [["all phrases", "any"], 
      ["phrases without translations", "without"], 
-     ["phrases with translations", "with"]] 
+     ["phrases with translations", "with"]].collect{|option| [option.first.trl("Phrase filter type option"), option.last]} 
   end
   
-  def self.search_phrase_status_options
+  def self.filter_phrase_status_options
      [["anything", "any"],
       ["pending approval", "pending"], 
-      ["approved", "approved"]]
+      ["approved", "approved"]].collect{|option| [option.first.trl("Phrase filter status option"), option.last]}
   end
   
   def self.search_conditions_for(params)

@@ -66,7 +66,7 @@
 </div>
 
 <% form_tag({:controller => :language, :action => :switch}, :id => "language_selector_form", :style=>"padding:0px;margin:0px;") do %>
-    <%=hidden_field_tag(:source_url, @source_url)%>
+    <%=hidden_field_tag(:source_url, request.env['HTTP_REFERER'])%>
     <%=hidden_field_tag(:locale, tr8n_current_language.locale, :id => "language_selector_locale")%>
     <%=hidden_field_tag(:language_action, "switch_language", :id => "language_selector_action")%>
 <% end %>

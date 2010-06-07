@@ -16,6 +16,7 @@ defaults: &defaults
   enable_software_keyboard:   true      # shows the soft keyboard icon  
   enable_google_suggestions:  true      # uses google for suggestions
   enable_keyboard_shortcuts:  true      # adds some keyboard shortcuts 
+  enable_dictionary_lookup:   true      # shows dictionary words definitions 
   
   #############################################################################
   # Set the following flag to true if you would like to allow any registered 
@@ -24,7 +25,7 @@ defaults: &defaults
   # translation. If the flag is set to false, then a user must be promoted to
   # be a translator in order to submit or vote on translations.
   #############################################################################
-  open_translator_mode:       false
+  open_translator_mode:       true
 
   #############################################################################
   # If you would like to run tr8n on a different database, 

@@ -23,7 +23,7 @@
 				    
 				    <%=image_tag("/tr8n/images/left_quote.png", :style=>"text-align:bottom;padding-bottom:5px;") %>
 				    <a onclick="$('tr8n_translation_label_<%=@translation_key.id%>').value=$('tr8n_translation_suggestion_<%=@translation_key.id%>').innerHTML; return false;" href="#">
-				       <span id="tr8n_translation_suggestion_<%=@translation_key.id%>" style="font-size:12px;"></span>
+				       <span id="tr8n_translation_suggestion_<%=@translation_key.id%>" style="font-size:10px;"></span>
 				    </a>
 				    <%=image_tag("/tr8n/images/right_quote.png", :style=>"text-align:bottom;padding-top:5px;") %>
 				    
@@ -33,7 +33,7 @@
 				      });
 				    </script>
 				  
-				    <div style="color:grey; font-size:12px; padding-top:10px;">
+				    <div style="color:grey; font-size:10px; padding-top:10px;">
 				       <%=trl("Click on the suggested translation to insert it into the label")%>
 				    </div>
 				</div>
@@ -57,37 +57,35 @@
 				      </table>
 				    </div> 
 				    
-				    <div style="color:grey; font-size:12px; padding-top:10px;">
+				    <div style="color:grey; font-size:10px; padding-top:10px;">
 				       <%=trl("Review the glossary definition to make sure it fits well with the meaning of your translation")%>
 				    </div>
 				</div>
 			<% end %>
 		
-      <% if Tr8n::Config.enable_dictionary_lookup? %>
-	      <div id="tr8n_dictionary_container" style="padding-top:5px; padding-bottom:10px;">
-						<div class="section_title">
-						  <%=trl("Dictionary Definitions for Original Phrase in English")%>
-						</div>
-	          
-						<div id="tr8n_dictionary_opener" style="font-size:12px; font-weight:normal;">
-							  <%=link_to_function(trl("Click here to download dictionary definitions for the phrase words"), "$('tr8n_dictionary_opener').hide(); $('tr8n_dictionary_spinner').show(); downloadDictionaryDefinitions(); ") %>
-						</div>	
-	
-	          <div id="tr8n_dictionary_shower" style="display:none; font-size:12px; font-weight:normal;">
-	              <%=link_to_function(trl("show dictionary definitions"), "$('tr8n_dictionary_shower').hide(); $('tr8n_dictionary_hider').show(); Effect.Appear('tr8n_dictionary', {duration: 0.2, afterFinish: function() {scrollToElement($('buttons_container'));}}); ") %>
-								&raquo;
-	          </div>  
-	
-	  			  <%=tr8n_spinner_tag("tr8n_dictionary_spinner", "Downloading words definitions...") %>
-						
-						<div id="tr8n_dictionary" style="height:300px; overflow:auto; display:none; background: #EFF8FF; border: 1px dotted #ccc; padding: 5px;">
-						</div>
-	
-	          <div id="tr8n_dictionary_hider" style="display:none; font-size:12px; font-weight:normal;">
-	              &laquo; <%=link_to_function(trl("hide dictionary definitions"), "$('tr8n_dictionary_hider').hide(); $('tr8n_dictionary_shower').show(); Effect.Fade('tr8n_dictionary', { duration: 0.2 }); ") %>
-	          </div>  
-			  </div>	
-      <% end %>
+      <div id="tr8n_dictionary_container" style="padding-top:5px; padding-bottom:10px;">
+					<div class="section_title">
+					  <%=trl("Dictionary Definitions for Original Phrase in English")%>
+					</div>
+          
+					<div id="tr8n_dictionary_opener" style="font-size:10px; font-weight:bold;">
+						  <%=link_to_function(trl("Click here to download dictionary definitions for the phrase words"), "$('tr8n_dictionary_opener').hide(); $('tr8n_dictionary_spinner').show(); downloadDictionaryDefinitions(); ") %>
+					</div>	
+
+          <div id="tr8n_dictionary_shower" style="display:none; font-size:10px; font-weight:bold;">
+              <%=link_to_function(trl("show dictionary definitions"), "$('tr8n_dictionary_shower').hide(); $('tr8n_dictionary_hider').show(); Effect.Appear('tr8n_dictionary', {duration: 0.2, afterFinish: function() {scrollToElement($('buttons_container'));}}); ") %>
+							&raquo;
+          </div>  
+
+  			  <%=tr8n_spinner_tag("tr8n_dictionary_spinner", "Downloading words definitions...") %>
+					
+					<div id="tr8n_dictionary" style="height:300px; overflow:auto; display:none; background: #EFF8FF; border: 1px dotted #ccc; padding: 5px;">
+					</div>
+
+          <div id="tr8n_dictionary_hider" style="display:none; font-size:10px; font-weight:bold;">
+              &laquo; <%=link_to_function(trl("hide dictionary definitions"), "$('tr8n_dictionary_hider').hide(); $('tr8n_dictionary_shower').show(); Effect.Fade('tr8n_dictionary', { duration: 0.2 }); ") %>
+          </div>  
+		  </div>	
 		
 		  <div id="buttons_container" style="padding-top:5px;padding-bottom:5px;text-align:center">
 		      <button type="submit" class="translator_btn translator_submit_btn" onClick="submitTranslation(); return false;">

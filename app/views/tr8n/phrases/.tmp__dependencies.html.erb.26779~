@@ -14,7 +14,7 @@
   <% end %>
 
   <% if tr8n_current_language.has_rules? %>
-	  <div id="rules_trigger" style="font-size:12px; font-weight:normal;">
+	  <div id="rules_trigger" style="font-size:10px; font-weight:bold;">
 		  <% 
          if @translation_key.sanitized_tokens? 
 			     link_label = trl("Click here if this translation depends on any of the token values or the gender of the viewing user")
@@ -26,7 +26,7 @@
 	  </div>
 		
     <div id="translation_rules" style="padding:5px; border: 1px dotted #ccc; background:#EFF8FF; display:none;">
-      <div style="font-size:14px; font-weight:normal; border-bottom: 1px dotted #ccc;">
+      <div style="font-size:14px; font-weight:normal;">
 			   <%=trl("Token Dependency Rules")%>
 			</div>
       
@@ -64,9 +64,9 @@
 					</table>
 		  </div>
 				
-			<div style="color:grey; font-size:12px; padding-top:10px;"><%=trl("Select all of the rules that apply to this translation")%></div>
+			<div style="color:grey; font-size:10px; padding-top:10px;"><%=trl("Select all rules that apply to this translation")%></div>
 			
-			<div style="padding-top:10px;font-size:12px; font-weight:normal;">
+			<div style="padding-top:10px;font-size:10px; font-weight:bold;">
         <%=link_to_function(trl("Click here if the translation does not depend on the token values."), "$('has_rules').value='false'; $('rules_trigger').show(); Effect.BlindUp('translation_rules', { duration: 0.2 });") %>
 			</div>
     </div>

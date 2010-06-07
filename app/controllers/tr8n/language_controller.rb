@@ -140,6 +140,9 @@ class Tr8n::LanguageController < Tr8n::BaseController
     
     @inline_translations_allowed = true if tr8n_current_user_is_admin?
     
+    @source_url = request.env['HTTP_REFERER']
+    @source_url.gsub!("locale", "previous_locale") if @source_url
+    
     @all_languages = Tr8n::Language.enabled_languages
     @user_languages = Tr8n::LanguageUser.languages_for(tr8n_current_user) unless tr8n_current_user_is_guest?
     render :layout => false 

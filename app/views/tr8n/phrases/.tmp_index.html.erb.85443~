@@ -13,10 +13,10 @@
     	<%=text_field_tag(:search, params[:search], {:style => "width:90%;font-size:12px;"})%><br>
 			<div style="padding-top:5px;">
           <%=trl("Show")%>
-          <%=select_tag(:phrase_type, options_for_select(Tr8n::TranslationKey.filter_phrase_type_options, params[:phrase_type]), :onChange => "toggleFilterOptions()")%>
+          <%=select_tag(:phrase_type, options_for_select(Tr8n::TranslationKey.search_phrase_type_options, params[:phrase_type]), :onChange => "toggleFilterOptions()")%>
           <span id="extended_filter_options" style="<%='display:none' unless params[:phrase_type]=="with" %>">
             <%=trl("marked as")%>
-            <%=select_tag(:phrase_status, options_for_select(Tr8n::TranslationKey.filter_phrase_status_options, params[:phrase_status]))%>
+            <%=select_tag(:phrase_status, options_for_select(Tr8n::TranslationKey.search_phrase_status_options, params[:phrase_status]))%>
           </span>
       </div>					
   <% end %>

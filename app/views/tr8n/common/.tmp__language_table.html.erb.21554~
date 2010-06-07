@@ -1,0 +1,13 @@
+<% if Tr8n::Config.enabled? %>
+	<table style="border:1px solid #ccc;">
+	  <tr>
+	    <% per_column = Tr8n::Language.count / opts[:cols] %> 
+	    <td style='width:<%=opts[:col_size]%>; vertical-align:top;'>
+	      <% Tr8n::Language.all.each_with_index do |lang, index| %>
+	        <%= "</td><td style='width:#{opts[:col_size]}; vertical-align:top'>" if (index+1) % (per_column+1) == 0 %>
+					<%= tr8n_language_name_tag(lang) %> <br>
+	      <% end %>
+	    </td>
+	  </tr>
+	</table>
+<% end %>

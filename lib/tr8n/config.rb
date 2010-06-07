@@ -177,6 +177,10 @@ class Tr8n::Config
     config[:enable_glossary_hints]
   end
 
+  def self.enable_dictionary_lookup?
+    config[:enable_dictionary_lookup]
+  end
+
   def self.use_remote_database?
     config[:use_remote_database]
   end

@@ -34,5 +34,13 @@ namespace :tr8n do
   task :metrics => :environment do
     Tr8n::LanguageMetric.calculate_language_metrics
   end
+
+  task :featured => :environment do
+    ["en-US", "es", "pt", "fr", "de", "it", "ru", "et", "iw", "zh-TW"].each_with_index do |locale, index|
+      lang = Tr8n::Language.for(locale)
+      lang.featured_index = (index + 1) * 100
+      lang.save
+    end
+  end
   
 end

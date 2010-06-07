@@ -8,7 +8,8 @@ class CreateTr8nTables < ActiveRecord::Migration
       t.boolean :right_to_left
       t.integer :completeness
       t.integer :fallback_language_id
-      t.text    :curse_words      
+      t.text    :curse_words  
+      t.integer :featured_index, :default => 0
       t.timestamps
     end
     add_index :tr8n_languages, [:locale]
@@ -38,13 +39,15 @@ class CreateTr8nTables < ActiveRecord::Migration
     
     create_table :tr8n_language_metrics do |t|
       t.string  :type
-      t.integer :language_id,       :null => false
+      t.integer :language_id,           :null => false
       t.date    :metric_date
-      t.integer :user_count,        :default => 0
-      t.integer :translator_count,  :default => 0
-      t.integer :translation_count, :default => 0
-      t.integer :key_count,         :default => 0
-      t.integer :locked_key_count,  :default => 0
+      t.integer :user_count,            :default => 0
+      t.integer :translator_count,      :default => 0
+      t.integer :translation_count,     :default => 0
+      t.integer :key_count,             :default => 0
+      t.integer :locked_key_count,      :default => 0
+      t.integer :translated_key_count,  :default => 0
+      
       t.timestamps
     end
     add_index :tr8n_language_metrics, [:language_id]
@@ -75,12 +78,14 @@ class CreateTr8nTables < ActiveRecord::Migration
     add_index :tr8n_translator_logs, [:created_at]
     
     create_table :tr8n_translator_metrics do |t|
-      t.integer :translator_id,       :null => false
-      t.integer :language_id,         :limit => 8
-      t.integer :total_translations,  :default => 0
-      t.integer :total_votes,         :default => 0
-      t.integer :positive_votes,      :default => 0
-      t.integer :negative_votes,      :default => 0
+      t.integer :translator_id,         :null => false
+      t.integer :language_id,           :limit => 8
+      t.integer :total_translations,    :default => 0
+      t.integer :total_votes,           :default => 0
+      t.integer :positive_votes,        :default => 0
+      t.integer :negative_votes,        :default => 0
+      t.integer :accepted_translations, :default => 0
+      t.integer :rejected_translations, :default => 0
       t.timestamps
     end
     add_index :tr8n_translator_metrics, [:translator_id]

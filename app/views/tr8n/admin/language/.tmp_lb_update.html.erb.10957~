@@ -44,14 +44,6 @@
               <%= form.check_box :enabled %>
           </td>
       </tr>
-      <tr>
-          <th>
-              Featured Index:
-          </th>
-          <td>
-              <%= form.text_field :featured_index %>
-          </td>
-      </tr>			
   </table>
 
   <%= render :partial => "/tr8n/admin/common/lightbox_buttons" %>

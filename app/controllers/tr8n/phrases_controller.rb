@@ -43,7 +43,36 @@ class Tr8n::PhrasesController < Tr8n::BaseController
     conditions << tr8n_current_language.id
     conditions << @translation_key.id
     
-    @translations = Tr8n::Translation.paginate(:per_page => per_page, :page => page, :conditions => conditions, :order => "rank desc, created_at desc")    
+    @translations = Tr8n::Translation.find(:all, :conditions => conditions, :order => "rank desc, created_at desc")
+    
+    @grouping = {}
+    if params[:grouped_by] != "nothing"
+      @translations.each do |tr|
+        case params[:grouped_by]
+          when "translator" then
+              if tr.translator.user
+                key = trl("Translations Created by {user}", "", :user => [tr.translator.user, tr.translator.name])
+              else
+                key = trl("Translations Created by an Unknown User")
+              end
+              (@grouping[key] ||= []) << tr 
+          when "context" then
+              if tr.context.blank?
+                key = trl("Translations Without Context Rules")
+              else
+                key = tr.context
+              end
+              (@grouping[key] ||= []) << tr 
+          when "rank" then
+              key = trl("Translations With Rank \"{rank}\"", "", :rank => tr.rank)
+              (@grouping[key] ||= []) << tr 
+          when "date" then
+              key = trl("Translations Created On {date}", "", :date => tr.created_at.trl(:verbose))
+              (@grouping[key] ||= []) << tr 
+        end
+      end
+    end
+    
   end
   
   # main translation method used by the translator and translation screens

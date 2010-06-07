@@ -1,0 +1,24 @@
+<style>
+	.translations_table {
+		width:100%; background-color:white; border: 1px dotted #ccc;
+	}
+	.translations_table td {
+    padding:3px;
+  } 
+</style>
+
+<% unless lang.recently_updated_translations.empty? %>
+	<div style="padding-top:10px; font-size:14px; border-bottom:1px solid #ccc; margin-bottom:5px;">
+    <div style="float:right; font-size:12px;">
+       <%=link_to(trl("view all"), :controller => "/tr8n/translations", :action => :index, :locale => lang.locale)%>
+    </div>
+
+    <%=tr8n_toggler_tag("trans_content_#{lang.id}", "", false)%>
+	  <%=trl("Recent Translations")%>
+		<span style="color:#ccc; font-size:12px;">(<%=trl("last 5")%>)</span>
+	</div>
+	
+	<div id="trans_content_<%=lang.id%>" class="translations_table" style="display:none;">
+    <%= render :partial => "/tr8n/translations/list", :locals => {:language => lang, :translations => lang.recently_updated_translations, :mode => :short_list} %>
+	</div>	
+<% end %>	

@@ -1,0 +1,54 @@
+<% form_for(:translation, @translation, :url => {:controller => "/tr8n/translations", :action => :translate}, :html => {:id => 'tr8n_translator_form', :method => :post}) do |f| %>
+    <%= hidden_field_tag(:translation_key_id, @translation_key.id) %>
+    <%= hidden_field_tag(:source_url, @source_url) %>
+    <%= hidden_field_tag(:translation_has_dependencies, "true") %>
+
+    <% @dependant_tokens = @translation_key.language_rules_dependant_tokens %>
+
+    <div style="padding:10px;">
+      <%= render(:partial => "translator_header")%>
+
+      <div id="tr8n_translator_dependencies_container">
+         <div class="small_section_title">
+            <%=trl("Translation Dependencies")%>
+         </div>
+        
+        <div style="padding-bottom:15px;">
+          <table style="width:100%">
+            <tr>
+              <td style="width:5%; padding:5px;"></td>
+              <% @dependant_tokens.each do |val| %>
+                <% td_width = (95/@dependant_tokens.size) %>  
+                <td style="font-size:10px; text-align:center; font-weight:bold; width:<%=td_width%>%"><%=val%></td>    
+              <% end %>
+            </tr>
+            
+            <% tr8n_current_language.rule_classes.each do |rule_class| %>
+              <tr>
+                <td style="font-size:10px; font-weight:bold; padding:5px;">
+                  <%=trl(rule_class.dependency) %>
+                </td>
+                
+                <% @dependant_tokens.each do |token| %>
+                  <td style="text-align:center; font-size:10px; color: grey; border: 1px dotted #ccc; padding:5px;">
+                    <% if rule_class.dependant?(token) %>
+                      <%=check_box_tag("dependencies[#{token}][#{rule_class.dependency}]", "true", false)%>
+                    <% else %>
+                      n/a  
+                    <% end %>  
+                  </td>    
+                <% end %>
+              </tr>
+            <% end %> 
+          </table>
+        </div>
+        <%=link_to_function(trl("Click here if the translation does not depend on the token values."), "tr8nTranslator.switchTranslatorMode('#{@translation_key.id}', 'submit', '#{@source_url}')", :style => "font-size:10px;") %>
+     </div>      
+    </div>
+<% end %>
+
+<div id="tr8n_translator_buttons_container" class="buttons_container">
+    <button type="submit" class="translator_btn translator_submit_btn" onClick="tr8nTranslator.submitDependencies(); return false;">
+        <span><%=trl("Continue...")%></span>
+    </button>
+</div>

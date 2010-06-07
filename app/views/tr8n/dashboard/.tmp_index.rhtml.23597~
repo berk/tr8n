@@ -1,0 +1,161 @@
+<%= render :partial => "/tr8n/common/header" %>
+<script language="JavaScript" src="/tr8n/javascripts/FusionCharts.js"></script>
+<script type="text/javascript">
+   function createChart(chartId, type, url) {
+      var chart = new FusionCharts("/tr8n/charts/FCF_" + type + ".swf", chartId, "150", "120");
+      chart.setDataURL(url);
+      chart.render(chartId);
+   }
+</script>
+
+<div class="section_title">
+  <%=trl("{user}'s Dashboard", "", :user => [tr8n_current_translator.user, tr8n_current_translator.name]) %>
+</div>
+
+<div class="section_box" style="background-color:#FDFFF0;">
+    <table style="width:100%">
+      <tr>
+        <td style="width:50%; padding-top:3px;">
+				  <table>
+				    <tr>
+				      <td style="vertical-align:top;padding-right:2px; width:60px;">
+				        <%=tr8n_user_mugshot_tag(tr8n_current_translator, :linked => true)%>
+				      </td>
+				      <td style="vertical-align:top">
+								<table>
+									<tr>
+										<td style="width:150px"><%=trl("Your Overall Rank:") %></td>
+										<td>
+								        <%=tr8n_translator_rank_tag(tr8n_current_translator)%>			
+										</td>
+									</tr>
+									<tr>
+										<td><%=trl("Registered On:") %></td>
+										<td><%=tr8n_current_translator.created_at.trl%></td>
+									</tr>
+                  <tr>
+                    <td><%=trl("Your Total Translations:") %></td>
+                    <td><%=tr8n_current_translator.total_metric.total_translations%></td>
+                  </tr>
+                  <tr>
+                    <td><%=trl("Your Total Votes:") %></td>
+                    <td>
+                      (<span style="color:green"><%=tr8n_current_translator.total_metric.positive_votes || 0 %></span>/<span style="color:red"><%=tr8n_current_translator.total_metric.negative_votes || 0 %></span>)
+										</td>
+                  </tr>
+                  <tr>
+                    <td><%=trl("Your Forum Messages:") %></td>
+                    <td>
+                       <%=tr8n_current_translator.language_forum_messages.count %> 
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="vertical-align:top;"><%=trl("Your Languages:") %></td>
+                    <td style="vertical-align:top;">
+		                  <% langs = [] %>
+		                  <% tr8n_current_translator.languages.each do |lang|
+		                      next if lang.default?
+		                      langs << link_to(lang.english_name, :anchor => lang.locale)  
+		                     end %>       
+		                  <%= langs.join(" | ") %>
+                    </td>
+                  </tr>
+								</table>
+				      </td>
+				    </tr>
+				  </table>
+					
+        </td>       
+      	
+        <td style="width:50%;padding-top:3px;padding-right:3px;">
+          <% translator_metric = tr8n_current_translator.total_metric %>
+          <table style="width:100%; border:1px dotted #ccc; background-color:white;">
+              <tr>
+                <td colspan="2" style="text-align:center; font-size:14px; padding-top:5px; padding-bottom:5px;">
+								  <%=trl("Your Translations") %>
+								</td>
+              </tr> 
+              <tr>
+                <td style="vertical-align:middle; padding-left:5px; padding-bottom: 10px;">
+                  <table style="" cellpadding="1px" cellspacing="1px">
+                    <tr>
+                      <td style="width:20px;"><div style="height:15px; width:15px; background-color:green;"></div></td>
+                      <td style="width:50px;"><%=trl("Accepted:") %></td>
+                      <td style="width:40px;"><%=translator_metric.accepted_translations || 0 %></td>
+                    </tr>
+                    <tr>
+                      <td style=" "><div style="height:15px; width:15px; background-color:yellow;"></div></td>
+                      <td style=" "><%=trl("Pending:") %></td>
+                      <td style=" "><%=translator_metric.pending_vote_translations || 0 %></td>
+                    </tr>
+                    <tr>
+                      <td style=" "><div style="height:15px; width:15px; background-color:red;"></div></td>
+                      <td style=" "><%=trl("Rejected:") %></td>
+                      <td style=" "><%=translator_metric.rejected_translations || 0 %></td>
+                    </tr>
+                    <tr>
+                      <td style=""> </td>
+                      <td style=""><%=trl("Total Translations:") %></td>
+                      <td style=""><%=translator_metric.total_translations || 0 %></td>
+                    </tr>
+                  </table>
+                </td>
+                <td style="vertical-align:middle; width:220px; text-align:center">
+                  <div id="translator_chart"></div>     
+                </td>   
+              </tr>
+          </table>      
+        </td>       
+      </tr>
+    </table>  
+</div>
+
+<% tr8n_current_translator.languages.each do |lang| %>
+	<% next if lang.default? %>
+	<% translator_metric = tr8n_current_translator.metric_for(lang) %>
+	
+	<div class="section_title">
+	  <div style="float:right; font-size:12px; font-weight:normal; padding-top:5px;">
+      <%=link_to(trl("select"), :locale => lang.locale)%>
+      | <%=link_to(trl("phrases"), "/tr8n/phrases?locale=#{lang.locale}")%>
+      | <%=link_to(trl("translations"), "/tr8n/translations?locale=#{lang.locale}")%>
+      | <%=link_to(trl("site map"), "/tr8n/map?locale=#{lang.locale}")%>
+      | <%=link_to(trl("awards"), "/tr8n/awards?locale=#{lang.locale}")%>
+      | <%=link_to(trl("discussions"), "/tr8n/forum?locale=#{lang.locale}")%>
+      <% if tr8n_current_translator.manager?(lang) %>
+         | <%=link_to(trl("manage"), "/tr8n/language/index?locale=#{lang.locale}")%>
+      <% end %>
+      | <%=link_to(trl("remove"), "/tr8n/language/remove?language_id=#{lang.id}")%>
+	  </div>
+
+    <%=tr8n_toggler_tag("lang_content_#{lang.id}")%>
+		
+    <%=image_tag("/tr8n/images/flags/#{lang.flag}.png", :title=>trl("#{lang.english_name} flag"))%>&nbsp;
+    <a name="<%=lang.locale%>" style="text-decoration:none;color:black;"><%=lang.english_name%></a>
+		
+		<% if tr8n_current_translator.manager?(lang) %> 
+		  <span style="color:#ccc; font-size:12px;">(<%=trl("You are managing this language") %>)</span>
+		<% end %>
+	</div>
+	
+	<div id="lang_content_<%=lang.id%>" class="section_box colored">
+    <%=render :partial=>"statistics", :locals => {:lang => lang, :translator_metric => translator_metric}%>
+		
+    <%=render :partial=>"forum", :locals => {:lang => lang}%>
+
+    <%=render :partial=>"translations", :locals => {:lang => lang}%>
+
+    <%=render :partial=>"votes", :locals => {:lang => lang}%>
+	</div>
+<% end %>
+
+
+<script type="text/javascript">
+   createChart("translator_chart", "Pie3D", "/tr8n/chart/translator_rank");
+   
+  <% tr8n_current_translator.languages.each do |lang| %>
+	   <% next if lang.default? %>
+     createChart("translator_chart_<%=lang.id%>", "Pie3D", "/tr8n/chart/translator_rank?language_id=<%=lang.id%>");
+     createChart("language_chart_<%=lang.id%>", "Pie3D", "/tr8n/chart/language_completeness?language_id=<%=lang.id%>");
+  <% end %>
+</script>

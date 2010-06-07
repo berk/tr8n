@@ -1,0 +1,7 @@
+<% if Tr8n::Config.enabled? and (Tr8n::Config.open_translator_mode? or Tr8n::Config.current_user_is_translator?) %>
+	  <div class="tr8n_language_strip" style="font-size:10px;">
+	  	<% Tr8n::Language.completed_languages[0..7].each do |lang| %>
+         <%=image_tag("/tr8n/images/flags/#{lang.flag}.png", :style=>"padding-bottom:0px;")%> <%= lang.native_name %> &nbsp;
+			<% end %>
+	  </span>
+<% end %>

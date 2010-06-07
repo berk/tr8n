@@ -1,4 +1,5 @@
 <%= render :partial => "/tr8n/admin/common/header" %>
+
 <h1>
   <span style="font-size:12px; float:right; padding-top:10px;">
     <%=link_to("View Users", {:action => :users})%> | 
@@ -36,9 +37,6 @@
     <th style="text-align:right">
       Completeness
     </th>
-    <th style="text-align:right">
-      Featured Index
-    </th>
     <th></th>
   </tr>  
   <% @languages.each_with_index do |lang, index| %>
@@ -73,7 +71,6 @@
           <%=lang.completeness ? lang.completeness : '0' %>%
         </span>
       </td>
-      <td style="text-align:right"><%=lang.featured_index %></td>
       <td style="text-align:right">
         <%=link_to("View", :action => :view, :lang_id => lang.id) %>
 				|

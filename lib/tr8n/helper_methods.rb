@@ -1,12 +1,60 @@
 module Tr8n::HelperMethods
   include Tr8n::CommonMethods
 
+  def tr8n_language_name_tag(lang = Tr8n::Config.current_language, opts = {})
+    show_flag = opts[:flag].nil? ? true : opts[:flag]
+    name_type = opts[:name].nil? ? :full : opts[:name] # :full, :native, :english, :locale
+    linked = opts[:linked].nil? ? true : opts[:linked] 
+    link = opts[:link].nil? ? {:locale => lang.locale} : opts[:link].clone
+    
+    html = "<span style='white-space: nowrap'>"
+    if show_flag
+      html << image_tag("/tr8n/images/flags/#{lang.flag}.png", :style => "vertical-align:middle;", :title => trl("#{lang.english_name} flag"))
+    end
+    
+    html << "&nbsp;" 
+    name = case name_type
+      when :native  then lang.native_name
+      when :english then lang.english_name
+      when :locale  then lang.locale
+      else lang.full_name
+    end
+    
+    if linked
+      if link.is_a?(String)
+        link.gsub!("locale", "previous_locale")
+        link << (link.index("?") ? "&" : "?")
+        link << "locale=#{lang.locale}"
+      end
+      html << link_to(name, link)
+    else    
+      html << name
+    end
+    
+    html << "</span>"
+  end
+
   def tr8n_language_selector_tag
-    render(:partial => '/tr8n/common/header_menu')    
+    render(:partial => '/tr8n/common/language_selector')    
+  end
+
+  def tr8n_language_strip_tag(opts = {})
+    opts[:flag] = opts[:flag].nil? ? false : opts[:flag]
+    opts[:name] = opts[:name].nil? ? :native : opts[:name] 
+    opts[:linked] = opts[:linked].nil? ? true : opts[:linked] 
+    opts[:more_link] = opts[:more_link].nil? ? :javascript : opts[:more_link] 
+    
+    render(:partial => '/tr8n/common/language_strip', :locals => {:opts => opts})    
+  end
+
+  def tr8n_language_table_tag(opts = {})
+    opts[:cols] = opts[:cols].nil? ? 3 : opts[:cols]
+    opts[:col_size] = opts[:col_size].nil? ? "300px" : opts[:col_size]
+    render(:partial => '/tr8n/common/language_table', :locals => {:opts => opts})    
   end
   
   def tr8n_footer_scripts_tag
-    render(:partial => '/tr8n/common/footer_scripts')    
+    render(:partial => '/tr8n/common/scripts')    
   end
 
   def tr8n_translator_rank_tag(translator, rank = nil)
@@ -131,7 +179,9 @@ module Tr8n::HelperMethods
   end
 
   def will_filter
-    render(:partial => "/model_filter/filter", :locals => {:model_filter => @model_filter})
+    html = render(:partial => "/model_filter/filter", :locals => {:model_filter => @model_filter})
+    html << "<br>"
+    html
   end
 
 private
