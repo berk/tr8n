@@ -1,12 +1,14 @@
 <%=select_tag("rules[#{index}][definition][part1]", options_for_select(rule.class.rule_options, rule.definition[:part1]), :style => "width:120px", :onChange=>"updateLanguageRules()")%>
 <%=text_field_tag("rules[#{index}][definition][value1]", rule.humanize_values(rule.definition[:value1]), :style => "width:200px")%>
 
-<% link_style = 'display:none' if rule.definition[:multipart].to_s == "true" %>
+<% multipart = (rule.definition[:multipart].to_s == "true") %>
+
+<% link_style = 'display:none' if multipart %>
 <span id="extension_link_<%=index%>" style="vertical-align:bottom;<%= link_style %>">
   <%=link_to_function("#{trl("more")} &raquo;", "$('rule_#{index}_second_part').show(); $('extension_link_#{index}').hide(); $('rule_#{index}_multipart').value='true';")%>
 </span>
 
-<% second_part_style = 'display:none' if rule.definition[:multipart].to_s == "false" %>
+<% second_part_style = 'display:none' unless multipart %>
 <span id="rule_<%=index%>_second_part" style="<%= second_part_style %>">
   <%=hidden_field_tag("rules[#{index}][definition][multipart]", rule.definition[:multipart].to_s, :id => "rule_#{index}_multipart")%>
   

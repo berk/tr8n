@@ -15,34 +15,23 @@
         <% if mode == :edit %>
             <%= render(:partial => "rules") %>  
         <% else %>
-				    <%=trl("Translations in this language may depend on the token's:")%>
+				    <div style="padding-bottom:15px; font-size:12px; "><%=trl("Translations in this language may depend on the token's:")%></div>
+
 						<% 
-               @types = {} 
-               @rules.each do |rule|
-                 (@types[rule.dependency] ||= []) << rule
-               end  
+               @types = {}
+               @rules.each{|rule| (@types[rule.class.dependency] ||= []) << rule}
+               @types.keys.sort.each do |dependency| 
+            %>
+									<strong><%=dependency%></strong>
+									
+									<ol style="font-size: 12px; padding-left:10px; margin:1em; list-style-type:square; margin-top:0px;">
+									<% @types[dependency].each do |rule| %> 
+				              <li style=""><%=rule.description %></li>
+									<% end %>	
+			            </ol>
 
-             %>
-						
-						gender
-						   # is unknown
-               # is female
-               # is male  
-
-            number
-               # is unknown
-               # is female
-               # is male  
-						
-            <ol style="font-size: 12px; padding-left:10px; margin:1em; list-style-type:square; margin-top:0px;">
-						
-						<!-- group rules by type -->
-						<!-- Tone-->
-            <% @rules.each_with_index do |rule, index| %>
-              <li style=""><%=rule.token_description %></li>
-            <% end %>
-            </ol>
-        <% end %>  
+            <% end %> 
+				<% end %>
       </div>
     </div>
   <% end %>
