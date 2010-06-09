@@ -1,0 +1,11 @@
+db/schema.rb*
+tmp/*
+log/*
+.DS_Store
+*.swp
+.project
+.loadpath
+*~
+.dotest*
+Thumbs.db
+.tmp*
