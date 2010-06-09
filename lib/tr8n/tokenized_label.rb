@@ -38,7 +38,7 @@ class Tr8n::TokenizedLabel
   end
 
   def sanitized_tokens?
-    not sanitized_tokens.empty?
+    sanitized_tokens.any?
   end
 
   def lambda_tokens(translated_label = label)
@@ -57,6 +57,14 @@ class Tr8n::TokenizedLabel
 
   def parse_lambda_token(token)
     self.class.parse_lambda_token(token)
+  end
+
+  def sanitized_lambda_tokens(translated_label = label)
+    @sanitized_lambda_tokens ||= lambda_tokens(translated_label).collect{|lt| parse_lambda_token(lt).first}
+  end
+
+  def sanitized_lambda_tokens?
+    sanitized_lambda_tokens.any?
   end
 
   def self.strip_token(token)

@@ -17,15 +17,19 @@
 							</div>
 						<% end %>
             
-            <% if @translation_key.sanitized_tokens? %>
+            <% if @translation_key.sanitized_tokens? or @translation_key.sanitized_lambda_tokens? %>
 							  <div class="small_section_title" style="color: #999; font-size: 10px;">
 							     <strong><%=trl("Translation Tokens")%></strong>
 							  </div>
 						
-                <div id="tr8n_translator_tokens_<%=@translation_key.id%>" style="font-size:10px;">
+                <div style="font-size:10px;">
 		                <% @translation_key.sanitized_tokens.each do |token| %>
-		                  <%= link_to_function(token, "tr8nTranslator.insertAtCaret('tr8n_translator_translation_label', '#{token}');", :title => trl("Click to insert this token above") ) %>
+		                    <%= link_to_function(token, "tr8nTranslator.insertToken('#{token}');", :title => trl("Click to insert this token above") ) %>
 		                <% end %>
+										
+                    <% @translation_key.sanitized_lambda_tokens.each do |token| %>
+                        <%= link_to_function("[#{token}: ]", "tr8nTranslator.insertDecorationToken('#{token}');", :title => trl("Click to insert this token above") ) %>
+                    <% end %>
                 </div>
             <% end %> 
 						
@@ -51,7 +55,7 @@
 		        <% end %> 
 		        
 		        <% if Tr8n::Config.enable_glossary_hints? and @translation_key.glossary? %>  
-		          <div class="small_section_title" style="color: #999; font-size: 10px;">
+		          <div class="small_section_title" style="color: #999; font-size: 10px; padding-top:10px;">
 		             <strong><%=trl("Glossary")%></strong>
 		          </div>
 		          
@@ -67,7 +71,6 @@
 		                <% end %>
 		              </table>
 		            </div>
-		            <div class="tip"><%=trl("Review glossary definitions to enhance your translation")%></div>
 		          </div>
 		        <% end %>						
 						

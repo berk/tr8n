@@ -47,6 +47,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   
   delegate :tokens, :tokens?, :hidden_tokens, :hidden_tokens?, :sanitized_tokens, :sanitized_tokens?, :to => :tokenized_label
   delegate :sanitized_label, :tokenless_label, :words, :to => :tokenized_label
+  delegate :sanitized_lambda_tokens?, :sanitized_lambda_tokens, :to => :tokenized_label
 
   # returns only the tokens that depend on one or more rules of the language, if any defined for the language
   def language_rules_dependant_tokens(language = Tr8n::Config.current_language)
@@ -252,16 +253,22 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     return "{invalid lambda token}" unless Tr8n::Config.default_lambdas[lambda_token_name.to_s]
     
     # make sure that only the lambdas from the original label can be used in the translated label
-    allowed_tokens = tokenized_label.lambda_tokens.collect{|lt| Tr8n::TokenizedLabel.parse_lambda_token(lt).first}
-    return lambda_token_value unless allowed_tokens.include?(lambda_token_name)
+    return lambda_token_value unless tokenized_label.sanitized_lambda_tokens.include?(lambda_token_name)
 
     lambda_value = Tr8n::Config.default_lambdas[lambda_token_name.to_s].clone
     
     params = [lambda_token_value]
     params += token_values[lambda_token_name] if token_values[lambda_token_name]
-    
+
     params.each_with_index do |param, index|
       lambda_value.gsub!("{$#{index}}", param.to_s)
+    end
+    
+    # clean all the rest of the {$num} params, if any
+    param_index = params.size - 1
+    while lambda_value.index("{$#{param_index}}")
+      lambda_value.gsub!("{$#{param_index}}", "")
+      param_index += 1
     end
     
     lambda_value

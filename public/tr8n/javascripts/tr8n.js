@@ -141,6 +141,34 @@ Tr8n.Translator = Class.create({
       });
     }
   }, 
+  insertDecorationToken: function (token) {
+    var txtarea = document.getElementById('tr8n_translator_translation_label'); 
+    this.wrapText(txtarea, "["+token+": ", "]");
+  },  
+  insertToken: function (token) {
+		this.insertAtCaret('tr8n_translator_translation_label', token);
+  },  
+	wrapText: function (obj, beginTag, endTag) {
+    if (typeof obj.selectionStart == 'number') {
+        // Mozilla, Opera, and other browsers
+        var start = obj.selectionStart;
+        var end   = obj.selectionEnd;
+        obj.value = obj.value.substring(0, start) + beginTag + obj.value.substring(start, end) + endTag + obj.value.substring(end, obj.value.length);
+				
+    } else if(document.selection) {
+        // Internet Explorer
+        obj.focus();
+        var range = document.selection.createRange();
+        if(range.parentElement() != obj) 
+				  return false;
+					
+        if(typeof range.text == 'string')
+          document.selection.createRange().text = beginTag + range.text + endTag;
+    } else 
+        obj.value += text;
+				
+		return true;		
+	},
   insertAtCaret: function (areaId, text) { 
     var txtarea = document.getElementById(areaId); 
     var scrollPos = txtarea.scrollTop; 
@@ -151,11 +179,12 @@ Tr8n.Translator = Class.create({
       txtarea.focus(); 
       var range = document.selection.createRange(); 
       range.moveStart ('character', -txtarea.value.length); 
-      strPos = range.text.length; }
-    else if (br == "ff") strPos = txtarea.selectionStart; 
+      strPos = range.text.length; 
+	  } else if (br == "ff") 
+		  strPos = txtarea.selectionStart; 
     
-    var front = (txtarea.value).substring(0,strPos); 
-    var back = (txtarea.value).substring(strPos,txtarea.value.length); 
+    var front = (txtarea.value).substring(0, strPos); 
+    var back = (txtarea.value).substring(strPos, txtarea.value.length); 
     txtarea.value=front+text+back;
      
     strPos = strPos + text.length; 
