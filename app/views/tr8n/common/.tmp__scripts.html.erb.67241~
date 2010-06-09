@@ -1,5 +1,6 @@
 <% if Tr8n::Config.enabled? %>
 
+  test_tr8n
 	<%= tr8n_splash_screen_tag %>
 
   <%=stylesheet_link_tag("/tr8n/stylesheets/tr8n.css") -%>

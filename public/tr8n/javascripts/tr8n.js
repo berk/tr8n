@@ -47,10 +47,14 @@ Tr8n.Translator = Class.create({
     tr8nLanguageSelector.hide();
     
     var html = "";
-    html += "<div style='font-size:18px;text-align:center; margin:5px; padding:10px; background-color:black;'>";
-    html += "<img src='/tr8n/images/tr8n_logo.jpg' style='width:280px; vertical-align:middle;'>";
-    html += "<img src='/tr8n/images/loading3.gif' style='width:200px; height:20px; vertical-align:middle;'>";
-    html += "</div>"
+		if ($('tr8n_splash_screen')) {
+      html += $("tr8n_splash_screen").innerHTML;
+		} else {
+	    html += "<div style='font-size:18px;text-align:center; margin:5px; padding:10px; background-color:black;'>";
+	    html += "<img src='/tr8n/images/tr8n_logo.jpg' style='width:280px; vertical-align:middle;'>";
+	    html += "<img src='/tr8n/images/loading3.gif' style='width:200px; height:20px; vertical-align:middle;'>";
+	    html += "</div>"
+		}
     $("tr8n_translator").innerHTML = html;
     
     var viewport_dimensions = document.viewport.getDimensions();
@@ -277,10 +281,14 @@ Tr8n.LanguageSelector = Class.create({
     
     if (!this.loaded) {
 			var html = "";
-			html += "<div style='font-size:18px;text-align:center; margin-top:5px; margin-bottom:5px; padding:10px; background-color:black;'>";
-			html += "<img src='/tr8n/images/tr8n_logo.jpg' style='width:280px; vertical-align:middle;'>";
-      html += "<img src='/tr8n/images/loading3.gif' style='width:200px; height:20px; vertical-align:middle;'>";
-			html += "</div>"
+	    if ($('tr8n_splash_screen')) {
+	      html += $("tr8n_splash_screen").innerHTML;
+	    } else {
+	      html += "<div style='font-size:18px;text-align:center; margin:5px; padding:10px; background-color:black;'>";
+	      html += "<img src='/tr8n/images/tr8n_logo.jpg' style='width:280px; vertical-align:middle;'>";
+	      html += "<img src='/tr8n/images/loading3.gif' style='width:200px; height:20px; vertical-align:middle;'>";
+	      html += "</div>"
+	    }
       $("tr8n_language_selector").innerHTML = html;
     }
     

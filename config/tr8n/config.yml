@@ -90,6 +90,7 @@ defaults: &defaults
     default_url:              /home         
     default_locale:           en-US
     sitemap_json:             /config/tr8n/default_sitemap.json
+    splash_screen:            /tr8n/common/splash_screen
     admin_layout:             admin
     tr8n_layout:              application
     user_info:  

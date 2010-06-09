@@ -226,6 +226,10 @@ class Tr8n::Config
     site_info[:title] 
   end
 
+  def self.splash_screen
+    site_info[:splash_screen]  
+  end
+  
   def self.default_locale
     site_info[:default_locale]
   end

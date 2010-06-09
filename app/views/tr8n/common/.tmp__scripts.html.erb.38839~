@@ -1,7 +1,5 @@
 <% if Tr8n::Config.enabled? %>
 
-	<%= tr8n_splash_screen_tag %>
-
   <%=stylesheet_link_tag("/tr8n/stylesheets/tr8n.css") -%>
   <%=javascript_include_tag("/tr8n/javascripts/tr8n.js") -%>
   <script type="text/javascript">

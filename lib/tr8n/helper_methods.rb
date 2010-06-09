@@ -7,12 +7,19 @@ module Tr8n::HelperMethods
 
   def tr8n_phrases_link_tag(search = "", phrase_type = :without, phrase_status = :any)
     return unless Tr8n::Config.enabled?
+    return if Tr8n::Config.current_language.default?
     return unless Tr8n::Config.open_translator_mode? or Tr8n::Config.current_user_is_translator?
     return unless Tr8n::Config.current_translator.enable_inline_translations?
     
     link_to(image_tag("/tr8n/images/translate_icn.gif", :style => "vertical-align:middle; border: 0px;", :title => trl("Click here to translate the values")), 
            :controller => "/tr8n/phrases", :action => :index, 
            :search => search, :phrase_type => phrase_type, :phrase_status => phrase_status)
+  end
+
+  def tr8n_splash_screen_tag
+    html = "<div id='tr8n_splash_screen' style='display:none'>"
+    html << (render :partial => Tr8n::Config.splash_screen)
+    html << "</div>"
   end
 
   def tr8n_language_name_tag(lang = Tr8n::Config.current_language, opts = {})
@@ -67,7 +74,7 @@ module Tr8n::HelperMethods
     render(:partial => '/tr8n/common/language_table', :locals => {:opts => opts})    
   end
   
-  def tr8n_footer_scripts_tag
+  def tr8n_scripts_tag
     render(:partial => '/tr8n/common/scripts')    
   end
 
@@ -127,10 +134,6 @@ module Tr8n::HelperMethods
     html << "</table>"
   end
   
-  def tr8n_footer_scripts_tag
-    render(:partial => '/tr8n/common/footer_scripts')    
-  end
-
   def tr8n_user_tag(translator, options = {})
     return "Deleted Translator" unless translator
     

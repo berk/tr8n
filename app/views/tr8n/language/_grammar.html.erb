@@ -6,7 +6,16 @@
       <div style="float:right; padding-right:5px;">
         <%=tr8n_help_icon_tag %>
       </div>
-      <div id="language_rules">
+			
+			<div style="padding-top:5px;padding-bottom:10px;font-size:12px;">
+          Tokens are parts of a phrase that are not translated, such as a profile name or a number. 
+					Translations in some languages can depend on the gender or numerical value of the tokens in the phrase. 
+					For example, the translation for "{actor} tagged {target} in {count} photos" can depend on the 
+					gender of the actor and target as well as the number of photos. If translations in your language depend 
+					on any of these rules, you can add them here.
+			</div>
+						
+      <div id="language_rules" style="font-size:12px;">
       	
         <% if @rules.empty? %>
           <%=trl("There are no language rules defined for this language.")%>
@@ -15,7 +24,9 @@
         <% if mode == :edit %>
             <%= render(:partial => "rules") %>  
         <% else %>
-				    <div style="padding-bottom:15px; font-size:12px; "><%=trl("Translations in this language may depend on the token's:")%></div>
+				    <div style="padding-bottom:15px;">
+				    	<%=trl("Translations in this language may depend on the token's:")%>
+					  </div>
 
 						<% 
                @types = {}
