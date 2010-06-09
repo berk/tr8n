@@ -83,11 +83,11 @@ class Tr8n::Config
 
   def self.models
     [ 
-      Tr8n::LanguageRule, Tr8n::LanguageUser, Tr8n::Language, Tr8n::LanguageMetric,
-      Tr8n::TranslationKey, Tr8n::TranslationKeySource, Tr8n::TranslationSource,
-      Tr8n::Translation, Tr8n::TranslationVote, 
-      Tr8n::Translator, Tr8n::TranslatorLog, Tr8n::TranslatorMetric,
-      Tr8n::LanguageForumTopic, Tr8n::LanguageForumMessage, Tr8n::LanguageForumAbuseReport   
+       Tr8n::LanguageRule, Tr8n::LanguageUser, Tr8n::Language, Tr8n::LanguageMetric,
+       Tr8n::TranslationKey, Tr8n::TranslationKeySource, Tr8n::TranslationSource, Tr8n::TranslationKeyLock,
+       Tr8n::Translation, Tr8n::TranslationVote, Tr8n::Glossary,
+       Tr8n::Translator, Tr8n::TranslatorLog, Tr8n::TranslatorMetric,
+       Tr8n::LanguageForumTopic, Tr8n::LanguageForumMessage, Tr8n::LanguageForumAbuseReport    
     ]    
   end
   

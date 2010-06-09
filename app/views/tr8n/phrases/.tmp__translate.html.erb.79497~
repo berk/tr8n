@@ -18,7 +18,7 @@
 			<% if Tr8n::Config.enable_google_suggestions? %>  
 				<div id="tr8n_google_suggestion_container_<%=@translation_key.id%>" style="display:none; padding-top:10px; padding-bottom:10px;">
 				    <div class="section_title">
-				        <%=trl("Suggested Translation")%>
+				        <%=trl("Translation Suggestion from Google")%>
 				    </div>
 				    
 				    <%=image_tag("/tr8n/images/left_quote.png", :style=>"text-align:bottom;padding-bottom:5px;") %>

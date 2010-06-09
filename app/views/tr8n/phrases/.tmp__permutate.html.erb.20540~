@@ -1,0 +1,76 @@
+<div id="permutations" class="section_box colored" style="display:none">
+	<% form_for(:translation, @translation, :url => {:controller => "/tr8n/translations", :action => :translate}, :html => {:id => 'permutation_form', :method => :post}) do |f| %>
+	    <%= hidden_field_tag(:translation_key_id, @translation_key.id) %>
+	    <%= hidden_field_tag(:source_url, @source_url) %>
+	    <%= hidden_field_tag(:translation_has_dependencies, "true") %>
+	
+      <% @dependant_tokens = @translation_key.language_rules_dependant_tokens %>
+      <div class="section_title">
+		    <%=trl("Context Rules Options for #{tr8n_current_language.english_name} Language")%>
+		  </div>
+	
+      <div style="padding:15px; border: 1px dotted #ccc; background:#EFF8FF;" >
+        <table style="width:auto;">
+          <tr>
+          	<td></td>
+            <td></td>
+            <td colspan="<%= (@dependant_tokens.size)%>" style="color:#ccc; font-size: 14px; font-weight:bold; text-align:center; padding:5px; border-bottom: 1px solid #ccc;">
+              <%=trl("TOKENS")%>
+            </td>
+          </tr>  
+				  <tr>
+            <td></td>
+            <td></td>
+            <% @dependant_tokens.each do |val| %>
+              <% td_width = (95/@dependant_tokens.size) %>  
+              <td style="font-size:12px; text-align:center; font-weight:bold; width:<%=td_width%>%">
+							   <%=val%>
+							</td>    
+            <% end %>
+          </tr>
+          
+          <tr>
+            <td rowspan="<%= (tr8n_current_language.rule_classes.size + 1)%>" style="color:#ccc; font-size: 14px; font-weight:bold; text-align:center; padding:5px; vertical-align:middle; border-right: 1px solid #ccc;">
+              <% trl("RULES").chars.each do |ch| %>
+                 <%=ch%><br>
+              <% end %>
+            </td> 
+            <td colspan="<%= (@dependant_tokens.size)%>">
+						</td>
+          </tr>
+										
+          <% tr8n_current_language.rule_classes.each do |rule_class| %>
+            <tr>
+              <td style="font-size:12px; font-weight:bold; padding:5px; vertical-align:middle; ">
+                <%=trl(rule_class.dependency) %>
+              </td>
+              
+              <% @dependant_tokens.each do |token| %>
+                <td style="text-align:center; font-size:12px; color: grey; border: 1px dotted #ccc; padding:5px; vertical-align:middle; background:white;">
+                  <% if rule_class.dependant?(token) %>
+                    <%=check_box_tag("dependencies[#{token}][#{rule_class.dependency}]", "true", false)%>
+                  <% else %>
+                    n/a  
+                  <% end %>  
+                </td>    
+              <% end %>
+            </tr>
+          <% end %> 
+        </table>
+      </div>
+			
+      <div style="color:grey; font-size:12px; padding-top:10px;">
+         <%=trl("Select all of the rules that the translation depends on.")%>
+         <%=trl("For example, if the translation of the original phrase depends on the gender of the viewing user, select the checkbox under the viewing_user token and the \"gender\" rule.")%>
+      </div>
+			
+	<% end %>
+
+
+  <div id="buttons_container" style="padding-top:5px;padding-bottom:5px;text-align:center">
+	    <button type="submit" class="translator_btn translator_submit_btn" onClick="$('permutation_form').submit(); return false;">
+	        <span><%=trl("Generate")%></span>
+	    </button>
+       or <%= link_to_function(trl("Cancel"), "Effect.BlindDown('tranlsations_list', { duration: 0.2 });  Effect.BlindUp('permutations', { duration: 0.2 });") %>
+	</div>
+</div>

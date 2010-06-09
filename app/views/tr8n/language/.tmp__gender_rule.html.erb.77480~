@@ -1,0 +1,3 @@
+<%=select_tag("rules[#{index}][definition][part1]", options_for_select(rule.class.operator_options, rule.definition[:part1]), :style => "width:120px", :onChange=>"updateLanguageRules()")%>
+<%=select_tag("rules[#{index}][definition][value1]", options_for_select(rule.class.gender_options, rule.definition[:value1]), :style => "width:90px")%>
+

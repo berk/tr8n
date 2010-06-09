@@ -4,7 +4,7 @@ class Tr8n::ChartController < Tr8n::BaseController
     lang = Tr8n::Language.find(params[:language_id])
 
     sets = []
-    sets << ["Not Translated", lang.total_metric.key_count - lang.total_metric.translated_key_count]
+    sets << ["Not Translated", lang.total_metric.not_translated_count]
     sets << ["Translated", lang.total_metric.locked_key_count]
     sets << ["Pending Approval", lang.total_metric.translated_key_count - lang.total_metric.locked_key_count]
     

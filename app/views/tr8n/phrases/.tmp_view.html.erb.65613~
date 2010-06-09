@@ -43,16 +43,10 @@
 	<% end %>
   
   <% unless @translation_key.locked? %>
-    <div style="font-size: 12px; color: grey; padding-top:15px; padding-bottom:15px;">
-    <%= trl("You can only edit or delete translations submitted by you.") %>
-		 
-		<%= trl("If you don't like any of the translations for this phrase, [link: add your own translation].", "",
-          :link => lambda{|str| link_to_function(str, "addTranslation()")}) %>
-
-    <%=trl("If this translation depends on a {token} or the gender of the viewing user, then [link: generate context rules for this phrase].", "",
-          :token => "{token}",
-          :link => lambda{|str| link_to_function(str, "addContextRules()")}) %> 
-					 
+    <div style="font-size: 12px; color: grey; padding-top:20px; padding-bottom:15px;">
+    <%=trl("You can only edit or delete translations submitted by you. If you don't like any of the translations for this phrase, [translate_link: add your own translation] or [context_link: generate context rules for this phrase].", "",
+          :translate_link => lambda{|str| link_to_function(str, "addTranslation()")},
+          :context_link => lambda{|str| link_to_function(str, "addContextRules()")}) %> 
     </div>
   <% end %>
   

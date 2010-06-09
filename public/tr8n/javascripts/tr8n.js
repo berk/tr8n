@@ -169,7 +169,7 @@ Tr8n.Translator = Class.create({
     txtarea.scrollTop = scrollPos; 
   },
   switchTranslatorMode: function(translation_key_id, mode, source_url) {
-    new Ajax.Updater('tr8n_translator', '/tr8n/language/translator', {
+    new Ajax.Updater('tr8n_translator_container', '/tr8n/language/translator', {
       parameters: {translation_key_id:translation_key_id, mode:mode, source_url:source_url},
       method: 'get',
       evalScripts: true
@@ -180,7 +180,6 @@ Tr8n.Translator = Class.create({
        return;
     }
     $('tr8n_translator_translation_container').hide(); 
-    $('tr8n_translator_hints_container').hide(); 
     $('tr8n_translator_buttons_container').hide(); 
     $('tr8n_translator_spinner').show(); 
     $('tr8n_translator_form').submit();
@@ -229,8 +228,8 @@ Tr8n.Translator = Class.create({
 				      $("tr8n_google_suggestion_container_" + translation_key_id).show();
 							
 							// for translator only
-							if ($("tr8n_translator_hints_container")) {
-								  $("tr8n_translator_hints_container").show();
+							if ($("tr8n_google_suggestion_section")) {
+								  $("tr8n_google_suggestion_section").show();
 			        }
 			    }
 	    });

@@ -1,6 +1,6 @@
 <div id="translation_tokens" style="padding-top:10px; padding-bottom:5px; font-size:10px;">
   <div class="section_title">
-  	 <%=trl("Translation Tokens")%>
+  	 <%=trl("Translation Tokens and Dependencies")%>
 	</div>
   
   <% if @translation_key.sanitized_tokens? %>

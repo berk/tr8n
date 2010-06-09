@@ -50,7 +50,7 @@
   <% end %>
 
   <% if [:list, :short_list].include?(mode) %>
-	  <% color = translation.key.locked? ? "#ECFFEF" : "#FDFFF0" %>
+	  <% color = translation.key.locked? ? "#ECFFEF" : "#FDFDDF" %>
     <div style="font-size: 11px; color: grey; margin-top:5px; margin-bottom:5px; padding:3px; background:<%=color%>; border:1px dotted #ccc;">
       <% if translation.key.locked? %>
         <div style="float:right"><%=image_tag("/tr8n/images/lock.png", :style=>"width:12px", :title => trl("This phrase is locked"))%></div>

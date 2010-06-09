@@ -3,7 +3,7 @@
   
   <div class="section">
     <div class="small_section_title">
-      <div style="float:right;font-weight:normal;font-size:10px">
+      <div style="float:right;font-weight:normal;font-size:12px">
         <%=link_to(trl("view all"), {:controller => "/tr8n/phrases", :action => :view, :translation_key_id => @translation_key.id}) %>
       </div>
       <strong><%=trl("Vote on Translations")%></strong>
@@ -15,7 +15,7 @@
   
     <div style="padding-top:10px;font-size:11px">
       <%=trl("Don't like any of these?")%> 
-			<%=link_to_function(trl('Translate it yourself.'), "tr8nTranslator.switchTranslatorMode('#{@translation_key.id}', 'submit', '#{@source_url}')") %>
+			<%=link_to(trl('Translate it yourself.'), {:controller => "/tr8n/phrases", :action => :view, :mode => :add, :translation_key_id => @translation_key.id}) %>
     </div>
   </div>
 </div>

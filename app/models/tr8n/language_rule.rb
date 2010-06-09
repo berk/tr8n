@@ -11,7 +11,7 @@ class Tr8n::LanguageRule < ActiveRecord::Base
   end
   
   def self.options
-    @options ||= Tr8n::Config.language_rule_classes.collect{|kls| [kls.description, kls.name]}
+    @options ||= Tr8n::Config.language_rule_classes.collect{|kls| [kls.dependency, kls.name]}
   end
   
   def evaluate(token_value)

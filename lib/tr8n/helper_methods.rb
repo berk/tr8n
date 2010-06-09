@@ -1,6 +1,20 @@
 module Tr8n::HelperMethods
   include Tr8n::CommonMethods
 
+  def tr8n_options_for_select(options, selected = nil, description = nil, lang = Tr8n::Config.current_language)
+    options_for_select(options.tro(description), selected)
+  end
+
+  def tr8n_phrases_link_tag(search = "", phrase_type = :without, phrase_status = :any)
+    return unless Tr8n::Config.enabled?
+    return unless Tr8n::Config.open_translator_mode? or Tr8n::Config.current_user_is_translator?
+    return unless Tr8n::Config.current_translator.enable_inline_translations?
+    
+    link_to(image_tag("/tr8n/images/translate_icn.gif", :style => "vertical-align:middle; border: 0px;", :title => trl("Click here to translate the values")), 
+           :controller => "/tr8n/phrases", :action => :index, 
+           :search => search, :phrase_type => phrase_type, :phrase_status => phrase_status)
+  end
+
   def tr8n_language_name_tag(lang = Tr8n::Config.current_language, opts = {})
     show_flag = opts[:flag].nil? ? true : opts[:flag]
     name_type = opts[:name].nil? ? :full : opts[:name] # :full, :native, :english, :locale
@@ -192,7 +206,7 @@ private
       key = Tr8n::TranslationKey.generate_key(section[:label], section[:description])
       
       html << "<li class='section_list_item'>" 
-      html << "<a href='/tr8n/phrases/index?section_key=#{key}'>" << Tr8n::Language.translate(section[:label], section[:description]) << "</a>"
+      html << "<a href='/tr8n/phrases/index?section_key=#{key}'>" << section[:label] << "</a>"
       html << "<a href='" << section[:link] << "' target='_new'><img src='/tr8n/images/bullet_go.png' style='border:0px; vertical-align:middle'></a>" if section[:link]
       
       if section[:sections] and section[:sections].size > 0

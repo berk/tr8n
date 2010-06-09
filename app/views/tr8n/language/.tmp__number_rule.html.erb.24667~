@@ -1,5 +1,5 @@
 <%=select_tag("rules[#{index}][definition][part1]", options_for_select(rule.class.rule_options, rule.definition[:part1]), :style => "width:120px", :onChange=>"updateLanguageRules()")%>
-<%=text_field_tag("rules[#{index}][definition][value1]", rule.humanize_values(rule.definition[:value1]), :style => "width:200px")%>
+<%=text_field_tag("rules[#{index}][definition][value1]", rule.humanize_values(rule.definition[:value1]), :style => "width:100px")%>
 
 <% link_style = 'display:none' if rule.definition[:multipart].to_s == "true" %>
 <span id="extension_link_<%=index%>" style="vertical-align:bottom;<%= link_style %>">
@@ -13,7 +13,7 @@
 	<%=select_tag("rules[#{index}][definition][operator]", options_for_select(rule.class.operator_options, rule.definition[:operator]), :onChange=>"updateLanguageRules()")%>
   
 	<%=select_tag("rules[#{index}][definition][part2]", options_for_select(rule.class.rule_options, rule.definition[:part2]), :style => "width:120px", :onChange=>"updateLanguageRules()")%>
-  <%=text_field_tag("rules[#{index}][definition][value2]", rule.humanize_values(rule.definition[:value2]), :style => "width:200px")%>
+  <%=text_field_tag("rules[#{index}][definition][value2]", rule.humanize_values(rule.definition[:value2]), :style => "width:100px")%>
   
   <span id="extension_link_<%=index%>" style="vertical-align:bottom;">
     <%=link_to_function("&laquo; #{trl("less")}", "$('rule_#{index}_second_part').hide(); $('extension_link_#{index}').show(); $('rule_#{index}_multipart').value='false';")%>

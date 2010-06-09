@@ -150,6 +150,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     
     language_translations = translations_for(language)
     
+    new_translations = []
     token_rules.combinations.each do |combination|
       rules = []
       rules_hash = {}
@@ -161,8 +162,10 @@ class Tr8n::TranslationKey < ActiveRecord::Base
       # if the user has previously create this particular combination, move on...
       next if translation_with_such_rules_exist?(language_translations, translator, rules_hash)
 
-      translation = Tr8n::Translation.create(:translation_key => self, :language => language, :translator => translator, :label => sanitized_label, :rules => rules)
+      new_translations << Tr8n::Translation.create(:translation_key => self, :language => language, :translator => translator, :label => sanitized_label, :rules => rules)
     end
+    
+    new_translations
   end
 
   def self.random
@@ -393,15 +396,15 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   ###############################################################
   
   def self.filter_phrase_type_options
-    [["all phrases", "any"], 
-     ["phrases without translations", "without"], 
-     ["phrases with translations", "with"]].collect{|option| [option.first.trl("Phrase filter type option"), option.last]} 
+    [["all", "any"], 
+     ["without translations", "without"], 
+     ["with translations", "with"]] 
   end
   
   def self.filter_phrase_status_options
-     [["anything", "any"],
+     [["any", "any"],
       ["pending approval", "pending"], 
-      ["approved", "approved"]].collect{|option| [option.first.trl("Phrase filter status option"), option.last]}
+      ["approved", "approved"]]
   end
   
   def self.search_conditions_for(params)

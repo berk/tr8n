@@ -8,7 +8,7 @@
     <%=link_to_function(image_tag("/tr8n/images/close.gif", :title=>trl("Close")), "tr8nTranslator.hide()")%>
   </div>
   <%=image_tag("/tr8n/images/flags/#{tr8n_current_language.flag}.png", :title=>trl("#{tr8n_current_language.english_name} flag"))%>&nbsp;
-  <%= trl("#{tr8n_current_language.english_name} Translation") %>
+  <%= trl("Inline Translator for #{tr8n_current_language.english_name} Language") %>
 </div>
 
 <div id="tr8n_translator_container" class="bd">

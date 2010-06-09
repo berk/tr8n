@@ -15,9 +15,15 @@ class Tr8n::TranslationsController < Tr8n::BaseController
     end
 
     if params[:translation_has_dependencies] == "true" # comes from inline translator only
-      @translation_key.generate_rule_permutations(tr8n_current_language, tr8n_current_translator, params[:dependencies])
-      trfn("We have created all possible combinations of the values for the tokens. Please provide a translation for each combination.")
-      return redirect_to(:controller => "/tr8n/phrases", :action => :view, :translation_key_id => @translation_key.id, :submitted_by => :me, :submitted_on => :today)
+      new_translations = @translation_key.generate_rule_permutations(tr8n_current_language, tr8n_current_translator, params[:dependencies])
+      if params[:dependencies].blank?
+        trfe("You have not specified any context rules for this phrase.")
+      elsif new_translations.nil? or new_translations.empty?
+        trfn("The context rules you specified already exist. Please provide a translation for each context rule.")
+      else
+        trfn("We have created all possible combinations of the context rules. Please provide a translation for each rule.")
+      end  
+      return redirect_to(:controller => "/tr8n/phrases", :action => :view, :translation_key_id => @translation_key.id, :grouped_by => :context)
     end
     
     if params[:translation_id].blank?

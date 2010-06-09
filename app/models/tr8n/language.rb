@@ -75,7 +75,7 @@ class Tr8n::Language < ActiveRecord::Base
   end
 
   def self.featured_languages
-    find(:all, :conditions => ["enabled = ? and featured_index is not null and featured_index > 0", true], :order => "featured_index asc")
+    find(:all, :conditions => ["enabled = ? and featured_index is not null and featured_index > 0", true], :order => "featured_index desc")
   end
 
   def self.translate(label, desc = "", tokens = {}, options = {})
@@ -85,6 +85,8 @@ class Tr8n::Language < ActiveRecord::Base
   end
 
   def translate(label, desc = "", tokens = {}, options = {})
+    return "" if label.blank?
+    
     translation_key = Tr8n::TranslationKey.find_or_create(label, desc, options)
     translation_key.translate(self, tokens.merge(:viewing_user => Tr8n::Config.current_user), options)
   end

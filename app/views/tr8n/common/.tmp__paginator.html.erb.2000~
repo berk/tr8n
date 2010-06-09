@@ -1,8 +1,0 @@
-  <div style="padding-bottom:10px;">
-    <table style="width:100%;">
-      <tr>
-        <td align='left'><%= will_paginate(@translations, :skip_decorations => true) %></td>
-        <td align='right'><%= page_entries_info(@translations, :skip_decorations => true, :entry_name => "translation") %></td>
-      </tr>
-    </table>
-  </div>

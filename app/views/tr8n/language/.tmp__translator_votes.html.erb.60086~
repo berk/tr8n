@@ -15,7 +15,7 @@
   
     <div style="padding-top:10px;font-size:11px">
       <%=trl("Don't like any of these?")%> 
-			<%=link_to_function(trl('Translate it yourself.'), "tr8nTranslator.switchTranslatorMode('#{@translation_key.id}', 'submit', '#{@source_url}')") %>
+			<%=link_to(trl('Translate it yourself.'), {:controller => "/tr8n/phrases", :action => :view, :mode => :add, :translation_key_id => @translation_key.id}) %>
     </div>
   </div>
 </div>

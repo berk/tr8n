@@ -15,9 +15,9 @@
   <% end %>
 </div>
 
-<%= link_to_function(trl("+ Add Context Rule"), "addLanguageRule('#{@rules.size}')") %>
+<%= link_to_function(trl("+ Add Language Rule", "Add language rule"), "addLanguageRule('#{@rules.size}')") %>
 <% unless @rules.empty? %>
-  | <%= link_to_function(trl("Clear All", "Clear all context rules"), "clearLanguageRules()") %>
+  | <%= link_to_function(trl("Clear All", "Clear all language rules"), "clearLanguageRules()") %>
 <% end %>
 
 <div style="color:grey; font-size:10px; padding-top:15px; padding-bottom:5px;"><%=trl("For numeric rules, you can enter multiple values seprated by commas")%></div>
