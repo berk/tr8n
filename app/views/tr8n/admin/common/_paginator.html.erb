@@ -2,7 +2,19 @@
   <table style="font-size:12px;width:100%; margin-top:10px; margin-bottom:10px;">
     <tr>
       <td align='left'><%= will_paginate(objects) %></td>
-      <td align='right'><%= page_entries_info(objects) %></td>
+			<% 
+        entry_name = ""
+        if objects.any?
+          obj_name = objects.first.class.name.underscore
+          if obj_name.index("/")
+            entry_name = obj_name.split("/").last 
+          else
+            entry_name = obj_name
+          end
+          entry_name.gsub!("_", " ")  
+        end 
+      %>
+      <td align='right'><%= page_entries_info(objects, :entry_name => entry_name.downcase) %></td>
     </tr>
   </table>
 </div>

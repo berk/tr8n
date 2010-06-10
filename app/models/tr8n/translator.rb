@@ -156,6 +156,7 @@ class Tr8n::Translator < ActiveRecord::Base
   end
 
   def manager_for_any_language?
+    return false unless user
     return true if Tr8n::Config.admin_user?(user)
     Tr8n::LanguageUser.find_all_by_user_id_and_manager(user.id, true).any?
   end
