@@ -209,9 +209,6 @@ Tr8n.Translator = Class.create({
     });
   },
   submitTranslation: function() {
-    if ($("tr8n_translator_translation_label").value.trim() == "") {
-       return;
-    }
     $('tr8n_translator_translation_container').hide();
     $('tr8n_translator_buttons_container').hide();
     $('tr8n_translator_spinner').show();
@@ -465,19 +462,22 @@ var tr8nTranslator = null;
 var tr8nLanguageSelector = null;
 var tr8nLightbox = null;
 
-function initializeTr8n() {
-  var setup = function() {
-    tr8nTranslator = new Tr8n.Translator();
-    tr8nLanguageSelector = new Tr8n.LanguageSelector();
-    tr8nLightbox = new Tr8n.Lightbox();
-  }
-  if(Tr8n.DomLoaded) {
-    setup()
-  } else {
-    Event.observe(document,'dom:loaded',setup);
-  }
+function initializeTr8n() { 
+  var setup = function() { 
+    tr8nTranslator = new Tr8n.Translator(); 
+    tr8nLanguageSelector = new Tr8n.LanguageSelector(); 
+    tr8nLightbox = new Tr8n.Lightbox(); 
+  } 
+  if(Tr8n.DomLoaded) { 
+    setup() 
+  } else { 
+    if(Prototype.Browser.IE) { 
+      Event.observe(window,'load',setup); 
+    } else { 
+      Event.observe(document,'dom:loaded',setup); 
+    } 
+  } 
 }
-
 
 function initializeTr8nShortcuts() {
   shortcut.add("Ctrl+T",function() {

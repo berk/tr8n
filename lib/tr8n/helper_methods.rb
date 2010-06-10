@@ -11,7 +11,7 @@ module Tr8n::HelperMethods
     return unless Tr8n::Config.open_registration_mode? or Tr8n::Config.current_user_is_translator?
     return unless Tr8n::Config.current_translator.enable_inline_translations?
     
-    link_to(image_tag("/tr8n/images/translate_icn.gif", :style => "vertical-align:middle; border: 0px;", :title => trl("Click here to translate the values")), 
+    link_to(image_tag("/tr8n/images/translate_icn.gif", :style => "vertical-align:middle; border: 0px;", :title => search), 
            :controller => "/tr8n/phrases", :action => :index, 
            :search => search, :phrase_type => phrase_type, :phrase_status => phrase_status)
   end

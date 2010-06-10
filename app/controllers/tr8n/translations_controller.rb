@@ -34,12 +34,24 @@ class Tr8n::TranslationsController < Tr8n::BaseController
     
     @translation.label = sanitize_label(params[:translation][:label])
     @translation.rules = parse_rules
-    
+
     unless @translation.can_be_edited_by?(tr8n_current_translator)
       tr8n_current_translator.tried_to_perform_unauthorized_action!("tried to update translation which is locked or belongs to another translator")
       trfe("You are not authorized to edit this translation")
       return redirect_to(@source_url)
     end  
+
+    if @translation.blank?
+      tr8n_current_translator.tried_to_perform_unauthorized_action!("tried to submit an empty translation")
+      trfe("Your translation was empty and was not accepted")
+      return redirect_to(@source_url)
+    end
+    
+    unless @translation.uniq?
+      tr8n_current_translator.tried_to_perform_unauthorized_action!("tried to submit an identical translation")
+      trfe("There already exists such translation for this phrase. Please vote on it instead or suggest an elternative translation.")
+      return redirect_to(@source_url)
+    end
     
     unless @translation.clean?
       tr8n_current_translator.used_abusive_language!
@@ -87,14 +99,22 @@ class Tr8n::TranslationsController < Tr8n::BaseController
           tr8n_current_translator.tried_to_perform_unauthorized_action!("tried to update translation that is not his")
           @translation.label = "You are not authorized to edit this translation as you were not it's creator"
           mode = :edit
-        else  
-          if @translation.clean?
-            @translation.save_with_log!(tr8n_current_translator)
-            @translation.reset_votes!(tr8n_current_translator)
-          else
+        else 
+          if @translation.blank?
+            tr8n_current_translator.tried_to_perform_unauthorized_action!("tried to submit an empty translation")
+            @translation.label = "Your translation was empty and was not accepted"
+            mode = :edit
+          elsif not @translation.uniq?
+            tr8n_current_translator.tried_to_perform_unauthorized_action!("tried to submit an identical translation")
+            @translation.label = "There already exists such translation for this phrase. Please vote on it instead or suggest an elternative translation."
+            mode = :edit
+          elsif not @translation.clean?
             tr8n_current_translator.used_abusive_language!
             @translation.label = "Your translation contains prohibited words and will not be accepted. Click on cancel and try again."
             mode = :edit
+          else
+            @translation.save_with_log!(tr8n_current_translator)
+            @translation.reset_votes!(tr8n_current_translator)
           end
         end
 

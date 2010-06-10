@@ -121,6 +121,20 @@ class Tr8n::Translation < ActiveRecord::Base
     trans ||= new(:translation_key => translation_key, :language => language, :translator => translator, :label => translation_key.sanitized_label)
     trans  
   end
+
+  def blank?
+    self.label.blank?    
+  end
+
+  def uniq?
+    conditions = ["translation_key_id = ? and language_id = ? and label = ?", translation_key.id, language.id, label]
+    if self.id
+      conditions[0] << " and id <> ?"
+      conditions << self.id
+    end
+    
+    self.class.find(:all, :conditions => conditions).empty?
+  end
   
   def clean?
     language.clean_sentence?(label)
