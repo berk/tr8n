@@ -13,7 +13,12 @@
       <% tr8n_features_tabs.each do |tab| %>
         <%  classes = []
             section_key_condition = tab[:key].to_s == "sitemap" ? (@section_key != nil) : (@section_key == nil)
-            current = (tab[:controller] == controller.controller_name and tab[:actions].include?(controller.action_name) and section_key_condition)
+
+            if tab[:actions].any?
+              current = (tab[:controller] == controller.controller_name and tab[:actions].include?(controller.action_name) and section_key_condition) 
+            else
+              current = (tab[:controller] == controller.controller_name and section_key_condition) 
+            end 
 
             classes << "current" if current
             if tr8n_features_tabs.first == tab

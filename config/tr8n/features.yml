@@ -78,7 +78,7 @@ defaults: &defaults
     title:            Help
     link:             /tr8n/help
     controller:       help
-    actions:          [index]
+    actions:          []
     default_language: true
     manager_only:     false
 

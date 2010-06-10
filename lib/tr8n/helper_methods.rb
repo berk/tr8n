@@ -98,7 +98,7 @@ module Tr8n::HelperMethods
   end
   
   def tr8n_help_icon_tag(filename = "index")
-    link_to(image_tag("/tr8n/images/help.png", :style => "border:0px; vertical-align:middle;", :title => trl("Help")), {:controller => "/tr8n/help", :action => filename}, :anchor=> anchor, :target => "_new")
+    link_to(image_tag("/tr8n/images/help.png", :style => "border:0px; vertical-align:middle;", :title => trl("Help")), {:controller => "/tr8n/help", :action => filename}, :target => "_new")
   end
   
   def tr8n_help_link(text, opts = {})
