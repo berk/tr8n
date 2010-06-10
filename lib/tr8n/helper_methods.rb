@@ -97,8 +97,14 @@ module Tr8n::HelperMethods
     html    
   end
   
-  def tr8n_help_icon_tag(anchor = "top")
-    link_to(image_tag("/tr8n/images/help.png", :style => "border:0px; vertical-align:middle;", :title => trl("Help")), {:controller => "/tr8n/help", :action => :index}, :anchor=> anchor, :target => "_new")
+  def tr8n_help_icon_tag(filename = "index")
+    link_to(image_tag("/tr8n/images/help.png", :style => "border:0px; vertical-align:middle;", :title => trl("Help")), {:controller => "/tr8n/help", :action => filename}, :anchor=> anchor, :target => "_new")
+  end
+  
+  def tr8n_help_link(text, opts = {})
+    filename = opts[:filename].nil? ? text.downcase.gsub(' ', '_') : opts[:filename] 
+    classname = "tr8n_selected" if filename == controller.action_name
+    link_to(text, { :controller => "/tr8n/help", :action => filename }, :class => classname)
   end
 
   def tr8n_spinner_tag(id = "spinner", label = nil, cls='spinner')

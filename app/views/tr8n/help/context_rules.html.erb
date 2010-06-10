@@ -1,0 +1,13 @@
+<%= render :partial => "/tr8n/help/navigation" %>
+
+<div id="tr8n_help_content">
+  
+  <h1><%= @page_title %></h1>
+
+  <p>
+    Tokens are parts of a phrase that are not translated, such as a profile name or a number. Translations in some languages can depend on the gender or numerical value of the tokens in the phrase. For example, the translation for "{actor} tagged {target} in {count} photos" can depend on the gender of the actor and target as well as the number of photos. If translations in your language depend on any of these rules, you can add them here. Make sure you add all of the context rules for your language. When a user translates a phrase, they will have the option to create a translation for each possible context.
+  </p>
+
+</div>
+
+<%= render :partial => "/tr8n/common/footer" %>

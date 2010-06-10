@@ -1,0 +1,19 @@
+<%= render :partial => "/tr8n/help/navigation" %>
+
+<div id="tr8n_help_content">
+  
+  <h1><%= controller.action_name.titleize.gsub("_"," ")%></h1>
+
+  <p>
+    Your languages gives you quick access to the languages you've previously selected. When you first open the language selector, you will notice that English (US) has been added to Your Languages by default. Select a language from <%= tr8n_help_link("Other Languages") %> to add it to your languages.
+  </p>
+  
+  <p>
+    Your most recently viewed languages will appear at the top of the list. Click on one of your language to select it. The percentage for each language indicates how much of the site has been translated into that language. Use the 'x' to remove a language from your list.
+  </p>
+  
+  <%= image_tag("/tr8n/images/help/languages_simple.png") %>
+  
+</div>
+
+<%= render :partial => "/tr8n/common/footer" %>

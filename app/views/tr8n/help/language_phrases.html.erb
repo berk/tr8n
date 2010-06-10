@@ -1,0 +1,17 @@
+<%= render :partial => "/tr8n/help/navigation" %>
+
+<div id="tr8n_help_content">
+  
+  <h1><%= @page_title %></h1>
+
+  <p>
+    Shows the status of each translatable phrase for that language. A phrase is accepted if it has at least one accepted translation. Pending means that there are translations for the phrase, but none have been accepted. Not translated means that the phrase is translatable, but no translations have been submitted.
+  </p>
+
+  <p>
+    Note: If a phrase has been locked, it is not considered translatable. Rejected translations are not counted as translations. This means that if a phrase has only one translation, and that translation has been rejected, the phrase will be considered not translated.
+  </p>
+
+</div>
+
+<%= render :partial => "/tr8n/common/footer" %>
