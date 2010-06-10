@@ -1,0 +1,127 @@
+<% @page_title = controller.action_name.titleize.gsub("_"," ") %>
+
+<%= render :partial => "/tr8n/common/header" %>
+
+
+<style>
+
+  h1.tr8n             { font-size:18px;border-bottom:1px solid #ccc;margin-bottom:10px; }
+  h2.tr8n             { margin-bottom: 10px; }
+  h3.tr8n             { margin-bottom: 10px; }
+
+  p                   { margin-bottom: 20px; }
+  
+  #tr8n_help_title    { margin-bottom:20px; }
+  
+  #tr8n_sidebar       { margin-top:20px;margin-right:40px;width:200px;font-size:12px;float:left;border:dotted 1px #ccc;background-color:#f1f4f9;padding:8px; }
+  
+  #tr8n_sidebar li    { margin:0.5em; }
+  ol.tr8n_primary     { padding-left:15px;list-style-type:upper-roman; }
+  ol.tr8n_secondary   { padding-left:15px;list-style-type:decimal; }
+  ol.tr8n_tertiary    { padding-left:15px;list-style-type:lower-alpha; }
+  ol.tr8n_quaternary  { padding-left:15px;list-style-type:decimal; }
+  ol.tr8n_quinternary { padding-left:15px;list-style-type:lower-roman; }
+  
+  #tr8n_help_content      { float:left;margin-top:40px;width:600px;font-size:12px; }
+  
+  #tr8n_help_content h1   { margin-bottom:0.75em; }
+  #tr8n_help_content ul   { margin:2em;padding-left:15;list-style-type:disc; }
+  
+  a.tr8n_selected      { color:Black !important;font-weight:bold; }
+
+</style>
+
+
+  <div id="tr8n_sidebar">
+    <ol class="tr8n_primary">
+      <!-- 
+      <li><%= tr8n_help_link("Introduction", { :filename => "index" }) %></li>
+      <li><%= tr8n_help_link("Basic Concepts") %></li>
+          <ol class="tr8n_secondary">
+            <li><%= tr8n_help_link("Rank") %>
+                <ol class="tr8n_tertiary">
+                  <li><%= tr8n_help_link("User Rank") %></li>
+                  <li><%= tr8n_help_link("Translation Rank") %></li>
+                </ol>
+            </li>
+            <li><%= tr8n_help_link("Creating Translations") %></li>
+          </ol>
+      </li>
+      -->
+      <li><%= tr8n_help_link("Language Selector") %>
+          <ol class="tr8n_secondary">
+            <li><%= tr8n_help_link("Your Languages") %></li>
+            <li><%= tr8n_help_link("Other Languages") %></li>
+            <li><%= tr8n_help_link("Inline Translations") %></li>
+            <li><%= tr8n_help_link("Translation Tools") %></li>
+            <li><%= tr8n_help_link("Manage Language") %></li>
+          </ol>
+      </li>
+      <li><%= tr8n_help_link("Translating Inline") %>
+          <ol class="tr8n_secondary">
+            <li><%= tr8n_help_link("Phrases Without Translations") %>
+              <ol class="tr8n_tertiary">
+                  <li><%= tr8n_help_link("Original Phrase") %></li>
+                  <li><%= tr8n_help_link("Enter Translation") %>
+                      <ol class="tr8n_quaternary">
+                          <li><%= tr8n_help_link("Generate Context Rules") %></li>
+                          <li><%= tr8n_help_link("Translation Tokens") %></li>
+                          <li><%= tr8n_help_link("Suggested Translation") %></li>
+                      </ol>
+                  </li>
+              </ol>
+            </li>
+            <li><%= tr8n_help_link("Phrases With Translations") %></li>
+          </ol>
+      </li>
+      <li><%= tr8n_help_link("Using Translation Tools") %>
+          <ol class="tr8n_secondary">
+            <li><%= tr8n_help_link("Manage") %>
+              <ol class="tr8n_tertiary">
+                  <li><%= tr8n_help_link("Basic Information") %>
+                      <ol class="tr8n_quaternary">
+                          <li><%= tr8n_help_link("Native Name") %></li>
+                          <li><%= tr8n_help_link("Direction") %></li>
+                          <li><%= tr8n_help_link("Fallback Language") %></li>
+                      </ol>
+                  </li>
+                  <li><%= tr8n_help_link("Prohibited Words") %></li>
+                  <li><%= tr8n_help_link("Context Rules") %></li>
+              </ol>
+            </li>
+            <li><%= tr8n_help_link("Dashboard") %>
+              <ol class="tr8n_tertiary">
+                  <li><%= tr8n_help_link("Your Dashboard") %></li>
+                  <li><%= tr8n_help_link("Language Dashboard") %>
+                      <ol class="tr8n_quaternary">
+                          <li><%= tr8n_help_link("Language Statistics") %>
+                              <ol class="tr8n_quinternary">
+                                  <li><%= tr8n_help_link("Language Phrases") %></li>
+                                  <li><%= tr8n_help_link("Your Translations") %></li>
+                              </ol>
+                          </li>
+                          <li><%= tr8n_help_link("Recent Discussions") %></li>
+                          <li><%= tr8n_help_link("Recent Translations") %></li>
+                          <li><%= tr8n_help_link("Recent Translation Votes") %></li>
+                      </ol>
+                  </li>
+                  <li><%= tr8n_help_link("Prohibited Words") %></li>
+                  <li><%= tr8n_help_link("Context Rules") %></li>
+              </ol>
+            </li>
+            <li><%= tr8n_help_link("Site Map") %>
+              <ol class="tr8n_tertiary">
+                  <li><%= tr8n_help_link("Site Sections") %></li>
+                  <li><%= tr8n_help_link("Other Translatable Resources") %></li>
+              </ol>
+            </li>
+            <!-- 
+            <li><%= tr8n_help_link("Phrases") %></li>
+            <li><%= tr8n_help_link("Translations") %></li>
+            -->
+            <li><%= tr8n_help_link("Awards") %></li>
+            <li><%= tr8n_help_link("Discussions") %></li>
+          </ol>
+      </li>
+    </ol>
+  </div>
