@@ -41,15 +41,16 @@ class Tr8n::Config
   
   # Resets all of the cached variables
   def self.reset!
-    @enabled                = nil
-    @config                 = nil
-    @default_languages      = nil
-    @default_lambdas        = nil
-    @sitemap_sections       = nil
-    @default_gender_rules   = nil
-    @default_rank_styles    = nil
-    @default_numeric_rules  = nil
-    @default_language       = nil
+    @enabled                    = nil
+    @config                     = nil
+    @default_languages          = nil
+    @default_lambdas            = nil
+    @sitemap_sections           = nil
+    @default_gender_rules       = nil
+    @default_gender_list_rules  = nil
+    @default_rank_styles        = nil
+    @default_numeric_rules      = nil
+    @default_language           = nil
   end
 
   # will clean all tables and initialize default values
@@ -338,6 +339,12 @@ class Tr8n::Config
     @default_gender_rules ||= load_json("/config/tr8n/default_gender_rules.json")
     return @default_gender_rules[locale.to_s] if @default_gender_rules[locale.to_s]
     @default_gender_rules[default_locale]
+  end
+
+  def self.default_gender_list_rules(locale = default_locale)
+    @default_gender_list_rules ||= load_json("/config/tr8n/default_gender_list_rules.json")
+    return @default_gender_list_rules[locale.to_s] if @default_gender_list_rules[locale.to_s]
+    @default_gender_list_rules[default_locale]
   end
 
   def self.default_numeric_rules(locale = default_locale)

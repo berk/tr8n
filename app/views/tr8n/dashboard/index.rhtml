@@ -117,9 +117,9 @@
 	<div class="section_title">
 	  <div style="float:right; font-size:12px; font-weight:normal; padding-top:5px;">
       <%=link_to(trl("select"), :locale => lang.locale)%>
+      | <%=link_to(trl("site map"), "/tr8n/map?locale=#{lang.locale}")%>
       | <%=link_to(trl("phrases"), "/tr8n/phrases?locale=#{lang.locale}")%>
       | <%=link_to(trl("translations"), "/tr8n/translations?locale=#{lang.locale}")%>
-      | <%=link_to(trl("site map"), "/tr8n/map?locale=#{lang.locale}")%>
       | <%=link_to(trl("awards"), "/tr8n/awards?locale=#{lang.locale}")%>
       | <%=link_to(trl("discussions"), "/tr8n/forum?locale=#{lang.locale}")%>
       <% if tr8n_current_translator.manager?(lang) %>

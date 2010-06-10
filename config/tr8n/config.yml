@@ -103,7 +103,7 @@ defaults: &defaults
   # Rules Engine Settings
   #############################################################################
   rules_engine:  
-    language_rule_classes:    [Tr8n::NumericRule, Tr8n::GenderRule]
+    language_rule_classes:    [Tr8n::NumericRule, Tr8n::GenderRule, Tr8n::GenderListRule]
     numeric_rule:  
       token_suffixes:         [count, num, age, hours, minutes, years, seconds]
       object_method:          to_i
@@ -115,6 +115,8 @@ defaults: &defaults
         male:                 male
         neutral:              neutral
         unknown:              unknown
+    gender_list_rule:         # works together with gender rule 
+      token_suffixes:         [list]
     
     # minimal rank makes the translation acceptable for subsitution and counts towards the translator rank
     translation_threshold:    1

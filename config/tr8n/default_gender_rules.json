@@ -1,6 +1,6 @@
 {"en-US": [
-      {"multipart": false, "part1": "is", "value1": "male"},
-      {"multipart": false, "part1": "is", "value1": "female"},
-      {"multipart": false, "part1": "is", "value1": "unknown"}
+      {"operator": "is", "value": "male"},
+      {"operator": "is", "value": "female"},
+      {"operator": "is", "value": "unknown"}
 ] 
 }

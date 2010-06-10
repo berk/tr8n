@@ -92,6 +92,10 @@ class Tr8n::Language < ActiveRecord::Base
   end
   alias :tr :translate
 
+  def trl(label, desc = "", tokens = {}, options = {})
+    tr(label, desc, tokens, options.merge(:skip_decorations => true))
+  end
+
   def default_rule
     @default_rule ||= Tr8n::Config.language_rule_classes.first.new(:language => self, :definition => {})
   end
@@ -133,10 +137,6 @@ class Tr8n::Language < ActiveRecord::Base
 
   def update_total_metrics
     total_metric.update_metrics!
-  end
-
-  def completeness
-    total_metric.completeness
   end
 
   def prohibited_words

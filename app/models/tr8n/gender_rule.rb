@@ -37,46 +37,47 @@ class Tr8n::GenderRule < Tr8n::LanguageRule
     token_value = gender_token_value(token)
     return false unless token_value
     
-    if definition[:part1] == "is"
-      return true if token_value == gender_object_value_for(definition[:value1])
-    elsif definition[:part1] == "is_not"
-      return true if token_value != gender_object_value_for(definition[:value1])
+    if definition[:operator] == "is"
+      return true if token_value == gender_object_value_for(definition[:value])
+    elsif definition[:operator] == "is_not"
+      return true if token_value != gender_object_value_for(definition[:value])
     end
     
     false    
   end
 
   def to_hash
-    {:type => self.class.dependency, :operator => definition[:part1], :value => definition[:value1]}
+    {:type => self.class.dependency, :operator => definition[:operator], :value => definition[:value]}
   end
 
   # used by language rules setup page
   def token_description
-    if definition[:part1] == "is"
-      return "token object may have a gender, which is <strong>a #{definition[:value1]}</strong>" if ["male", "female"].include?(definition[:value1])
-      return "token object may have <strong>a neutral gender</strong>" if "neutral" == definition[:value1]
-      return "token object may have <strong>an unknown gender</strong>" if "unknown" == definition[:value1]
+    if definition[:operator] == "is"
+      return "token object may have a gender, which is <strong>a #{definition[:value]}</strong>" if ["male", "female"].include?(definition[:value])
+      return "token object may have <strong>a neutral gender</strong>" if "neutral" == definition[:value]
+      return "token object may have <strong>an unknown gender</strong>" if "unknown" == definition[:value]
     end
     
-    if definition[:part1] == "is_not"
-      return "token object may have a gender, which is <strong>not a #{definition[:value1]}</strong>" if ["male", "female"].include?(definition[:value1])
-      return "token object may have a gender, which is <strong>not neutral</strong>" if "neutral" == definition[:value1]
-      return "token object may have a gender, which is <strong>not unknown</strong>" if "unknown" == definition[:value1]
+    if definition[:operator] == "is_not"
+      return "token object may have a gender, which is <strong>not a #{definition[:value]}</strong>" if ["male", "female"].include?(definition[:value])
+      return "token object may have a gender, which is <strong>not neutral</strong>" if "neutral" == definition[:value]
+      return "token object may have a gender, which is <strong>not unknown</strong>" if "unknown" == definition[:value]
     end
   end
 
   # used to describe a context of a given translation
   def description
-    if definition[:part1] == "is"
-      return "is a #{definition[:value1]}" if ["male", "female"].include?(definition[:value1])
-      return "has a neutral gender" if "neutral" == definition[:value1]
-      return "has an unknown gender" if "unknown" == definition[:value1]
+    if definition[:operator] == "is"
+      return "is a #{definition[:value]}" if ["male", "female"].include?(definition[:value])
+      return "has a neutral gender" if "neutral" == definition[:value]
+      return "has an unknown gender" if "unknown" == definition[:value]
     end
     
-    if definition[:part1] == "is_not"
-      return "is not a #{definition[:value1]}" if ["male", "female"].include?(definition[:value1])
-      return "does not have a neutral gender" if "neutral" == definition[:value1]
-      return "does not have an unknown gender" if "unknown" == definition[:value1]
+    if definition[:operator] == "is_not"
+      return "is not a #{definition[:value]}" if ["male", "female"].include?(definition[:value])
+      return "does not have a neutral gender" if "neutral" == definition[:value]
+      return "does not have an unknown gender" if "unknown" == definition[:value]
     end
   end
+
 end

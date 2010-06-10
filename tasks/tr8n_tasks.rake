@@ -43,4 +43,15 @@ namespace :tr8n do
     end
   end
   
+  # upgrade language rules to the new rule definition
+  task :update_gender_rules => :environment do
+    Tr8n::GenderRule.all.each do |r|
+      if r.definition and r.definition[:part1]
+        new_definition = {:operator => r.definition[:part1], :value => r.definition[:value1]}
+        r.definition = new_definition
+        r.save
+      end
+    end
+  end
+  
 end

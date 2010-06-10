@@ -42,7 +42,7 @@ class Tr8n::TokenizedLabel
   end
 
   def lambda_tokens(translated_label = label)
-    @lambda_tokens ||= translated_label.scan(/\[[\w\.\,\{\}\s\-\:\/]*\]/)  
+    @lambda_tokens ||= translated_label.scan(/\[\w+:[^\]]+\]/)  
   end
 
   def lambda_tokens?

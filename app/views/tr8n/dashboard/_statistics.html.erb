@@ -1,4 +1,4 @@
-<% if lang.total_metric.not_translated_count == 0 %>
+<% if lang.total_metric.not_translated_count == 0 and lang.total_metric.key_count > 0 %>
   <div style="background-color:#ECFFEF; border: 1px dotted #ccc; font-size: 12px; padding:5px; margin-top:3x; margin-bottom:10px; color: #999;">
     <%=trl("This language is fully translated.")%>
   </div>

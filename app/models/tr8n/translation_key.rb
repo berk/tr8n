@@ -326,11 +326,9 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     # token is an object method call
     if stripped_token.index(".")  # object based token
       obj_name, method_name = stripped_token.split(".")
-      
       obj = token_values[obj_name.to_sym]
       return "{missing token value}" unless obj
-      
-      return sanitize_token_value(obj.send(method_name))
+      return sanitize_token_value(obj.send(method_name), options)
     end
       
     value = token_values[stripped_token.to_sym]
@@ -340,34 +338,95 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     if value.is_a?(Array)
       # if you provided an array, it better have some values
       return "{invalid array token value}" if value.empty?
-      
-      # if single object in the array return string value of the object
-      return sanitize_token_value(value.first) if value.size == 1
-      
-      params = value[2..-1]
-      params_with_object = [value.first] + params
 
-      # if second param is symbol, invoke the method on the object with the remaining values
-      return sanitize_token_value(value.first.send(value.second, *params)) if value.second.is_a?(Symbol) 
+      # if the first value of an array is an array handle it here
+      return token_array_value(value, options) if value.first.is_a?(Array) 
 
-      # if second param is lambda, call lambda with the remaining values
-      return sanitize_token_value(value.second.call(*params_with_object)) if value.second.is_a?(Proc)
-      
-      # if the second param is a string, substitute all of the numeric params,  
-      # with the original object and all the following params
-      if value.second.is_a?(String)
-        parametrized_value = value.second.clone
-        params_with_object.each_with_index do |val, i|
-          parametrized_value.gsub!("{$#{i}}", sanitize_token_value(val))  
-        end
-        return parametrized_value
-      end
-      
-      return "{invalid second token value}"
+      # if the first item in the array is an object, process it
+      return evaluate_token_method_array(value.first, value, options)
     end
 
     # simple token
     sanitize_token_value(value)
+  end
+  
+  def evaluate_token_method_array(object, method_array, options)
+    # if single object in the array return string value of the object
+    return sanitize_token_value(object) if method_array.size == 1
+    
+    method = method_array.second
+    params = method_array[2..-1]
+    params_with_object = [object] + params
+
+    # if second param is symbol, invoke the method on the object with the remaining values
+    if method.is_a?(Symbol)
+      return sanitize_token_value(object.send(method, *params), options.merge(:sanitize_values => true))
+    end
+
+    # if second param is lambda, call lambda with the remaining values
+    if method.is_a?(Proc)
+      return sanitize_token_value(method.call(*params_with_object))
+    end
+    
+    # if the second param is a string, substitute all of the numeric params,  
+    # with the original object and all the following params
+    if method.is_a?(String)
+      parametrized_value = method.clone
+      params_with_object.each_with_index do |val, i|
+        parametrized_value.gsub!("{$#{i}}", sanitize_token_value(val, options))  
+      end
+      return parametrized_value
+    end
+    
+    return "{invalid second token value}"
+  end
+  
+  def token_array_value(token_value, options = {}) 
+    objects = token_value.first
+    
+    # options are: second value is a lambda, second value is a string, second value is a symbol
+    # third value is a hash of options - :pretty_list => true, :list_limit => 3  - "and 4 others" will be added
+    # tr("{user_list} joined Geni", "", {:user_list => [[user1, user2, user3], :name]}, {:pretty_list => true, :list_limit => 3}}
+    
+    objects = objects.collect do |obj|
+      evaluate_token_method_array(obj, token_value, options)
+    end
+ 
+    return objects.first if objects.size == 1
+ 
+    separator = options[:separator] || ", "
+    list_limit = options[:list_limit] || objects.size
+    pretty_list = options[:pretty_list].nil? ? true : options[:pretty_list]
+    smart_list = options[:smart_list].nil? ? false : options[:smart_list]
+    smart_list = false if options[:skip_decorations]
+    
+    return objects.join(separator) unless pretty_list
+
+    if objects.size <= list_limit
+      return "#{objects[0..-2].join(separator)} #{"and".translate("List elements joiner", {}, options)} #{objects.last}"
+    end
+
+    display_ary = objects[0..(list_limit-1)]
+    remaining_ary = objects[list_limit..-1]
+    result = "#{display_ary.join(separator)}"
+    
+    unless smart_list
+      result << " " << "and".translate("List elements joiner", {}, options) << " "
+      result << "{num} {_others}".translate("List elements joiner", 
+                {:num => remaining_ary.size, :_others => "other".pluralize_for(remaining_ary.size)}, options)
+      return result
+    end             
+             
+    uniq_id = Time.now.to_i.to_s         
+    result << "<span id=\"tr8n_other_link_#{uniq_id}\">" << " " << "and".translate("List elements joiner", {}, options) << " "
+    result << "<a href='#' onClick=\"$('tr8n_other_link_#{uniq_id}').hide(); $('tr8n_other_elements_#{uniq_id}').show(); return false;\">"
+    result << "{num} {_others}".translate("List elements joiner", {:num => remaining_ary.size, :_others => "other".pluralize_for(remaining_ary.size)}, options)
+    result << "</a></span>"
+    result << "<span id=\"tr8n_other_elements_#{uniq_id}\" style='display:none'>" << separator
+    result << "#{remaining_ary[0..-2].join(separator)} #{"and".translate("List elements joiner", {}, options)} #{remaining_ary.last}"
+    result << "<a href='#' style='font-size:smaller;white-space:nowrap' onClick=\"$('tr8n_other_link_#{uniq_id}').show(); $('tr8n_other_elements_#{uniq_id}').hide(); return false;\"> "
+    result << "&laquo; less".translate("List elements joiner", {}, options)    
+    result << "</a></span>"
   end
   
   def decorate_translation(language, translated_label, translated = true, options = {})
