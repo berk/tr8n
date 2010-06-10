@@ -29,7 +29,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     end
     
     # we should disable this in production  
-    if options[:source] and Tr8n::Config.enabled_key_source_tracking?
+    if options[:source] and Tr8n::Config.enable_key_source_tracking?
       Tr8n::TranslationKeySource.find_or_create(tkey, Tr8n::TranslationSource.find_or_create(options[:source]))
     end
     
@@ -275,7 +275,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   end
   
   def substitute_tokens(label, token_values, options = {})
-    translated_label = label.clone
+    translated_label = label.to_s.clone
     
     # substitute basic tokens
     tokens.each do |token|

@@ -1,5 +1,9 @@
 <div class="section_title">
-  <%=trl("Start a New Discussion Topic For #{tr8n_current_language.english_name} Language")%> 
+  <% if tr8n_current_language.default? %>
+    <%=trl("Start a New Discussion Topic For All Translators")%>
+	<% else %>
+	   <%=trl("Start a New Discussion Topic For #{tr8n_current_language.english_name} Language")%>
+	<% end %>
 </div>
 
 <div class="section_box colored">
@@ -16,10 +20,10 @@
         </td>
       </tr>
       <tr>
-        <td style="width:80px; text-align:right; padding-right:10px; font-weight:bold;">
+        <td style="width:80px; text-align:right; padding-right:10px; padding-top:5px; font-weight:bold;">
           <%=trl("Message:") %>
         </td>
-        <td>
+        <td style="padding-top:5px;">
           <%=text_area_tag(:message, "", :style=>"width:99%; height:50px;")%>
         </td>
       </tr>

@@ -19,10 +19,6 @@ class Tr8n::Config
     Thread.current[:current_user]
   end
   
-  def self.current_translator
-    Thread.current[:current_translator]
-  end
-
   def self.current_language
     Thread.current[:current_language] ||= default_language
   end
@@ -110,10 +106,6 @@ class Tr8n::Config
   
   def self.config
     @config ||= load_yml("/config/tr8n/config.yml")
-#    @config ||= begin 
-#      cfg = load_json("/config/tr8n/config.json")
-#      cfg[:defaults].merge(cfg[RAILS_ENV])
-#    end
   end
 
   def self.default_languages
@@ -141,7 +133,6 @@ class Tr8n::Config
   end
   
   def self.enabled?
-    return eval(site_info[:enable_tr8n_method]) if site_info[:enable_tr8n_method]
     config[:enable_tr8n] 
   end
   
@@ -161,7 +152,7 @@ class Tr8n::Config
     config[:enable_inline_translations]
   end
   
-  def self.enabled_key_source_tracking?
+  def self.enable_key_source_tracking?
     config[:enable_key_source_tracking]
   end
 
@@ -198,8 +189,8 @@ class Tr8n::Config
     config[:cache_adapter]
   end
 
-  def self.open_translator_mode?
-    config[:open_translator_mode]
+  def self.open_registration_mode?
+    config[:open_registration_mode]
   end
   
   #########################################################
@@ -242,6 +233,10 @@ class Tr8n::Config
     site_info[:current_user_method]
   end
 
+  def self.current_locale_method
+    site_info[:current_locale_method]
+  end
+
   def self.enable_tr8n_method
     site_info[:enable_tr8n_method]
   end
@@ -249,6 +244,7 @@ class Tr8n::Config
   def self.sitemap_sections
     @sitemap_sections ||= load_json(site_info[:sitemap_json])
   end
+  
   #########################################################
   # site user info
   # The following methods could be overloaded in the initializer
@@ -284,6 +280,10 @@ class Tr8n::Config
 
   def self.user_link(user)
     user.send(site_user_info[:methods][:link])
+  end
+
+  def self.user_locale(user)
+    user.send(site_user_info[:methods][:locale])
   end
 
   def self.admin_user?(user = current_user)

@@ -135,7 +135,7 @@ class Tr8n::LanguageController < Tr8n::BaseController
         @inline_translations_enabled = tr8n_current_translator.enable_inline_translations?
       end
     else
-      @inline_translations_allowed = Tr8n::Config.open_translator_mode?
+      @inline_translations_allowed = Tr8n::Config.open_registration_mode?
     end
     
     @inline_translations_allowed = true if tr8n_current_user_is_admin?

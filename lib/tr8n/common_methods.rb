@@ -7,8 +7,15 @@ module Tr8n::CommonMethods
   end
 
   def init_tr8n
-    session[:locale] = 'en-US' unless session[:locale]
-    session[:locale] = params[:locale] if params[:locale]
+    tr8n_current_locale = nil
+    begin
+      tr8n_current_locale = eval(Tr8n::Config.current_locale_method)
+    rescue Exception => ex
+      # fallback to the default session based locale implementation
+      session[:locale] = Tr8n::Config.default_locale unless session[:locale]
+      session[:locale] = params[:locale] if params[:locale]
+      tr8n_current_locale = session[:locale]
+    end
     
     tr8n_current_user = nil
     begin
@@ -17,7 +24,7 @@ module Tr8n::CommonMethods
       raise Tr8n::Exception.new("Tr8n cannot be initialized because #{Tr8n::Config.current_user_method} failed with: #{ex.message}")
     end
     
-    Tr8n::Config.init(session[:locale], tr8n_current_user)
+    Tr8n::Config.init(tr8n_current_locale, tr8n_current_user)
   end
 
   # translation functions
@@ -26,7 +33,7 @@ module Tr8n::CommonMethods
       raise Tr8n::Exception.new("The second parameter of the tr function must be a description")
     end
     
-    if Tr8n::Config.enabled_key_source_tracking?
+    if Tr8n::Config.enable_key_source_tracking?
       begin
         if self.respond_to?(:controller)
           source = "#{controller.controller_name}/#{controller.action_name}"

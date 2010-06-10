@@ -80,7 +80,7 @@ class Tr8n::Language < ActiveRecord::Base
 
   def self.translate(label, desc = "", tokens = {}, options = {})
     return Tr8n::TranslationKey.substitute_tokens(label, tokens, options) unless Tr8n::Config.enabled?
-    options.delete(:source) unless Tr8n::Config.enabled_key_source_tracking?
+    options.delete(:source) unless Tr8n::Config.enable_key_source_tracking?
     Tr8n::Config.current_language.translate(label, desc, tokens, options)
   end
 

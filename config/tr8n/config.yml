@@ -25,7 +25,7 @@ defaults: &defaults
   # translation. If the flag is set to false, then a user must be promoted to
   # be a translator in order to submit or vote on translations.
   #############################################################################
-  open_translator_mode:       true
+  open_registration_mode:     true
 
   #############################################################################
   # If you would like to run tr8n on a different database, 
@@ -78,15 +78,9 @@ defaults: &defaults
   # Site Integration Settings
   #############################################################################
   site_info:  
-    ###########################################################################
-    # You can provide a custom method for enabling/disabling tr8n by setting:
-    # 
-    # enable_tr8n_method:     MySiteConfig.enable_tr8n?
-    # 
-    # This method will be evaluated instead of the default enable_tr8n setting      
-    ###########################################################################
-    current_user_method:      current_user   # provides current user object
-    title:                    Tr8n           # site title, for customization 
+    current_user_method:      current_user          # provides current user object
+    current_locale_method:    current_locale        # provides current locale
+    title:                    Tr8n                  # site title, for customization 
     default_url:              /home         
     default_locale:           en-US
     sitemap_json:             /config/tr8n/default_sitemap.json
@@ -103,7 +97,8 @@ defaults: &defaults
         guest:                guest?
         mugshot:              mugshot
         link:                 link
-
+        locale:               locale
+        
   #############################################################################
   # Rules Engine Settings
   #############################################################################
