@@ -9,6 +9,13 @@ class Tr8n::Admin::TranslatorController < Tr8n::Admin::BaseController
     @translator = Tr8n::Translator.find(params[:translator_id])
   end
 
+  def delete
+    @translator = Tr8n::Translator.find(params[:translator_id])
+    @translator.destroy
+    trfn("Translator has been deleted")
+    redirect_to :action => :index
+  end
+
   def block
     @translator = Tr8n::Translator.find(params[:translator_id])
     @translator.block!(tr8n_current_user, params[:reason])

@@ -7,7 +7,7 @@
 		<% end %>
 		
 		<% if featured_languages.size > 0 %>
-				<% if opts[:more_link] == :javascript %>
+				<% if opts[:javascript] %>
 				  <span id="tr8n_more_strip_languages">
 				    <%=link_to_function("&raquo;", "$('tr8n_more_strip_languages').hide(); Effect.Appear('tr8n_other_strip_languages');") %>
 					</span>	
@@ -22,7 +22,7 @@
 			      </span> 
 					</span>
 				<% else %>
-		      <%=link_to("&raquo;", opts[:more_link]) %>
+		      <%=link_to("&raquo;", :controller => "/tr8n/language", :action => :table) %>
 				<% end %>	
     <% end %> 
   </span>

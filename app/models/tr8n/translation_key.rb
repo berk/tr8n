@@ -317,9 +317,8 @@ class Tr8n::TranslationKey < ActiveRecord::Base
 
   def sanitize_token_value(value, options = {})
 #    double check if we want to do this?
-#    return value.to_s unless options[:sanitize_values]
-#    ERB::Util.html_escape(value.to_s)
-    value.to_s
+    return value.to_s if (not options[:sanitize_values]) or value.tr8n_safe?
+    ERB::Util.html_escape(value.to_s)
   end
 
   def token_value(token, token_values, options = {})
@@ -330,7 +329,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
       obj_name, method_name = stripped_token.split(".")
       obj = token_values[obj_name.to_sym]
       return "{missing token value}" unless obj
-      return sanitize_token_value(obj.send(method_name), options)
+      return sanitize_token_value(obj.send(method_name), options.merge(:sanitize_values => true))
     end
       
     value = token_values[stripped_token.to_sym]

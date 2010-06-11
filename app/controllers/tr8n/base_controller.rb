@@ -4,7 +4,9 @@ class Tr8n::BaseController < ApplicationController
 
   CHART_COLORS = ['AFD8F8', 'F6BD0F', '8BBA00', 'FF8E46', '008E8E', 'D64646', '8E468E', '588526', 'B3AA00', '008ED6', '9D080D', 'A186BE']
 
-  before_filter :validate_current_user, :except => [:select, :switch]
+  before_filter :validate_tr8n_enabled, :except => [:translate]
+  before_filter :validate_guest_user, :except => [:select, :switch, :translate]
+  before_filter :validate_current_user, :except => [:translate]
   
   layout Tr8n::Config.site_info[:tr8n_layout]
 
@@ -85,13 +87,31 @@ private
     CGI::escapeHTML(label.strip)
   end
 
-  def validate_current_user
-    if tr8n_current_user_is_guest?
-      trfe("Your must be a registered user or a translator in order to access this section of the site.")
+  # handle disabled state for tr8n
+  def validate_tr8n_enabled
+    if Tr8n::Config.disabled?
+      trfe("You don't have rights to access that section.")
       return redirect_to(Tr8n::Config.default_url)
     end
   end
 
+  # guest users can still switch between languages outside of the site
+  def validate_guest_user
+    if tr8n_current_user_is_guest?
+      trfe("You must be a registered user in order to access this section of the site.")
+      return redirect_to(Tr8n::Config.default_url)
+    end
+  end
+
+  # make sure users have the rights to access this section
+  def validate_current_user
+    unless Tr8n::Config.open_registration_mode? or Tr8n::Config.current_user_is_translator? 
+      trfe("You don't have rights to access that section.")
+      return redirect_to(Tr8n::Config.default_url)
+    end
+  end
+
+  # make sure that the current user is a translator
   def validate_current_translator
     if tr8n_current_user_is_translator? and tr8n_current_translator.blocked?
       trfe("Your translation privileges have been revoked. Please contact the site administrator for more details.")
@@ -99,6 +119,7 @@ private
     end
   end
 
+  # make sure that the current user is a language manager
   def validate_language_management
     # admins can do everything
     return if tr8n_current_user_is_admin?

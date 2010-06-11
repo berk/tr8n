@@ -84,6 +84,9 @@
           <% else %>
             | <%=link_to_function("Block", "performTranslatorAction('block')") %>
           <% end %>  
+        					
+          | <%=link_to("Delete", {:action => :delete, :translator_id => @translator.id}, :confirm => "Are you sure you want to do that?")%>
+					
         </td>
     </tr>    
 </table>
@@ -162,7 +165,7 @@
 </table>
 <br>
 
-<div style="float:right;padding-top:10px;"><%=link_to("View All", "/tr8n/admin/translator_log?mf_c_0=translator_id&mf_co_0=is&mf_cv_0_0=#{@translator.id}")%></div>
+<div style="float:right;padding-top:10px;"><%=link_to("View All", "/tr8n/admin/translator/log?mf_c_0=translator_id&mf_co_0=is&mf_cv_0_0=#{@translator.id}")%></div>
 <h1>Recent Translator Activity <span style="color:grey; font-size:12px;">(last 20 actions)</span></h1>
 <table class="admin_table">
 <thead>

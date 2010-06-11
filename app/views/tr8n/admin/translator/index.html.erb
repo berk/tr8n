@@ -59,6 +59,8 @@
       </td>  
       <td style="text-align:right">
         <%=link_to("View", :action => :view, :translator_id => translator.id)%>
+				|
+        <%=link_to("Delete", {:action => :delete, :translator_id => translator.id}, :confirm => "Are you sure you want to do that?")%>
       </td>
     </tr>
   <% end %>

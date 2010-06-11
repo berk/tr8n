@@ -8,8 +8,6 @@ class Tr8n::Config
   # initializes language, user and translator
   # the variables are kept in a thread safe form throughout the request
   def self.init(locale, site_current_user)
-    return if disabled?
-
     Thread.current[:current_language]   = Tr8n::Language.for(locale) || default_language
     Thread.current[:current_user]       = site_current_user
     Thread.current[:current_translator] = Tr8n::Translator.for(site_current_user)
@@ -188,6 +186,10 @@ class Tr8n::Config
 
   def self.cache_adapter
     config[:cache_adapter]
+  end
+
+  def self.cache_version
+    config[:cache_version]
   end
 
   def self.open_registration_mode?

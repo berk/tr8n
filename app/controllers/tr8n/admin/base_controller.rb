@@ -6,6 +6,14 @@ class Tr8n::Admin::BaseController < Tr8n::BaseController
   
 private
 
+  def validate_tr8n_enabled
+    # don't do anything for admin pages
+  end
+
+  def validate_current_user
+    # don't do anything for admin pages
+  end
+  
   def init_model_filter(class_name)
     return ModelFilter.new(class_name, tr8n_current_user).deserialize_from_params(params) if class_name.is_a?(String)
     class_name.new(tr8n_current_user).deserialize_from_params(params)

@@ -26,7 +26,6 @@ module Tr8n::HelperMethods
     show_flag = opts[:flag].nil? ? true : opts[:flag]
     name_type = opts[:name].nil? ? :full : opts[:name] # :full, :native, :english, :locale
     linked = opts[:linked].nil? ? true : opts[:linked] 
-    link = opts[:link].nil? ? {:locale => lang.locale} : opts[:link].clone
     
     html = "<span style='white-space: nowrap'>"
     if show_flag
@@ -42,12 +41,10 @@ module Tr8n::HelperMethods
     end
     
     if linked
-      if link.is_a?(String)
-        link.gsub!("locale", "previous_locale")
-        link << (link.index("?") ? "&" : "?")
-        link << "locale=#{lang.locale}"
-      end
-      html << link_to(name, link)
+      html << link_to(name, :controller => "/tr8n/language", 
+              :action => :switch, :language_action => :switch_language, 
+              :locale => lang.locale,
+              :source_url => opts[:source_url])
     else    
       html << name
     end
@@ -63,7 +60,7 @@ module Tr8n::HelperMethods
     opts[:flag] = opts[:flag].nil? ? false : opts[:flag]
     opts[:name] = opts[:name].nil? ? :native : opts[:name] 
     opts[:linked] = opts[:linked].nil? ? true : opts[:linked] 
-    opts[:more_link] = opts[:more_link].nil? ? :javascript : opts[:more_link] 
+    opts[:javascript] = opts[:javascript].nil? ? false : opts[:javascript] 
     
     render(:partial => '/tr8n/common/language_strip', :locals => {:opts => opts})    
   end

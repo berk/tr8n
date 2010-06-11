@@ -65,6 +65,7 @@ defaults: &defaults
   enable_caching:             false
   cache_adapter:              ActiveSupport::Cache
   cache_store:                [mem_cache_store, 'localhost:11211']
+  cache_version:              1 # you can change the version to invalidate it
 
   #############################################################################
   # By default, Tr8n will use its own logger. If you set it to false,  

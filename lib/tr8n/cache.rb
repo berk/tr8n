@@ -1,5 +1,4 @@
 class Tr8n::Cache
-  
   def self.cache
     @cache ||= begin
       if Tr8n::Config.cache_adapter == 'ActiveSupport::Cache'
@@ -16,16 +15,20 @@ class Tr8n::Cache
     Tr8n::Config.enable_caching?
   end
   
+  def self.versioned_key(key)
+    "#{Tr8n::Config.cache_version}_#{key}"
+  end
+  
   def self.fetch(key, options = {})
     return yield unless enabled?
-    cache.fetch(key, options) do 
+    cache.fetch(versioned_key(key), options) do 
       yield
     end
   end
 
   def self.delete(key, options = nil)
     return unless enabled?
-    cache.delete(key, options)
+    cache.delete(versioned_key(key), options)
   end
   
 end

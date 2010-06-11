@@ -1,5 +1,7 @@
 class Tr8n::ChartController < Tr8n::BaseController
 
+  before_filter :validate_current_translator
+
   def language_completeness
     lang = Tr8n::Language.find(params[:language_id])
 

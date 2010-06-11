@@ -13,4 +13,13 @@ class String
     translate(desc, tokens, options.merge!(:skip_decorations => true), language)
   end
 
+  def tr8n_safe!
+    @tr8n_safe = true
+    self
+  end
+  
+  def tr8n_safe?
+    @tr8n_safe
+  end
+  
 end

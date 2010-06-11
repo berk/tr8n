@@ -1,11 +1,12 @@
 class Tr8n::LanguageController < Tr8n::BaseController
 
-  before_filter :validate_current_translator, :except => [:select, :switch, :translate, :tr]
+  before_filter :validate_current_translator, :except => [:select, :switch, :translate]
   before_filter :validate_language_management, :only => [:index]
   
   def translate
     return sanitize_api_response({"error" => "Api is disabled"}) unless Tr8n::Config.enable_api?
-    return sanitize_api_response({"error" => "You must be logged in to use the api"}) if tr8n_current_user_is_guest?
+
+#   return sanitize_api_response({"error" => "You must be logged in to use the api"}) if tr8n_current_user_is_guest?
 
     language = Tr8n::Language.for(params[:language]) || tr8n_current_language
     source = params[:source] || "API" 
@@ -58,7 +59,6 @@ class Tr8n::LanguageController < Tr8n::BaseController
   rescue Tr8n::KeyRegistrationException => ex
     sanitize_api_response({"error" => ex.message})
   end
-  alias :tr :translate
   
   def index
     @rules = tr8n_current_language.rules
@@ -221,6 +221,10 @@ class Tr8n::LanguageController < Tr8n::BaseController
     render(:layout => false)
   end
     
+  def table
+    @source_url = params[:source_url] || request.env['HTTP_REFERER']
+  end
+  
 private
 
   # parse with safety - we don't want to disconnect existing translations from those rules

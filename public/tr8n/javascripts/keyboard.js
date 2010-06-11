@@ -1,7 +1,7 @@
 /* ********************************************************************
  **********************************************************************
- * HTML Virtual Keyboard Interface Script - v1.32
- *   Copyright (c) 2009 - GreyWyvern
+ * HTML Virtual Keyboard Interface Script - v1.36
+ *   Copyright (c) 2010 - GreyWyvern
  *
  *  - Licenced for free distribution under the BSDL
  *          http://www.opensource.org/licenses/bsd-license.php
@@ -12,28 +12,26 @@
  * See http://www.greywyvern.com/code/javascript/keyboard for examples
  * and usage instructions.
  *
- * Version 1.32 - December 31, 2009
- *   - Added keyboard position switch function
- *   - Added some CSS3 styles
- *   - Added Pashto keyboard layout
- *   - Added Macedonian keyboard layout
- *   - Added Ukrainian keyboard layout
+ * Version 1.36 - June 2, 2010
+ *   - Add user resize control
+ *   - Automatically choose keyboard layout based on lang attribute
  *
  *   See full changelog at:
  *     http://www.greywyvern.com/code/javascript/keyboard.changelog.txt
  *
  * Keyboard Credits
+ *   - Basic Japanese Hiragana/Katakana keyboard layout by Damjan
  *   - Ukrainian keyboard layout by Dmitry Nikitin
  *   - Macedonian keyboard layout by Damjan Dimitrioski
  *   - Pashto keyboard layout by Ahmad Wali Achakzai (qamosona.com)
  *   - Armenian Eastern and Western keyboard layouts by Hayastan Project (www.hayastan.co.uk)
  *   - Pinyin keyboard layout from a collaboration with Lou Winklemann
  *   - Kazakh keyboard layout by Alex Madyankin
- *   - Danish keyboard layout by Verner Kjærsgaard
+ *   - Danish keyboard layout by Verner KjÃ¦rsgaard
  *   - Slovak keyboard layout by Daniel Lara (www.learningslovak.com)
  *   - Belarusian, Serbian Cyrillic and Serbian Latin keyboard layouts by Evgeniy Titov
  *   - Bulgarian Phonetic keyboard layout by Samuil Gospodinov
- *   - Swedish keyboard layout by Håkan Sandberg
+ *   - Swedish keyboard layout by HÃ¥kan Sandberg
  *   - Romanian keyboard layout by Aurel
  *   - Farsi (Persian) keyboard layout by Kaveh Bakhtiyari (www.bakhtiyari.com)
  *   - Burmese keyboard layout by Cetanapa
@@ -49,21 +47,22 @@
  *   - Dutch and US Int'l keyboard layouts by jerone
  *
  */
-  var VKI_attach, VKI_close;
-
+var VKI_attach, VKI_close;
   function VKI_buildKeyboardInputs() {
     var self = this;
 
-    this.VKI_version = "1.32";
-    this.VKI_showVersion = true;
-    this.VKI_target = this.VKI_visible = false;
+    this.VKI_version = "1.36";
+    this.VKI_showVersion = false;
+    this.VKI_target = false;
     this.VKI_shift = this.VKI_shiftlock = false;
     this.VKI_altgr = this.VKI_altgrlock = false;
-    this.VKI_switcher = true; // show the position switcher
-    this.VKI_above = 0; // 0 = below the input, 1 = above
     this.VKI_dead = false;
     this.VKI_deadkeysOn = false;
-    this.VKI_kt = "US Int'l";  // Default keyboard layout
+		
+    this.VKI_kts = this.VKI_kt = VKI_default_layout;  // Default keyboard layout
+    this.VKI_langAdapt = true;  // Use lang attribute of input to select keyboard
+    this.VKI_size = 2;  // Default keyboard size (1-5)
+    this.VKI_sizeAdj = true;  // Allow user to adjust keyboard size
     this.VKI_clearPasswords = false;  // Clear password fields on focus
     this.VKI_imageURI = "/tr8n/images/keyboard.png";
     this.VKI_clickless = 0;  // 0 = disabled, > 0 = delay in ms
@@ -72,8 +71,25 @@
     this.VKI_isIE = /*@cc_on!@*/false;
     this.VKI_isIE6 = /*@if(@_jscript_version == 5.6)!@end@*/false;
     this.VKI_isIElt8 = /*@if(@_jscript_version < 5.8)!@end@*/false;
-    this.VKI_isMoz = (navigator.product == "Gecko");
-    this.VKI_isWebKit = RegExp("KHTML").test(navigator.userAgent);
+    this.VKI_isWebKit = window.opera;
+    this.VKI_isOpera = RegExp("Opera").test(navigator.userAgent);
+    this.VKI_isMoz = (!this.VKI_isWebKit && navigator.product == "Gecko");
+
+
+    /* ***** i18n text strings ************************************* */
+    this.VKI_i18n = {
+      '00': "Virtual Keyboard Interface",
+      '01': "Display virtual keyboard interface",
+      '02': "Select keyboard layout",
+      '03': "Dead keys",
+      '04': "On",
+      '05': "Off",
+      '06': "Close the keyboard",
+      '07': "Clear",
+      '08': "Clear this input",
+      '09': "Version",
+      '10': "Adjust keyboard size"
+    };
 
 
     /* ***** Create keyboards ************************************** */
@@ -136,7 +152,7 @@
       [["Caps", "Caps"], ["\u0634", "\u0650"], ["\u0633", "\u064d"], ["\u064a", "\u005d"], ["\u0628", "\u005b"], ["\u0644", "\u0644"], ["\u0627", "\u0623"], ["\u062a", "\u0640"], ["\u0646", "\u060c"], ["\u0645", "\u002f"], ["\u0643", "\u003a"], ["\u0637", "\u0022"], ["Enter", "Enter"]],
       [["Shift", "Shift"], ["\u0626", "\u007e"], ["\u0621", "\u0652"], ["\u0624", "\u007d"], ["\u0631", "\u007b"], ["\u0644", "\u0644"], ["\u0649", "\u0622"], ["\u0629", "\u2019"], ["\u0648", "\u002c"], ["\u0632", "\u002e"], ["\u0638", "\u061f"], ["Shift", "Shift"]],
       [[" ", " ", " ", " "], ["Alt", "Alt"]]
-    ];
+    ]; this.VKI_layout.Arabic.lang = ["ar"];
 
     this.VKI_layout["Armenian East"] = [ // Eastern Armenian Keyboard
       [["\u055D", "\u055C"], [":", "1"], ["\u0571", "\u0541"], ["\u0575", "\u0545"], ["\u055B", "3"], [",", "4"], ["-", "9"], [".", "\u0587"], ["\u00AB", "("], ["\u00BB", ")"], ["\u0585", "\u0555"], ["\u057C", "\u054C"], ["\u056A", "\u053A"], ["Bksp", "Bksp"]],
@@ -144,7 +160,7 @@
       [["Caps", "Caps"], ["\u0561", "\u0531"], ["\u057D", "\u054D"], ["\u0564", "\u0534"], ["\u0586", "\u0556"], ["\u0584", "\u0554"], ["\u0570", "\u0540"], ["\u0573", "\u0543"], ["\u056F", "\u053F"], ["\u056C", "\u053C"], ["\u0569", "\u0539"], ["\u0583", "\u0553"], ["Enter", "Enter"]],
       [["Shift", "Shift"], ["\u0566", "\u0536"], ["\u0581", "\u0551"], ["\u0563", "\u0533"], ["\u057E", "\u054E"], ["\u0562", "\u0532"], ["\u0576", "\u0546"], ["\u0574", "\u0544"], ["\u0577", "\u0547"], ["\u0572", "\u0542"], ["\u056E", "\u053E"], ["Shift", "Shift"]],
       [[" ", " "]]
-    ];
+    ]; this.VKI_layout["Armenian East"].lang = ["hy"];
 
     this.VKI_layout["Armenian West"] = [ // Western Armenian Keyboard
       [["\u055D", "\u055C"], [":", "1"], ["\u0571", "\u0541"], ["\u0575", "\u0545"], ["\u055B", "3"], [",", "4"], ["-", "9"], [".", "\u0587"], ["\u00AB", "("], ["\u00BB", ")"], ["\u0585", "\u0555"], ["\u057C", "\u054C"], ["\u056A", "\u053A"], ["Bksp", "Bksp"]],
@@ -152,7 +168,7 @@
       [["Caps", "Caps"], ["\u0561", "\u0531"], ["\u057D", "\u054D"], ["\u057F", "\u054F"], ["\u0586", "\u0556"], ["\u056F", "\u053F"], ["\u0570", "\u0540"], ["\u0573", "\u0543"], ["\u0584", "\u0554"], ["\u056C", "\u053C"], ["\u0569", "\u0539"], ["\u0583", "\u0553"], ["Enter", "Enter"]],
       [["Shift", "Shift"], ["\u0566", "\u0536"], ["\u0581", "\u0551"], ["\u0563", "\u0533"], ["\u0582", "\u0552"], ["\u057A", "\u054A"], ["\u0576", "\u0546"], ["\u0574", "\u0544"], ["\u0577", "\u0547"], ["\u0572", "\u0542"], ["\u056E", "\u053E"], ["Shift", "Shift"]],
       [[" ", " "]]
-    ];
+    ]; this.VKI_layout["Armenian West"].lang = ["hy-arevmda"];
 
     this.VKI_layout.Belarusian = [ // Belarusian Standard Keyboard
       [["\u0451", "\u0401"], ["1", "!"], ["2", '"'], ["3", "\u2116"], ["4", ";"], ["5", "%"], ["6", ":"], ["7", "?"], ["8", "*"], ["9", "("], ["0", ")"], ["-", "_"], ["=", "+"], ["Bksp", "Bksp"]],
@@ -160,7 +176,7 @@
       [["Caps", "Caps"], ["\u0444", "\u0424"], ["\u044b", "\u042b"], ["\u0432", "\u0412"], ["\u0430", "\u0410"], ["\u043f", "\u041f"], ["\u0440", "\u0420"], ["\u043e", "\u041e"], ["\u043b", "\u041b"], ["\u0434", "\u0414"], ["\u0436", "\u0416"], ["\u044d", "\u042d"], ["Enter", "Enter"]],
       [["Shift", "Shift"], ["/", "|"], ["\u044f", "\u042f"], ["\u0447", "\u0427"], ["\u0441", "\u0421"], ["\u043c", "\u041c"], ["\u0456", "\u0406"], ["\u0442", "\u0422"], ["\u044c", "\u042c"], ["\u0431", "\u0411"], ["\u044e", "\u042e"], [".", ","], ["Shift", "Shift"]],
       [[" ", " "]]
-    ];
+    ]; this.VKI_layout.Belarusian.lang = ["be"];
 
     this.VKI_layout.Belgian = [ // Belgian Standard Keyboard
       [["\u00b2", "\u00b3"], ["&", "1", "|"], ["\u00e9", "2", "@"], ['"', "3", "#"], ["'", "4"], ["(", "5"], ["\u00a7", "6", "^"], ["\u00e8", "7"], ["!", "8"], ["\u00e7", "9", "{"], ["\u00e0", "0", "}"], [")", "\u00b0"], ["-", "_"], ["Bksp", "Bksp"]],
@@ -168,7 +184,7 @@
       [["Caps", "Caps"], ["q", "Q"], ["s", "S"], ["d", "D"], ["f", "F"], ["g", "G"], ["h", "H"], ["j", "J"], ["k", "K"], ["l", "L"], ["m", "M"], ["\u00f9", "%", "\u00b4"], ["\u03bc", "\u00a3", "`"]],
       [["Shift", "Shift"], ["<", ">", "\\"], ["w", "W"], ["x", "X"], ["c", "C"], ["v", "V"], ["b", "B"], ["n", "N"], [",", "?"], [";", "."], [":", "/"], ["=", "+", "~"], ["Shift", "Shift"]],
       [[" ", " ", " ", " "], ["AltGr", "AltGr"]]
-    ];
+    ]; this.VKI_layout.Belgian.lang = ["nl-BE", "fr-BE"];
 
     this.VKI_layout.Bengali = [ // Bengali Standard Keyboard
       [[""], ["1", "", "\u09E7"], ["2", "", "\u09E8"], ["3", "\u09CD\u09B0", "\u09E9"], ["4", "\u09B0\u09CD", "\u09EA"], ["5", "\u099C\u09CD\u09B0", "\u09EB"], ["6", "\u09A4\u09CD\u09B7", "\u09EC"], ["7", "\u0995\u09CD\u09B0", "\u09ED"], ["8", "\u09B6\u09CD\u09B0", "\u09EE"], ["9", "(", "\u09EF"], ["0", ")", "\u09E6"], ["-", "\u0983"], ["\u09C3", "\u098B", "\u09E2", "\u09E0"], ["Bksp", "Bksp"]],
@@ -176,7 +192,7 @@
       [["Caps", "Caps"], ["\u09CB", "\u0993", "\u09F4", "\u09F5"], ["\u09C7", "\u098F", "\u09F6", "\u09F7"], ["\u09CD", "\u0985", "\u09F8", "\u09F9"], ["\u09BF", "\u0987", "\u09E2", "\u098C"], ["\u09C1", "\u0989"], ["\u09AA", "\u09AB"], ["\u09B0", "", "\u09F0", "\u09F1"], ["\u0995", "\u0996"], ["\u09A4", "\u09A5"], ["\u099A", "\u099B"], ["\u099F", "\u09A0"], ["Enter", "Enter"]],
       [["Shift", "Shift"], [""], ["\u0982", "\u0981", "\u09FA"], ["\u09AE", "\u09A3"], ["\u09A8"], ["\u09AC"], ["\u09B2"], ["\u09B8", "\u09B6"], [",", "\u09B7"], [".", "{"], ["\u09AF", "\u09DF"], ["Shift", "Shift"]],
       [[" ", " ", " ", " "], ["AltGr", "AltGr"]]
-    ];
+    ]; this.VKI_layout.Bengali.lang = ["bn"];
 
     this.VKI_layout['Bulgarian Ph'] = [ // Bulgarian Phonetic Keyboard
       [["\u0447", "\u0427"], ["1", "!"], ["2", "@"], ["3", "#"], ["4", "$"], ["5", "%"], ["6", "^"], ["7", "&"], ["8", "*"], ["9", "("], ["0", ")"], ["-", "_"], ["=", "+"], ["Bksp", "Bksp"]],
@@ -184,7 +200,7 @@
       [["Caps", "Caps"], ["\u0430", "\u0410"], ["\u0441", "\u0421"], ["\u0434", "\u0414"], ["\u0444", "\u0424"], ["\u0433", "\u0413"], ["\u0445", "\u0425"], ["\u0439", "\u0419"], ["\u043A", "\u041A"], ["\u043B", "\u041B"], [";", ":"], ["'", '"'], ["Enter", "Enter"]],
       [["Shift", "Shift"], ["\u0437", "\u0417"], ["\u044C", "\u042C"], ["\u0446", "\u0426"], ["\u0436", "\u0416"], ["\u0431", "\u0411"], ["\u043D", "\u041D"], ["\u043C", "\u041C"], [",", "<"], [".", ">"], ["/", "?"], ["Shift", "Shift"]],
       [[" ", " "]]
-    ];
+    ]; this.VKI_layout['Bulgarian Ph'].lang = ["bg"];
 
     this.VKI_layout.Burmese = [ // Burmese Keyboard
       [["\u1039`", "~"], ["\u1041", "\u100D"], ["\u1042", "\u100E"], ["\u1043", "\u100B"], ["\u1044", "\u1000\u103B\u1015\u103A"], ["\u1045", "%"], ["\u1046", "\u002F"], ["\u1047", "\u101B"], ["\u1048", "\u1002"], ["\u1049", "("], ["\u1040", ")"], ["-", "_"], ["=", "+"], ["Bksp", "Bksp"]],
@@ -192,7 +208,7 @@
       [["Caps", "Caps"], ["\u200B\u1031", "\u1017"], ["\u200B\u103B", "\u200B\u103E"], ["\u200B\u102D", "\u200B\u102E"], ["\u200B\u103A","\u1004\u103A\u1039\u200B"], ["\u200B\u102B", "\u200B\u103D"], ["\u200B\u1037", "\u200B\u1036"], ["\u200B\u103C", "\u200B\u1032"], ["\u200B\u102F", "\u200B\u102F"], ["\u200B\u1030", "\u200B\u1030"], ["\u200B\u1038", "\u200B\u102B\u103A"], ["\u1012", "\u1013"], ["Enter", "Enter"]],
       [["Shift", "Shift"], ["\u1016", "\u1007"], ["\u1011", "\u100C"], ["\u1001", "\u1003"], ["\u101C", "\u1020"], ["\u1018", "\u1026"], ["\u100A", "\u1008"], ["\u200B\u102C", "\u102A"], ["\u101A", "\u101B"], ["\u002E", "\u101B"], ["\u104B", "\u104A"], ["Shift", "Shift"]],
       [[" ", " "]]
-    ];
+    ]; this.VKI_layout.Burmese.lang = ["my"];
 
     this.VKI_layout.Czech = [ // Czech Keyboard
      [[";", "\u00b0", "`", "~"], ["+", "1", "!"], ["\u011B", "2", "@"], ["\u0161", "3", "#"], ["\u010D", "4", "$"], ["\u0159", "5", "%"], ["\u017E", "6", "^"], ["\u00FD", "7", "&"], ["\u00E1", "8", "*"], ["\u00ED", "9", "("], ["\u00E9", "0", ")"], ["=", "%", "-", "_"], ["\u00B4", "\u02c7", "=", "+"], ["Bksp", "Bksp"]],
@@ -200,7 +216,7 @@
      [["Caps", "Caps"], ["a", "A"], ["s", "S"], ["d", "D"], ["f", "F"], ["g", "G"], ["h", "H"], ["j", "J"], ["k", "K"], ["l", "L"], ["\u016F", '"', ";", ":"], ["\u00A7", "!", "\u00a4", "^"], ["\u00A8", "'", "\\", "|"]],
      [["Shift", "Shift"], ["\\", "|", "", "\u02dd"], ["z", "Z"], ["x", "X"], ["c", "C"], ["v", "V"], ["b", "B"], ["n", "N"], ["m", "M"], [",", "?", "<", "\u00d7"], [".", ":", ">", "\u00f7"], ["-", "_", "/", "?"], ["Shift", "Shift"]],
      [[" ", " ", " ", " "], ["Alt", "Alt"]]
-    ];
+    ];  this.VKI_layout.Czech.lang = ["cs"];
 
     this.VKI_layout.Danish = [ // Danish Standard Keyboard
       [["\u00bd", "\u00a7"], ["1", "!"], ["2", '"', "@"], ["3", "#", "\u00a3"], ["4", "\u00a4", "$"], ["5", "%", "\u20ac"], ["6", "&"], ["7", "/", "{"], ["8", "(", "["], ["9", ")", "]"], ["0", "=", "}"], ["+", "?"], ["\u00b4", "`", "|"], ["Bksp", "Bksp"]],
@@ -208,7 +224,7 @@
       [["Caps", "Caps"], ["a", "A"], ["s", "S"], ["d", "D"], ["f", "F"], ["g", "G"], ["h", "H"], ["j", "J"], ["k", "K"], ["l", "L"], ["\u00e6", "\u00c6"], ["\u00f8", "\u00d8"], ["'", "*"]],
       [["Shift", "Shift"], ["<", ">", "\\"], ["z", "Z"], ["x", "X"], ["c", "C"], ["v", "V"], ["b", "B"], ["n", "N"], ["m", "M", "\u03bc", "\u039c"], [",", ";"], [".", ":"], ["-", "_"], ["Shift", "Shift"]],
       [[" ", " ", " ", " "], ["AltGr", "AltGr"]]
-    ];
+    ]; this.VKI_layout.Danish.lang = ["da"];
 
     this.VKI_layout.Dutch = [ // Dutch Standard Keyboard
       [["@", "\u00a7", "\u00ac"], ["1", "!", "\u00b9"], ["2", '"', "\u00b2"], ["3", "#", "\u00b3"], ["4", "$", "\u00bc"], ["5", "%", "\u00bd"], ["6", "&", "\u00be"], ["7", "_", "\u00a3"], ["8", "(", "{"], ["9", ")", "}"], ["0", "'"], ["/", "?", "\\"], ["\u00b0", "~", "\u00b8"], ["Bksp", "Bksp"]],
@@ -216,7 +232,7 @@
       [["Caps", "Caps"], ["a", "A"], ["s", "S", "\u00df"], ["d", "D"], ["f", "F"], ["g", "G"], ["h", "H"], ["j", "J"], ["k", "K"], ["l", "L"], ["+", "\u00b1"], ["\u00b4", "\u0060"], ["Enter", "Enter"]],
       [["Shift", "Shift"], ["]", "[", "\u00a6"], ["z", "Z", "\u00ab"], ["x", "X", "\u00bb"], ["c", "C", "\u00a2"], ["v", "V"], ["b", "B"], ["n", "N"], ["m", "M", "\u00b5"], [",", ";"], [".", ":", "\u00b7"], ["-", "="], ["Shift", "Shift"]],
       [[" ", " ", " ", " "], ["AltGr", "AltGr"]]
-    ];
+    ]; this.VKI_layout.Dutch.lang = ["nl"];
 
     this.VKI_layout.Dvorak = [ // Dvorak Keyboard
       [["`", "~"], ["1", "!"], ["2", "@"], ["3", "#"], ["4", "$"], ["5", "%"], ["6", "^"], ["7", "&"], ["8", "*"], ["9", "("], ["0", ")"], ["[", "{"], ["]", "}"], ["Bksp", "Bksp"]],
@@ -232,7 +248,7 @@
       [["Caps", "Caps"], ["\u0634", "\u0650"], ["\u0633", "\u064d"], ["\u064a", "\u005d"], ["\u0628", "\u005b"], ["\u0644", "\u0644"], ["\u0627", "\u0623"], ["\u062a", "\u0640"], ["\u0646", "\u060c"], ["\u0645", "\u005c"], ["\u06af", "\u003a"], ["\u0643", "\u0022"], ["Enter", "Enter"]],
       [["Shift", "Shift"], ["\u0626", "\u007e"], ["\u0621", "\u0652"], ["\u0632", "\u007d"], ["\u0631", "\u007b"], ["\u0630", "\u0644"], ["\u062f", "\u0622"], ["\u0626", "\u0621"], ["\u0648", "\u002c"], [".", "\u002e"], ["/", "\u061f"], ["Shift", "Shift"]],
       [[" ", " ", " ", " "], ["Alt", "Alt"]]
-    ];
+    ]; this.VKI_layout.Farsi.lang = ["fa"];
 
     this.VKI_layout.French = [ // French Standard Keyboard
       [["\u00b2", "\u00b3"], ["&", "1"], ["\u00e9", "2", "~"], ['"', "3", "#"], ["'", "4", "{"], ["(", "5", "["], ["-", "6", "|"], ["\u00e8", "7", "\u0060"], ["_", "8", "\\"], ["\u00e7", "9", "\u005e"], ["\u00e0", "0", "\u0040"], [")", "\u00b0", "]"], ["=", "+", "}"], ["Bksp", "Bksp"]],
@@ -240,7 +256,7 @@
       [["Caps", "Caps"], ["q", "Q"], ["s", "S"], ["d", "D"], ["f", "F"], ["g", "G"], ["h", "H"], ["j", "J"], ["k", "K"], ["l", "L"], ["m", "M"], ["\u00f9", "%"], ["*", "\u03bc"]],
       [["Shift", "Shift"], ["<", ">"], ["w", "W"], ["x", "X"], ["c", "C"], ["v", "V"], ["b", "B"], ["n", "N"], [",", "?"], [";", "."], [":", "/"], ["!", "\u00a7"], ["Shift", "Shift"]],
       [[" ", " ", " ", " "], ["AltGr", "AltGr"]]
-    ];
+    ]; this.VKI_layout.French.lang = ["fr"];
 
     this.VKI_layout.German = [ // German Standard Keyboard
       [["\u005e", "\u00b0"], ["1", "!"], ["2", '"', "\u00b2"], ["3", "\u00a7", "\u00b3"], ["4", "$"], ["5", "%"], ["6", "&"], ["7", "/", "{"], ["8", "(", "["], ["9", ")", "]"], ["0", "=", "}"], ["\u00df", "?", "\\"], ["\u00b4", "\u0060"], ["Bksp", "Bksp"]],
@@ -248,7 +264,7 @@
       [["Caps", "Caps"], ["a", "A"], ["s", "S"], ["d", "D"], ["f", "F"], ["g", "G"], ["h", "H"], ["j", "J"], ["k", "K"], ["l", "L"], ["\u00f6", "\u00d6"], ["\u00e4", "\u00c4"], ["#", "'"]],
       [["Shift", "Shift"], ["<", ">", "\u00a6"], ["y", "Y"], ["x", "X"], ["c", "C"], ["v", "V"], ["b", "B"], ["n", "N"], ["m", "M", "\u00b5"], [",", ";"], [".", ":"], ["-", "_"], ["Shift", "Shift"]],
       [[" ", " ", " ", " "], ["AltGr", "AltGr"]]
-    ];
+    ]; this.VKI_layout.German.lang = ["de"];
 
     this.VKI_layout.Greek = [ // Greek Standard Keyboard
       [["`", "~"], ["1", "!"], ["2", "@", "\u00b2"], ["3", "#", "\u00b3"], ["4", "$", "\u00a3"], ["5", "%", "\u00a7"], ["6", "^", "\u00b6"], ["7", "&"], ["8", "*", "\u00a4"], ["9", "(", "\u00a6"], ["0", ")", "\u00ba"], ["-", "_", "\u00b1"], ["=", "+", "\u00bd"], ["Bksp", "Bksp"]],
@@ -256,7 +272,7 @@
       [["Caps", "Caps"], ["\u03b1", "\u0391"], ["\u03c3", "\u03a3"], ["\u03b4", "\u0394"], ["\u03c6", "\u03a6"], ["\u03b3", "\u0393"], ["\u03b7", "\u0397"], ["\u03be", "\u039e"], ["\u03ba", "\u039a"], ["\u03bb", "\u039b"], ["\u0384", "\u00a8", "\u0385"], ["'", '"'], ["\\", "|", "\u00ac"]],
       [["Shift", "Shift"], ["<", ">"], ["\u03b6", "\u0396"], ["\u03c7", "\u03a7"], ["\u03c8", "\u03a8"], ["\u03c9", "\u03a9"], ["\u03b2", "\u0392"], ["\u03bd", "\u039d"], ["\u03bc", "\u039c"], [",", "<"], [".", ">"], ["/", "?"], ["Shift", "Shift"]],
       [[" ", " ", " ", " "], ["AltGr", "AltGr"]]
-    ];
+    ]; this.VKI_layout.Greek.lang = ["el"];
 
     this.VKI_layout.Hebrew = [ // Hebrew Standard Keyboard
       [["~", "`"], ["1", "!"], ["2", "@"], ["3", "#"], ["4" , "$", "\u20aa"], ["5" , "%"], ["6", "^"], ["7", "&"], ["8", "*"], ["9", ")"], ["0", "("], ["-", "_"], ["=", "+"], ["\\", "|"], ["Bksp", "Bksp"]],
@@ -264,7 +280,7 @@
       [["Caps", "Caps"], ["\u05e9", "A"], ["\u05d3", "S"], ["\u05d2", "D"], ["\u05db", "F"], ["\u05e2", "G"], ["\u05d9", "H", "\u05f2"], ["\u05d7", "J", "\u05f1"], ["\u05dc", "K"], ["\u05da", "L"], ["\u05e3", ":"], ["," , '"'], ["Enter", "Enter"]],
       [["Shift", "Shift"], ["\u05d6", "Z"], ["\u05e1", "X"], ["\u05d1", "C"], ["\u05d4", "V"], ["\u05e0", "B"], ["\u05de", "N"], ["\u05e6", "M"], ["\u05ea", ">"], ["\u05e5", "<"], [".", "?"], ["Shift", "Shift"]],
       [[" ", " ", " ", " "], ["AltGr", "AltGr"]]
-    ];
+    ]; this.VKI_layout.Hebrew.lang = ["he"];
 
     this.VKI_layout.Hindi = [ // Hindi Traditional Keyboard
       [["\u200d", "\u200c", "`", "~"], ["1", "\u090D", "\u0967", "!"], ["2", "\u0945", "\u0968", "@"], ["3", "\u094D\u0930", "\u0969", "#"], ["4", "\u0930\u094D", "\u096A", "$"], ["5", "\u091C\u094D\u091E", "\u096B", "%"], ["6", "\u0924\u094D\u0930", "\u096C", "^"], ["7", "\u0915\u094D\u0937", "\u096D", "&"], ["8", "\u0936\u094D\u0930", "\u096E", "*"], ["9", "(", "\u096F", "("], ["0", ")", "\u0966", ")"], ["-", "\u0903", "-", "_"], ["\u0943", "\u090B", "=", "+"], ["Bksp", "Bksp"]],
@@ -272,7 +288,7 @@
       [["Caps", "Caps"], ["\u094B", "\u0913"], ["\u0947", "\u090F"], ["\u094D", "\u0905"], ["\u093F", "\u0907"], ["\u0941", "\u0909"], ["\u092A", "\u092B"], ["\u0930", "\u0931"], ["\u0915", "\u0916"], ["\u0924", "\u0925"], ["\u091A", "\u091B", ";", ":"], ["\u091F", "\u0920", "'", '"'], ["\u0949", "\u0911", "\\", "|"]],
       [["Shift", "Shift"], [""], ["\u0902", "\u0901", "", "\u0950"], ["\u092E", "\u0923"], ["\u0928"], ["\u0935"], ["\u0932", "\u0933"], ["\u0938", "\u0936"], [",", "\u0937", ",", "<"], [".", "\u0964", ".", ">"], ["\u092F", "\u095F", "/", "?"], ["Shift", "Shift"]],
       [[" ", " ", " ", " "], ["AltGr", "AltGr"]]
-    ];
+    ]; this.VKI_layout.Hindi.lang = ["hi"];
 
     this.VKI_layout.Hungarian = [ // Hungarian Standard Keyboard
       [["0", "\u00a7"], ["1", "'", "\u007e"], ["2", '"', "\u02c7"], ["3", "+", "\u02c6"], ["4", "!", "\u02d8"], ["5", "%", "\u00b0"], ["6", "/", "\u02db"], ["7", "=", "\u0060"], ["8", "(", "\u02d9"], ["9", ")", "\u00b4"], ["\u00f6", "\u00d6", "\u02dd"], ["\u00fc", "\u00dc", "\u00a8"], ["\u00f3", "\u00d3", "\u00b8"], ["Bksp", "Bksp"]],
@@ -280,7 +296,7 @@
       [["Caps", "Caps"], ["a", "A", "\u00e4"], ["s", "S","\u0111"], ["d", "D","\u0110"], ["f", "F","\u005b"], ["g", "G","\u005d"], ["h", "H"], ["j", "J","\u00ed"], ["k", "K","\u0141"], ["l", "L","\u0142"], ["\u00e9", "\u00c9","\u0024"], ["\u00e1", "\u00c1","\u00df"], ["\u0171", "\u0170","\u00a4"]],
       [["Shift", "Shift"], ["\u00ed", "\u00cd","\u003c"], ["y", "Y","\u003e"], ["x", "X","\u0023"], ["c", "C","\u0026"], ["v", "V","\u0040"], ["b", "B","\u007b"], ["n", "N","\u007d"], ["m", "M","\u003c"], [",", "?","\u003b"], [".", ":","\u003e"], ["-", "_","\u002a"], ["Shift", "Shift"]],
       [[" ", " ", " ", " "], ["AltGr", "AltGr"]]
-    ];
+    ]; this.VKI_layout.Hungarian.lang = ["hu"];
 
     this.VKI_layout.Italian = [ // Italian Standard Keyboard
       [["\u005c", "\u007c"], ["1", "!"], ["2", '"'], ["3", "\u00a3"], ["4", "$", "\u20ac"], ["5", "%"], ["6", "&"], ["7", "/"], ["8", "("], ["9", ")"], ["0", "="], ["'", "?"], ["\u00ec", "\u005e"], ["Bksp", "Bksp"]],
@@ -288,7 +304,15 @@
       [["Caps", "Caps"], ["a", "A"], ["s", "S"], ["d", "D"], ["f", "F"], ["g", "G"], ["h", "H"], ["j", "J"], ["k", "K"], ["l", "L"], ["\u00f2", "\u00e7", "@"], ["\u00e0", "\u00b0", "#"], ["\u00f9", "\u00a7"]],
       [["Shift", "Shift"], ["<", ">"], ["z", "Z"], ["x", "X"], ["c", "C"], ["v", "V"], ["b", "B"], ["n", "N"], ["m", "M"], [",", ";"], [".", ":"], ["-", "_"], ["Shift", "Shift"]],
       [[" ", " ", " ", " "], ["AltGr", "AltGr"]]
-    ];
+    ]; this.VKI_layout.Italian.lang = ["it"];
+
+    this.VKI_layout["\u65e5\u672c\u8a9e"] = [ // Basic Japanese Hiragana/Katakana Keyboard
+      [["\uff5e"], ["\u306c", "\u30cc"], ["\u3075", '\u30d5'], ["\u3042", "\u30a2", "\u3041", "\u30a1"], ["\u3046", "\u30a6", "\u3045", "\u30a5"], ["\u3048", "\u30a8", "\u3047", "\u30a7"], ["\u304a", "\u30aa", "\u3049","\u30a9"], ["\u3084", "\u30e4", "\u3083", "\u30e3"], ["\u3086", "\u30e6", "\u3085", "\u30e5"], ["\u3088", "\u30e8", "\u3087", "\u30e7"], ["\u308f", "\u30ef", "\u3092", "\u30f2"], ["\u307b", "\u30db", "\u30fc", "\uff1d"], ["\u3078", "\u30d8" ,"\uff3e", "\uff5e"], ['"', '"', "\uffe5", "\uff5c"], ["Bksp", "Bksp"]],
+      [["Tab", "Tab"], ["\u305f", "\u30bf"], ["\u3066", "\u30c6"], ["\u3044", "\u30a4", "\u3043", "\u30a3"], ["\u3059", "\u30b9"], ["\u304b", "\u30ab"], ["\u3093", "\u30f3"], ["\u306a", "\u30ca"], ["\u306b", "\u30cb"], ["\u3089", "\u30e9"], ["\u305b", "\u30bb"],["\u3001", "\u3001", "\uff20", "\u2018"],["\u3002", "\u3002", "\u300c", "\uff5b"],["\uffe5","", "", "\uff0a"]],
+      [["Caps", "Caps"], ["\u3061", "\u30c1"], ["\u3068", "\u30c8"], ["\u3057", "\u30b7"], ["\u306f", "\u30cf"], ["\u304d", "\u30ad"], ["\u304f", "\u30af"], ["\u307e", "\u30de"], ["\u306e", "\u30ce"], ["\u308c", "\u30ec", "\uff1b", "\uff0b"], ["\u3051", "\u30b1", "\uff1a", "\u30f6"], ["\u3080", "\u30e0", "\u300d", "\uff5d"],["Enter", "Enter"]],
+      [["Shift", "Shift"], ["\u3064", "\u30c4"], ["\u3055", "\u30b5"], ["\u305d", "\u30bd"], ["\u3072", "\u30d2"], ["\u3053", "\u30b3"], ["\u307f", "\u30df"], ["\u3082", "\u30e2"], ["\u306d", "\u30cd", "\u3001", "\uff1c"], ["\u308b", "\u30eb", "\u3002", "\uff1e"], ["\u3081", "\u30e1", "\u30fb", "\uff1f"], ["\u308d", "\u30ed", "", "\uff3f"], ["Shift", "Shift"]],
+      [["AltLk", "AltLk"], [" ", " ", " ", " "], ["Alt", "Alt"]]
+    ]; this.VKI_layout["\u65e5\u672c\u8a9e"].lang = ["ja"];
 
     this.VKI_layout.Kazakh = [ // Kazakh Standard Keyboard
       [["(", ")"], ['"', "!"], ["\u04d9", "\u04d8"], ["\u0456", "\u0406"], ["\u04a3", "\u04a2"], ["\u0493", "\u0492"], [",", ";"], [".", ":"], ["\u04af", "\u04ae"], ["\u04b1", "\u04b0"], ["\u049b", "\u049a"], ["\u04e9", "\u04e8"], ["\u04bb", "\u04ba"], ["Bksp", "Bksp"]],
@@ -296,7 +320,7 @@
       [["Caps", "Caps"], ["\u0444", "\u0424"], ["\u044B", "\u042B"], ["\u0432", "\u0412"], ["\u0430", "\u0410"], ["\u043F", "\u041F"], ["\u0440", "\u0420"], ["\u043E", "\u041E"], ["\u043B", "\u041B"], ["\u0434", "\u0414"], ["\u0436", "\u0416"], ["\u044D", "\u042D"], ["Enter", "Enter"]],
       [["Shift", "Shift"], ["\\", "|"], ["\u044F", "\u042F"], ["\u0447", "\u0427"], ["\u0441", "\u0421"], ["\u043C", "\u041C"], ["\u0438", "\u0418"], ["\u0442", "\u0422"], ["\u044C", "\u042C"], ["\u0431", "\u0411"], ["\u044E", "\u042E"], ["\u2116", "?"], ["Shift", "Shift"]],
       [[" ", " "]]
-    ];
+    ]; this.VKI_layout.Kazakh.lang = ["kk"];
 
     this.VKI_layout.Lithuanian = [ // Lithuanian Standard Keyboard
       [["`", "~"], ["\u0105", "\u0104"], ["\u010D", "\u010C"], ["\u0119", "\u0118"], ["\u0117", "\u0116"], ["\u012F", "\u012E"], ["\u0161", "\u0160"], ["\u0173", "\u0172"], ["\u016B", "\u016A"], ["\u201E", "("], ["\u201C", ")"], ["-", "_"], ["\u017E", "\u017D"], ["Bksp", "Bksp"]],
@@ -304,7 +328,7 @@
       [["Caps", "Caps"], ["a", "A"], ["s", "S"], ["d", "D"], ["f", "F"], ["g", "G"], ["h", "H"], ["j", "J"], ["k", "K"], ["l", "L"], [";", ":"], ["'", '"'], ["\\", "|"]],
       [["Shift", "Shift"], ["\u2013", "\u20AC"], ["z", "Z"], ["x", "X"], ["c", "C"], ["v", "V"], ["b", "B"], ["n", "N"], ["m", "M"], [",", "<"], [".", ">"], ["/", "?"], ["Shift", "Shift"]],
       [[" ", " "]]
-    ];
+    ]; this.VKI_layout.Lithuanian.lang = ["lt"];
 
     this.VKI_layout.Macedonian = [ // Macedonian Cyrillic Standard Keyboard
       [["`", "~"], ["1", "!"], ["2", "\u201E"], ["3", "\u201C"], ["4", "\u2019"], ["5", "%"], ["6", "\u2018"], ["7", "&"], ["8", "*"], ["9", "("], ["0", ")"], ["-", "_"], ["=", "+"], ["Bksp", "Bksp"]],
@@ -312,7 +336,7 @@
       [["Caps", "Caps"], ["\u0430", "\u0410"], ["\u0441", "\u0421"], ["\u0434", "\u0414"], ["\u0444", "\u0424", "["], ["\u0433", "\u0413", "]"], ["\u0445", "\u0425"], ["\u0458", "\u0408"], ["\u043A", "\u041A"], ["\u043B", "\u041B"], ["\u0447", "\u0427", "\u040B"], ["\u045C", "\u040C", "\u045B"], ["\u0436", "\u0416"]],
       [["Shift", "Shift"], ["\u0451", "\u0401"], ["\u0437", "\u0417"], ["\u045F", "\u040F"], ["\u0446", "\u0426"], ["\u0432", "\u0412", "@"], ["\u0431", "\u0411", "{"], ["\u043D", "\u041D", "}"], ["\u043C", "\u041C", "\u00A7"], [",", ";"], [".", ":"], ["/", "?"], ["Shift", "Shift"]],
       [[" ", " ", " ", " "], ["AltGr", "AltGr"]]
-    ];
+    ]; this.VKI_layout.Macedonian.lang = ["mk"];
 
     this.VKI_layout.Norwegian = [ // Norwegian Standard Keyboard
       [["|", "\u00a7"], ["1", "!"], ["2", '"', "@"], ["3", "#", "\u00a3"], ["4", "\u00a4", "$"], ["5", "%"], ["6", "&"], ["7", "/", "{"], ["8", "(", "["], ["9", ")", "]"], ["0", "=", "}"], ["+", "?"], ["\\", "`", "\u00b4"], ["Bksp", "Bksp"]],
@@ -320,7 +344,7 @@
       [["Caps", "Caps"], ["a", "A"], ["s", "S"], ["d", "D"], ["f", "F"], ["g", "G"], ["h", "H"], ["j", "J"], ["k", "K"], ["l", "L"], ["\u00f8", "\u00d8"], ["\u00e6", "\u00c6"], ["'", "*"]],
       [["Shift", "Shift"], ["<", ">"], ["z", "Z"], ["x", "X"], ["c", "C"], ["v", "V"], ["b", "B"], ["n", "N"], ["m", "M", "\u03bc", "\u039c"], [",", ";"], [".", ":"], ["-", "_"], ["Shift", "Shift"]],
       [[" ", " ", " ", " "], ["AltGr", "AltGr"]]
-    ];
+    ]; this.VKI_layout.Norwegian.lang = ["no", "nb", "nn"];
 
     this.VKI_layout.Numpad = [ // Number pad
       [["$"], ["\u00a3"], ["\u20ac"], ["\u00a5"], ["/"], ["^"], ["Bksp", "Bksp"]],
@@ -328,8 +352,7 @@
       [["="], ["4"], ["5"], ["6"], ["-"], [">"], [")"], ["]"]],
       [["0"], ["1"], ["2"], ["3"], ["+"], ["Enter", "Enter"]],
       [[" "]]
-    ];
-    this.VKI_layout.Numpad.DDK = true;
+    ]; this.VKI_layout.Numpad.DDK = true;
 
     this.VKI_layout.Pashto = [ // Pashto Keyboard
       [["\u200d", "\u00f7"], ["\u06f1", "\u0021", "\u0060"], ["\u06f2", "\u066c", "\u0040"], ["\u06f3", "\u066b", "\u066b"], ["\u06f4", "\u00a4", "\u00a3"], ["\u06f5", "\u066a", "\u0025"], ["\u06f6", "\u00d7", "\u005e"], ["\u06f7", "\u00ab", "\u0026"], ["\u06f8", "\u00bb", "\u002a"], ["\u06f9", "(", "\ufdf2"], ["\u06f0", ")", "\ufefb"], ["\u002d", "\u0640", "\u005f"], ["\u003d", "\u002b", "\ufe87", "\u00f7"], ["Bksp", "Bksp"]],
@@ -337,7 +360,7 @@
       [["Caps", "Caps"], ["\u0634", "\u069a", "\ufbb0"], ["\u0633", "\u0626", "\ufe87"], ["\u06cc", "\u064a", "\u06d2"], ["\u0628", "\u067e", "\u06ba"], ["\u0644", "\u0623", "\u06b7"], ["\u0627", "\u0622", "\u0671"], ["\u062a", "\u067c", "\u0679"], ["\u0646", "\u06bc", "\u003c"], ["\u0645", "\u0629", "\u003e"], ["\u06a9", "\u003a", "\u0643"], ["\u06af", "\u061b", "\u06ab"], ["Enter", "Enter"]],
       [["Shift", "Shift"], ["\u06cd", "\u0638", "\u003b"], ["\u06d0", "\u0637", "\ufbb0"], ["\u0632", "\u0698", "\u0655"], ["\u0631", "\u0621", "\u0654"], ["\u0630", "\u200c", "\u0625"], ["\u062f", "\u0689", "\u0688"], ["\u0693", "\u0624", "\u0691"], ["\u0648", "\u060c", "\u002c"], ["\u0696", "\u002e", "\u06c7"], ["\u002f", "\u061f", "\u06c9"], ["Shift", "Shift", "\u064d"]],
       [[" ", " ", " ", " "], ["Alt", "Alt"]]
-    ];
+    ]; this.VKI_layout.Pashto.lang = ["ps"];
 
     this.VKI_layout.Pinyin = [ // Pinyin Keyboard
       [["`", "~", "\u4e93", "\u301C"], ["1", "!", "\uFF62"], ["2", "@", "\uFF63"], ["3", "#", "\u301D"], ["4", "$", "\u301E"], ["5", "%", "\u301F"], ["6", "^", "\u3008"], ["7", "&", "\u3009"], ["8", "*", "\u302F"], ["9", "(", "\u300A"], ["0", ")", "\u300B"], ["-", "_", "\u300E"], ["=", "+", "\u300F"], ["Bksp", "Bksp"]],
@@ -345,7 +368,7 @@
       [["Caps", "Caps"], ["a", "A", "\u014D", "\u014C"], ["s", "S", "\u00F3", "\u00D3"], ["d", "D", "\u01D2", "\u01D1"], ["f", "F", "\u00F2", "\u00D2"], ["g", "G", "\u00fc", "\u00dc"], ["h", "H", "\u016B", "\u016A"], ["j", "J", "\u00FA", "\u00DA"], ["k", "K", "\u01D4", "\u01D3"], ["l", "L", "\u00F9", "\u00D9"], [";", ":"], ["'", '"'], ["Enter", "Enter"]],
       [["Shift", "Shift"], ["z", "Z", "\u01D6", "\u01D5"], ["x", "X", "\u01D8", "\u01D7"], ["c", "C", "\u01DA", "\u01D9"], ["v", "V", "\u01DC", "\u01DB"], ["b", "B"], ["n", "N"], ["m", "M"], [",", "<", "\u3001"], [".", ">", "\u3002"], ["/", "?"], ["Shift", "Shift"]],
       [["AltLk", "AltLk"], [" ", " ", " ", " "], ["Alt", "Alt"]]
-    ];
+    ]; this.VKI_layout.Pinyin.lang = ["zh-Latn"];
 
     this.VKI_layout["Polish Prog"] = [ // Polish Programmers Keyboard
       [["`", "~"], ["1", "!"], ["2", "@"], ["3", "#"], ["4", "$"], ["5", "%"], ["6", "^"], ["7", "&"], ["8", "*"], ["9", "("], ["0", ")"], ["-", "_"], ["=", "+"], ["Bksp", "Bksp"]],
@@ -353,7 +376,7 @@
       [["Caps", "Caps"], ["a", "A", "\u0105", "\u0104"], ["s", "S", "\u015b", "\u015a"], ["d", "D"], ["f", "F"], ["g", "G"], ["h", "H"], ["j", "J"], ["k", "K"], ["l", "L", "\u0142", "\u0141"], [";", ":"], ["'", '"'], ["Enter", "Enter"]],
       [["Shift", "Shift"], ["z", "Z", "\u017c", "\u017b"], ["x", "X", "\u017a", "\u0179"], ["c", "C", "\u0107", "\u0106"], ["v", "V"], ["b", "B"], ["n", "N", "\u0144", "\u0143"], ["m", "M"], [",", "<"], [".", ">"], ["/", "?"], ["Shift", "Shift"]],
       [[" ", " ", " ", " "], ["Alt", "Alt"]]
-    ];
+    ]; this.VKI_layout["Polish Prog"].lang = ["pl"];
 
     this.VKI_layout["Portuguese Br"] = [ // Portuguese (Brazil) Standard Keyboard
       [["'", '"'], ["1", "!", "\u00b9"], ["2", "@", "\u00b2"], ["3", "#", "\u00b3"], ["4", "$", "\u00a3"], ["5", "%", "\u00a2"], ["6", "\u00a8", "\u00ac"], ["7", "&"], ["8", "*"], ["9", "("], ["0", ")"], ["-", "_"], ["=", "+", "\u00a7"], ["Bksp", "Bksp"]],
@@ -361,7 +384,7 @@
       [["Caps", "Caps"], ["a", "A"], ["s", "S"], ["d", "D"], ["f", "F"], ["g", "G"], ["h", "H"], ["j", "J"], ["k", "K"], ["l", "L"], ["\u00e7", "\u00c7"], ["~", "^"], ["]", "}", "\u00ba"], ["/", "?"]],
       [["Shift", "Shift"], ["\\", "|"], ["z", "Z"], ["x", "X"], ["c", "C", "\u20a2"], ["v", "V"], ["b", "B"], ["n", "N"], ["m", "M"], [",", "<"], [".", ">"], [":", ":"], ["Shift", "Shift"]],
       [[" ", " ", " ", " "], ["AltGr", "AltGr"]]
-    ];
+    ]; this.VKI_layout["Portuguese Br"].lang = ["pt-br"];
 
     this.VKI_layout["Portuguese Pt"] = [ // Portuguese (Portugal) Standard Keyboard
       [["\\", "|"], ["1", "!"], ["2", '"', "@"], ["3", "#", "\u00a3"], ["4", "$", "\u00a7"], ["5", "%"], ["6", "&"], ["7", "/", "{"], ["8", "(", "["], ["9", ")", "]"], ["0", "=", "}"], ["'", "?"], ["\u00ab", "\u00bb"], ["Bksp", "Bksp"]],
@@ -369,7 +392,7 @@
       [["Caps", "Caps"], ["a", "A"], ["s", "S"], ["d", "D"], ["f", "F"], ["g", "G"], ["h", "H"], ["j", "J"], ["k", "K"], ["l", "L"], ["\u00e7", "\u00c7"], ["\u00ba", "\u00aa"], ["~", "^"]],
       [["Shift", "Shift"], ["<", ">", "\\"], ["z", "Z"], ["x", "X"], ["c", "C"], ["v", "V"], ["b", "B"], ["n", "N"], ["m", "M"], [",", ";"], [".", ":"], ["-", "_"], ["Shift", "Shift"]],
       [[" ", " ", " ", " "], ["AltGr", "AltGr"]]
-    ];
+    ]; this.VKI_layout["Portuguese Pt"].lang = ["pt"];
 
     this.VKI_layout.Romanian = [ // Romanian Standard Keyboard
      [["\u201E", "\u201D", "\u0060", "~"], ["1", "!","~"], ["2", "\u0040", "\u02C7"], ["3", "#","\u005E"], ["4", "$", "\u02D8"], ["5", "%", "\u00B0"], ["6", "\u005E", "\u02DB"], ["7", "&", "\u0060"], ["8", "*", "\u02D9"], ["9", "(", "\u00B4"], ["0", ")", "\u02DD"], ["-", "_", "\u00A8"], ["=", "+", "\u00B8", "\u00B1"], ["Bksp", "Bksp"]],
@@ -377,7 +400,7 @@
      [["Caps", "Caps"], ["a", "A"], ["s", "S", "\u00df"], ["d", "D", "\u00f0", "\u00D0"], ["f", "F"], ["g", "G"], ["h", "H"], ["j", "J"], ["k", "K"], ["l", "L", "\u0142", "\u0141"], [(this.VKI_isIElt8) ? "\u015F" : "\u0219", (this.VKI_isIElt8) ? "\u015E" : "\u0218", ";", ":"], [(this.VKI_isIElt8) ? "\u0163" : "\u021B", (this.VKI_isIElt8) ? "\u0162" : "\u021A", "\'", "\""], ["Enter", "Enter"]],
      [["Shift", "Shift"], ["\\", "|"], ["z", "Z"], ["x", "X"], ["c", "C", "\u00A9"], ["v", "V"], ["b", "B"], ["n", "N"], ["m", "M"], [",", ";", "<", "\u00AB"], [".", ":", ">", "\u00BB"], ["/", "?"], ["Shift", "Shift"]],
      [[" ", " ", " ", " "], ["AltGr", "AltGr"]]
-    ];
+    ]; this.VKI_layout.Romanian.lang = ["ro"];
 
     this.VKI_layout.Russian = [ // Russian Standard Keyboard
       [["\u0451", "\u0401"], ["1", "!"], ["2", '"'], ["3", "\u2116"], ["4", ";"], ["5", "%"], ["6", ":"], ["7", "?"], ["8", "*"], ["9", "("], ["0", ")"], ["-", "_"], ["=", "+"], ["Bksp", "Bksp"]],
@@ -385,7 +408,7 @@
       [["Caps", "Caps"], ["\u0444", "\u0424"], ["\u044B", "\u042B"], ["\u0432", "\u0412"], ["\u0430", "\u0410"], ["\u043F", "\u041F"], ["\u0440", "\u0420"], ["\u043E", "\u041E"], ["\u043B", "\u041B"], ["\u0434", "\u0414"], ["\u0436", "\u0416"], ["\u044D", "\u042D"], ["\\", "/"]],
       [["Shift", "Shift"], ["/", "|"], ["\u044F", "\u042F"], ["\u0447", "\u0427"], ["\u0441", "\u0421"], ["\u043C", "\u041C"], ["\u0438", "\u0418"], ["\u0442", "\u0422"], ["\u044C", "\u042C"], ["\u0431", "\u0411"], ["\u044E", "\u042E"], [".", ","], ["Shift", "Shift"]],
       [[" ", " "]]
-    ];
+    ]; this.VKI_layout.Russian.lang = ["ru"];
 
     this.VKI_layout.SerbianCyr = [ // Serbian Cyrillic Standard Keyboard
       [["`", "~"], ["1", "!"], ["2", '"'], ["3", "#"], ["4", "$"], ["5", "%"], ["6", "&"], ["7", "/"], ["8", "("], ["9", ")"], ["0", "="], ["'", "?"], ["+", "*"], ["Bksp", "Bksp"]],
@@ -393,7 +416,7 @@
       [["Caps", "Caps"], ["\u0430", "\u0410"], ["\u0441", "\u0421"], ["\u0434", "\u0414"], ["\u0444", "\u0424"], ["\u0433", "\u0413"], ["\u0445", "\u0425"], ["\u0458", "\u0408"], ["\u043a", "\u041a"], ["\u043b", "\u041b"], ["\u0447", "\u0427"], ["\u045b", "\u040b"], ["\u0436", "\u0416"]],
       [["Shift", "Shift"], ["<", ">"], ["\u0455", "\u0405"], ["\u045f", "\u040f"], ["\u0446", "\u0426"], ["\u0432", "\u0412"], ["\u0431", "\u0411"], ["\u043d", "\u041d"], ["\u043c", "\u041c"], [",", ";", "<"], [".", ":", ">"], ["-", "_", "\u00a9"], ["Shift", "Shift"]],
       [[" ", " ", " ", " "], ["AltGr", "AltGr"]]
-    ];
+    ]; this.VKI_layout.SerbianCyr.lang = ["sr-Cyrl"];
 
     this.VKI_layout.SerbianLat = [ // Serbian Latin Standard Keyboard
       [["\u201a", "~"], ["1", "!", "~"], ["2", '"', "\u02c7"], ["3", "#", "^"], ["4", "$", "\u02d8"], ["5", "%", "\u00b0"], ["6", "&", "\u02db"], ["7", "/", "`"], ["8", "(", "\u02d9"], ["9", ")", "\u00b4"], ["0", "=", "\u02dd"], ["'", "?", "\u00a8"], ["+", "*", "\u00b8"], ["Bksp", "Bksp"]],
@@ -401,7 +424,7 @@
       [["Caps", "Caps"], ["a", "A"], ["s", "S"], ["d", "D"], ["f", "F", "["], ["g", "G", "]"], ["h", "H"], ["j", "J"], ["k", "K", "\u0142"], ["l", "L", "\u0141"], ["\u010d", "\u010c"], ["\u0107", "\u0106", "\u00df"], ["\u017e", "\u017d", "\u00a4"]],
       [["Shift", "Shift"], ["<", ">"], ["y", "Y"], ["x", "X"], ["c", "C"], ["v", "V", "@"], ["b", "B", "{",], ["n", "N", "}"], ["m", "M", "\u00a7"], [",", ";", "<"], [".", ":", ">"], ["-", "_", "\u00a9"], ["Shift", "Shift"]],
       [[" ", " ", " ", " "], ["AltGr", "AltGr"]]
-    ];
+    ]; this.VKI_layout.SerbianLat.lang = ["sr"];
 
     this.VKI_layout.Slovak = [ // Slovak Keyboard
      [[";", "\u00b0"], ["+", "1", "~"], ["\u013E", "2", "\u02C7"], ["\u0161", "3", "\u005E"], ["\u010D", "4", "\u02D8"], ["\u0165", "5", "\u00B0"], ["\u017E", "6", "\u02DB"], ["\u00FD", "7", "\u0060"], ["\u00E1", "8", "\u02D9"], ["\u00ED", "9", "\u00B4"], ["\u00E9", "0", "\u02DD"], ["=", "%", "\u00A8"], ["\u00B4", "\u02c7", "\u00B8"], ["Bksp", "Bksp"]],
@@ -409,7 +432,7 @@
      [["Caps", "Caps"], ["a", "A"], ["s", "S","\u0111"], ["d", "D","\u0110"], ["f", "F","\u005B"], ["g", "G","\u005D"], ["h", "H"], ["j", "J"], ["k", "K","\u0142"], ["l", "L","\u0141"], ["\u00F4", '"', "\u0024"], ["\u00A7", "!", "\u00DF",], ["\u0148", ")","\u00A4"]],
      [["Shift", "Shift"], ["&", "*", "\u003C"], ["y", "Y","\u003E"], ["x", "X","\u0023"], ["c", "C","\u0026"], ["v", "V","\u0040"], ["b", "B","\u007B"], ["n", "N","\u007D"], ["m", "M"], [",", "?", "<"], [".", ":", ">"], ["-", "_", "\u002A", ], ["Shift", "Shift"]],
      [[" ", " ", " ", " "], ["AltGr", "AltGr"]]
-    ];
+    ]; this.VKI_layout.Slovak.lang = ["sk"];
 
     this.VKI_layout.Slovenian = [ // Slovenian Standard Keyboard
       [["\u00a8", "\u00a8", "\u00b8"], ["1", "!", "~"], ["2", '"', "\u02c7"], ["3", "#", "^"], ["4", "$", "\u02d8"], ["5", "%", "\u00b0"], ["6", "&", "\u02db"], ["7", "/", "\u0060"], ["8", "(", "\u00B7"], ["9", ")", "\u00b4"], ["0", "=", "\u2033"], ["'", "?", "\u00a8"], ["+", "*", "\u00b8"], ["Bksp", "Bksp"]],
@@ -417,7 +440,7 @@
       [["Caps", "Caps"], ["a", "A"], ["s", "S"], ["d", "D"], ["f", "F", "["], ["g", "G", "]"], ["h", "H"], ["j", "J"], ["k", "K", "\u0142"], ["l", "L", "\u0141"], ["\u010D", "\u010C"], ["\u0107", "\u0106", "\u00df"], ["\u017E", "\u017D", "\u00a4"]],
       [["Shift", "Shift"], ["<", ">"], ["y", "Y"], ["x", "X"], ["c", "C"], ["v", "V", "@"], ["b", "B", "{",], ["n", "N", "}"], ["m", "M", "\u00a7"], [",", ";"], [".", ":"], ["-", "_"], ["Shift", "Shift"]],
       [[" ", " ", " ", " "], ["AltGr", "AltGr"]]
-    ];
+    ]; this.VKI_layout.Slovenian.lang = ["sl"];
 
     this.VKI_layout["Spanish Es"] = [ // Spanish (Spain) Standard Keyboard
       [["\u00ba", "\u00aa", "\\"], ["1", "!", "|"], ["2", '"', "@"], ["3", "'", "#"], ["4", "$", "~"], ["5", "%", "\u20ac"], ["6", "&","\u00ac"], ["7", "/"], ["8", "("], ["9", ")"], ["0", "="], ["'", "?"], ["\u00a1", "\u00bf"], ["Bksp", "Bksp"]],
@@ -425,7 +448,7 @@
       [["Caps", "Caps"], ["a", "A"], ["s", "S"], ["d", "D"], ["f", "F"], ["g", "G"], ["h", "H"], ["j", "J"], ["k", "K"], ["l", "L"], ["\u00f1", "\u00d1"], ["\u00b4", "\u00a8", "{"], ["\u00e7", "\u00c7", "}"]],
       [["Shift", "Shift"], ["<", ">"], ["z", "Z"], ["x", "X"], ["c", "C"], ["v", "V"], ["b", "B"], ["n", "N"], ["m", "M"], [",", ";"], [".", ":"], ["-", "_"], ["Shift", "Shift"]],
       [[" ", " ", " ", " "], ["AltGr", "AltGr"]]
-    ];
+    ]; this.VKI_layout["Spanish Es"].lang = ["es"];
 
     this.VKI_layout.Swedish = [ // Swedish Standard Keyboard
       [["\u00a7", "\u00bd"], ["1", "!"], ["2", '"', "@"], ["3", "#", "\u00a3"], ["4", "\u00a4", "$"], ["5", "%", "\u20ac"], ["6", "&"], ["7", "/", "{"], ["8", "(", "["], ["9", ")", "]"], ["0", "=", "}"], ["+", "?", "\\"], ["\u00b4", "`"], ["Bksp", "Bksp"]],
@@ -433,7 +456,7 @@
       [["Caps", "Caps"], ["a", "A"], ["s", "S"], ["d", "D"], ["f", "F"], ["g", "G"], ["h", "H"], ["j", "J"], ["k", "K"], ["l", "L"], ["\u00f6", "\u00d6"], ["\u00e4", "\u00c4"], ["'", "*"]],
       [["Shift", "Shift"], ["<", ">", "|"], ["z", "Z"], ["x", "X"], ["c", "C"], ["v", "V"], ["b", "B"], ["n", "N"], ["m", "M", "\u03bc", "\u039c"], [",", ";"], [".", ":"], ["-", "_"], ["Shift", "Shift"]],
       [[" ", " ", " ", " "], ["AltGr", "AltGr"]]
-    ];
+    ]; this.VKI_layout.Swedish.lang = ["sv"];
 
     this.VKI_layout["Turkish-F"] = [ // Turkish F Keyboard Layout
       [['+', "*", "\u00ac"], ["1", "!", "\u00b9", "\u00a1"], ["2", '"', "\u00b2"], ["3", "^", "#", "\u00b3"], ["4", "$", "\u00bc", "\u00a4"], ["5", "%", "\u00bd"], ["6", "&", "\u00be"], ["7", "'", "{"], ["8", "(", '['], ["9", ")", ']'], ["0", "=", "}"], ["/", "?", "\\", "\u00bf"], ["-", "_", "|"], ["Bksp", "Bksp"]],
@@ -449,7 +472,7 @@
       [["Caps", "Caps"], ["a", "A", "\u00e6", "\u00c6"], ["s", "S", "\u00df"], ["d", "D"], ["f", "F"], ["g", "G"], ["h", "H"], ["j", "J"], ["k", "K"], ["l", "L"], ["\u015f", "\u015e", "\u00b4"], ["\u0069", "\u0130"], [",", ";", "`"]],
       [["Shift", "Shift"], ["<", ">", "|"], ["z", "Z"], ["x", "X"], ["c", "C"], ["v", "V"], ["b", "B"], ["n", "N"], ["m", "M"], ["\u00f6", "\u00d6"], ["\u00e7", "\u00c7"], [".", ":"], ["Shift", "Shift"]],
       [[" ", " ", " ", " "],  ["AltGr", "AltGr"]]
-    ];
+    ]; this.VKI_layout["Turkish-Q"].lang = ["tr"];
 
     this.VKI_layout.UK = [ // UK Standard Keyboard
       [["`", "\u00ac", "\u00a6"], ["1", "!"], ["2", '"'], ["3", "\u00a3"], ["4", "$", "\u20ac"], ["5", "%"], ["6", "^"], ["7", "&"], ["8", "*"], ["9", "("], ["0", ")"], ["-", "_"], ["=", "+"], ["Bksp", "Bksp"]],
@@ -457,7 +480,7 @@
       [["Caps", "Caps"], ["a", "A", "\u00e1", "\u00c1"], ["s", "S"], ["d", "D"], ["f", "F"], ["g", "G"], ["h", "H"], ["j", "J"], ["k", "K"], ["l", "L"], [";", ":"], ["'", "@"], ["#", "~"]],
       [["Shift", "Shift"], ["\\", "|"], ["z", "Z"], ["x", "X"], ["c", "C"], ["v", "V"], ["b", "B"], ["n", "N"], ["m", "M"], [",", "<"], [".", ">"], ["/", "?"], ["Shift", "Shift"]],
       [[" ", " ", " ", " "], ["AltGr", "AltGr"]]
-    ];
+    ]; this.VKI_layout.UK.lang = ["en-gb"];
 
     this.VKI_layout.Ukrainian = [ // Ukrainian Standard Keyboard
       [["\u00b4", "~"], ["1", "!"], ["2", '"'], ["3", "\u2116"], ["4", ";"], ["5", "%"], ["6", ":"], ["7", "?"], ["8", "*"], ["9", "("], ["0", ")"], ["-", "_"], ["=", "+"], ["Bksp", "Bksp"]],
@@ -465,7 +488,7 @@
       [["Caps", "Caps"], ["\u0444", "\u0424"], ["\u0456", "\u0406"], ["\u0432", "\u0412"], ["\u0430", "\u0410"], ["\u043F", "\u041F"], ["\u0440", "\u0420"], ["\u043E", "\u041E"], ["\u043B", "\u041B"], ["\u0434", "\u0414"], ["\u0436", "\u0416"], ["\u0454", "\u0404"], ["Enter", "Enter"]],
       [["Shift", "Shift"], ["\u044F", "\u042F"], ["\u0447", "\u0427"], ["\u0441", "\u0421"], ["\u043C", "\u041C"], ["\u0438", "\u0418"], ["\u0442", "\u0422"], ["\u044C", "\u042C"], ["\u0431", "\u0411"], ["\u044E", "\u042E"], [".", ","], ["Shift", "Shift"]],
       [[" ", " "]]
-    ];
+    ]; this.VKI_layout.Ukrainian.lang = ["uk"];
 
     this.VKI_layout.US = [ // US Standard Keyboard
       [["`", "~"], ["1", "!"], ["2", "@"], ["3", "#"], ["4", "$"], ["5", "%"], ["6", "^"], ["7", "&"], ["8", "*"], ["9", "("], ["0", ")"], ["-", "_"], ["=", "+"], ["Bksp", "Bksp"]],
@@ -473,7 +496,7 @@
       [["Caps", "Caps"], ["a", "A"], ["s", "S"], ["d", "D"], ["f", "F"], ["g", "G"], ["h", "H"], ["j", "J"], ["k", "K"], ["l", "L"], [";", ":"], ["'", '"'], ["Enter", "Enter"]],
       [["Shift", "Shift"], ["z", "Z"], ["x", "X"], ["c", "C"], ["v", "V"], ["b", "B"], ["n", "N"], ["m", "M"], [",", "<"], [".", ">"], ["/", "?"], ["Shift", "Shift"]],
       [[" ", " "]]
-    ];
+    ]; this.VKI_layout.US.lang = ["en-us"];
 
     this.VKI_layout["US Int'l"] = [ // US International Keyboard
       [["`", "~"], ["1", "!", "\u00a1", "\u00b9"], ["2", "@", "\u00b2"], ["3", "#", "\u00b3"], ["4", "$", "\u00a4", "\u00a3"], ["5", "%", "\u20ac"], ["6", "^", "\u00bc"], ["7", "&", "\u00bd"], ["8", "*", "\u00be"], ["9", "(", "\u2018"], ["0", ")", "\u2019"], ["-", "_", "\u00a5"], ["=", "+", "\u00d7", "\u00f7"], ["Bksp", "Bksp"]],
@@ -481,7 +504,7 @@
       [["Caps", "Caps"], ["a", "A", "\u00e1", "\u00c1"], ["s", "S", "\u00df", "\u00a7"], ["d", "D", "\u00f0", "\u00d0"], ["f", "F"], ["g", "G"], ["h", "H"], ["j", "J"], ["k", "K"], ["l", "L", "\u00f8", "\u00d8"], [";", ":", "\u00b6", "\u00b0"], ["'", '"', "\u00b4", "\u00a8"], ["Enter", "Enter"]],
       [["Shift", "Shift"], ["z", "Z", "\u00e6", "\u00c6"], ["x", "X"], ["c", "C", "\u00a9", "\u00a2"], ["v", "V"], ["b", "B"], ["n", "N", "\u00f1", "\u00d1"], ["m", "M", "\u00b5"], [",", "<", "\u00e7", "\u00c7"], [".", ">"], ["/", "?", "\u00bf"], ["Shift", "Shift"]],
       [[" ", " ", " ", " "], ["Alt", "Alt"]]
-    ];
+    ]; this.VKI_layout["US Int'l"].lang = ["en"];
 
 
     /* ***** Define Dead Keys ************************************** */
@@ -501,7 +524,15 @@
 
     this.VKI_deadkey['"'] = this.VKI_deadkey['\u00a8'] = [ // Umlaut / Diaeresis / Greek Dialytika
       ["a", "\u00e4"], ["e", "\u00eb"], ["i", "\u00ef"], ["o", "\u00f6"], ["u", "\u00fc"], ["y", "\u00ff"], ["\u03b9", "\u03ca"], ["\u03c5", "\u03cb"], ["\u016B", "\u01D6"], ["\u00FA", "\u01D8"], ["\u01D4", "\u01DA"], ["\u00F9", "\u01DC"],
-      ["A", "\u00c4"], ["E", "\u00cb"], ["I", "\u00cf"], ["O", "\u00d6"], ["U", "\u00dc"], ["Y", "\u0178"], ["\u0399", "\u03aa"], ["\u03a5", "\u03ab"], ["\u016A", "\u01D5"], ["\u00DA", "\u01D7"], ["\u01D3", "\u01D9"], ["\u00D9", "\u01DB"]
+      ["A", "\u00c4"], ["E", "\u00cb"], ["I", "\u00cf"], ["O", "\u00d6"], ["U", "\u00dc"], ["Y", "\u0178"], ["\u0399", "\u03aa"], ["\u03a5", "\u03ab"], ["\u016A", "\u01D5"], ["\u00DA", "\u01D7"], ["\u01D3", "\u01D9"], ["\u00D9", "\u01DB"],
+      ["\u304b", "\u304c"], ["\u304d", "\u304e"], ["\u304f", "\u3050"], ["\u3051", "\u3052"], ["\u3053", "\u3054"],
+      ["\u305f", "\u3060"], ["\u3061", "\u3062"], ["\u3064", "\u3065"], ["\u3066", "\u3067"], ["\u3068", "\u3069"],
+      ["\u3055", "\u3056"], ["\u3057", "\u3058"], ["\u3059", "\u305a"], ["\u305b", "\u305c"], ["\u305d", "\u305e"],
+      ["\u306f", "\u3070"], ["\u3072", "\u3073"], ["\u3075", "\u3076"], ["\u3078", "\u3079"], ["\u307b", "\u307c"],
+      ["\u30ab", "\u30ac"], ["\u30ad", "\u30ae"], ["\u30af", "\u30b0"], ["\u30b1", "\u30b2"], ["\u30b3", "\u30b4"],
+      ["\u30bf", "\u30c0"], ["\u30c1", "\u30c2"], ["\u30c4", "\u30c5"], ["\u30c6", "\u30c7"], ["\u30c8", "\u30c9"],
+      ["\u30b5", "\u30b6"], ["\u30b7", "\u30b8"], ["\u30b9", "\u30ba"], ["\u30bb", "\u30bc"], ["\u30bd", "\u30be"],
+      ["\u30cf", "\u30d0"], ["\u30d2", "\u30d3"], ["\u30d5", "\u30d6"], ["\u30d8", "\u30d9"], ["\u30db", "\u30dc"]
     ];
     this.VKI_deadkey['~'] = [ // Tilde / Stroke
       ["a", "\u00e3"], ["l", "\u0142"], ["n", "\u00f1"], ["o", "\u00f5"],
@@ -558,6 +589,10 @@
       ["s", (this.VKI_isIElt8) ? "\u015F" : "\u0219"], ["t", (this.VKI_isIElt8) ? "\u0163" : "\u021B"],
       ["S", (this.VKI_isIElt8) ? "\u015E" : "\u0218"], ["T", (this.VKI_isIElt8) ? "\u0162" : "\u021A"]
     ];
+    this.VKI_deadkey['\u3002'] = [ // Hiragana/Katakana Point
+      ["\u306f", "\u3071"], ["\u3072", "\u3074"], ["\u3075", "\u3077"], ["\u3078", "\u307a"], ["\u307b", "\u307d"],
+      ["\u30cf", "\u30d1"], ["\u30d2", "\u30d4"], ["\u30d5", "\u30d7"], ["\u30d8", "\u30da"], ["\u30db", "\u30dd"]
+    ];
 
 
     /* ***** Define Symbols **************************************** */
@@ -575,9 +610,9 @@
       if (elem.VKI_attached) return false;
       var keybut = document.createElement('img');
           keybut.src = this.VKI_imageURI;
-          keybut.alt = "Keyboard interface";
+          keybut.alt = this.VKI_i18n['00'];
           keybut.className = "keyboardInputInitiator";
-          keybut.title = "Display graphical keyboard interface";
+          keybut.title = this.VKI_i18n['01'];
           keybut.elem = elem;
           keybut.onclick = function() { self.VKI_show(this.elem); };
       elem.VKI_attached = true;
@@ -611,9 +646,16 @@
     var thead = document.createElement('thead');
       var tr = document.createElement('tr');
         var th = document.createElement('th');
+          var abbr = document.createElement('abbr');
+              abbr.title = this.VKI_i18n['00'];
+              abbr.appendChild(document.createTextNode('VKI'));
+            th.appendChild(abbr);
+
           var kblist = document.createElement('select');
+              kblist.title = this.VKI_i18n['02'];
             for (ktype in this.VKI_layout) {
               if (typeof this.VKI_layout[ktype] == "object") {
+                if (!this.VKI_layout[ktype].lang) this.VKI_layout[ktype].lang = [];
                 var opt = document.createElement('option');
                     opt.value = ktype;
                     opt.appendChild(document.createTextNode(ktype));
@@ -623,49 +665,54 @@
             if (kblist.options.length) {
                 kblist.value = this.VKI_kt;
                 kblist.onchange = function() {
-                  self.VKI_kt = this.value;
+                  self.VKI_kts = self.VKI_kt = this.value;
                   self.VKI_buildKeys();
-                  self.VKI_position();
+                  self.VKI_position(true);
                 };
               th.appendChild(kblist);
             }
 
+          if (this.VKI_sizeAdj) {
+            this.VKI_size = Math.min(5, Math.max(1, this.VKI_size));
+            var kbsize = document.createElement('select');
+                kbsize.title = this.VKI_i18n['10'];
+              for (var x = 1; x <= 5; x++) {
+                var opt = document.createElement('option');
+                    opt.value = x;
+                    opt.appendChild(document.createTextNode(x));
+                  kbsize.appendChild(opt);
+              } kbsize.value = this.VKI_size;
+                kbsize.onchange = function() {
+                  self.VKI_keyboard.className = self.VKI_keyboard.className.replace(/ ?keyboardInputSize\d ?/, "");
+                  if (this.value != 2) self.VKI_keyboard.className += " keyboardInputSize" + this.value;
+                  self.VKI_position(true);
+                };
+            th.appendChild(kbsize);
+          }
+
             var label = document.createElement('label');
               var checkbox = document.createElement('input');
                   checkbox.type = "checkbox";
-                  checkbox.title = "Dead keys: " + ((this.VKI_deadkeysOn) ? "On" : "Off");
+                  checkbox.title = this.VKI_i18n['03'] + ": " + ((this.VKI_deadkeysOn) ? this.VKI_i18n['04'] : this.VKI_i18n['05']);
                   checkbox.defaultChecked = this.VKI_deadkeysOn;
                   checkbox.onclick = function() {
                     self.VKI_deadkeysOn = this.checked;
-                    this.title = "Dead keys: " + ((this.checked) ? "On" : "Off");
+                    this.title = self.VKI_i18n['03'] + ": " + ((this.checked) ? self.VKI_i18n['04'] : self.VKI_i18n['05']);
                     self.VKI_modify("");
                     return true;
                   };
                 label.appendChild(this.VKI_deadkeysElem = checkbox);
                   checkbox.checked = this.VKI_deadkeysOn;
+            label.setAttribute('style', 'white-space:nowrap; display:inline');
+					  th.setAttribute('style', 'width:200px;white-space:nowrap');
             th.appendChild(label);
           tr.appendChild(th);
 
         var td = document.createElement('td');
-          if (this.VKI_switcher) {
-            var switcher = document.createElement('span');
-                switcher.id = "keyboardInputSwitch";
-                switcher.appendChild(document.createTextNode("\u21d1"));
-                switcher.title = "Switch keyboard position";
-                switcher.onmousedown = function() { this.className = "pressed"; };
-                switcher.onmouseup = function() { this.className = ""; };
-                switcher.onclick = function() {
-                  self.VKI_position(self.VKI_above ^= 1);
-                  this.firstChild.nodeValue = (self.VKI_above) ? "\u21d3" : "\u21d1";
-                  return false;
-                };
-              td.appendChild(switcher);
-          }
-
           var clearer = document.createElement('span');
               clearer.id = "keyboardInputClear";
-              clearer.appendChild(document.createTextNode("Clear"));
-              clearer.title = "Clear this input";
+              clearer.appendChild(document.createTextNode(this.VKI_i18n['07']));
+              clearer.title = this.VKI_i18n['08'];
               clearer.onmousedown = function() { this.className = "pressed"; };
               clearer.onmouseup = function() { this.className = ""; };
               clearer.onclick = function() {
@@ -675,10 +722,10 @@
               };
             td.appendChild(clearer);
 
-          var closer = document.createElement('span');
+          var closer = document.createElement('strong');
               closer.id = "keyboardInputClose";
               closer.appendChild(document.createTextNode('X'));
-              closer.title = "Close this window";
+              closer.title = this.VKI_i18n['06'];
               closer.onmousedown = function() { this.className = "pressed"; };
               closer.onmouseup = function() { this.className = ""; };
               closer.onclick = function() { self.VKI_close(); };
@@ -698,6 +745,7 @@
           if (this.VKI_showVersion) {
             var div = document.createElement('div');
               var ver = document.createElement('var');
+                  ver.title = this.VKI_i18n['09'] + " " + this.VKI_version;
                   ver.appendChild(document.createTextNode("v" + this.VKI_version));
                 div.appendChild(ver);
               td.appendChild(div);
@@ -865,6 +913,11 @@
                       }
 
                       self.VKI_modify("");
+                      if (self.VKI_isOpera) {
+                        this.style.width = "50px";
+                        var foo = this.offsetWidth;
+                        this.style.width = "";
+                      }
                       return false;
                     };
 
@@ -1000,36 +1053,51 @@
      *
      */
     this.VKI_show = function(elem) {
-      if (this.VKI_target = elem) {
-        if (this.VKI_visible != elem) {
-          if (this.VKI_isIE) {
-            if (!this.VKI_target.range) {
-              this.VKI_target.range = this.VKI_target.createTextRange();
-              this.VKI_target.range.moveStart('character', this.VKI_target.value.length);
-            } this.VKI_target.range.select();
+      if (!this.VKI_target) {
+        this.VKI_target = elem;
+        if (this.VKI_langAdapt && this.VKI_target.lang) {
+          var chg = false, sub = [];
+          for (ktype in this.VKI_layout) {
+            if (typeof this.VKI_layout[ktype] == "object") {
+              for (var x = 0; x < this.VKI_layout[ktype].lang.length; x++) {
+                if (this.VKI_layout[ktype].lang[x].toLowerCase() == this.VKI_target.lang.toLowerCase()) {
+                  chg = kblist.value = this.VKI_kt = ktype;
+                  break;
+                } else if (this.VKI_layout[ktype].lang[x].toLowerCase().indexOf(this.VKI_target.lang.toLowerCase()) == 0)
+                  sub.push([this.VKI_layout[ktype].lang[x], ktype]);
+              }
+            } if (chg) break;
+          } if (sub.length) {
+            sub.sort(function (a, b) { return a[0].length - b[0].length; });
+            chg = kblist.value = this.VKI_kt = sub[0][1];
+          } if (chg) this.VKI_buildKeys();
+        }
+        if (this.VKI_isIE) {
+          if (!this.VKI_target.range) {
+            this.VKI_target.range = this.VKI_target.createTextRange();
+            this.VKI_target.range.moveStart('character', this.VKI_target.value.length);
+          } this.VKI_target.range.select();
+        }
+        try { this.VKI_keyboard.parentNode.removeChild(this.VKI_keyboard); } catch (e) {}
+        if (this.VKI_clearPasswords && this.VKI_target.type == "password") this.VKI_target.value = "";
+
+        var elem = this.VKI_target;
+        this.VKI_target.keyboardPosition = "absolute";
+        do {
+          if (VKI_getStyle(elem, "position") == "fixed") {
+            this.VKI_target.keyboardPosition = "fixed";
+            break;
           }
-          try { this.VKI_keyboard.parentNode.removeChild(this.VKI_keyboard); } catch (e) {}
-          if (this.VKI_clearPasswords && this.VKI_target.type == "password") this.VKI_target.value = "";
+        } while (elem = elem.offsetParent);
 
-          var elem = this.VKI_target;
-          this.VKI_target.keyboardPosition = "absolute";
-          do {
-            if (VKI_getStyle(elem, "position") == "fixed") {
-              this.VKI_target.keyboardPosition = "fixed";
-              break;
-            }
-          } while (elem = elem.offsetParent);
+        if (this.VKI_isIE6) document.body.appendChild(this.VKI_iframe);
+        document.body.appendChild(this.VKI_keyboard);
+        this.VKI_keyboard.style.position = this.VKI_target.keyboardPosition;
 
-          if (this.VKI_isIE6) document.body.appendChild(this.VKI_iframe);
-          document.body.appendChild(this.VKI_keyboard);
-          this.VKI_keyboard.style.top = this.VKI_keyboard.style.right = this.VKI_keyboard.style.bottom = this.VKI_keyboard.style.left = "auto";
-          this.VKI_keyboard.style.position = this.VKI_target.keyboardPosition;
-
-          this.VKI_visible = this.VKI_target;
-          this.VKI_position();
-          this.VKI_target.focus();
-        } else this.VKI_close();
-      }
+        this.VKI_position(true);
+        if (self.VKI_isMoz || self.VKI_isWebKit) this.VKI_position(true);
+        this.VKI_target.focus();
+      } else this.VKI_close();
     };
 
 
@@ -1037,27 +1105,39 @@
      * Position the keyboard
      *
      */
-    this.VKI_position = function(above) {
-      if (typeof above == "undefined") above = self.VKI_above;
-      if (self.VKI_visible) {
-        var inputElemPos = VKI_findPos(self.VKI_target);
-        above = (above) ? -self.VKI_keyboard.offsetHeight - 3 : self.VKI_target.offsetHeight + 3;
-        self.VKI_keyboard.style.top = inputElemPos[1] - ((self.VKI_target.keyboardPosition == "fixed" && !self.VKI_isIE && !self.VKI_isMoz) ? VKI_scrollDist()[1] : 0) + above + "px";
-        self.VKI_keyboard.style.left = Math.min(VKI_innerDimensions()[0] - self.VKI_keyboard.offsetWidth - 15, inputElemPos[0]) + "px";
-        if (self.VKI_isIE6) {
-          self.VKI_iframe.style.width = self.VKI_keyboard.offsetWidth + "px";
-          self.VKI_iframe.style.height = self.VKI_keyboard.offsetHeight + "px";
-          self.VKI_iframe.style.top = self.VKI_keyboard.style.top;
-          self.VKI_iframe.style.left = self.VKI_keyboard.style.left;
+    this.VKI_position = function(force) {
+      if (self.VKI_target) {
+        var kPos = VKI_findPos(self.VKI_keyboard), wDim = VKI_innerDimensions(), sDis = VKI_scrollDist();
+        var place = false, fudge = self.VKI_target.offsetHeight + 3;
+        if (force !== true) {
+          if (kPos[1] + self.VKI_keyboard.offsetHeight - sDis[1] - wDim[1] > 0) {
+            place = true;
+            fudge = -self.VKI_keyboard.offsetHeight - 3;
+          } else if (kPos[1] - sDis[1] < 0) place = true;
         }
+        if (place || force === true) {
+          var iPos = VKI_findPos(self.VKI_target);
+          self.VKI_keyboard.style.top = iPos[1] - ((self.VKI_target.keyboardPosition == "fixed" && !self.VKI_isIE && !self.VKI_isMoz) ? sDis[1] : 0) + fudge + "px";
+          self.VKI_keyboard.style.left = Math.max(10, Math.min(wDim[0] - self.VKI_keyboard.offsetWidth - 25, iPos[0])) + "px";
+          if (self.VKI_isIE6) {
+            self.VKI_iframe.style.width = self.VKI_keyboard.offsetWidth + "px";
+            self.VKI_iframe.style.height = self.VKI_keyboard.offsetHeight + "px";
+            self.VKI_iframe.style.top = self.VKI_keyboard.style.top;
+            self.VKI_iframe.style.left = self.VKI_keyboard.style.left;
+          }
+        }
+        if (force === true) self.VKI_position();
       }
     };
 
 
     if (window.addEventListener) {
       window.addEventListener('resize', this.VKI_position, false);
-    } else if (window.attachEvent)
+      window.addEventListener('scroll', this.VKI_position, false);
+    } else if (window.attachEvent) {
       window.attachEvent('onresize', this.VKI_position);
+      window.attachEvent('onscroll', this.VKI_position);
+    }
 
 
     /* ****************************************************************
@@ -1065,17 +1145,20 @@
      *
      */
     this.VKI_close = VKI_close = function() {
-      if (this.VKI_visible) {
+      if (this.VKI_target) {
         try {
           this.VKI_keyboard.parentNode.removeChild(this.VKI_keyboard);
           if (this.VKI_isIE6) this.VKI_iframe.parentNode.removeChild(this.VKI_iframe);
         } catch (e) {}
+        if (this.VKI_kt != this.VKI_kts) {
+          kblist.value = this.VKI_kt = this.VKI_kts;
+          this.VKI_buildKeys();
+        }
         this.VKI_target.focus();
-        this.VKI_target = this.VKI_visible = false;
+        this.VKI_target = false;
       }
     };
-    
-  };
+  }
 
   function VKI_findPos(obj) {
     var curleft = curtop = 0;
@@ -1100,8 +1183,10 @@
     var html = document.getElementsByTagName('html')[0];
     if (html.scrollTop && document.documentElement.scrollTop) {
       return [html.scrollLeft, html.scrollTop];
-    } else if (html.scrollTop || document.documentElement.scrollTop)
+    } else if (html.scrollTop || document.documentElement.scrollTop) {
       return [html.scrollLeft + document.documentElement.scrollLeft, html.scrollTop + document.documentElement.scrollTop];
+    } else if (document.body.scrollTop)
+      return [document.body.scrollLeft, document.body.scrollTop];
     return [0, 0];
   }
 
@@ -1120,6 +1205,7 @@
     elem.style.cursor = "default";
     if (window.opera) elem.onmousedown = function() { return false; };
   }
+
 
   /* ***** Attach this script to the onload event ****************** */
   if (window.addEventListener) {

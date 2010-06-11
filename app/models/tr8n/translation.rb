@@ -127,6 +127,9 @@ class Tr8n::Translation < ActiveRecord::Base
   end
 
   def uniq?
+    # for now, treat all translations as uniq
+    return true
+    
     conditions = ["translation_key_id = ? and language_id = ? and label = ?", translation_key.id, language.id, label]
     if self.id
       conditions[0] << " and id <> ?"

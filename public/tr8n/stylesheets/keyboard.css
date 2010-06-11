@@ -1,22 +1,26 @@
 #keyboardInputMaster {
   position:absolute;
-  border-top:2px solid #eeeeee;
-  border-right:2px solid #6e6e6e;
-  border-bottom:2px solid #6e6e6e;
-  border-left:2px solid #eeeeee;
-  border-radius:5px;
+  border-top:1px solid #eeeeee;
+  border-right:1px solid #6e6e6e;
+  border-bottom:1px solid #6e6e6e;
+  border-left:1px solid #eeeeee;
+  border-radius:0.4em;
+  -moz-border-radius:0.4em;
+  -webkit-border-radius:0.4em;
   box-shadow:0px 2px 10px #444444;
-  opacity:1.0;
-  color:#000000;
+  -moz-box-shadow:0px 2px 10px #444444;
+  -webkit-box-shadow:0px 2px 10px #444444;
+  opacity:0.95;
+  filter:alpha(opacity=95);
   background-color:#dddddd;
   text-align:left;
   z-index:1000000;
   width:auto;
   margin:0px;
-  font:normal 11px Arial,sans-serif;
   line-height:1;
 }
 #keyboardInputMaster * {
+  position:static;
   color:#000000;
   background:transparent;
   font:normal 11px Arial,sans-serif;
@@ -26,42 +30,72 @@
   outline:0px;
   vertical-align:baseline;
 }
+#keyboardInputMaster.keyboardInputSize1 * { font-size:9px; }
+#keyboardInputMaster.keyboardInputSize3 * { font-size:13px; }
+#keyboardInputMaster.keyboardInputSize4 * { font-size:16px; }
+#keyboardInputMaster.keyboardInputSize5 * { font-size:20px; }
 
+#keyboardInputMaster thead tr th,
+#keyboardInputMaster thead tr td {
+  padding:0.4em 0.3em 0.2em 0.3em;
+  background-color:#999999;
+  white-space:nowrap;
+}
 #keyboardInputMaster thead tr th {
   text-align:left;
-  padding:3px 5px 2px 4px;
-  background-color:inherit;
+  width:170px;
 }
-#keyboardInputMaster thead tr th select {
-  margin-right:5px;
+#keyboardInputMaster thead tr th abbr {
+  font-size:1.3em;
+  font-weight:bold;
+  text-decoration:none;
+  margin-right:4%;
+  vertical-align:middle;
+}
+#keyboardInputMaster thead tr th select,
+#keyboardInputMaster thead tr th label input {
+  margin-right:3%;
   border:1px inset #888888;
   background-color:#f6f6f6;
+  vertical-align:middle;
+  font-size:inherit;
 }
 #keyboardInputMaster thead tr th label input {
-  width:12px;
-  height:12px;
-  margin-right:5px;
-  vertical-align:middle;
+  width:1.1em;
+  height:1.1em;
 }
 #keyboardInputMaster thead tr td {
   text-align:right;
   vertical-align:middle;
-  padding:3px 4px 2px 5px;
 }
-#keyboardInputMaster thead tr td span {
-  padding:1px 4px;
-  font-weight:bold;
+#keyboardInputMaster thead tr td span,
+#keyboardInputMaster thead tr td strong {
+  display:inline-block;
+  padding:0px 0.5em;
+  height:1.5em;
+  line-height:1.5em;
   border-top:1px solid #e5e5e5;
   border-right:1px solid #5d5d5d;
   border-bottom:1px solid #5d5d5d;
   border-left:1px solid #e5e5e5;
   background-color:#cccccc;
   cursor:pointer;
+  margin:0px 0px 0px 0.3em;
+  border-radius:0.3em;
+  -moz-border-radius:0.3em;
+  -webkit-border-radius:0.3em;
+}
+#keyboardInputMaster thead tr td strong {
+  font-weight:bold;
+}
+#keyboardInputMaster thead tr td span:hover,
+#keyboardInputMaster thead tr td strong:hover {
+  background-color:#dddddd;
 }
 
 #keyboardInputMaster tbody tr td {
   text-align:left;
-  padding:0px 4px 3px 4px;
+  padding:0.2em 0.3em 0.3em 0.3em;
 }
 #keyboardInputMaster tbody tr td div {
   text-align:center;
@@ -70,9 +104,10 @@
 }
 #keyboardInputMaster tbody tr td div#keyboardInputLayout {
   height:auto;
+  zoom:1;
 }
 #keyboardInputMaster tbody tr td div#keyboardInputLayout table {
-  height:20px;
+  height:1.8em;
   white-space:nowrap;
   width:100%;
   border-collapse:separate;
@@ -84,7 +119,7 @@
 }
 #keyboardInputMaster tbody tr td div#keyboardInputLayout table tbody tr td {
   vertical-align:middle;
-  padding:0px 5px;
+  padding:0px 0.45em;
   white-space:pre;
   font-family:'Lucida Console',monospace;
   border-top:1px solid #e5e5e5;
@@ -94,12 +129,15 @@
   background-color:#eeeeee;
   cursor:default;
   min-width:0.75em;
+  border-radius:0.2em;
+  -moz-border-radius:0.2em;
+  -webkit-border-radius:0.2em;
 }
 #keyboardInputMaster tbody tr td div#keyboardInputLayout table tbody tr td.last {
   width:99%;
 }
 #keyboardInputMaster tbody tr td div#keyboardInputLayout table tbody tr td.space {
-  padding:0px 45px;
+  padding:0px 4em;
 }
 #keyboardInputMaster tbody tr td div#keyboardInputLayout table tbody tr td.alive {
   background-color:#ccccdd;
