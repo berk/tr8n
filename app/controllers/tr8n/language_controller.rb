@@ -2,7 +2,10 @@ class Tr8n::LanguageController < Tr8n::BaseController
 
   before_filter :validate_current_translator, :except => [:select, :switch, :translate]
   before_filter :validate_language_management, :only => [:index]
-  
+    
+  # for ssl access to the translator - using ssl_requirement plugin  
+  ssl_allowed :translator, :select  if defined?(:ssl_allowed)
+
   def translate
     return sanitize_api_response({"error" => "Api is disabled"}) unless Tr8n::Config.enable_api?
 
