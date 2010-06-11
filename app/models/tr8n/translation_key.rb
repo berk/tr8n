@@ -317,7 +317,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
 
   def sanitize_token_value(value, options = {})
 #    double check if we want to do this?
-    return value.to_s if (not options[:sanitize_values]) or value.tr8n_safe?
+    return value.to_s if (not options[:sanitize_values]) or value.html_safe?
     ERB::Util.html_escape(value.to_s)
   end
 
