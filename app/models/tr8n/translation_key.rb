@@ -2,7 +2,6 @@ require 'digest/md5'
 
 class Tr8n::TranslationKey < ActiveRecord::Base
   set_table_name :tr8n_translation_keys
-  establish_connection(Tr8n::Config.database) if Tr8n::Config.use_remote_database?
   
   has_many :translations,             :class_name => "Tr8n::Translation",           :dependent => :destroy
   has_many :translation_key_locks,    :class_name => "Tr8n::TranslationKeyLock",    :dependent => :destroy
