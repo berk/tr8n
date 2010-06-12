@@ -38,7 +38,7 @@
 		height:200px; overflow: auto;
 	}
 </style>
-<div id="tr8n_languages_list" class="inner" style="<%='display:none' if @user_languages.size > 1 %>">
+<div id="tr8n_languages_list" class="inner" style="<%='display:none' if (@user_languages and @user_languages.size > 1) %>">
   <ul class="language_list">
     <% @all_languages.each do |language|%>
       <li onClick="$('language_selector_locale').value='<%=language.locale%>'; $('language_selector_form').submit();">
