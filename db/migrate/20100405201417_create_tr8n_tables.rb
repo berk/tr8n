@@ -109,6 +109,7 @@ class CreateTr8nTables < ActiveRecord::Migration
     create_table :tr8n_translation_key_sources do |t|
       t.integer :translation_key_id, :null => false
       t.integer :translation_source_id, :null => false
+      t.text    :details
       t.timestamps
     end
     add_index :tr8n_translation_key_sources, [:translation_key_id]

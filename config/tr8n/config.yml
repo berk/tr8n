@@ -12,6 +12,8 @@
 defaults: &defaults
   enable_tr8n:                true      # enables the engine
   enable_key_source_tracking: true      # builds the site map sources
+  enable_key_caller_tracking: true      # tracks all calls to labels
+  
   enable_glossary_hints:      true      # shows glossary in the translator    
   enable_software_keyboard:   true      # shows the soft keyboard icon  
   enable_google_suggestions:  true      # uses google for suggestions

@@ -44,6 +44,7 @@ module Tr8n::CommonMethods
         source = self.class.name
       end
       options.merge!(:source => source) unless options[:source]
+      options.merge!(:caller => caller)
     end
     
     unless Tr8n::Config.enabled?

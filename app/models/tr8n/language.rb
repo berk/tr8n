@@ -24,11 +24,11 @@ class Tr8n::Language < ActiveRecord::Base
   end
 
   def current?
-    self == Tr8n::Config.current_language
+    self.locale == Tr8n::Config.current_language.locale
   end
   
   def default?
-    self == Tr8n::Config.default_language
+    self.locale == Tr8n::Config.default_locale
   end
   
   def flag

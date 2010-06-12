@@ -1,10 +1,7 @@
 <%= render :partial => "/tr8n/admin/common/header" %>
 
 <h1>
-	<span style="font-size:12px; float:right; padding-top:10px;">
-		<%=link_to("View Translation Key Sources", {:action => :sources})%> 
-    | <%=link_to("View Translation Key Locks", {:action => :locks})%>
-	</span> 
+  <%=render :partial => "tabs" %>
 	Translation Keys
 </h1>
 
@@ -18,9 +15,6 @@
       Label
     </th>
     <th>
-      Description
-    </th>
-    <th>
       Tokens
     </th>
     <th style="text-align:right">
@@ -30,8 +24,12 @@
   </tr>  
   <% @keys.each_with_index do |key, index| %>
     <tr>
-      <td><%=key.label%></td>      
-      <td><%=key.description%></td>      
+      <td>
+        <%=link_to(key.label, :action => :view, :key_id => key.id)%>
+         <div style="color:grey; font-size:10px;">
+            <%=key.description %>
+         </div>
+			</td>      
       <td><%=key.tokens.join(", ")%></td>
       <td style="text-align:right">
         <%=link_to(key.translations.size, "/tr8n/admin/translation/index?mf_c_0=translation_key_id&mf_co_0=is&mf_cv_0_0=#{key.id}") %>

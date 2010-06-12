@@ -28,12 +28,22 @@ class Tr8n::TranslationKey < ActiveRecord::Base
       existing_key || create(:key => key, :label => label, :description => desc)
     end
     
-    # we should disable this in production  
-    if options[:source] and Tr8n::Config.enable_key_source_tracking?
-      Tr8n::TranslationKeySource.find_or_create(tkey, Tr8n::TranslationSource.find_or_create(options[:source]))
-    end
+    track_source(tkey, options)  
     
     tkey  
+  end
+  
+  def self.track_source(tkey, options)
+    return unless Tr8n::Config.enable_key_source_tracking?
+    return if options[:source].blank?
+    
+    key_source = Tr8n::TranslationKeySource.find_or_create(tkey, Tr8n::TranslationSource.find_or_create(options[:source]))
+    return unless Tr8n::Config.enable_key_caller_tracking?
+    
+    options[:caller] ||= caller
+    options[:caller_key] = options[:caller].is_a?(Array) ? options[:caller].join(", ") : options[:caller].to_s
+    options[:caller_key] = generate_key(options[:caller_key])
+    key_source.update_details!(options)
   end
   
   def self.generate_key(label, desc="")

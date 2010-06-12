@@ -3,6 +3,9 @@ class Tr8n::TranslationsController < Tr8n::BaseController
   before_filter :validate_current_translator
   before_filter :validate_default_language, :except => [:translate, :vote]
   
+  # for ssl access to the translator - using ssl_requirement plugin  
+  ssl_allowed :translate  if respond_to?(:ssl_allowed)
+  
   # main translation method used by the translator and translation screens
   def translate
     @translation_key = Tr8n::TranslationKey.find(params[:translation_key_id])

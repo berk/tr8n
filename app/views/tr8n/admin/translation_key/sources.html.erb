@@ -1,12 +1,9 @@
 <%= render :partial => "/tr8n/admin/common/header" %>
 
 <h1>
-  <span style="font-size:12px; float:right; padding-top:10px;">
-    <%=link_to("View Translation Keys", {:action => :index})%>
-    | <%=link_to("View Translation Key Locks", {:action => :locks})%>
-  </span> 
-
-	Translation Key Sources
+  <%=render :partial => "tabs" %>
+	
+	Translation Sources
 </h1>
 
 <%= will_filter %>
@@ -15,6 +12,9 @@
 
 <table class="admin_table">
   <tr>
+    <th align="left">
+      Source Id
+    </th>
     <th align="left">
       Source
     </th>
@@ -27,9 +27,12 @@
   </tr>  
   <% @sources.each_with_index do |source, index| %>
     <tr>
+      <td><%=link_to(source.id, "/tr8n/admin/translation_key/key_sources?mf_c_0=translation_source_id&mf_co_0=is&mf_cv_0_0=#{source.id}") %></td>
       <td><%=source.source%></td>
       <td><%=source.created_at%></td>
-      <td align="right"><%=source.translation_keys.size %></td>
+      <td align="right">
+        <%=link_to(source.translation_keys.size, "/tr8n/admin/translation_key/key_sources?mf_c_0=translation_source_id&mf_co_0=is&mf_cv_0_0=#{source.id}") %>
+      </td>
     </tr>
   <% end %>
 </table>

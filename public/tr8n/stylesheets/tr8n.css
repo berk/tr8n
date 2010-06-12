@@ -38,7 +38,7 @@
 .tr8n_translator .original_text                {background-color:#f9f8f7;border: 1px dotted #ccc;padding:5px;margin-bottom:5px;}
 .tr8n_translator .quote                        {padding:10px;}
 .tr8n_translator .quote img                    {vertical-align:middle !important}
-.tr8n_translator .keyboardInput                {width:368px;padding:5px;height:60px;background:#feffef;margin:5px 0;border:solid 1px #ccc}
+.tr8n_translator .keyboardInput                {padding:5px;height:60px;background:#feffef;border:solid 1px #ccc}
 .tr8n_translator .section                      {margin:10px 0 15px 0}
 .tr8n_translator .section_title                {border-bottom:solid 1px #ccc;padding:5px 0;margin-bottom:10px;}
 .tr8n_translator .tip                          {color:grey; font-size:10px; padding-top:10px;}

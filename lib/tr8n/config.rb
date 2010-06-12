@@ -155,6 +155,10 @@ class Tr8n::Config
     config[:enable_key_source_tracking]
   end
 
+  def self.enable_key_caller_tracking?
+    config[:enable_key_caller_tracking]
+  end
+
   def self.enable_paranoia_mode?
     config[:enable_paranoia_mode]
   end

@@ -430,7 +430,8 @@ Tr8n.Lightbox = Class.create({
     var viewport_dimensions = document.viewport.getDimensions();
     var overlay_height = viewport_dimensions.height < screen.availHeight ? screen.availHeight : viewport_dimensions.height;
     var overlay_width = viewport_dimensions.width < screen.availWidth ? screen.availWidth : viewport_dimensions.width;
-    this.overlay.setStyle("top:0px; left:0px; display:inline; width:" + overlay_width + "px; height:" + overlay_height + "px;");
+		
+    this.overlay.setStyle("position:fixed; top:0px; left:0px; display:inline; width:" + overlay_width + "px; height:" + overlay_height + "px;");
 
     opts = opts || {}
     opts["width"] = opts["width"] || (viewport_dimensions.width / 2);
@@ -438,7 +439,7 @@ Tr8n.Lightbox = Class.create({
     opts["left"] = (document.body.scrollLeft + viewport_dimensions.width - opts["width"])/2;
     opts["top"] = (document.body.scrollTop + viewport_dimensions.height - opts["height"])/2 - 100;
 
-    var style = "top:" + opts["top"] + "px;left:" + opts["left"] + "px;width:" + opts["width"] + "px;height:" + opts["height"] + "px;";
+    var style = "position:fixed; top:" + opts["top"] + "px;left:" + opts["left"] + "px;width:" + opts["width"] + "px;height:" + opts["height"] + "px;";
     this.container.setStyle(style);
     Effect.Appear(this.container, {duration: 0.25});
 
