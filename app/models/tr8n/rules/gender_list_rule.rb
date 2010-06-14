@@ -33,9 +33,14 @@ class Tr8n::GenderListRule < Tr8n::LanguageRule
     Tr8n::Config.rules_engine[:gender_rule][:method_values][type]
   end
   
+  def list_size_token_value(token)
+    return nil unless token and token.respond_to?(Tr8n::Config.rules_engine[:gender_list_rule][:object_method])
+    token.send(Tr8n::Config.rules_engine[:gender_list_rule][:object_method])
+  end
+  
   def evaluate(token)
-    # token must be an array of objects that have gender
-    return false unless token.is_a?(Array)
+    list_size = list_size_token_value(token)
+    return false unless list_size
     
     has_male = false  
     has_female = false
@@ -46,11 +51,11 @@ class Tr8n::GenderListRule < Tr8n::LanguageRule
       
       case definition[:value]
         when "all_male" then
-            has_male = true
-            return false if object_gender != gender_object_value_for("male")
+          has_male = true
+          return false if object_gender != gender_object_value_for("male")
         when "all_female" then
-            has_female = true
-            return false if object_gender != gender_object_value_for("female")
+          has_female = true
+          return false if object_gender != gender_object_value_for("female")
       end
     end
     
