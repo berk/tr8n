@@ -359,6 +359,12 @@ class Tr8n::Config
     @default_numeric_rules[default_locale]
   end
 
+  def self.default_date_rules(locale = default_locale)
+    @default_date_rules ||= load_json("/config/tr8n/default_date_rules.json")
+    return @default_date_rules[locale.to_s] if @default_date_rules[locale.to_s]
+    @default_date_rules[default_locale]
+  end
+
   #########################################################
   # localization
   def self.default_day_names
