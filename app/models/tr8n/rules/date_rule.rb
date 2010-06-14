@@ -30,6 +30,9 @@ class Tr8n::DateRule < Tr8n::LanguageRule
   end
 
   def evaluate(token)
+    # for now - until we cleanup tockens
+    return false unless token.is_a?(Date) or token.is_a?(Time)
+    
     token_date = date_token_value(token)
     return false unless token_date
     

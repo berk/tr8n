@@ -39,6 +39,9 @@ class Tr8n::GenderListRule < Tr8n::LanguageRule
   end
   
   def evaluate(token)
+    # for now - until we cleanup tokens
+    return false unless token.is_a?(Array)
+    
     list_size = list_size_token_value(token)
     return false unless list_size
     
