@@ -98,13 +98,13 @@ class CreateTr8nTables < ActiveRecord::Migration
       t.text    :description
       t.timestamps
     end
-    add_index :tr8n_translation_keys, [:key]
+    add_index :tr8n_translation_keys, [:key], :unique => true
 
     create_table :tr8n_translation_sources do |t|
       t.string  :source
       t.timestamps
     end
-    add_index :tr8n_translation_sources, [:source]
+    add_index :tr8n_translation_sources, [:source], :name => :tr8n_sources_source
 
     create_table :tr8n_translation_key_sources do |t|
       t.integer :translation_key_id, :null => false
@@ -112,8 +112,8 @@ class CreateTr8nTables < ActiveRecord::Migration
       t.text    :details
       t.timestamps
     end
-    add_index :tr8n_translation_key_sources, [:translation_key_id]
-    add_index :tr8n_translation_key_sources, [:translation_source_id]
+    add_index :tr8n_translation_key_sources, [:translation_key_id], :name => :tr8n_trans_keys_key_id
+    add_index :tr8n_translation_key_sources, [:translation_source_id], :name => :tr8n_trans_keys_source_id
 
     create_table :tr8n_translation_key_locks do |t|
       t.integer :translation_key_id, :null => false
@@ -122,7 +122,7 @@ class CreateTr8nTables < ActiveRecord::Migration
       t.boolean :locked, :default => false
       t.timestamps
     end
-    add_index :tr8n_translation_key_locks, [:translation_key_id, :language_id]
+    add_index :tr8n_translation_key_locks, [:translation_key_id, :language_id], :name => :tr8n_locks_key_id_lang_id
 
     create_table :tr8n_translations do |t|
       t.integer :translation_key_id,  :null => false
@@ -134,9 +134,9 @@ class CreateTr8nTables < ActiveRecord::Migration
       t.text    :rules      
       t.timestamps
     end
-    add_index :tr8n_translations, [:translator_id]
-    add_index :tr8n_translations, [:translation_key_id, :translator_id, :language_id]
-    add_index :tr8n_translations, [:created_at]
+    add_index :tr8n_translations, [:translator_id], :name => :tr8n_trans_translator_id
+    add_index :tr8n_translations, [:translation_key_id, :translator_id, :language_id], :name => :tr8n_trans_key_id_translator_id_lang_id
+    add_index :tr8n_translations, [:created_at], :name => :tr8n_trans_created_at
   
     create_table :tr8n_translation_votes do |t|
       t.integer :translation_id,      :null => false
@@ -144,8 +144,8 @@ class CreateTr8nTables < ActiveRecord::Migration
       t.integer :vote,                :null => false
       t.timestamps
     end
-    add_index :tr8n_translation_votes, [:translator_id]
-    add_index :tr8n_translation_votes, [:translation_id, :translator_id]
+    add_index :tr8n_translation_votes, [:translator_id], :name => :tr8n_trans_votes_translator_id
+    add_index :tr8n_translation_votes, [:translation_id, :translator_id], :name => :tr8n_trans_votes_trans_id_translator_id
 
     create_table :tr8n_glossary do |t|
       t.string  :keyword
@@ -160,8 +160,8 @@ class CreateTr8nTables < ActiveRecord::Migration
       t.text    :topic, :null => false
       t.timestamps
     end
-    add_index :tr8n_language_forum_topics, [:language_id]
-    add_index :tr8n_language_forum_topics, [:translator_id]
+    add_index :tr8n_language_forum_topics, [:language_id], :name => :tr8n_forum_topics_lang_id
+    add_index :tr8n_language_forum_topics, [:translator_id], :name => :tr8n_forum_topics_translator_id
     
     create_table :tr8n_language_forum_messages do |t|
       t.integer :language_id, :null => false
@@ -170,9 +170,9 @@ class CreateTr8nTables < ActiveRecord::Migration
       t.text    :message, :null => false
       t.timestamps
     end
-    add_index :tr8n_language_forum_messages, [:language_id]
-    add_index :tr8n_language_forum_messages, [:translator_id]
-    add_index :tr8n_language_forum_messages, [:language_id, :language_forum_topic_id]
+    add_index :tr8n_language_forum_messages, [:language_id], :name => :tr8n_forum_msgs_lang_id
+    add_index :tr8n_language_forum_messages, [:translator_id], :name => :tr8n_forums_msgs_translator_id
+    add_index :tr8n_language_forum_messages, [:language_id, :language_forum_topic_id], :name => :tr8n_forum_msgs_lang_id_topic_id
     
     create_table :tr8n_language_forum_abuse_reports do |t|
       t.integer :language_id, :null => false
@@ -181,9 +181,9 @@ class CreateTr8nTables < ActiveRecord::Migration
       t.string  :reason
       t.timestamps
     end
-    add_index :tr8n_language_forum_abuse_reports, [:language_id]
-    add_index :tr8n_language_forum_abuse_reports, [:language_id, :translator_id]
-    add_index :tr8n_language_forum_abuse_reports, [:language_forum_message_id]
+    add_index :tr8n_language_forum_abuse_reports, [:language_id], :name => :tr8n_forum_reports_lang_id
+    add_index :tr8n_language_forum_abuse_reports, [:language_id, :translator_id], :name => :tr8n_forum_reports_lang_id_translator_id
+    add_index :tr8n_language_forum_abuse_reports, [:language_forum_message_id], :name => :tr8n_forum_reports_message_id
   end
 
   def self.down

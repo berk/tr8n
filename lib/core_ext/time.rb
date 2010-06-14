@@ -5,6 +5,13 @@ class Time
     num
   end
 
+  def tensify(past, present, future)
+    current_time = Time.now
+    return past if self < current_time
+    return future if self > current_time
+    present
+  end
+
   def translate(format = :default, language = Tr8n::Config.current_language, options = {})
     label = (format.is_a?(String) ? format.clone : Tr8n::Config.default_date_formats[format].clone)
     label.gsub!("%a", "{short_week_day_name}")

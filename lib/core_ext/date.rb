@@ -4,6 +4,13 @@ class Date
     return (num < 10 ? "0#{num}" : num) if options[:with_leading_zero]
     num
   end
+
+  def tensify(past, present, future)
+    current_date = Date.today
+    return past if self < current_date
+    return future if self > current_date
+    present
+  end
   
   def translate(format = :default, language = Tr8n::Config.current_language, options = {})
     label = (format.is_a?(String) ? format.clone : Tr8n::Config.default_date_formats[format].clone)

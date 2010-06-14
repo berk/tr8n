@@ -1,0 +1,5 @@
+{"en-US": [
+      {"operator": "is_in", "value": "past"},
+      {"operator": "is_in", "value": "present"},
+      {"operator": "is_in", "value": "future"}
+]}

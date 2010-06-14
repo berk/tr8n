@@ -11,8 +11,8 @@
 
 defaults: &defaults
   enable_tr8n:                true      # enables the engine
-  enable_key_source_tracking: true      # builds the site map sources
-  enable_key_caller_tracking: true      # tracks all calls to labels
+  enable_key_source_tracking: false     # builds the site map sources
+  enable_key_caller_tracking: false     # tracks all calls to labels
   
   enable_glossary_hints:      true      # shows glossary in the translator    
   enable_software_keyboard:   true      # shows the soft keyboard icon  
@@ -106,7 +106,7 @@ defaults: &defaults
   # Rules Engine Settings
   #############################################################################
   rules_engine:  
-    language_rule_classes:    [Tr8n::NumericRule, Tr8n::GenderRule, Tr8n::GenderListRule]
+    language_rule_classes:    [Tr8n::NumericRule, Tr8n::GenderRule, Tr8n::GenderListRule, Tr8n::DateRule]
     numeric_rule:  
       token_suffixes:         [count, num, age, hours, minutes, years, seconds]
       object_method:          to_i
@@ -119,7 +119,11 @@ defaults: &defaults
         neutral:              neutral
         unknown:              unknown
     gender_list_rule:         # works together with gender rule 
+      object_method:          size
       token_suffixes:         [list]
+    date_rule:                # date rule
+      object_method:          to_date
+      token_suffixes:         [date]
     
     # minimal rank makes the translation acceptable for subsitution and counts towards the translator rank
     translation_threshold:    1
@@ -165,6 +169,7 @@ defaults: &defaults
 #############################################################################
 development:
   <<: *defaults
+  enable_key_source_tracking: true
   
 test:
   <<: *defaults
@@ -184,16 +189,16 @@ production:
 
   enable_key_source_tracking: false
 
-  # an example of how to overload the databse settings for production 
-  use_remote_database:        true
-  database:
-    host:                     localhost
-    database:                 tr8n
-    adapter:                  postgresql
-    username:                 tr8n
-    password:
-    port:                     5432
-    encoding:                 utf8  
-
-  # alternatively you can specify it by referencing an existing database config
-  # database:                 production1 
+#  an example of how to overload the databse settings for production 
+#  use_remote_database:        true
+#  database:
+#    host:                     localhost
+#    database:                 tr8n
+#    adapter:                  postgresql
+#    username:                 tr8n
+#    password:
+#    port:                     5432
+#    encoding:                 utf8  
+#
+#  alternatively you can specify it by referencing an existing database config
+#  database:                   production1 

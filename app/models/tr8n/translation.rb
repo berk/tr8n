@@ -216,10 +216,11 @@ class Tr8n::Translation < ActiveRecord::Base
      ["date", "date"]].collect{|option| [option.first.trl("Translation filter group by option"), option.last]}
   end
   
-  def self.search_conditions_for(params)
-    conditions = [""]
+  def self.search_conditions_for(params, language = Tr8n::Config.current_language)
+    conditions = ["language_id = ?", language.id]
     
     unless params[:search].blank?
+      conditions[0] << " and " unless conditions[0].blank?
       conditions[0] << "label like ?" 
       conditions << "%#{params[:search]}%"
     end
