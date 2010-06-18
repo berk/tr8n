@@ -1,12 +1,6 @@
 <%= render :partial => "/tr8n/admin/common/header" %>
-
-<h1>
-  <%=render :partial => "tabs" %>
-	Translation Keys
-</h1>
-
-<%= will_filter %>
-
+<%= render :partial => "tabs" %>
+<%= tr8n_will_filter %>
 <%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @keys} %>
 
 <table class="admin_table">

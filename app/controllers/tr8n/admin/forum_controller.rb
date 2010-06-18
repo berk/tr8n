@@ -10,6 +10,11 @@ class Tr8n::Admin::ForumController < Tr8n::Admin::BaseController
     @messages = Tr8n::LanguageForumMessage.paginate(:order=>@model_filter.order_clause, :page=>page, :per_page=>@model_filter.per_page, :conditions=>@model_filter.sql_conditions)
   end
 
+  def reports
+    @model_filter = init_model_filter(Tr8n::LanguageForumMessageFilter)
+    @reports = Tr8n::LanguageForumAbuseReport.paginate(:order=>@model_filter.order_clause, :page=>page, :per_page=>@model_filter.per_page, :conditions=>@model_filter.sql_conditions)
+  end
+
   def delete_topic
     topic = Tr8n::LanguageForumTopic.find_by_id(params[:topic_id]) if params[:topic_id]
     topic.destroy if topic

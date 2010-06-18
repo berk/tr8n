@@ -6,6 +6,7 @@ class Tr8n::LanguageController < Tr8n::BaseController
   # for ssl access to the translator - using ssl_requirement plugin  
   ssl_allowed :translator, :select, :lists, :switch, :translate, :remove  if respond_to?(:ssl_allowed)
 
+  # used by a client app
   def translate
     return sanitize_api_response({"error" => "Api is disabled"}) unless Tr8n::Config.enable_api?
 

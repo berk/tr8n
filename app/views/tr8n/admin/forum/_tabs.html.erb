@@ -1,0 +1,22 @@
+<%
+  links = []
+  current_tab ||= ""
+  [["Topics", {:action => :index}],
+   ["Messages", {:action => :messages}],
+   ["Abuse Reports", {:action => :reports}]].each do |link|
+      if controller.action_name == link.last[:action].to_s
+        current_tab = link.first if current_tab.blank?
+        links << link.first
+      else
+        links << link_to(link.first, link.last)
+      end 
+	 end   
+%>
+
+<h1>
+	<span style="font-size:12px; float:right; padding-top:10px;">
+	  <%=links.join(" | ")%>
+	</span>
+  <%=current_tab %>
+</h1>
+

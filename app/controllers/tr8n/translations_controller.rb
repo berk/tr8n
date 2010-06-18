@@ -17,7 +17,7 @@ class Tr8n::TranslationsController < Tr8n::BaseController
       return redirect_to(@source_url)
     end
 
-    if params[:translation_has_dependencies] == "true" # comes from inline translator only
+    if params[:translation_has_dependencies] == "true" 
       new_translations = @translation_key.generate_rule_permutations(tr8n_current_language, tr8n_current_translator, params[:dependencies])
       if params[:dependencies].blank?
         trfe("You have not specified any context rules for this phrase.")

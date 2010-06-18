@@ -143,10 +143,10 @@ Tr8n.Translator = Class.create({
   },
   insertDecorationToken: function (token) {
     var txtarea = document.getElementById('tr8n_translator_translation_label');
-    this.wrapText(txtarea, "["+token+": ", "]");
+    this.wrapText(txtarea, "[" + token + ": ", "]");
   },
   insertToken: function (token) {
-    this.insertAtCaret('tr8n_translator_translation_label', token);
+    this.insertAtCaret('tr8n_translator_translation_label', "{" + token + "}");
   },
   wrapText: function (obj, beginTag, endTag) {
     if (typeof obj.selectionStart == 'number') {

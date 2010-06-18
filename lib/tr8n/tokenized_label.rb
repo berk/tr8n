@@ -1,5 +1,6 @@
 class Tr8n::TokenizedLabel
-    
+   
+  # constracts the label  
   def initialize(label)
     @label = label
   end
@@ -7,105 +8,58 @@ class Tr8n::TokenizedLabel
   def label
     @label
   end
-  
+
+  # scans for all token types    
+  def data_tokens
+    @data_tokens ||= Tr8n::Token.register_data_tokens(label)
+  end
+
+  def data_tokens?
+    data_tokens.any?
+  end
+
+  def decoration_tokens
+    @decoration_tokens ||= Tr8n::Token.register_decoration_tokens(label)
+  end
+
+  def decoration_tokens?
+    decoration_tokens.any?
+  end
+
   def tokens
-    @tokens ||= label.scan(/\{[\w\.]*\}/).uniq
+    @tokens = data_tokens + decoration_tokens
   end
 
   def tokens?
-    not tokens.empty?
+    tokens.any?
   end
 
-  def self.hidden_token?(token)
-    stripped_token = strip_token(token)
-    stripped_token.first == "_" 
+  # tokens that can be used by the user in translation
+  def translation_tokens
+    @translation_tokens ||= tokens.select{|token| token.allowed_in_translation?} 
   end
 
-  def hidden_token?(token)
-    self.class.hidden_token?(token)
+  def translation_tokens?
+    translation_tokens.any?
   end
 
-  def hidden_tokens
-    @hidden_tokens ||= tokens.select{|token| hidden_token?(token)}
-  end
-
-  def hidden_tokens?
-    not hidden_tokens.empty?
-  end
-
-  def sanitized_tokens
-    @sanitized_tokens ||= (tokens - hidden_tokens)
-  end
-
-  def sanitized_tokens?
-    sanitized_tokens.any?
-  end
-
-  def lambda_tokens(translated_label = label)
-    @lambda_tokens ||= translated_label.scan(/\[\w+:[^\]]+\]/)  
-  end
-
-  def lambda_tokens?
-    not lambda_tokens.empty?
-  end
-
-  def self.parse_lambda_token(token)
-    lambda_parts = token.gsub("[", "").gsub("]", "").split(":")
-    return [nil, nil] if lambda_parts.size != 2
-    [lambda_parts.first.strip.to_sym, lambda_parts.last.strip]
-  end
-
-  def parse_lambda_token(token)
-    self.class.parse_lambda_token(token)
-  end
-
-  def sanitized_lambda_tokens(translated_label = label)
-    @sanitized_lambda_tokens ||= lambda_tokens(translated_label).collect{|lt| parse_lambda_token(lt).first}
-  end
-
-  def sanitized_lambda_tokens?
-    sanitized_lambda_tokens.any?
-  end
-
-  def self.strip_token(token)
-    token.gsub("{", "").gsub("}", "")
-  end
-
-  def strip_token(token)
-    self.class.strip_token(token)
-  end
-
-  def self.token_suffix(token)
-    strip_token(token).split("_").last
-  end
-  
-  def humanize_token(token)
-    humanized_token = strip_token(token)[1..-1]
-    {"_"=>"/", "__"=>" "}.each do |key, value|
-      humanized_token.gsub!(key, value)
-    end
-    humanized_token
-  end
-  
   def sanitized_label
     @sanitized_label ||= begin 
       lbl = label.clone
-      tokens.each do |token| 
-        next unless hidden_token?(token)
-        lbl.gsub!(token, humanize_token(token))
+      data_tokens.each do |token|
+        lbl = token.sanitize_label(lbl)
       end
       lbl
     end 
   end
   
   # used for google suggestions
+  # TODO: need to fix decoration tokens
   def tokenless_label
     @tokenless_label ||= begin
       lbl = sanitized_label.clone
-      tokens.each do |token| 
-        lbl.gsub!(token, "")
-      end
-      lbl.gsub("  ", " ").strip
+      data_tokens.each{|token| lbl.gsub!(token.full_name, "")}
+      lbl.strip
     end
   end 
   
@@ -115,9 +69,7 @@ class Tr8n::TokenizedLabel
     @words ||= begin 
       clean_label = sanitized_label
       parts = []
-      [",", ".", ";", "!", "-", ":", "'", "\"", "[", "]", "{", "}"].each do |p|
-        clean_label = clean_label.gsub(p, "")
-      end
+      clean_label = clean_label.gsub(/[\,\.\;\!\-\:\'\"\[\]{}]/, "")
       
       clean_label.split(" ").each do |w|
         parts << w.strip.capitalize if w.length > 3

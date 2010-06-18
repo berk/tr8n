@@ -13,6 +13,14 @@ class Tr8n::LanguageRule < ActiveRecord::Base
   def self.options
     @options ||= Tr8n::Config.language_rule_classes.collect{|kls| [kls.dependency, kls.name]}
   end
+
+  def self.suffixes
+    []  
+  end
+  
+  def self.dependant?(token)
+    token.dependency == dependency or suffixes.include?(token.suffix)
+  end
   
   def evaluate(token_value)
     raise Tr8n::Exception.new("This method must be implemented in the extending rule") 

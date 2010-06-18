@@ -1,0 +1,17 @@
+<%
+  links = []
+  [["Translation Keys", {:action => :index}],
+   ["Translation Sources", {:action => :sources}],
+   ["Translation Key Sources", {:action => :key_sources}],
+   ["Translation Key Locks", {:action => :locks}]].each do |link|
+      if controller.action_name == link.last[:action].to_s
+        links << link.first
+      else
+        links << link_to(link.first, link.last)
+      end 
+	 end   
+%>
+
+<span style="font-size:12px; float:right; padding-top:10px;">
+  <%=links.join(" | ")%>
+</span>

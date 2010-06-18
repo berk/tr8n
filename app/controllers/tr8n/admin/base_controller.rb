@@ -18,6 +18,12 @@ private
     return ModelFilter.new(class_name, tr8n_current_user).deserialize_from_params(params) if class_name.is_a?(String)
     class_name.new(tr8n_current_user).deserialize_from_params(params)
   end
+
+  def paginate_model_filter(filter_class_name, results_class_name)
+    filter = ModelFilter.new(filter_class_name, tr8n_current_user).deserialize_from_params(params) if filter_class_name.is_a?(String)
+    filter = class_name.new(tr8n_current_user).deserialize_from_params(params) unless filter
+    results = results_class_name.paginate(:order => filter.order_clause, :page=>page, :per_page=>@model_filter.per_page, :conditions=>@model_filter.sql_conditions)
+  end
   
   def tr8n_admin_tabs
     [

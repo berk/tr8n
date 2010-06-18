@@ -86,16 +86,24 @@ class Tr8n::Config
     ]    
   end
   
+  def self.root
+    Rails.root
+  end
+  
+  def self.env
+    Rails.env
+  end
+  
   # json support
   def self.load_json(file_path)
-    json = JSON.parse(File.read("#{RAILS_ROOT}#{file_path}"))
+    json = JSON.parse(File.read("#{root}#{file_path}"))
     return HashWithIndifferentAccess.new(json) if json.is_a?(Hash)
     map = {"map" => json}
     HashWithIndifferentAccess.new(map)[:map]
   end
 
   def self.load_yml(file_path)
-    yml = YAML.load_file("#{RAILS_ROOT}#{file_path}")[RAILS_ENV]
+    yml = YAML.load_file("#{root}#{file_path}")[env]
     HashWithIndifferentAccess.new(yml)
   end
   
@@ -321,9 +329,48 @@ class Tr8n::Config
   def self.language_rule_classes
     @language_rule_classes ||= rules_engine[:language_rule_classes].collect{|lrc| lrc.constantize}
   end
+
+  def self.language_rule_dependencies
+    @language_rule_dependencies ||= begin
+      depts = {}
+      language_rule_classes.each do |cls|
+        if depts[cls.dependency]
+          raise Tr8n::Exception.new("The same dependency key #{cls.dependency} has been registered for multiple rules. This is not allowed.")
+        end  
+        depts[cls.dependency] = cls
+      end
+      depts
+    end
+  end
+
+  def self.language_rule_suffixes
+    @language_rule_suffixes ||= begin
+      sfx = {}
+      language_rule_classes.each do |cls|
+        cls.suffixes.each do |suffix|
+          if sfx[suffix]
+            raise Tr8n::Exception.new("The same suffix #{suffix} has been registered for multiple rules. This is not allowed.")
+          end
+          if sfx.index("_")
+            raise Tr8n::Exception.new("Incorrect rule suffix: #{suffix}. Suffix may not have '_' in it.")
+          end
+          sfx[suffix] = cls
+        end
+      end
+      sfx
+    end
+  end
+
+  def self.data_token_classes
+    @data_token_classes ||= rules_engine[:data_token_classes].collect{|tc| tc.constantize}
+  end
+
+  def self.decoration_token_classes
+    @decoration_token_classes ||= rules_engine[:decoration_token_classes].collect{|tc| tc.constantize}
+  end
   
   def self.viewing_user_token
-    rules_engine[:viewing_user_token]
+    Tr8n::DataToken.new("{#{rules_engine[:viewing_user_token]}:gender}")
   end
 
   def self.translation_threshold

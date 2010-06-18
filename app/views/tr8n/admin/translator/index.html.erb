@@ -6,11 +6,11 @@
 	Translators
 </h1>
 
-<%= will_filter %>
+<%= tr8n_will_filter %>
 
-<%=link_to_function("+ Register new translator", "tr8nLightbox.show('/tr8n/admin/translator/lb_register', {height:150})") %>
+<%= link_to_function("+ Register new translator", "tr8nLightbox.show('/tr8n/admin/translator/lb_register', {height:150})") %>
  | 
-<%=link_to("Update translators stats", {:action => :update_stats}, :confirm => "Are you sure you want to run this opperation?")%>
+<%= link_to("Update translators stats", {:action => :update_stats}, :confirm => "Are you sure you want to run this opperation?")%>
 
 <%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @translators} %>
 

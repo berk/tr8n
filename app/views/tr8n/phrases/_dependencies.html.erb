@@ -3,9 +3,14 @@
   	 <%=trl("Translation Tokens")%>
 	</div>
   
-  <% if @translation_key.sanitized_tokens? %>
-	    <% @translation_key.sanitized_tokens.each do |token| %>
-          <%= link_to_function(token, "tr8nTranslator.insertAtCaret('tr8n_translation_label_#{@translation_key.id}', '#{token}');", :title => trl("Tip: Click to insert this token above")) %> 
+	
+  <% if @translation_key.translation_tokens? %>
+      <% @translation_key.translation_tokens.each do |token| %>
+        <% if token.is_a?(Tr8n::DecorationToken) %>
+          <%= link_to_function(token.sanitized_name, "tr8nTranslator.insertDecorationToken('#{token.name}');", :title => trl("Click to insert this token above") ) %>
+        <% else %>
+          <%= link_to_function(token.sanitized_name, "tr8nTranslator.insertToken('#{token.name}');", :title => trl("Click to insert this token above") ) %>
+        <% end %>
       <% end %>
 			
       <div style="color:grey; font-size:10px; padding-top:10px; padding-bottom:10px;">
@@ -16,7 +21,7 @@
   <% if tr8n_current_language.has_rules? %>
 	  <div id="rules_trigger" style="font-size:12px; font-weight:normal;">
 		  <% 
-         if @translation_key.sanitized_tokens? 
+         if @translation_key.translation_tokens? 
 			     link_label = trl("Click here if this translation depends on any of the token values or the gender of the viewing user")
          else
            link_label = trl("Click here if this translation depends on the gender of the viewing user")
@@ -51,13 +56,13 @@
 		          %>
 						  <tr>
 						    <td style="padding:3px; vertical-align:middle;">
-						      <%=check_box_tag("rules[#{token}][selected]", "true", (@rules[token]!=nil), :id => "check_#{index}")%>     
+						      <%=check_box_tag("rules[#{token.name}][selected]", "true", (@rules[token.name]!=nil), :id => "check_#{index}")%>     
 						    </td>
 						    <td style="font-size:10px; padding:3px; vertical-align:middle;">
-						      <%=token %>     
+						      <%=token.name %>     
 						    </td>
 						    <td style="font-size:10px; padding:5px; vertical-align:middle;">
-						      <%=select_tag("rules[#{token}][rule_id]", options_for_select(rule_options, @rules[token].to_s), :onChange => "$('check_#{index}').checked = true;")%>      
+						      <%=select_tag("rules[#{token.name}][rule_id]", options_for_select(rule_options, @rules[token].to_s), :onChange => "$('check_#{index}').checked = true;")%>      
 						    </td>
 						  </tr>
 						<% end %>

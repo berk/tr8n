@@ -1,7 +1,7 @@
 <div>
   <table style="font-size:12px;width:100%; margin-top:10px; margin-bottom:10px;">
     <tr>
-      <td align='left'><%= will_paginate(objects) %></td>
+      <td align='left'><%= tr8n_will_paginate(objects) %></td>
 			<% 
         entry_name = ""
         if objects.any?
@@ -14,7 +14,7 @@
           entry_name.gsub!("_", " ")  
         end 
       %>
-      <td align='right'><%= page_entries_info(objects, :entry_name => entry_name.downcase) %></td>
+      <td align='right'><%= tr8n_page_entries_info(objects, :entry_name => entry_name.downcase) %></td>
     </tr>
   </table>
 </div>

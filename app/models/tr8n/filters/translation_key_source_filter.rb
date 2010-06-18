@@ -1,4 +1,4 @@
-class Tr8n::TranslationKeySourceFilter < ModelFilter
+class Tr8n::TranslationKeySourceFilter < Tr8n::BaseFilter
 
   def initialize(identity)
     super('Tr8n::TranslationKeySource', identity)
@@ -10,6 +10,11 @@ class Tr8n::TranslationKeySourceFilter < ModelFilter
   
   def default_order_type
     'desc'
+  end
+  
+  def self.load_predefined_filter(profile, filter_name)
+    filter = super(profile, filter_name)
+    filter.empty? ? nil : filter
   end
   
 end

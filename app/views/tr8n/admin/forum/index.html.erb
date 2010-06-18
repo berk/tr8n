@@ -1,12 +1,6 @@
 <%= render :partial => "/tr8n/admin/common/header" %>
-<h1>
-  <span style="font-size:12px; float:right; padding-top:10px;">
-    <%=link_to("View Forum Messages", {:action => :messages})%>
-  </span> 
-	Forum Topics
-</h1>
-
-<%= will_filter %>
+<%= render :partial => "tabs" %>
+<%= tr8n_will_filter %>
 <%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @topics} %>
 
 <table class="admin_table">

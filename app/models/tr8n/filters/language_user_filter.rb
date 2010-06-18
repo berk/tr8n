@@ -1,4 +1,4 @@
-class Tr8n::LanguageUserFilter < ModelFilter
+class Tr8n::LanguageUserFilter < Tr8n::BaseFilter
 
   def initialize(identity)
     super('Tr8n::LanguageUser', identity)
@@ -12,22 +12,9 @@ class Tr8n::LanguageUserFilter < ModelFilter
     'desc'
   end
 
-  def predefined_filters(profile)
-    [
-      ["Created Today", "created_today"],
-    ]
-  end
-
   def self.load_predefined_filter(profile, filter_name)
-    filter = self.name.constantize.new(profile)
-    filter.key=filter_name
- 
-    if (filter_name=="created_today")
-      filter.add_condition(:created_at, :is_on, Date.today)
-      return filter
-    end
-
-    nil
+    filter = super(profile, filter_name)
+    filter.empty? ? nil : filter
   end
 
 end

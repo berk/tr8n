@@ -1,5 +1,3 @@
-require "pp"
-
 class Tr8n::BaseController < ApplicationController
 
   CHART_COLORS = ['AFD8F8', 'F6BD0F', '8BBA00', 'FF8E46', '008E8E', 'D64646', '8E468E', '588526', 'B3AA00', '008ED6', '9D080D', 'A186BE']

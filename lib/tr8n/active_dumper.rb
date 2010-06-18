@@ -1,3 +1,5 @@
+require File.expand_path(File.dirname(__FILE__) + "/extender") 
+
 class Tr8n::DumperException < StandardError; end
 module Tr8n::ActiveDumper
   extend Tr8n::Extender

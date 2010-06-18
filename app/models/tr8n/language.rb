@@ -70,6 +70,10 @@ class Tr8n::Language < ActiveRecord::Base
     not enabled?
   end
   
+  def dir
+    right_to_left? ? "rtl" : "ltr"
+  end
+  
   def self.enabled_languages
     find(:all, :conditions => ["enabled = ?", true], :order => "english_name asc")
   end

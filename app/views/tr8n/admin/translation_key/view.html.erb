@@ -1,9 +1,5 @@
 <%= render :partial => "/tr8n/admin/common/header" %>
-
-<h1>
-  <%=render :partial => "tabs" %>
-	Translation Key Details
-</h1>
+<%= render :partial => "tabs", :locals => {:current_tab => "Translation Key Details"} %>
 
 <table class="admin_table">
     <tr>

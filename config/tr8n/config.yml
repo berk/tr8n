@@ -107,6 +107,8 @@ defaults: &defaults
   #############################################################################
   rules_engine:  
     language_rule_classes:    [Tr8n::NumericRule, Tr8n::GenderRule, Tr8n::GenderListRule, Tr8n::DateRule]
+    data_token_classes:       [Tr8n::DataToken, Tr8n::HiddenToken, Tr8n::MethodToken, Tr8n::TransformToken]
+    decoration_token_classes: [Tr8n::DecorationToken]
     numeric_rule:  
       token_suffixes:         [count, num, age, hours, minutes, years, seconds]
       object_method:          to_i
@@ -173,7 +175,7 @@ development:
   
 test:
   <<: *defaults
-  enable_tr8n:                false 
+  enable_key_source_tracking: false
       
 qa:
   <<: *defaults

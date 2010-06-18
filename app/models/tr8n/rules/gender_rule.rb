@@ -8,12 +8,12 @@ class Tr8n::GenderRule < Tr8n::LanguageRule
     "gender" 
   end
 
+  def self.suffixes
+    Tr8n::Config.rules_engine[:gender_rule][:token_suffixes]
+  end
+
   def self.default_rules_for(language = Tr8n::Config.current_language)
     Tr8n::Config.default_gender_rules(language.locale)
-  end
-  
-  def self.dependant?(token)
-    Tr8n::Config.rules_engine[:gender_rule][:token_suffixes].include?(Tr8n::TokenizedLabel.token_suffix(token))
   end
   
   def self.operator_options
@@ -24,13 +24,47 @@ class Tr8n::GenderRule < Tr8n::LanguageRule
     [["a male", "male"], ["a female", "female"], ["neutral", "neutral"], ["unknown", "unknown"]]
   end
   
-  def gender_token_value(token)
+  def self.gender_token_value(token)
     return nil unless token and token.respond_to?(Tr8n::Config.rules_engine[:gender_rule][:object_method])
     token.send(Tr8n::Config.rules_engine[:gender_rule][:object_method])
   end
+  
+  def gender_token_value(token)
+    self.class.gender_token_value(token)
+  end
+
+  def self.gender_object_value_for(type)
+    Tr8n::Config.rules_engine[:gender_rule][:method_values][type]
+  end
 
   def gender_object_value_for(type)
-    Tr8n::Config.rules_engine[:gender_rule][:method_values][type]
+    self.class.gender_object_value_for(type)
+  end
+  
+  # FORM: [object, male, female, unknown]
+  # {user | he, she}
+  # {user | he, she, he/she}
+  def self.transform(*args)
+    if args.size < 3 or args.size > 4
+      raise Tr8n::Exception.new("Invalid transform arguments")
+    end
+    
+    object = args[0]
+    object_value = gender_token_value(object)
+    
+    unless object_value
+      raise Tr8n::Exception.new("Token #{object.class.name} does not respond to #{Tr8n::Config.rules_engine[:gender_rule][:object_method]}")
+    end
+    
+    if (object_value == gender_object_value_for("male"))
+      return args[1]
+    elsif (object_value == gender_object_value_for("female"))
+      return args[2]
+    end
+
+    return args[3] if args.size == 4
+    
+    "#{args[1]}/#{args[2]}"  
   end
   
   def evaluate(token)

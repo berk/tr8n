@@ -16,6 +16,10 @@ module Tr8n::HelperMethods
            :search => search, :phrase_type => phrase_type, :phrase_status => phrase_status)
   end
 
+  def tr8n_dir_attribute_tag
+    "dir='<%=Tr8n::Config.current_language.dir%>'"
+  end
+
   def tr8n_splash_screen_tag
     html = "<div id='tr8n_splash_screen' style='display:none'>"
     html << (render :partial => Tr8n::Config.splash_screen)
@@ -80,7 +84,7 @@ module Tr8n::HelperMethods
     
     rank ||= translator.rank || 0
     
-    html = ""
+    html = "<span dir='ltr'>"
     1.upto(5) do |i|
       if rank > i * 20 - 10  and rank < i * 20  
         html << image_tag("/tr8n/images/rating_star05.png")
@@ -90,8 +94,7 @@ module Tr8n::HelperMethods
         html << image_tag("/tr8n/images/rating_star1.png")
       end 
     end
-    
-    html    
+    html << "</span>"
   end
   
   def tr8n_help_icon_tag(filename = "index")
@@ -163,29 +166,22 @@ module Tr8n::HelperMethods
     end
   end  
   
-  # overloaded plugin methods 
-  
-  def will_paginate(collection = nil, options = {})
-    super(collection, options.merge(:previous_label => tr("{left_quote} Previous", "Previous entries in a list", 
-                                    {:left_quote => "&laquo;"}, options), 
-                                    :next_label => tr("Next {right_quote}", "Next entries in a list", 
-                                    {:right_quote => "&raquo;"}, options)))
+  def tr8n_will_paginate(collection = nil, options = {})
+    will_paginate(collection, options.merge(:previous_label => tr("&laquo; Previous", "Previous entries in a list", {}, options), 
+                                            :next_label => tr("Next &raquo;", "Next entries in a list", {}, options)))
   end
 
-  def page_entries_info(collection, options = {})
-    entry_name = options[:entry_name] ||
-      (collection.empty?? 'entry' : collection.first.class.name.underscore.sub('_', ' '))
+  def tr8n_page_entries_info(collection, options = {})
+    entry_name = options[:entry_name] || (collection.empty? ? 'entry' : collection.first.class.name.underscore.sub('_', ' '))
     
     if collection.total_pages < 2
       case collection.size
-      when 0; tr("No #{entry_name.pluralize} found", 
-                 "Paginator no entries message", {}, options)
-        
-      when 1; tr("Displaying [bold: 1] #{entry_name}", 
-                 "Paginator one page message", {}, options)
-                 
-      else;   tr("Displaying [bold: all {count}] #{entry_name.pluralize}", 
-                 "Paginator all entries message", {:count => collection.size}, options)
+        when 0
+          tr("None found", "Paginator no entries message", {}, options)
+        when 1
+          tr("Displaying [bold: 1] #{entry_name}", "Paginator one page message", {}, options)
+        else
+          tr("Displaying [bold: all {count}] #{entry_name.pluralize}", "Paginator all entries message", {:count => collection.size}, options)
       end
     else
       tr("Displaying #{entry_name.pluralize} [bold: {start_num} - {end_num}] of [bold: {total_count}] in total", 
@@ -198,7 +194,7 @@ module Tr8n::HelperMethods
     end
   end
 
-  def will_filter
+  def tr8n_will_filter
     html = render(:partial => "/model_filter/filter", :locals => {:model_filter => @model_filter})
     html << "<br>"
     html

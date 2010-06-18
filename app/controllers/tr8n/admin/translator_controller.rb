@@ -63,24 +63,24 @@ class Tr8n::Admin::TranslatorController < Tr8n::Admin::BaseController
     user_class = Tr8n::Config.site_info[:user_info][:class_name]
     user = user_class.constantize.find_by_id(params[:translator][:user_id])
     unless user
-      trfe("#{user_class} (#{params[:translator][:user_id]}) not found")
+      trfe("#{user_class} not found")
       return redirect_to_source
     end
     
     translator = Tr8n::Translator.find_by_user_id(user.id)
     if translator
-      trfe("#{user_class} (#{params[:translator][:user_id]}) is already a translator ")
+      trfe("#{user_class} is already a translator ")
       return redirect_to_source
     end
     
     Tr8n::Translator.create(:user_id => params[:translator][:user_id])
-    trfn("#{user_class} (#{params[:translator][:user_id]}) has been registered as a translator ")
+    trfn("#{user_class} has been registered as a translator ")
     redirect_to_source
   end
    
   def log
     @model_filter = init_model_filter(Tr8n::TranslatorLogFilter)
-    @logs = Tr8n::TranslatorLog.paginate(:order=>@model_filter.order_clause, :page=>page, :per_page=>@model_filter.per_page, :conditions=>@model_filter.sql_conditions)
+    @logs = Tr8n::TranslatorLog.paginate(:order => @model_filter.order_clause, :page => page, :per_page => @model_filter.per_page, :conditions => @model_filter.sql_conditions)
   end
      
 end

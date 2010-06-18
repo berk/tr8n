@@ -1,4 +1,4 @@
-class Tr8n::TranslationVoteFilter < ModelFilter
+class Tr8n::TranslationVoteFilter < Tr8n::BaseFilter
 
   def initialize(identity)
     super('Tr8n::TranslationVote', identity)
@@ -12,21 +12,8 @@ class Tr8n::TranslationVoteFilter < ModelFilter
     'desc'
   end
   
-  def predefined_filters(profile)
-    [
-      ["Submitted Today", "created_today"],
-    ]
-  end
-
   def self.load_predefined_filter(profile, filter_name)
-    filter = self.name.constantize.new(profile)
-    filter.key=filter_name
- 
-    if (filter_name=="created_today")
-      filter.add_condition(:created_at, :is_on, Date.today)
-      return filter
-    end
-
-    nil
-  end    
+    filter = super(profile, filter_name)
+    filter.empty? ? nil : filter
+  end   
 end

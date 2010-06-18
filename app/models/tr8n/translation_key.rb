@@ -54,22 +54,19 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     @tokenized_label ||= Tr8n::TokenizedLabel.new(label)
   end
   
-  delegate :tokens, :tokens?, :hidden_tokens, :hidden_tokens?, :sanitized_tokens, :sanitized_tokens?, :to => :tokenized_label
+  # do i need all these?
+  delegate :data_tokens, :data_tokens?, :to => :tokenized_label
+  delegate :decoration_tokens, :decoration_tokens?, :to => :tokenized_label
+  delegate :tokens, :tokens?, :to => :tokenized_label
+  delegate :translation_tokens, :translation_tokens?, :to => :tokenized_label
   delegate :sanitized_label, :tokenless_label, :words, :to => :tokenized_label
-  delegate :sanitized_lambda_tokens?, :sanitized_lambda_tokens, :to => :tokenized_label
 
   # returns only the tokens that depend on one or more rules of the language, if any defined for the language
   def language_rules_dependant_tokens(language = Tr8n::Config.current_language)
     toks = []
-    sanitized_tokens.each do |token|
-      sanitized_token = Tr8n::TokenizedLabel.strip_token(token)
-      
-      # if token is of a form {object.method_name}
-      sanitized_token = sanitized_token.split(".").first if sanitized_token.index(".")
-
-      language.rule_classes.each do |lrc|
-        toks << sanitized_token if lrc.dependant?(sanitized_token)
-      end
+    data_tokens.each do |token|
+      next unless token.dependant?
+      toks << token if language.rule_classes.include?(token.language_rule)
     end
 
     toks << Tr8n::Config.viewing_user_token
@@ -225,7 +222,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     return find_all_valid_translations(valid_translations_for(language)) if options[:api]
     
     if Tr8n::Config.disabled? or language.default?
-      return substitute_tokens(label, token_values, options.merge(:fallback => false))
+      return substitute_tokens(label, token_values, options.merge(:fallback => false), language)
     end
     
     translation = find_first_valid_translation(valid_translations_for(language), token_values)
@@ -253,190 +250,33 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     decorate_translation(language, translated_label, translation != nil, options)  
   end
 
+  ###############################################################
+  ## Substitution and Decoration Related Stuff
+  ###############################################################
+
   # this is done when the translations engine is disabled
   def self.substitute_tokens(label, tokens, options = {})
     Tr8n::TranslationKey.new(:label => label).substitute_tokens(label, tokens, options)
   end
 
-  def handle_default_lambda(lambda_token_name, lambda_token_value, token_values)
-    return "{invalid lambda token}" unless Tr8n::Config.default_lambdas[lambda_token_name.to_s]
-    
-    # make sure that only the lambdas from the original label can be used in the translated label
-    return lambda_token_value unless tokenized_label.sanitized_lambda_tokens.include?(lambda_token_name)
+  def substitute_tokens(translated_label, token_values, options = {}, language = Tr8n::Config.current_language)
+    processed_label = translated_label.to_s.clone
 
-    lambda_value = Tr8n::Config.default_lambdas[lambda_token_name.to_s].clone
-    
-    params = [lambda_token_value]
-    params += token_values[lambda_token_name] if token_values[lambda_token_name]
-
-    params.each_with_index do |param, index|
-      lambda_value.gsub!("{$#{index}}", param.to_s)
-    end
-    
-    # clean all the rest of the {$num} params, if any
-    param_index = params.size - 1
-    while lambda_value.index("{$#{param_index}}")
-      lambda_value.gsub!("{$#{param_index}}", "")
-      param_index += 1
-    end
-    
-    lambda_value
-  end
-  
-  def substitute_tokens(label, token_values, options = {})
-    translated_label = label.to_s.clone
-    
-    # substitute basic tokens
-    tokens.each do |token|
-      translated_label.gsub!(token, token_value(token, token_values, options)) 
+    # substitute all data tokens
+    Tr8n::TokenizedLabel.new(processed_label).data_tokens.each do |token|
+      # check if the token exists in the original list of tokens
+      # next if tokens.select{|tkn| (tkn.class == token.class and tkn.name == token.name)}.empty?
+      processed_label = token.substitute(processed_label, token_values, options, language) 
     end
 
-    # substitute lambda tokens
-    tokenized_label.lambda_tokens(translated_label).each do |token|
-      lambda_token_name, lambda_token_value = Tr8n::TokenizedLabel.parse_lambda_token(token)
-      next if lambda_token_name.blank?
-      
-      # lambda token provided
-      if token_values[lambda_token_name] 
-        
-        # evaluate lambda proc
-        if token_values[lambda_token_name].is_a?(Proc)
-          lambda_value = token_values[lambda_token_name].call(lambda_token_value)
-        
-        # evaluate default lambda with params
-        elsif token_values[lambda_token_name].is_a?(Array)
-          lambda_value = handle_default_lambda(lambda_token_name, lambda_token_value, token_values)
-
-        else
-          lambda_value = token_values[lambda_token_name].to_s.gsub("{$0}", lambda_token_value)
-          
-        end  
-      elsif Tr8n::Config.default_lambdas[lambda_token_name.to_s]
-        lambda_value = handle_default_lambda(lambda_token_name, lambda_token_value, token_values)
-        
-      else  
-        lambda_value = "{invalid lambda token}"
-      end
-      
-      translated_label.gsub!(token, lambda_value) 
+    # substitute all decoration tokens
+    Tr8n::TokenizedLabel.new(processed_label).decoration_tokens.each do |token|
+      # check if the token exists in the original list of tokens
+      # next if tokens.select{|tkn| (tkn.class == token.class and tkn.name == token.name)}.empty?
+      processed_label = token.substitute(processed_label, token_values, options, language) 
     end
     
-    translated_label
-  end
-
-  def sanitize_token_value(value, options = {})
-#    double check if we want to do this?
-    return value.to_s if (not options[:sanitize_values]) or value.html_safe?
-    ERB::Util.html_escape(value.to_s)
-  end
-
-  def token_value(token, token_values, options = {})
-    stripped_token = Tr8n::TokenizedLabel.strip_token(token)
-    
-    # token is an object method call
-    if stripped_token.index(".")  # object based token
-      obj_name, method_name = stripped_token.split(".")
-      obj = token_values[obj_name.to_sym]
-      return "{missing token value}" unless obj
-      return sanitize_token_value(obj.send(method_name), options.merge(:sanitize_values => true))
-    end
-      
-    value = token_values[stripped_token.to_sym]
-    return "{missing token value}" unless value
-    
-    # token is an array
-    if value.is_a?(Array)
-      # if you provided an array, it better have some values
-      return "{invalid array token value}" if value.empty?
-
-      # if the first value of an array is an array handle it here
-      return token_array_value(value, options) if value.first.is_a?(Array) 
-
-      # if the first item in the array is an object, process it
-      return evaluate_token_method_array(value.first, value, options)
-    end
-
-    # simple token
-    sanitize_token_value(value)
-  end
-  
-  def evaluate_token_method_array(object, method_array, options)
-    # if single object in the array return string value of the object
-    return sanitize_token_value(object) if method_array.size == 1
-    
-    method = method_array.second
-    params = method_array[2..-1]
-    params_with_object = [object] + params
-
-    # if second param is symbol, invoke the method on the object with the remaining values
-    if method.is_a?(Symbol)
-      return sanitize_token_value(object.send(method, *params), options.merge(:sanitize_values => true))
-    end
-
-    # if second param is lambda, call lambda with the remaining values
-    if method.is_a?(Proc)
-      return sanitize_token_value(method.call(*params_with_object))
-    end
-    
-    # if the second param is a string, substitute all of the numeric params,  
-    # with the original object and all the following params
-    if method.is_a?(String)
-      parametrized_value = method.clone
-      params_with_object.each_with_index do |val, i|
-        parametrized_value.gsub!("{$#{i}}", sanitize_token_value(val, options))  
-      end
-      return parametrized_value
-    end
-    
-    return "{invalid second token value}"
-  end
-  
-  def token_array_value(token_value, options = {}) 
-    objects = token_value.first
-    
-    # options are: second value is a lambda, second value is a string, second value is a symbol
-    # third value is a hash of options - :pretty_list => true, :list_limit => 3  - "and 4 others" will be added
-    # tr("{user_list} joined Geni", "", {:user_list => [[user1, user2, user3], :name]}, {:pretty_list => true, :list_limit => 3}}
-    
-    objects = objects.collect do |obj|
-      evaluate_token_method_array(obj, token_value, options)
-    end
- 
-    return objects.first if objects.size == 1
- 
-    separator = options[:separator] || ", "
-    list_limit = options[:list_limit] || objects.size
-    pretty_list = options[:pretty_list].nil? ? true : options[:pretty_list]
-    smart_list = options[:smart_list].nil? ? false : options[:smart_list]
-    smart_list = false if options[:skip_decorations]
-    
-    return objects.join(separator) unless pretty_list
-
-    if objects.size <= list_limit
-      return "#{objects[0..-2].join(separator)} #{"and".translate("List elements joiner", {}, options)} #{objects.last}"
-    end
-
-    display_ary = objects[0..(list_limit-1)]
-    remaining_ary = objects[list_limit..-1]
-    result = "#{display_ary.join(separator)}"
-    
-    unless smart_list
-      result << " " << "and".translate("List elements joiner", {}, options) << " "
-      result << "{num} {_others}".translate("List elements joiner", 
-                {:num => remaining_ary.size, :_others => "other".pluralize_for(remaining_ary.size)}, options)
-      return result
-    end             
-             
-    uniq_id = Time.now.to_i.to_s         
-    result << "<span id=\"tr8n_other_link_#{uniq_id}\">" << " " << "and".translate("List elements joiner", {}, options) << " "
-    result << "<a href='#' onClick=\"$('tr8n_other_link_#{uniq_id}').hide(); $('tr8n_other_elements_#{uniq_id}').show(); return false;\">"
-    result << "{num} {_others}".translate("List elements joiner", {:num => remaining_ary.size, :_others => "other".pluralize_for(remaining_ary.size)}, options)
-    result << "</a></span>"
-    result << "<span id=\"tr8n_other_elements_#{uniq_id}\" style='display:none'>" << separator
-    result << "#{remaining_ary[0..-2].join(separator)} #{"and".translate("List elements joiner", {}, options)} #{remaining_ary.last}"
-    result << "<a href='#' style='font-size:smaller;white-space:nowrap' onClick=\"$('tr8n_other_link_#{uniq_id}').show(); $('tr8n_other_elements_#{uniq_id}').hide(); return false;\"> "
-    result << "&laquo; less".translate("List elements joiner", {}, options)    
-    result << "</a></span>"
+    processed_label
   end
   
   def decorate_translation(language, translated_label, translated = true, options = {})

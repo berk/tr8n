@@ -8,12 +8,12 @@ class Tr8n::GenderListRule < Tr8n::LanguageRule
     "list" 
   end
 
+  def self.suffixes
+    Tr8n::Config.rules_engine[:gender_list_rule][:token_suffixes]
+  end
+
   def self.default_rules_for(language = Tr8n::Config.current_language)
     Tr8n::Config.default_gender_list_rules(language.locale)
-  end
-  
-  def self.dependant?(token)
-    Tr8n::Config.rules_engine[:gender_list_rule][:token_suffixes].include?(Tr8n::TokenizedLabel.token_suffix(token))
   end
   
   def self.operator_options
@@ -29,14 +29,69 @@ class Tr8n::GenderListRule < Tr8n::LanguageRule
     token.send(Tr8n::Config.rules_engine[:gender_rule][:object_method])
   end
 
+  def gender_token_value(token)
+    self.class.gender_token_value(token)
+  end
+
   def gender_object_value_for(type)
     Tr8n::Config.rules_engine[:gender_rule][:method_values][type]
   end
-  
-  def list_size_token_value(token)
+
+  def gender_object_value_for(type)
+    self.class.gender_object_value_for(type)
+  end
+
+  def self.list_size_token_value(token)
     return nil unless token and token.respond_to?(Tr8n::Config.rules_engine[:gender_list_rule][:object_method])
     token.send(Tr8n::Config.rules_engine[:gender_list_rule][:object_method])
   end
+
+  def list_size_token_value(token)
+    self.class.list_size_token_value(token)
+  end
+
+  def self.male_female_occupants(arr)
+    has_male = false  
+    has_female = false
+
+    arr.each do |object|
+      object_gender = gender_token_value(object)
+      return [false, false] unless object_gender
+      has_male = true if object_gender == gender_object_value_for("male")
+      has_female = true if object_gender == gender_object_value_for("female")
+    end  
+    
+    [has_male, has_female]
+  end
+  
+  def male_female_occupants(arr)
+    self.class.male_female_occupants(arr)
+  end
+  
+  # FORM: [object, all male, all female, mixed genders]
+  # {user_list | verb for all male, verb for all female}
+  # {user_list | verb for all male, verb for all female, verb for mixed gender}
+  def self.transform(*args)
+    if args.size < 3 or args.size > 4
+      raise Tr8n::Exception.new("Invalid transform arguments")
+    end
+    
+    object = args[0]
+    list_size = list_size_token_value(object)
+
+    unless list_size
+      raise Tr8n::Exception.new("Token #{object.class.name} does not respond to #{Tr8n::Config.rules_engine[:gender_list_rule][:object_method]}")
+    end
+    
+    has_male, has_female = male_female_occupants(token)
+    
+    return args[1] if has_male and not has_female
+    return args[2] if has_female and not has_male
+    
+    return args[3] if args.size == 4
+    
+    "#{args[1]}/#{args[2]}"  
+  end  
   
   def evaluate(token)
     # for now - until we cleanup tokens
@@ -45,28 +100,18 @@ class Tr8n::GenderListRule < Tr8n::LanguageRule
     list_size = list_size_token_value(token)
     return false unless list_size
     
-    has_male = false  
-    has_female = false
+    has_male, has_female = male_female_occupants(token)
 
-    token.each do |object|
-      object_gender = gender_token_value(object)
-      return false unless object_gender
-      
-      case definition[:value]
-        when "all_male" then
-          has_male = true
-          return false if object_gender != gender_object_value_for("male")
-        when "all_female" then
-          has_female = true
-          return false if object_gender != gender_object_value_for("female")
-      end
+    case definition[:value]
+      when "all_male" then
+        return true if has_male and not has_female
+      when "all_female" then
+        return true if has_female and not has_male
+      when "mixed"
+        return true if has_male and has_female 
     end
     
-    if definition[:value] == "mixed"
-      return false unless has_male and has_female
-    end
-    
-    true    
+    false
   end
 
   def to_hash

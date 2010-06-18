@@ -8,12 +8,12 @@ class Tr8n::NumericRule < Tr8n::LanguageRule
     "number" 
   end
 
-  def self.default_rules_for(language = Tr8n::Config.current_language)
-    Tr8n::Config.default_numeric_rules(language.locale)
+  def self.suffixes
+    Tr8n::Config.rules_engine[:numeric_rule][:token_suffixes]
   end
 
-  def self.dependant?(token)
-    Tr8n::Config.rules_engine[:numeric_rule][:token_suffixes].include?(Tr8n::TokenizedLabel.token_suffix(token))
+  def self.default_rules_for(language = Tr8n::Config.current_language)
+    Tr8n::Config.default_numeric_rules(language.locale)
   end
 
   def self.rule_options
@@ -23,14 +23,41 @@ class Tr8n::NumericRule < Tr8n::LanguageRule
   def self.operator_options
     ["and", "or"]
   end
-  
-  def can_have_multiple_parts?
-    true
+
+  def self.number_token_value(token)
+    return nil unless token and token.respond_to?(Tr8n::Config.rules_engine[:numeric_rule][:object_method])
+    token.send(Tr8n::Config.rules_engine[:numeric_rule][:object_method])
+  end
+
+  def number_token_value(token)
+    self.class.number_token_value(token)
+  end
+
+  # FORM: [object, singular, plural]
+  # {count | message}
+  # {count | person, people}
+  def self.transform(*args)
+    if args.size < 2 or args.size > 3
+      raise Tr8n::Exception.new("Invalid transform arguments")
+    end
+    
+    object = args[0]
+    object_value = number_token_value(object)
+    unless object_value
+      raise Tr8n::Exception.new("Token #{object.class.name} does not respond to #{Tr8n::Config.rules_engine[:numeric_rule][:object_method]}")
+    end
+    
+    if object_value == 1
+      return args[1]
+    elsif args.size == 2
+      return args[1].pluralize
+    end
+    
+    args[2]
   end
   
   def evaluate(token)
-    return false unless token and token.respond_to?(Tr8n::Config.rules_engine[:numeric_rule][:object_method])
-    token_value = token.send(Tr8n::Config.rules_engine[:numeric_rule][:object_method])
+    token_value = number_token_value(token)  
     return false unless token_value
     
     result1 = evaluate_partial_rule(token_value.to_s, definition[:part1].to_sym, sanitize_values(definition[:value1]))
