@@ -37,8 +37,8 @@ class Tr8n::NumericRule < Tr8n::LanguageRule
   # {count | message}
   # {count | person, people}
   def self.transform(*args)
-    if args.size < 2 or args.size > 3
-      raise Tr8n::Exception.new("Invalid transform arguments")
+    unless [2, 3].include?(args.size)
+      raise Tr8n::Exception.new("Invalid transform arguments for number token")
     end
     
     object = args[0]
@@ -55,6 +55,16 @@ class Tr8n::NumericRule < Tr8n::LanguageRule
     
     args[2]
   end
+  
+  # params: [singular form, plural form]
+  def self.default_transform(*args)
+    unless [1, 2].include?(args.size)
+      raise Tr8n::Exception.new("Invalid transform arguments for number token")
+    end
+    
+    return args[1] if args.size == 2
+    args[0].pluralize
+  end  
   
   def evaluate(token)
     token_value = number_token_value(token)  

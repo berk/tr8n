@@ -41,7 +41,7 @@
           <% if tk.locked? %>
             <div style="float:right"><%=image_tag("/tr8n/images/lock.png", :style=>"width:12px", :title => trl("This phrase is locked"))%></div>
           <% end %>
-          <%=link_to(tr8n_current_language.translate(tk.label, tk.description, {}, {:default_label => true}), :action => :view, :translation_key_id => tk.id, :section_key => @section_key)%>
+          <%=link_to(tr8n_current_language.translate(tk.label, tk.description, {}, {:default_language => true}), :action => :view, :translation_key_id => tk.id, :section_key => @section_key)%>
           <div style="color:grey;font-size:10px;padding-top:3px;"><%=tk.description%></div>
         </td>
         <td style="padding:5px; vertical-align:top">

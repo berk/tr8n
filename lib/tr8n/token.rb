@@ -15,9 +15,17 @@ class Tr8n::Token
     end
     tokens.flatten
   end
+
+  def self.expression
+    raise Tr8n::TokenException.new("This method must be implemented in the extending class")
+  end
   
   def self.parse(label)
-    raise Tr8n::TokenException.new("This method must be implemented in the extending class")
+    tokens = []
+    label.scan(expression).uniq.each do |token_array|
+      tokens << self.new(token_array.first) 
+    end
+    tokens
   end
   
   def initialize(token)
@@ -114,7 +122,7 @@ class Tr8n::Token
       return parametrized_value
     end
     
-    return "{invalid second token value}"
+    raise Tr8n::TokenException.new("Invalid array second token value")
   end
   
   def token_array_value(token_value, options = {}) 
@@ -191,15 +199,28 @@ class Tr8n::Token
   end
   
   def substitute(label, values = {}, options = {}, language = Tr8n::Config.current_language)
-    object = values[name_key]
-    raise Tr8n::TokenException.new("Missing value for a token: #{full_name}") unless object
+    unless values.key?(name_key)
+      raise Tr8n::TokenException.new("Missing value for a token: #{full_name}")
+    end
     
+    object = values[name_key]
+    
+    if object.nil? and not Tr8n::Config.allow_nil_token_values?
+      raise Tr8n::TokenException.new("Token value is nil for a token: #{full_name}")
+    end
+    
+    object = object.to_s if object.nil?
     label.gsub(full_name, token_value(object, options))
   end
   
-  # for most tokens don't do anything, hidden tokens will take care of themselves
-  def sanitize_label(label)
-    label
+  # return sanitized form
+  def prepare_label_for_translator(label)
+    label.gsub(full_name, sanitized_name)
+  end
+
+  # return tokenless form
+  def prepare_label_for_suggestion(label)
+    label.gsub(full_name, "")
   end
   
   def to_s

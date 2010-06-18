@@ -9,9 +9,9 @@ ENV["RAILS_ENV"] = "test"
 module Tr8n
 end
   
-$LOAD_PATH.unshift File.dirname(__FILE__) + "/../lib/tr8n"
-$LOAD_PATH.unshift File.dirname(__FILE__) + "/../lib/tr8n/tokens"
-$LOAD_PATH.unshift File.dirname(__FILE__) + "/../will_filter/app/models"
+$LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__) + "/../lib/tr8n")
+$LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__) + "/../lib/tr8n/tokens")
+$LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__) + "/../will_filter/app/models")
 
 # this needs to be fixed - make will_filter into gem
 require File.expand_path("#{File.dirname(__FILE__)}/../../will_filter/app/models/model_filter.rb")

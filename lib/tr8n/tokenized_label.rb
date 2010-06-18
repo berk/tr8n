@@ -47,19 +47,19 @@ class Tr8n::TokenizedLabel
     @sanitized_label ||= begin 
       lbl = label.clone
       data_tokens.each do |token|
-        lbl = token.sanitize_label(lbl)
+        lbl = token.prepare_label_for_translator(lbl)
       end
       lbl
     end 
   end
   
-  # used for google suggestions
-  # TODO: need to fix decoration tokens
   def tokenless_label
     @tokenless_label ||= begin
-      lbl = sanitized_label.clone
-      data_tokens.each{|token| lbl.gsub!(token.full_name, "")}
-      lbl.strip
+      lbl = label.clone
+      data_tokens.each do |token|
+        lbl = token.prepare_label_for_suggestion(lbl)
+      end
+      lbl
     end
   end 
   

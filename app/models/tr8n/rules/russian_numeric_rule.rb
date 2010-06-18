@@ -9,7 +9,7 @@ class Tr8n::RussianNumericRule < Tr8n::NumericRule
   # {count | сообщение, сообщения, сообщений}
   def self.transform(*args)
     if args.size != 4
-      raise Tr8n::Exception.new("Invalid transform arguments")
+      raise Tr8n::Exception.new("Invalid transform arguments for number token")
     end
     
     object = args[0]
@@ -28,5 +28,14 @@ class Tr8n::RussianNumericRule < Tr8n::NumericRule
     
     args[3]
   end
+  
+  # params: [singular form, plural form1, plural form2]
+  def self.default_transform(*args)
+    if args.size != 3
+      raise Tr8n::Exception.new("Invalid transform arguments for number token")
+    end
+    
+    args[2]
+  end  
   
 end

@@ -13,6 +13,8 @@ class Tr8n::Translator < ActiveRecord::Base
   has_many  :language_forum_messages,       :class_name => "Tr8n::LanguageForumMessage",      :dependent => :destroy
   has_many  :language_forum_abuse_reports,  :class_name => "Tr8n::LanguageForumAbuseReport",  :dependent => :destroy
   has_many  :languages,                     :class_name => "Tr8n::Language",                  :through => :language_users
+
+  belongs_to :fallback_language,            :class_name => 'Tr8n::Language',                  :foreign_key => :fallback_language_id
     
   def self.for(user)
     return nil unless user and user.id

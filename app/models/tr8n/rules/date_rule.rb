@@ -33,8 +33,8 @@ class Tr8n::DateRule < Tr8n::LanguageRule
     self.class.date_token_value(token)
   end
 
-  # FORM: [object, past, present, future]
-  # {date | did, is doing, will do}
+  # params: [object, past, present, future]
+  # form: {date | did, is doing, will do}
   def self.transform(*args)
     if args.size != 4
       raise Tr8n::Exception.new("Invalid transform arguments")
@@ -56,6 +56,16 @@ class Tr8n::DateRule < Tr8n::LanguageRule
     end
     
     args[2]
+  end  
+
+  # params: [past, present, future]
+  # form: {date | did, is doing, will do}
+  def self.default_transform(*args)
+    if args.size != 3
+      raise Tr8n::Exception.new("Invalid transform arguments for date token")
+    end
+    
+    args[1]
   end  
 
   def evaluate(token)

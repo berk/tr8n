@@ -68,11 +68,11 @@ class Tr8n::GenderListRule < Tr8n::LanguageRule
     self.class.male_female_occupants(arr)
   end
   
-  # FORM: [object, all male, all female, mixed genders]
+  # params: [object, all male, all female, mixed genders]
   # {user_list | verb for all male, verb for all female}
   # {user_list | verb for all male, verb for all female, verb for mixed gender}
   def self.transform(*args)
-    if args.size < 3 or args.size > 4
+    unless [3, 4].include?(args.size)
       raise Tr8n::Exception.new("Invalid transform arguments")
     end
     
@@ -91,6 +91,16 @@ class Tr8n::GenderListRule < Tr8n::LanguageRule
     return args[3] if args.size == 4
     
     "#{args[1]}/#{args[2]}"  
+  end  
+  
+  # params: [all male form, all female form, mixed genders form]
+  def self.default_transform(*args)
+    unless [2, 3].include?(args.size)
+      raise Tr8n::Exception.new("Invalid transform arguments for list token")
+    end
+    
+    return args[2] if args.size == 3
+    "#{args[0]}/#{args[1]}"
   end  
   
   def evaluate(token)

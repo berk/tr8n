@@ -1,13 +1,22 @@
+####################################################################### 
+# 
+# Decoration Token Forms:
+#
+# [link: click here]
+#
+# Decoration Tokens Allow Nesting:
+# 
+# [link: {count} {_messages}] 
+# [link: {count||message}] 
+# [link: {count||person, people}] 
+# [link: {user.name}] 
+#
+####################################################################### 
+
 class Tr8n::DecorationToken < Tr8n::Token
   
-  # tokens of a form
-  # [link: abc] 
-  def self.parse(label)
-    tokens = []
-    label.scan(/(\[\w+:[^\]]+\])/).uniq.each do |token_array|
-      tokens << self.new(token_array.first) 
-    end
-    tokens
+  def self.expression
+    /(\[\w+:[^\]]+\])/
   end
   
   def language_rule
@@ -22,6 +31,16 @@ class Tr8n::DecorationToken < Tr8n::Token
     end
   end
   
+  # return as is
+  def prepare_label_for_translator(label)
+    label
+  end
+
+  # return only the internal part
+  def prepare_label_for_suggestion(label)
+    label.gsub(full_name, value)
+  end
+    
   def handle_default_decorations(lambda_token_name, lambda_token_value, token_values)
     unless Tr8n::Config.default_lambdas[lambda_token_name]
       raise Tr8n::TokenException.new("Invalid decoration token value")

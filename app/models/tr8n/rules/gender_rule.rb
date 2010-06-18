@@ -45,8 +45,8 @@ class Tr8n::GenderRule < Tr8n::LanguageRule
   # {user | he, she}
   # {user | he, she, he/she}
   def self.transform(*args)
-    if args.size < 3 or args.size > 4
-      raise Tr8n::Exception.new("Invalid transform arguments")
+    unless [3, 4].include?(args.size)
+      raise Tr8n::Exception.new("Invalid transform arguments for gender token")
     end
     
     object = args[0]
@@ -66,6 +66,16 @@ class Tr8n::GenderRule < Tr8n::LanguageRule
     
     "#{args[1]}/#{args[2]}"  
   end
+  
+  # params: [male form, female form, unknown form]
+  def self.default_transform(*args)
+    unless [2, 3].include?(args.size)
+      raise Tr8n::Exception.new("Invalid transform arguments for gender token")
+    end
+    
+    return args[2] if args.size == 3
+    "#{args[0]}/#{args[1]}"
+  end  
   
   def evaluate(token)
     token_value = gender_token_value(token)

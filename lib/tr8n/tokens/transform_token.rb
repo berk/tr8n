@@ -1,16 +1,22 @@
+####################################################################### 
+# 
+# Transform Token Form
+#
+# {count | message}   - will not include count: "messages" 
+# {count | message, messages} 
+# {count:number | message, messages} 
+# {user:gender | he, she, he/she}
+# {now:date | did, does, will do}
+# {users:list | all male, all female, mixed genders}
+#
+# {count || message, messages}  - will include count:  "5 messages" 
+# 
+####################################################################### 
+
 class Tr8n::TransformToken < Tr8n::Token
-  
-  # tokens of a form
-  # {count | message} 
-  # {count | message, messages} 
-  # {count:number | message, messages} 
-  # {user:gender | he, she, he/she} 
-  def self.parse(label)
-    tokens = []
-    label.scan(/(\{[^_][\w]+(:[\w]+)?\s*\|\|?[^{^}]+\})/).uniq.each do |token_array|
-      tokens << self.new(token_array.first) 
-    end
-    tokens
+    
+  def self.expression
+    /(\{[^_][\w]+(:[\w]+)?\s*\|\|?[^{^}]+\})/
   end
 
   def name
@@ -48,6 +54,29 @@ class Tr8n::TransformToken < Tr8n::Token
     object    
   end
   
+  # return with the default transform substitution
+  def prepare_label_for_translator(label)
+    unless dependant?
+      raise Tr8n::TokenException("Unknown dependency type for #{full_name} token; no way to apply the transform method.")
+    end
+    
+    unless language_rule.respond_to?(:default_transform)
+      raise Tr8n::TokenException("#{language_rule.class.name} does not respond to the default transform method.")
+    end
+    
+    substitution_value = "" 
+    substitution_value << token_value(object, options) if allowed_in_translation?
+    substitution_value << " " unless substitution_value.blank?
+    substitution_value << language_rule.default_transform(*piped_params)
+    
+    label.gsub(full_name, substitution_value)    
+  end
+
+  # return only the internal part
+  def prepare_label_for_suggestion(label)
+    prepare_label_for_translator(label)
+  end
+  
   def substitute(label, values = {}, options = {}, language = Tr8n::Config.current_language)
     # only the default language allows for the transform tokens
     return label unless language.default?
@@ -58,7 +87,7 @@ class Tr8n::TransformToken < Tr8n::Token
     end
     
     unless dependant?
-      raise Tr8n::TokenException("Unknown dependency type for #{full_name} token - no way apply the transform method.")
+      raise Tr8n::TokenException("Unknown dependency type for #{full_name} token; no way to apply the transform method.")
     end
     
     unless language_rule.respond_to?(:transform)

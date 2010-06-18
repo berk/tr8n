@@ -361,6 +361,10 @@ class Tr8n::Config
     end
   end
 
+  def self.allow_nil_token_values?
+    rules_engine[:allow_nil_token_values]
+  end
+  
   def self.data_token_classes
     @data_token_classes ||= rules_engine[:data_token_classes].collect{|tc| tc.constantize}
   end
