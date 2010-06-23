@@ -1,13 +1,5 @@
 <%= render :partial => "/tr8n/admin/common/header" %>
-
-<h1>
-  <span style="font-size:12px; float:right; padding-top:10px;">
-    <%=link_to("View Languages", {:action => :index})%> | 
-    <%=link_to("View Users", {:action => :users})%> | 
-    <%=link_to("View Metrics", {:action => :metrics})%>
-  </span> 
-	Language Charts
-</h1>
+<%= render :partial => "tabs" %>
 
 <script language="JavaScript" src="/tr8n/javascripts/FusionCharts.js"></script>
 

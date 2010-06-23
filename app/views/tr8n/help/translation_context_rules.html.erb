@@ -1,0 +1,16 @@
+<%= render :partial => "/tr8n/help/navigation" %>
+
+<div id="tr8n_help_content">
+  
+  <h1><%= @page_title %></h1>
+
+  <p>
+    Translations for some phrases can depend on the gender of the user viewing the translation and the gender or numerical value of tokens in the phrase. For example, in some languages "Invite Family & Friends to View Your Tree" has two different translations, one if the viewer is male and one if they are female. Tokens are parts of the phrase that are not translated, such as a profile name or a number. The translation for "{actor} tagged {target} in {count} photos" can depend on the gender of the actor and target as well as the number of photos. Tokens themselves are not translated. Geni will automatically replace them with the actual value.
+  </p>
+  <p>
+    If the translation of the phrase depends on any of these factors, click the generate context rules for this phrase link. Select the gender or number for each token that the translation depends on and click the "Continue... " button. This will show you a list of all possible contexts so you can provide an appropriate translation for each.
+  </p>
+
+</div>
+
+<%= render :partial => "/tr8n/common/footer" %>

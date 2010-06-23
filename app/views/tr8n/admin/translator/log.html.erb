@@ -1,12 +1,6 @@
 <%= render :partial => "/tr8n/admin/common/header" %>
-<h1>
-  <span style="font-size:12px; float:right; padding-top:10px;">
-    <%=link_to("View Translators", {:action => :index})%> 
-  </span> 
-	Translator Log
-</h1>
-
-<%= will_filter %>
+<%= render :partial => "tabs" %>
+<%= tr8n_will_filter %>
 
 <%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @logs} %>
 
@@ -28,6 +22,7 @@
 				<% else %>
 				  Deleted translator
 				<% end %>	
+			</td>	
       <td style="<%=log.decoration%>"><%= log.describe %></td>
     </tr>
   <% end -%>

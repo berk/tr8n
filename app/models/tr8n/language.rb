@@ -189,6 +189,10 @@ class Tr8n::Language < ActiveRecord::Base
     true
   end
 
+  def managers
+    @managers ||= Tr8n::LanguageUser.find(:all, :conditions => ["language_id = ? and manager = ?", self.id, true], :order => "created_at asc")  
+  end
+  
   def after_save
     Tr8n::Cache.delete("language_#{locale}")
     Tr8n::Cache.delete("featured_languages")

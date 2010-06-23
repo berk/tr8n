@@ -1,59 +1,10 @@
 <%= render :partial => "/tr8n/admin/common/header" %>
-
-<h1>
-  <span style="font-size:12px; float:right; padding-top:10px;">
-    <%=link_to("View Languages", {:action => :index})%> | 
-    <%=link_to("View Metrics", {:action => :metrics})%> | 
-    <%=link_to("View Charts", {:action => :charts})%>
-  </span> 
-	Language Users
-</h1>
-
+<%= render :partial => "tabs" %>
 <%= tr8n_will_filter %>
 
 <%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @users} %>
 
-<table class="admin_table">
-  <tr>
-    <th style="width:10%">
-      Language
-    </th>
-    <th style="width:15%">
-      User
-    </th>
-    <th>
-      Translator
-    </th>
-    <th>
-      Created At
-    </th>
-		<th style="width:50px"> </th>
-  </tr>  
-  <% @users.each_with_index do |user, index| %>
-    <tr>
-      <td><%=user.language.english_name%></td>
-			<td>
-				<% if user.user %>
-				  <%= Tr8n::Config.user_name(user.user) %>
-					(<%= Tr8n::Config.user_id(user.user) %>)
-				<% else %>
-				  Deleted user
-				<% end %>		
-			</td>
-      <td>
-      	<%= user.translator? %>
-      </td>
-			<td>
-				<%=user.created_at.trl(:date_time)%>
-			</td>
-			<td style="text-align:right">
-				<% if user.translator? %>
-				  <%=link_to("View", "/tr8n/admin/translator/view?translator_id=#{user.translator.id}")%>
-				<% end %>
-			</td>
-    </tr>
-  <% end %>
-</table>
+<%= render :partial => "users", :locals => {:users => @users} %>
 
 <%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @users} %>
 <%= render :partial => "/tr8n/admin/common/footer" %>

@@ -1,11 +1,5 @@
 <%= render :partial => "/tr8n/admin/common/header" %>
-<h1>
-  <span style="font-size:12px; float:right; padding-top:10px;">
-    <%=link_to("View Translator Log", {:action => :log})%> 
-  </span> 
-	Translators
-</h1>
-
+<%= render :partial => "tabs" %>
 <%= tr8n_will_filter %>
 
 <%= link_to_function("+ Register new translator", "tr8nLightbox.show('/tr8n/admin/translator/lb_register', {height:150})") %>
@@ -14,57 +8,7 @@
 
 <%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @translators} %>
 
-<table class="admin_table">
-  <tr>
-    <th>
-      Name
-    </th>
-    <th>
-      Site Administrator
-    </th>  
-    <th>
-      Manages Languages
-    </th>  
-    <th>
-      Blocked
-    </th>  
-    <th style="text-align:right">
-      Translations Count
-    </th>
-    <th style="text-align:right">
-      Votes Count
-    </th>
-    <th></th>
-  </tr>  
-  <% @translators.each_with_index do |translator, index| %>
-    <tr>
-      <td>
-        <%=link_to(translator.name, :action => :view, :translator_id => translator.id)%>
-      </td>  
-      <td>
-        <%=translator.admin?%>
-      </td>  
-      <td>
-        <%=translator.manager_for_any_language?%>
-      </td>  
-      <td>
-        <%=translator.blocked?%>
-      </td>  
-      <td style="text-align:right">
-        <%= link_to(translator.total_metric.total_translations || 0, "/tr8n/admin/translation?mf_c_0=translator_id&mf_co_0=is&mf_cv_0_0=#{translator.id}") %>
-      </td>  
-      <td style="text-align:right">
-        <%=translator.total_metric.total_votes || 0 %>
-        (<span style="color:green"><%=translator.total_metric.positive_votes || 0 %></span>/<span style="color:red"><%=translator.total_metric.negative_votes || 0 %></span>)
-      </td>  
-      <td style="text-align:right">
-        <%=link_to("View", :action => :view, :translator_id => translator.id)%>
-				|
-        <%=link_to("Delete", {:action => :delete, :translator_id => translator.id}, :confirm => "Are you sure you want to do that?")%>
-      </td>
-    </tr>
-  <% end %>
-</table>
+<%= render :partial => "list", :locals => {:translators => @translators}%>
     
 <%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @translators} %>
 <%= render :partial => "/tr8n/admin/common/footer" %>

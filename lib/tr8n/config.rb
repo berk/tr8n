@@ -37,14 +37,45 @@ class Tr8n::Config
     @default_language ||= Tr8n::Language.for(default_locale) || Tr8n::Language.new(:locale => default_locale)
   end
   
-  # Resets all of the cached variables
   def self.reset!
-    @enabled                    = nil
-    @config                     = nil
-    @default_languages          = nil
-    @sitemap_sections           = nil
-    @default_rank_styles        = nil
-    @default_language           = nil
+#    thread based variables
+
+    Thread.current[:current_language]  = nil
+    Thread.current[:current_user] = nil
+    Thread.current[:current_translator] = nil
+    
+#    the following can be shared between threads and requests
+
+#    @enabled                    = nil
+#    @config                     = nil
+#    @features                   = nil
+#    @sitemap_sections           = nil
+#
+#    @language_rule_classes      = nil
+#    @language_rule_dependencies = nil
+#    @language_rule_suffixes     = nil
+#    
+#    @data_token_classes         = nil
+#    @decoration_token_classes   = nil
+#
+#    @default_language           = nil
+#    
+#    @default_rank_styles        = nil
+#    @default_rules              = nil
+#    @default_languages          = nil
+#    @default_decorations        = nil
+#    @default_glossary           = nil
+#    @default_shortcuts          = nil
+  end
+
+  def self.models
+    [ 
+       Tr8n::LanguageRule, Tr8n::LanguageUser, Tr8n::Language, Tr8n::LanguageMetric,
+       Tr8n::TranslationKey, Tr8n::TranslationKeySource, Tr8n::TranslationSource, Tr8n::TranslationKeyLock,
+       Tr8n::Translation, Tr8n::TranslationVote, Tr8n::Glossary,
+       Tr8n::Translator, Tr8n::TranslatorLog, Tr8n::TranslatorMetric,
+       Tr8n::LanguageForumTopic, Tr8n::LanguageForumMessage, Tr8n::LanguageForumAbuseReport    
+    ]    
   end
 
   # will clean all tables and initialize default values
@@ -71,16 +102,6 @@ class Tr8n::Config
     default_glossary.each do |keyword, description|
       Tr8n::Glossary.create(:keyword => keyword, :description => description)
     end
-  end
-
-  def self.models
-    [ 
-       Tr8n::LanguageRule, Tr8n::LanguageUser, Tr8n::Language, Tr8n::LanguageMetric,
-       Tr8n::TranslationKey, Tr8n::TranslationKeySource, Tr8n::TranslationSource, Tr8n::TranslationKeyLock,
-       Tr8n::Translation, Tr8n::TranslationVote, Tr8n::Glossary,
-       Tr8n::Translator, Tr8n::TranslatorLog, Tr8n::TranslatorMetric,
-       Tr8n::LanguageForumTopic, Tr8n::LanguageForumMessage, Tr8n::LanguageForumAbuseReport    
-    ]    
   end
   
   def self.root

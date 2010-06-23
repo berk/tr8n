@@ -1,13 +1,5 @@
 <%= render :partial => "/tr8n/admin/common/header" %>
-<h1 style="text-align:left">
-  <span style="font-size:12px; float:right; padding-top:10px;">
-    <%=link_to("View Users", {:action => :users})%> | 
-    <%=link_to("View Metrics", {:action => :metrics})%> | 
-    <%=link_to("View Charts", {:action => :charts})%>
-  </span> 
-	Languages
-</h1>
-
+<%= render :partial => "tabs" %>
 <%= tr8n_will_filter %>
 
 <%=link_to_function("+ Add new language", "tr8nLightbox.show('/tr8n/admin/language/lb_update', {height:300})") %>

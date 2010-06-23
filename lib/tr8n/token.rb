@@ -217,7 +217,7 @@ class Tr8n::Token
       end
 
       # if the first value of an array is an array handle it here
-      if object.first.is_a?(Array)
+      if object.first.kind_of?(Enumerable)
         return token_array_value(object, options)
       end
 

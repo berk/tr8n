@@ -1,6 +1,6 @@
 <%= render :partial => "/tr8n/admin/common/header" %>
+<%= render :partial => "tabs", :locals => {:current_tab => "Translator Details"} %>
 
-<h1>Translator Details</h1>
 <table class="admin_table">
     <tr>
         <th width="160">
@@ -8,7 +8,7 @@
         </th>
         <td>
           <% if @translator.user %>
-            <%=link_to(@translator.name, @translator.user_link) %>
+            <%=link_to(@translator.name, @translator.link) %>
             (<%=@translator.user.id%>)
           <% else %>
             Unknown  
@@ -78,13 +78,14 @@
         </th>
         <td>
           <%=link_to("View Translations", "/tr8n/admin/translation?mf_c_0=translator_id&mf_co_0=is&mf_cv_0_0=#{@translator.id}") %>
+          | <%=link_to("View Metrics", "/tr8n/admin/translator/metrics?mf_c_0=translator_id&mf_co_0=is&mf_cv_0_0=#{@translator.id}") %>
 
           <% if @translator.blocked? %>
             | <%=link_to_function("Unblock", "performTranslatorAction('unblock')") %>
           <% else %>
             | <%=link_to_function("Block", "performTranslatorAction('block')") %>
           <% end %>  
-        					
+									
           | <%=link_to("Delete", {:action => :delete, :translator_id => @translator.id}, :confirm => "Are you sure you want to do that?")%>
 					
         </td>
@@ -92,7 +93,7 @@
 </table>
 
 
-<h1>Selected Languages and Management Rights</h1>
+<h1>Languages and Management Rights</h1>
 <table class="admin_table">
 <thead>
   <tr>
@@ -140,7 +141,13 @@
   }  
 </script>
 
-<h1>Translator Metrics By Language</h1>
+<h1>
+  <div style="font-size:12px; float:right;padding-top:10px;">
+    <%=link_to("view all", "/tr8n/admin/translator/metrics")%>
+  </div>
+
+	Metrics
+</h1>
 <table class="admin_table">
 <thead>
   <tr>
@@ -153,7 +160,7 @@
   <% @translator.translator_metrics.each do |metric| -%>
     <% next unless metric.language %>
     <tr>
-      <td><%= metric.language.english_name %></td>
+      <td><%= link_to(metric.language.english_name, :controller => "/tr8n/admin/language", :action => :view, :lang_id => metric.language.id) %></td>
       <td><%= metric.total_translations %></td>
       <td>
           <%=metric.total_votes || 0 %>
@@ -165,8 +172,12 @@
 </table>
 <br>
 
-<div style="float:right;padding-top:10px;"><%=link_to("View All", "/tr8n/admin/translator/log?mf_c_0=translator_id&mf_co_0=is&mf_cv_0_0=#{@translator.id}")%></div>
-<h1>Recent Translator Activity <span style="color:grey; font-size:12px;">(last 20 actions)</span></h1>
+<h1>
+  <div style="font-size:12px; float:right;padding-top:10px;">
+    <%=link_to("view all", "/tr8n/admin/translator/log?mf_c_0=translator_id&mf_co_0=is&mf_cv_0_0=#{@translator.id}")%>
+  </div>
+	Recent Activity <span style="color:grey; font-size:12px;">(last 20 actions)</span>
+</h1>
 <table class="admin_table">
 <thead>
   <tr>

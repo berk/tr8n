@@ -31,23 +31,26 @@
 
 </style>
 
+<%# Note: Section titles must be unique. %>
 
   <div id="tr8n_sidebar">
     <ol class="tr8n_primary">
       <li><%= tr8n_help_link("Introduction", { :filename => "index" }) %></li>
-      <!-- 
-      <li><%= tr8n_help_link("Basic Concepts") %></li>
           <ol class="tr8n_secondary">
+            <li><%= tr8n_help_link("Creating Translations") %>
+                <ol class="tr8n_tertiary">
+                  <li><%= tr8n_help_link("Translation Context Rules") %></li>
+                </ol>
+            </li>
+            <li><%= tr8n_help_link("Voting on Translations") %></li>
             <li><%= tr8n_help_link("Rank") %>
                 <ol class="tr8n_tertiary">
                   <li><%= tr8n_help_link("User Rank") %></li>
                   <li><%= tr8n_help_link("Translation Rank") %></li>
                 </ol>
             </li>
-            <li><%= tr8n_help_link("Creating Translations") %></li>
           </ol>
       </li>
-      -->
       <li><%= tr8n_help_link("Language Selector") %>
           <ol class="tr8n_secondary">
             <li><%= tr8n_help_link("Your Languages") %></li>

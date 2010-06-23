@@ -1,0 +1,45 @@
+<%= render :partial => "/tr8n/admin/common/header" %>
+<%= render :partial => "tabs" %>
+<%= tr8n_will_filter %>
+
+<%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @metrics} %>
+
+<table class="admin_table">
+<thead>
+  <tr>
+    <th style="">Translator</th>
+    <th style="">Language</th>
+    <th style="text-align:right">Total Translations</th>
+    <th style="text-align:right">Accepted Translations</th>
+    <th style="text-align:right">Rejected Translations</th>
+    <th style="text-align:right">Total Votes</th>
+    <th style="text-align:right">Positive Votes</th>
+    <th style="text-align:right">Negative Votes</th>
+    <th style="text-align:right">Updated At</th>
+  </tr>
+</thead>
+<tbody>
+  <% @metrics.each do |metric| -%>
+    <tr>
+      <td>
+        <% if metric.translator %>
+          <%= link_to(metric.translator.name, "/tr8n/admin/translator/view?translator_id=#{metric.translator.id}") %>
+        <% else %>
+          Deleted translator
+        <% end %> 
+			</td>	
+      <td><%= link_to(metric.language.english_name, :controller => "/tr8n/admin/language", :action => :view, :lang_id => metric.language.id) if metric.language %></td>
+	    <td style="text-align:right"><%= metric.total_translations %></td>
+	    <td style="text-align:right"><%= metric.accepted_translations %></td>
+	    <td style="text-align:right"><%= metric.rejected_translations %></td>
+	    <td style="text-align:right"><%= metric.total_votes %></td>
+	    <td style="text-align:right"><%= metric.positive_votes %></td>
+	    <td style="text-align:right"><%= metric.negative_votes %></td>
+	    <td style="text-align:right"><%= metric.updated_at.strftime("%m/%d/%Y %H:%M:%S") %></td>
+    </tr>
+  <% end -%>
+</tbody>
+</table>
+
+<%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @metrics} %>
+<%= render :partial => "/tr8n/admin/common/footer" %>

@@ -44,6 +44,11 @@ class Tr8n::Admin::LanguageController < Tr8n::Admin::BaseController
     redirect_to_source
   end
   
+  def rules
+    @model_filter = init_model_filter(Tr8n::LanguageRuleFilter)  
+    @rules = Tr8n::LanguageRule.paginate(:order=>@model_filter.order_clause, :page=>page, :per_page=>@model_filter.per_page, :conditions=>@model_filter.sql_conditions)
+  end
+  
   def lb_update
     @language = Tr8n::Language.find_by_id(params[:lang_id]) unless params[:lang_id].blank?
     @language = Tr8n::Language.new unless @language

@@ -82,5 +82,10 @@ class Tr8n::Admin::TranslatorController < Tr8n::Admin::BaseController
     @model_filter = init_model_filter(Tr8n::TranslatorLogFilter)
     @logs = Tr8n::TranslatorLog.paginate(:order => @model_filter.order_clause, :page => page, :per_page => @model_filter.per_page, :conditions => @model_filter.sql_conditions)
   end
+
+  def metrics
+    @model_filter = init_model_filter(Tr8n::TranslatorMetricFilter)
+    @metrics = Tr8n::TranslatorMetric.paginate(:order => @model_filter.order_clause, :page => page, :per_page => @model_filter.per_page, :conditions => @model_filter.sql_conditions)
+  end
      
 end
