@@ -54,18 +54,22 @@ class Tr8n::TransformToken < Tr8n::Token
     object    
   end
   
-  # return with the default transform substitution
-  def prepare_label_for_translator(label)
+  def validate_language_rule
     unless dependant?
-      raise Tr8n::TokenException("Unknown dependency type for #{full_name} token; no way to apply the transform method.")
+      raise Tr8n::TokenException.new("Unknown dependency type for #{full_name} token in #{original_label}; no way to apply the transform method.")
     end
     
     unless language_rule.respond_to?(:default_transform)
-      raise Tr8n::TokenException("#{language_rule.class.name} does not respond to the default transform method.")
+      raise Tr8n::TokenException.new("#{language_rule.class.name} does not respond to the default transform method.")
     end
+  end
+  
+  # return with the default transform substitution
+  def prepare_label_for_translator(label)
+    validate_language_rule
     
     substitution_value = "" 
-    substitution_value << token_value(object, options) if allowed_in_translation?
+    substitution_value << sanitized_name if allowed_in_translation?
     substitution_value << " " unless substitution_value.blank?
     substitution_value << language_rule.default_transform(*piped_params)
     
@@ -74,7 +78,8 @@ class Tr8n::TransformToken < Tr8n::Token
 
   # return only the internal part
   def prepare_label_for_suggestion(label)
-    prepare_label_for_translator(label)
+    validate_language_rule
+    label.gsub(full_name, language_rule.default_transform(*piped_params))    
   end
   
   def substitute(label, values = {}, options = {}, language = Tr8n::Config.current_language)
@@ -86,13 +91,7 @@ class Tr8n::TransformToken < Tr8n::Token
       raise Tr8n::TokenException.new("Missing value for a token: #{full_name}")
     end
     
-    unless dependant?
-      raise Tr8n::TokenException("Unknown dependency type for #{full_name} token; no way to apply the transform method.")
-    end
-    
-    unless language_rule.respond_to?(:transform)
-      raise Tr8n::TokenException("#{language_rule.class.name} does not respond to the transform method.")
-    end
+    validate_language_rule
     
     params = [token_object(object)] + piped_params
     substitution_value = "" 

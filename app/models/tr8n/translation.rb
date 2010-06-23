@@ -54,7 +54,7 @@ class Tr8n::Translation < ActiveRecord::Base
     @loaded_rules ||= begin
       rulz = []
       super.each do |rule|
-        language_rule = Tr8n::LanguageRule.find_by_id(rule[:rule_id])
+        language_rule = Tr8n::LanguageRule.for_id(rule[:rule_id])
         rulz << rule.merge({:rule => language_rule}) if language_rule  
       end
       rulz
@@ -143,10 +143,6 @@ class Tr8n::Translation < ActiveRecord::Base
     language.clean_sentence?(label)
   end
   
-  def translate(token_values, options = {})
-    translation_key.substitute_tokens(label, token_values, options)
-  end
-  
   def can_be_edited_by?(editor)
     return false if translation_key.locked?
     translator == editor
@@ -176,6 +172,10 @@ class Tr8n::Translation < ActiveRecord::Base
   end
   
   def after_save
+    Tr8n::Cache.delete("translations_#{language.locale}_#{translation_key.key}")
+  end
+
+  def after_destroy
     Tr8n::Cache.delete("translations_#{language.locale}_#{translation_key.key}")
   end
   

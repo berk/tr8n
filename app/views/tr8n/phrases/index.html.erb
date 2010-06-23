@@ -49,9 +49,6 @@
             <%= render :partial => "/tr8n/common/translation_votes", :locals => {:translation_key => tk, :translations => tk.translations_for(tr8n_current_language)[0..4], :section_key => @section_key} %>
           </div>  
         </td>
-        <td style="padding-right:5px; padding-top:5px; vertical-align:top; width:10px;text-align:right">
-          <%=link_to(image_tag("/tr8n/images/table_edit.png"), :action => :view, :translation_key_id => tk.id, :section_key => @section_key)%>
-        </td>
       </tr>
     <% end %>
   </table>

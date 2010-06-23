@@ -9,6 +9,12 @@
 </script>
 
 <div class="section_title">
+	<% if Tr8n::Config.enable_translator_language? %>
+	  <div style="float:right; font-size:12px; padding-top:5px;">
+	     <%=link_to(trl("edit preferences", "Translator preferences link"), :controller => "/tr8n/translator", :action => :index)%>
+	  </div>
+	<% end %>
+	
   <%=trl("{user}'s Dashboard", "", :user => [tr8n_current_translator.user, tr8n_current_translator.name]) %>
 </div>
 

@@ -1,0 +1,35 @@
+Ctrl+Shift+S:       
+  description:  Displays Tr8n shortcuts help window
+  script:       "tr8nLanguageSelector.toggleInlineTranslations();"
+
+Ctrl+Shift+T:       
+  description:  Turns on/off inline translations
+  script:       "tr8nLanguageSelector.toggleInlineTranslations();"
+  
+Ctrl+Shift+L:       
+  description:  Shows/hides language selector 
+  script:       "tr8nLanguageSelector.toggle();"
+  
+Ctrl+Shift+K:       
+  description:  Adds software keyboard for each entry field
+  script:       "tr8nLanguageSelector.toggleKeyboards();"
+   
+Alt+Shift+T: 
+  description:  Opens translations tab
+  script:       "tr8nLanguageSelector.openTranslations();"
+  
+Alt+Shift+M: 
+  description:  Opens sitemap tab 
+  script:       "tr8nLanguageSelector.openSiteMap();"
+  
+Alt+Shift+A: 
+  description:  Opens awards tab
+  script:       "tr8nLanguageSelector.openAwards();"
+  
+Alt+Shift+B: 
+  description:  Opens message board tab
+  script:       "tr8nLanguageSelector.openMessageBoard();"
+  
+Alt+Shift+H: 
+  description:  Opens help tab
+  script:       "tr8nLanguageSelector.openHelp();"

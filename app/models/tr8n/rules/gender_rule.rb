@@ -73,8 +73,8 @@ class Tr8n::GenderRule < Tr8n::LanguageRule
       raise Tr8n::Exception.new("Invalid transform arguments for gender token")
     end
     
-    return args[2] if args.size == 3
-    "#{args[0]}/#{args[1]}"
+    # always use masculine form for the translation label
+    args[0]
   end  
   
   def evaluate(token)

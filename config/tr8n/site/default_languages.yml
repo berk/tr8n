@@ -1,0 +1,339 @@
+#############################################################################
+#
+# Tr8n Default Languages
+#
+#############################################################################
+af: 
+  english_name:   Afrikaans 
+  native_name:    Afrikaans 
+hy:
+  english_name:   Armenian
+  native_name:    Հայերեն
+sq:
+  english_name:   Albanian
+  native_name:    Shqiptar
+ar: 
+  english_name:   Arabic
+  native_name:    العربية 
+  right_to_left:  true
+az: 
+  english_name:   Azerbaijani 
+  native_name:    Азәрбајҹан дили 
+be: 
+  english_name:   Belarusian 
+  native_name:    Беларуская 
+bg: 
+  english_name:   Bulgarian 
+  native_name:    Български 
+ca: 
+  english_name:   Catalan 
+  native_name:    Català  
+zh-TW: 
+  english_name:   Chinese (Traditional) 
+  native_name:    中文(台灣) 
+zh-CN: 
+  english_name:   Chinese (Simplified) 
+  native_name:    中文(简体) 
+hr: 
+  english_name:   Croatian 
+  native_name:    Hrvatski
+cs: 
+  english_name:   Czech 
+  native_name:    Český 
+da: 
+  english_name:   Danish  
+  native_name:    Danske 
+nl: 
+  english_name:   Dutch 
+  native_name:    Flemish 
+en-US: 
+  english_name:   English (US) 
+  native_name:    English (US)  
+en-CAN: 
+  english_name:   English (Canadian) 
+  native_name:    English (Canadian)  
+en-UK: 
+  english_name:   English (UK) 
+  native_name:    English (UK)  
+en-SC: 
+  english_name:   English (Scottish) 
+  native_name:    English (Scottish)  
+et: 
+  english_name:   Estonian 
+  native_name:    Eesti 
+eu: 
+  english_name:   Basque 
+  native_name:    Euskara 
+tl: 
+  english_name:   Filipino 
+  native_name:    Filipino 
+fi: 
+  english_name:   Finnish 
+  native_name:    Suomi 
+fr: 
+  english_name:   French  
+  native_name:    Français 
+gl: 
+  english_name:   Galician  
+  native_name:    Galician 
+ka: 
+  english_name:   Georgian 
+  native_name:    ქართული 
+de: 
+  english_name:   German  
+  native_name:    Deutsch  
+el: 
+  english_name:   Greek 
+  native_name:    Ελληνικά 
+ht: 
+  english_name:   Haitian Creole 
+  native_name:    Ayisyen 
+iw: 
+  english_name:   Hebrew
+  native_name:    עברית  
+  right_to_left:  true
+hi: 
+  english_name:   Hindi 
+  native_name:    हिन्दी 
+hu: 
+  english_name:   Hungarian 
+  native_name:    Magyar 
+is: 
+  english_name:   Icelandic 
+  native_name:    Íslenska 
+id: 
+  english_name:   Indonesian 
+  native_name:    Indonesia 
+ga: 
+  english_name:   Irish 
+  native_name:    Gaeilge
+it: 
+  english_name:   Italian 
+  native_name:    Italiano 
+ja: 
+  english_name:   Japanese 
+  native_name:    日本語 
+ko: 
+  english_name:   Korean 
+  native_name:    한국어 
+lv: 
+  english_name:   Latvian 
+  native_name:    Latviešu 
+lt: 
+  english_name:   Lithuanian 
+  native_name:    Lietuvių 
+mk: 
+  english_name:   Macedonian 
+  native_name:    Македонски 
+ms: 
+  english_name:   Malay 
+  native_name:    Melayu 
+mt: 
+  english_name:   Maltese 
+  native_name:    Malti 
+no: 
+  english_name:   Norwegian 
+  native_name:    Norsk (bokmål) 
+fa: 
+  english_name:   Persian
+  native_name:    فارسی
+  right_to_left:  true
+pl: 
+  english_name:   Polish 
+  native_name:    Polski 
+pt: 
+  english_name:   Portuguese (Portugal) 
+  native_name:    Português (Portugal) 
+ro: 
+  english_name:   Romanian 
+  native_name:    Română 
+ru: 
+  english_name:   Russian 
+  native_name:    Русский 
+sr: 
+  english_name:   Serbian 
+  native_name:    Српски 
+sk: 
+  english_name:   Slovak 
+  native_name:    Slovenský jazyk 
+sl:
+  english_name:   Slovenian 
+  native_name:    Slovenski 
+es:
+  english_name:   Spanish (Spain) 
+  native_name:    Español (España)  
+sw: 
+  english_name:   Swahili 
+  native_name:    Swahili  
+sv:
+  english_name:   Swedish 
+  native_name:    Svenska 
+th:
+  english_name:   Thai 
+  native_name:    ภาษาไทย 
+tr: 
+  english_name:   Turkish 
+  native_name:    Türkçe 
+uk: 
+  english_name:   Ukranian 
+  native_name:    Українська 
+ur:
+  english_name:   Urdu 
+  native_name:    اردو
+  right_to_left:  true
+vi:
+  english_name:   Vietnamese 
+  native_name:    Tiếng Việt 
+cy: 
+  english_name:   Welsh 
+  native_name:    Cymraeg 
+yi: 
+  english_name:   Yiddish
+  native_name:    ייִדיש
+  right_to_left:  true
+ab: 
+  english_name:   Abkhazian 
+  native_name:    Аҧсуа 
+ba: 
+  english_name:   Bashkir 
+  native_name:    Башҡорт 
+bo:
+  english_name:   Tibetan 
+  native_name:    བོད་ཡིག 
+bs: 
+  english_name:   Bosnian 
+  native_name:    Bosanski 
+cv: 
+  english_name:   Chuvash 
+  native_name:    чӑваш 
+fj: 
+  english_name:   Fijian 
+  native_name:    Vakaviti 
+kz: 
+  english_name:   Kazakh 
+  native_name:    Қазақша 
+ks: 
+  english_name:   Kashmiri 
+  native_name:    कश्मीरी 
+ku: 
+  english_name:   Kurdish
+  native_name:    كوردی‎ 
+  right_to_left:  true
+ky: 
+  english_name:   Kirghiz 
+  native_name:    Кыргыз 
+kl: 
+  english_name:   Klingon 
+  native_name:    tlhIngan 
+la: 
+  english_name:   Latin 
+  native_name:    Latina 
+mn: 
+  english_name:   Mongolian 
+  native_name:    Монгол 
+ne: 
+  english_name:   Nepali 
+  native_name:    नेपाली 
+nv: 
+  english_name:   Navajo 
+  native_name:    Dinékʼehǰí 
+pa: 
+  english_name:   Panjabi 
+  native_name:    ਪੰਜਾਬੀ 
+tg: 
+  english_name:   Tajik 
+  native_name:    Тоҷикӣ 
+tk: 
+  english_name:   Turkmen 
+  native_name:    Türkmen 
+tt: 
+  english_name:   Tatar 
+  native_name:    Татарча 
+pf: 
+  english_name:   Tahitian 
+  native_name:    Mā`ohi 
+uz: 
+  english_name:   Uzbek 
+  native_name:    Ўзбек 
+en-PI: 
+  english_name:   English (Pirate) 
+  native_name:    English (Pirate) 
+fr-CAN: 
+  english_name:   French (Canadian)  
+  native_name:    Français (Canada) 
+fb-LT: 
+  english_name:   Leet Speak 
+  native_name:    1337 
+sa-IN: 
+  english_name:   Sanskrit 
+  native_name:    संस्कृतम् 
+gu-IN: 
+  english_name:   Gujarati 
+  native_name:    ગુજરાતી 
+zh-HK: 
+  english_name:   Chinese (Hong Kong) 
+  native_name:    中文(香港) 
+ta-IN: 
+  english_name:   Tamil 
+  native_name:    தமிழ் 
+pt-BZ: 
+  english_name:   Portuguese (Brazil) 
+  native_name:    Português (Brazil) 
+eo-EO: 
+  english_name:   Esperanto 
+  native_name:    Esperanto 
+fo-FO: 
+  english_name:   Faroese 
+  native_name:    Føroyskt 
+ps-AF: 
+  english_name:   Pashto 
+  native_name:    پښتو 
+  right_to_left:  true
+gn-PY: 
+  english_name:   Guaraní 
+  native_name:    Avañe\ẽ 
+ay-BO: 
+  english_name:   Aymara 
+  native_name:    Aymar aru 
+jv-ID: 
+  english_name:   Javanese 
+  native_name:    Basa Jawa 
+ck-US: 
+  english_name:   Cherokee
+  native_name:    Cherokee 
+se-NO: 
+  english_name:   North Sami 
+  native_name:    Davvisámegiella 
+es-CL: 
+  english_name:   Spanish (Chile) 
+  native_name:    Español (Chile) 
+es-CO: 
+  english_name:   Spanish (Colombia) 
+  native_name:    Español (Colombia) 
+es-MX: 
+  english_name:   Spanish (Mexico) 
+  native_name:    Español (México) 
+es-VE: 
+  english_name:   Spanish (Venezuela) 
+  native_name:    Español (Venezuela) 
+li-NL: 
+  english_name:   Limburgish 
+  native_name:    Limburgs 
+mg-MG: 
+  english_name:   Malagasy 
+  native_name:    Malagasy 
+qu-PE:
+  english_name:   Quechua 
+  native_name:    Qhichwa 
+rm-CH:
+  english_name:   Romansh 
+  native_name:    Rumantsch 
+xh-ZA:
+  english_name:   Xhosa 
+  native_name:    isiXhosa 
+zu-ZA:
+  english_name:   Zulu 
+  native_name:    isiZulu 
+mr-IN:
+  english_name:   Marathi
+  native_name:    मराठी 

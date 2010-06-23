@@ -144,7 +144,7 @@ module Tr8n::HelperMethods
     return "Deleted Translator" unless translator
     
     if options[:linked]
-      link_to(translator.name, translator.user_link)
+      link_to(translator.name, translator.link)
     else
       translator.name
     end
@@ -152,7 +152,7 @@ module Tr8n::HelperMethods
 
   def tr8n_user_mugshot_tag(translator, options = {})
     if translator
-      img_url = translator.user_mugshot
+      img_url = translator.mugshot
     else
       img_url = Tr8n::Config.silhouette_image
     end
@@ -160,7 +160,7 @@ module Tr8n::HelperMethods
     img_tag = "<img src='#{img_url}' style='width:48px'>"
     
     if translator and options[:linked]
-      link_to(img_tag, translator.user_link)
+      link_to(img_tag, translator.link)
     else  
       img_tag
     end

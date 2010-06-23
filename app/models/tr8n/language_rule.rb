@@ -6,6 +6,12 @@ class Tr8n::LanguageRule < ActiveRecord::Base
   
   serialize :definition
   
+  def self.for_id(rule_id)
+    Tr8n::Cache.fetch("language_rule_#{rule_id}") do 
+      find_by_id(rule_id)
+    end
+  end
+  
   def self.for(language)
     find(:all, :conditions => ["language_id = ?", language.id])
   end
@@ -56,6 +62,14 @@ class Tr8n::LanguageRule < ActiveRecord::Base
     new_translator.deleted_language_rule!(self)
     
     destroy
+  end
+
+  def after_save
+    Tr8n::Cache.delete("language_rule_#{id}")
+  end
+
+  def after_destroy
+    Tr8n::Cache.delete("language_rule_#{id}")
   end
 
 end

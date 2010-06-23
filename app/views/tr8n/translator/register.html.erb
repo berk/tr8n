@@ -1,0 +1,69 @@
+<center>
+    <h1><%=tr("#{Tr8n::Config.site_title} Translator Registration Form") %></h1>
+    <% form_tag(:controller=>"/tr8n/translator", :action => :register) do %>
+    <table style="border:1px solid #ccc; padding:10px;">
+        <tr>
+            <td>
+                <%=tr('Email:') %>
+            </td>
+            <td>
+                <%=text_field_tag :email, params[:email], :style => "width:250px" %>*
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <%=tr('Password:') %>
+            </td>
+            <td>
+                <%=password_field_tag :password, "", :style => "width:250px" %>*
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <%=tr('Confirm Password:') %>
+            </td>
+            <td>
+                <%=password_field_tag :password_verify, "", :style => "width:250px" %>*
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <%=tr('Name:') %>
+            </td>
+            <td>
+                <%=text_field_tag :name, params[:name], :style => "width:250px" %>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <%=tr('Photo Url:') %>
+            </td>
+            <td>
+                <%=text_field_tag :mugshot, params[:mugshot], :style => "width:250px" %>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <hr>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <img src="http://captchator.com/captcha/image/<%=session[:session_id]%>" alt="captcha" label="captcha" />
+            </td>
+            <td style="vertical-align:top">
+                <%=text_field_tag :captcha, "", :style => "width:250px" %>*
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="text-align:right;padding-top:10px;vertical-align:middle;">
+                <%=submit_tag trl('Register') %> 
+            </td>
+        </tr>
+    </table>
+    <br>
+    <%=tr("Already have an account? [link: Login here].", "", :link => ["/tr8n/translator/login"]) %>
+    <br>
+    <br>
+    <% end %>
+</center>

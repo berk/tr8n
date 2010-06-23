@@ -32,18 +32,20 @@
               <% end %>  
             </td>
           </tr>
-          <% unless tr8n_current_language.default? %>
-          <tr>
-            <th style="padding:3px;vertical-align:middle;font-weight:bold;"><%=trl("Fallback Language:", "Language to fall back onto if the language phrase is not translated")%></th>
-            <td style="padding:3px;">
-              <% if mode == :edit %>
-                <%=select_tag("language[fallback_language_id]", options_for_select(Tr8n::Language.options, @fallback_language.id.to_s))%>
-              <% else %>
-                <%=@fallback_language.english_name%>
-              <% end %>  
-            </td>
-          </tr>
+					
+					<% if Tr8n::Config.enable_fallback_languages? and not tr8n_current_language.default? %>
+	          <tr>
+	            <th style="padding:3px;vertical-align:middle;font-weight:bold;"><%=trl("Fallback Language:", "Language to fall back onto if the language phrase is not translated")%></th>
+	            <td style="padding:3px;">
+	              <% if mode == :edit %>
+	                <%=select_tag("language[fallback_language_id]", options_for_select(Tr8n::Language.options, @fallback_language.id.to_s))%>
+	              <% else %>
+	                <%=@fallback_language.english_name%>
+	              <% end %>  
+	            </td>
+	          </tr>
           <% end %>
+					
         </table>
       </div>
     </div>

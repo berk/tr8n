@@ -32,6 +32,7 @@ class Time
     label.gsub!("%M", "{minutes}")
     label.gsub!("%S", "{seconds}")
     label.gsub!("%s", "{since_epoch}")
+    label.gsub!("%e", "{day_of_month}")
 
     tokens = {
               :days                 => with_leading_zero(day, options),
@@ -51,7 +52,8 @@ class Time
               :trimed_hour          => strftime("%l"),
               :minutes              => strftime("%M"),
               :seconds              => strftime("%S"),
-              :since_epoch          => strftime("%s")
+              :since_epoch          => strftime("%s"),
+              :day_of_month         => strftime("%e"),
     }
 
 #    options.merge!(:skip_decorations => true) if options[:skip_decorations].blank?

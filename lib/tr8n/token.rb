@@ -1,5 +1,4 @@
 class Tr8n::Token
-  
   def self.register_data_tokens(label)
     tokens = []
     Tr8n::Config.data_token_classes.each do |token_class|
@@ -23,13 +22,18 @@ class Tr8n::Token
   def self.parse(label)
     tokens = []
     label.scan(expression).uniq.each do |token_array|
-      tokens << self.new(token_array.first) 
+      tokens << self.new(label, token_array.first) 
     end
     tokens
   end
   
-  def initialize(token)
+  def initialize(label, token)
+    @label = label
     @full_name = token 
+  end
+
+  def original_label
+    @label
   end
 
   def full_name
@@ -124,50 +128,81 @@ class Tr8n::Token
     
     raise Tr8n::TokenException.new("Invalid array second token value")
   end
+
+  
+  ##########################################################################################
+  #
+  # tr("{user_list} joined Geni", "", {:user_list => [[user1, user2, user3], :name]}}
+  #
+  # first element is an array, the rest of the elements are similar to the regular tokens
+  # lambda, symbol, string, with parameters that follow
+  #
+  # if you want to pass options, then make the second parameter an array as well    
+  # tr("{user_list} joined Geni", "", 
+  #       {:user_list => [[user1, user2, user3], 
+  #                       [:name],          # this can be any of the value methods
+  #                       {:expandable => true, 
+  #                        :to_sentence => true, 
+  #                        :limit => 3, 
+  #                        :separator => ','
+  #                       }
+  #                      ]}}
+  # 
+  # acceptable params:  expandable, to_sentence, limit, separator
+  #
+  ##########################################################################################
   
   def token_array_value(token_value, options = {}) 
     objects = token_value.first
     
-    # options are: second value is a lambda, second value is a string, second value is a symbol
-    # third value is a hash of options - :pretty_list => true, :list_limit => 3  - "and 4 others" will be added
-    # tr("{user_list} joined Geni", "", {:user_list => [[user1, user2, user3], :name]}, {:pretty_list => true, :list_limit => 3}}
-    
     objects = objects.collect do |obj|
-      evaluate_token_method_array(obj, token_value, options)
+      if token_value.second.is_a?(Array)
+        evaluate_token_method_array(obj, [obj] + token_value.second, options)
+      else
+        evaluate_token_method_array(obj, token_value, options)
+      end
     end
  
+    # if there is only one element in the array, use it and get out
     return objects.first if objects.size == 1
- 
-    separator = options[:separator] || ", "
-    list_limit = options[:list_limit] || objects.size
-    pretty_list = options[:pretty_list].nil? ? true : options[:pretty_list]
-    smart_list = options[:smart_list].nil? ? false : options[:smart_list]
-    smart_list = false if options[:skip_decorations]
     
-    return objects.join(separator) unless pretty_list
+    list_options = {
+      :expandable => true,
+      :to_sentence => true,
+      :limit => 4,
+      :separator => ", "
+    }
+    
+    if token_value.second.is_a?(Array) and token_value.size == 3
+      list_options.merge!(token_value.last) 
+    end
+ 
+    list_options[:expandable] = false if options[:skip_decorations]
+    
+    return objects.join(list_options[:separator]) unless list_options[:to_sentence]
 
-    if objects.size <= list_limit
-      return "#{objects[0..-2].join(separator)} #{"and".translate("List elements joiner", {}, options)} #{objects.last}"
+    if objects.size <= list_options[:limit]
+      return "#{objects[0..-2].join(list_options[:separator])} #{"and".translate("List elements joiner", {}, options)} #{objects.last}"
     end
 
-    display_ary = objects[0..(list_limit-1)]
-    remaining_ary = objects[list_limit..-1]
-    result = "#{display_ary.join(separator)}"
+    display_ary = objects[0..(list_options[:limit]-1)]
+    remaining_ary = objects[list_options[:limit]..-1]
+    result = "#{display_ary.join(list_options[:separator])}"
     
-    unless smart_list
+    unless list_options[:expandable]
       result << " " << "and".translate("List elements joiner", {}, options) << " "
       result << "{num} {_others}".translate("List elements joiner", 
                 {:num => remaining_ary.size, :_others => "other".pluralize_for(remaining_ary.size)}, options)
       return result
     end             
              
-    uniq_id = Time.now.to_i.to_s         
+    uniq_id = Tr8n::TranslationKey.generate_key(original_label, objects.join(","))         
     result << "<span id=\"tr8n_other_link_#{uniq_id}\">" << " " << "and".translate("List elements joiner", {}, options) << " "
     result << "<a href='#' onClick=\"$('tr8n_other_link_#{uniq_id}').hide(); $('tr8n_other_elements_#{uniq_id}').show(); return false;\">"
     result << "{num} {_others}".translate("List elements joiner", {:num => remaining_ary.size, :_others => "other".pluralize_for(remaining_ary.size)}, options)
     result << "</a></span>"
-    result << "<span id=\"tr8n_other_elements_#{uniq_id}\" style='display:none'>" << separator
-    result << "#{remaining_ary[0..-2].join(separator)} #{"and".translate("List elements joiner", {}, options)} #{remaining_ary.last}"
+    result << "<span id=\"tr8n_other_elements_#{uniq_id}\" style='display:none'>" << list_options[:separator]
+    result << "#{remaining_ary[0..-2].join(list_options[:separator])} #{"and".translate("List elements joiner", {}, options)} #{remaining_ary.last}"
     result << "<a href='#' style='font-size:smaller;white-space:nowrap' onClick=\"$('tr8n_other_link_#{uniq_id}').show(); $('tr8n_other_elements_#{uniq_id}').hide(); return false;\"> "
     result << "&laquo; less".translate("List elements joiner", {}, options)    
     result << "</a></span>"

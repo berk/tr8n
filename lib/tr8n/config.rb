@@ -42,12 +42,8 @@ class Tr8n::Config
     @enabled                    = nil
     @config                     = nil
     @default_languages          = nil
-    @default_lambdas            = nil
     @sitemap_sections           = nil
-    @default_gender_rules       = nil
-    @default_gender_list_rules  = nil
     @default_rank_styles        = nil
-    @default_numeric_rules      = nil
     @default_language           = nil
   end
 
@@ -58,9 +54,10 @@ class Tr8n::Config
       cls.delete_all
     end
 
-    default_languages.each do |l|
-      lang = Tr8n::Language.find_or_create(l[0], l[1])
-      lang.update_attributes(:english_name => l[1], :native_name => l[2], :enabled => l[3], :right_to_left => l[4])
+    default_languages.each do |locale, info|
+      lang = Tr8n::Language.find_or_create(locale, info[:english_name])
+      info[:right_to_left] = false if info[:right_to_left].nil?
+      lang.update_attributes(info.merge(:enabled => true))
       lang.rules.delete_all
       
       language_rule_classes.each do |rule_class|
@@ -71,8 +68,8 @@ class Tr8n::Config
     end
     
     Tr8n::Glossary.delete_all
-    default_glossary.each do |g|
-      Tr8n::Glossary.create(:keyword => g[0], :description => g[1])
+    default_glossary.each do |keyword, description|
+      Tr8n::Glossary.create(:keyword => keyword, :description => description)
     end
   end
 
@@ -102,8 +99,9 @@ class Tr8n::Config
     HashWithIndifferentAccess.new(map)[:map]
   end
 
-  def self.load_yml(file_path)
-    yml = YAML.load_file("#{root}#{file_path}")[env]
+  def self.load_yml(file_path, for_env = env)
+    yml = YAML.load_file("#{root}#{file_path}")
+    yml = yml[for_env] unless for_env.nil?
     HashWithIndifferentAccess.new(yml)
   end
   
@@ -116,20 +114,20 @@ class Tr8n::Config
   end
 
   def self.default_languages
-    @default_languages ||= load_json("/config/tr8n/default_languages.json")
+    @default_languages ||= load_yml("/config/tr8n/site/default_languages.yml", nil)
   end
 
-  def self.default_lambdas
-    @default_lambdas ||= load_json("/config/tr8n/default_lambdas.json")
+  def self.default_decorations
+    @default_decorations ||= load_yml("/config/tr8n/tokens/decorations.yml", nil)
   end
 
   def self.default_glossary
-    @default_glossary ||= load_json("/config/tr8n/default_glossary.json")
+    @default_glossary ||= load_yml("/config/tr8n/site/default_glossary.yml", nil)
   end
 
   def self.features
     @features ||= begin
-      defs = load_yml("/config/tr8n/features.yml")
+      defs = load_yml("/config/tr8n/site/features.yml")
       feats = []
       defs[:enabled_features].each do |key|
         defs[key][:key] = key
@@ -153,6 +151,10 @@ class Tr8n::Config
 
   def self.enable_keyboard_shortcuts?
     config[:enable_keyboard_shortcuts]
+  end
+
+  def self.default_shortcuts
+    @default_shortcuts ||= load_yml("/config/tr8n/site/shortcuts.yml", nil)
   end
 
   def self.enable_inline_translations?
@@ -183,15 +185,6 @@ class Tr8n::Config
     config[:enable_dictionary_lookup]
   end
 
-  def self.use_remote_database?
-    config[:use_remote_database]
-  end
-
-  def self.database
-    return {} unless use_remote_database?
-    config[:database]
-  end
-
   def self.enable_caching?
     config[:enable_caching]
   end
@@ -206,6 +199,14 @@ class Tr8n::Config
 
   def self.open_registration_mode?
     config[:open_registration_mode]
+  end
+  
+  def self.enable_fallback_languages?
+    config[:enable_fallback_languages]
+  end
+
+  def self.enable_translator_language?
+    config[:enable_translator_language]
   end
   
   #########################################################
@@ -269,40 +270,50 @@ class Tr8n::Config
   end
 
   def self.site_user_info_enabled?
-    site_user_info[:enabled] || true
+    site_user_info[:enabled].nil? ? true : site_user_info[:enabled]
+  end
+
+  def self.site_user_info_disabled?
+    !site_user_info_enabled?
   end
   
   def self.user_class_name
+    raise Tr8n::Exception.new("Site user integration is disabled") unless site_user_info_enabled?
     site_user_info[:class_name]
   end
 
   def self.user_class
+    raise Tr8n::Exception.new("Site user integration is disabled") unless site_user_info_enabled?
     user_class_name.constantize
   end
 
   def self.user_id(user)
-    return unless user and site_user_info_enabled?
+    raise Tr8n::Exception.new("Site user integration is disabled") unless site_user_info_enabled?
     user.send(site_user_info[:methods][:id])
   end
 
   def self.user_name(user)
+    raise Tr8n::Exception.new("Site user integration is disabled") unless site_user_info_enabled?
     user.send(site_user_info[:methods][:name])
   end
 
   def self.user_mugshot(user)
+    raise Tr8n::Exception.new("Site user integration is disabled") unless site_user_info_enabled?
     user.send(site_user_info[:methods][:mugshot])
   end
 
   def self.user_link(user)
+    raise Tr8n::Exception.new("Site user integration is disabled") unless site_user_info_enabled?
     user.send(site_user_info[:methods][:link])
   end
 
   def self.user_locale(user)
+    raise Tr8n::Exception.new("Site user integration is disabled") unless site_user_info_enabled?
     user.send(site_user_info[:methods][:locale])
   end
 
   def self.admin_user?(user = current_user)
-    return false unless user and site_user_info_enabled?
+    raise Tr8n::Exception.new("Site user integration is disabled") unless site_user_info_enabled?
     user.send(site_user_info[:methods][:admin])
   end
 
@@ -373,8 +384,8 @@ class Tr8n::Config
     @decoration_token_classes ||= rules_engine[:decoration_token_classes].collect{|tc| tc.constantize}
   end
   
-  def self.viewing_user_token
-    Tr8n::DataToken.new("{#{rules_engine[:viewing_user_token]}:gender}")
+  def self.viewing_user_token_for(label)
+    Tr8n::DataToken.new(label, "{#{rules_engine[:viewing_user_token]}:gender}")
   end
 
   def self.translation_threshold
@@ -392,28 +403,31 @@ class Tr8n::Config
     end
   end
 
+  # get rules for specified locale, or get default language rules
+  def self.load_default_rules(rules_type, locale = default_locale)
+    @default_rules ||= {}
+    @default_rules[rules_type] ||= load_yml("/config/tr8n/rules/default_#{rules_type}_rules.yml", nil)
+    rules_for_locale = @default_rules[rules_type][locale.to_s]
+    
+    return rules_for_locale.values unless rules_for_locale.nil?
+    return [] if @default_rules[rules_type][default_locale].nil?
+    @default_rules[rules_type][default_locale].values
+  end
+
   def self.default_gender_rules(locale = default_locale)
-    @default_gender_rules ||= load_json("/config/tr8n/default_gender_rules.json")
-    return @default_gender_rules[locale.to_s] if @default_gender_rules[locale.to_s]
-    @default_gender_rules[default_locale]
+    load_default_rules("gender", locale)
   end
 
   def self.default_gender_list_rules(locale = default_locale)
-    @default_gender_list_rules ||= load_json("/config/tr8n/default_gender_list_rules.json")
-    return @default_gender_list_rules[locale.to_s] if @default_gender_list_rules[locale.to_s]
-    @default_gender_list_rules[default_locale]
+    load_default_rules("gender_list", locale)
   end
 
   def self.default_numeric_rules(locale = default_locale)
-    @default_numeric_rules ||= load_json("/config/tr8n/default_numeric_rules.json")
-    return @default_numeric_rules[locale.to_s] if @default_numeric_rules[locale.to_s]
-    @default_numeric_rules[default_locale]
+    load_default_rules("numeric", locale)
   end
 
   def self.default_date_rules(locale = default_locale)
-    @default_date_rules ||= load_json("/config/tr8n/default_date_rules.json")
-    return @default_date_rules[locale.to_s] if @default_date_rules[locale.to_s]
-    @default_date_rules[default_locale]
+    load_default_rules("date", locale)
   end
 
   #########################################################

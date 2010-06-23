@@ -56,7 +56,7 @@
         <div style="float:right"><%=image_tag("/tr8n/images/lock.png", :style=>"width:12px", :title => trl("This phrase is locked"))%></div>
       <% end %>
 		
-		  Original Phrase: <%=link_to(translation.key.label, :controller => "/tr8n/phrases", :action => :view, :locale => language.locale, :translation_key_id => translation.key.id) %>
+		  Original Phrase: <%=link_to(translation.key.sanitized_label, :controller => "/tr8n/phrases", :action => :view, :locale => language.locale, :translation_key_id => translation.key.id) %>
 			<% unless translation.key.description.blank? %>
         <br><%= translation.key.description %>
 			<% end %>  
@@ -64,21 +64,21 @@
   <% end %>
 </td>
 
-<td style="text-align:right; vertical-align:top; padding-top:3px;">
-   <% if mode == :view %> 
-      <% if translation.can_be_edited_by?(tr8n_current_translator) %>
-		      <%=link_to_function(image_tag("/tr8n/images/pencil.png"), "updateTranslationRow('#{translation.id}', 'edit')")%>
-		      <%=link_to_function(image_tag("/tr8n/images/cross.png"), "deleteTranslationRow('#{translation.id}', '#{@section_key}')")%>
-			<% elsif translation.can_be_deleted_by?(tr8n_current_translator)  %>
-          <%=link_to_function(image_tag("/tr8n/images/cross.png"), "deleteTranslationRow('#{translation.id}', '#{@section_key}')")%>
-			<% end %>		
-  <% elsif mode == :edit %>
-      <%=link_to_function(image_tag("/tr8n/images/disk.png"), "submitTranslationRow('#{translation.id}')")%>
-      <%=link_to_function(image_tag("/tr8n/images/cancel.png"), "updateTranslationRow('#{translation.id}', 'view')")%>
-  <% else %>
-      <%=link_to(image_tag("/tr8n/images/table_edit.png"), :controller => "/tr8n/phrases", :action => :view, :locale => language.locale, :translation_key_id => translation.key.id) %>
-  <% end %>
+<% unless mode == :list %> 
+	<td style="text-align:right; vertical-align:top; padding-top:3px;">
+	 <% if mode == :view %> 
+	    <% if translation.can_be_edited_by?(tr8n_current_translator) %>
+	        <%=link_to_function(image_tag("/tr8n/images/pencil.png"), "updateTranslationRow('#{translation.id}', 'edit')")%>
+	        <%=link_to_function(image_tag("/tr8n/images/cross.png"), "deleteTranslationRow('#{translation.id}', '#{@section_key}')")%>
+	    <% elsif translation.can_be_deleted_by?(tr8n_current_translator)  %>
+	        <%=link_to_function(image_tag("/tr8n/images/cross.png"), "deleteTranslationRow('#{translation.id}', '#{@section_key}')")%>
+	    <% end %>   
+	<% elsif mode == :edit %>
+	    <%=link_to_function(image_tag("/tr8n/images/disk.png"), "submitTranslationRow('#{translation.id}')")%>
+	    <%=link_to_function(image_tag("/tr8n/images/cancel.png"), "updateTranslationRow('#{translation.id}', 'view')")%>
+	<% end %>
 </td>
+<% end %>
 
 <% if mode == :edit %>
 	<script>

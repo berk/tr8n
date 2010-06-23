@@ -17,7 +17,9 @@ class Tr8n::Translator < ActiveRecord::Base
   belongs_to :fallback_language,            :class_name => 'Tr8n::Language',                  :foreign_key => :fallback_language_id
     
   def self.for(user)
-    return nil unless user and user.id
+    return nil unless user and user.id 
+    return nil if Tr8n::Config.guest_user?(user)
+    
     Tr8n::Cache.fetch("translator_for_#{user.id}") do 
       find_by_user_id(user.id)
     end
@@ -171,33 +173,47 @@ class Tr8n::Translator < ActiveRecord::Base
   end
   
   def name
+    return super unless Tr8n::Config.site_user_info_enabled?
+    
     return "Deleted User" unless user
     Tr8n::Config.user_name(user)
   end
 
-  def user_mugshot
+  def mugshot
+    return super unless Tr8n::Config.site_user_info_enabled?
+
     return Tr8n::Config.silhouette_image unless user
     img_url = Tr8n::Config.user_mugshot(user)
     return Tr8n::Config.silhouette_image if img_url.blank?
     img_url
   end
 
-  def user_link
+  def link
+    return super unless Tr8n::Config.site_user_info_enabled?
+
     return Tr8n::Config.default_url unless user
     Tr8n::Config.user_link(user)
   end
 
   def admin?
+    return super unless Tr8n::Config.site_user_info_enabled?
+    
     return false unless user
     Tr8n::Config.admin_user?(user)
   end  
 
   def guest?
+    return id.nil? unless Tr8n::Config.site_user_info_enabled?
+
     return true unless user
     Tr8n::Config.guest_user?(user)
   end  
 
   def after_save
+    Tr8n::Cache.delete("translator_for_#{user_id}")
+  end
+
+  def after_destroy
     Tr8n::Cache.delete("translator_for_#{user_id}")
   end
 

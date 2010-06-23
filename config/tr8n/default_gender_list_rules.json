@@ -1,7 +1,0 @@
-{"en-US": [
-],
-"iw": [
-      {"operator": "contains", "value": "all_male"},
-      {"operator": "contains", "value": "all_female"},
-      {"operator": "contains", "value": "mixed"}
-]}

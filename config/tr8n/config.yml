@@ -12,13 +12,16 @@
 defaults: &defaults
   enable_tr8n:                true      # enables the engine
   enable_key_source_tracking: false     # builds the site map sources
-  enable_key_caller_tracking: false     # tracks all calls to labels
+  enable_key_caller_tracking: false     # tracks all calls to labels with their traces - for debugging only
   
   enable_glossary_hints:      true      # shows glossary in the translator    
   enable_software_keyboard:   true      # shows the soft keyboard icon  
   enable_google_suggestions:  true      # uses google for suggestions
-  enable_keyboard_shortcuts:  true      # adds some keyboard shortcuts 
-  enable_dictionary_lookup:   true      # shows dictionary words definitions 
+  enable_keyboard_shortcuts:  true      # adds some keyboard shortcuts like ctrl+t
+  enable_dictionary_lookup:   true      # shows dictionary words definitions
+  
+  enable_fallback_languages:  true      # for example: Catalan can fallback onto Spanish
+  enable_translator_language: false     # translator can translate from non-default language 
   
   #############################################################################
   # Set the following flag to true if you would like to allow any registered 
@@ -28,23 +31,6 @@ defaults: &defaults
   # be a translator in order to submit or vote on translations.
   #############################################################################
   open_registration_mode:     true
-
-  #############################################################################
-  # If you would like to run tr8n on a different database, 
-  # you can overload the remote setting and provide the database details
-  # for each environment by using a database symbol.
-  # 
-  # use_remote_database:        true
-  # database:
-  #   host:                     localhost
-  #   database:                 tr8n
-  #   adapter:                  postgresql
-  #   username:                 tr8n
-  #   password:
-  #   port:                     5432
-  #   encoding:                 utf8  
-  #############################################################################
-  use_remote_database:        false
 
   #############################################################################
   # Tr8n best run with caching enabled 
@@ -67,7 +53,7 @@ defaults: &defaults
   enable_caching:             false
   cache_adapter:              ActiveSupport::Cache
   cache_store:                [mem_cache_store, 'localhost:11211']
-  cache_version:              1 # you can change the version to invalidate it
+  cache_version:              1 # you can change the version to invalidate the cache
 
   #############################################################################
   # By default, Tr8n will use its own logger. If you set it to false,  
@@ -86,12 +72,12 @@ defaults: &defaults
     title:                    Tr8n                  # site title, for customization 
     default_url:              /home         
     default_locale:           en-US
-    sitemap_json:             /config/tr8n/default_sitemap.json
+    sitemap_path:             /config/tr8n/site/sitemap.json
     splash_screen:            /tr8n/common/splash_screen
     admin_layout:             admin
     tr8n_layout:              application
     user_info:  
-      enabled:                true
+      enabled:                true    # if disabled, will fallback onto translators
       class_name:             User
       methods:  
         id:                   id
@@ -110,6 +96,7 @@ defaults: &defaults
     data_token_classes:       [Tr8n::DataToken, Tr8n::HiddenToken, Tr8n::MethodToken, Tr8n::TransformToken]
     decoration_token_classes: [Tr8n::DecorationToken]
     allow_nil_token_values:   true
+    key_method:               "Digest::MD5.hexdigest(\"{label};;;{description}\")" # if changed all keys will be invalidated
     numeric_rule:  
       token_suffixes:         [count, num, age, hours, minutes, years, seconds]
       object_method:          to_i
@@ -191,17 +178,3 @@ production:
   <<: *defaults
 
   enable_key_source_tracking: false
-
-#  an example of how to overload the databse settings for production 
-#  use_remote_database:        true
-#  database:
-#    host:                     localhost
-#    database:                 tr8n
-#    adapter:                  postgresql
-#    username:                 tr8n
-#    password:
-#    port:                     5432
-#    encoding:                 utf8  
-#
-#  alternatively you can specify it by referencing an existing database config
-#  database:                   production1 

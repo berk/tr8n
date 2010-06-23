@@ -14,21 +14,23 @@ class Date
   
   def translate(format = :default, language = Tr8n::Config.current_language, options = {})
     label = (format.is_a?(String) ? format.clone : Tr8n::Config.default_date_formats[format].clone)
+    
     label.gsub!("%a", "{short_week_day_name}")
     label.gsub!("%A", "{week_day_name}")
     label.gsub!("%b", "{short_month_name}")
     label.gsub!("%B", "{month_name}")
     label.gsub!("%p", "{am_pm}")
     label.gsub!("%d", "{days}")
+    label.gsub!("%e", "{days}")
     label.gsub!("%j", "{year_days}")
     label.gsub!("%m", "{months}")
     label.gsub!("%W", "{week_num}")
     label.gsub!("%w", "{week_days}")
     label.gsub!("%y", "{short_years}")
     label.gsub!("%Y", "{years}")
-
+    
     tokens = {
-              :days                 => with_leading_zero(day, options), 
+              :days                 => with_leading_zero(day, options),
               :year_days            => with_leading_zero(yday, options),
               :months               => with_leading_zero(month, options), 
               :week_num             => wday, 

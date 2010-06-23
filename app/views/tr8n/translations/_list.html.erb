@@ -8,7 +8,9 @@
     <td class="topic_header" style="width:25px;"><%=trl("Rank")%></td>
     <td class="topic_header" style="width:80px;text-align:center"><%=trl("Your Vote")%></td>
     <td class="topic_header" style=""><%=trl("Translation")%></td>
-    <td class="topic_header" style="width:50px;">&nbsp;</td>
+    <% unless mode == :list %> 
+      <td class="topic_header" style="width:50px;">&nbsp;</td>
+		<% end %>
   </tr>  
 
   <% translations.each do |trn| %>

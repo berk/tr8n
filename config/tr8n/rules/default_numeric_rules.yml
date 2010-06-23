@@ -1,0 +1,34 @@
+#############################################################################
+#
+# Tr8n Default Numeric Rules
+#
+#############################################################################
+
+en-US: 
+  rule1:
+    multipart:  false 
+    part1:      is
+    value1:     "1"
+  rule2:
+    multipart:  false 
+    part1:      is_not
+    value1:     "1"
+ru: 
+  rule1:
+    multipart:  true 
+    part1:      ends_in
+    value1:     "1"
+    operator:   and
+    part2:      does_not_end_in
+    value2:     "11"
+  rule2:
+    multipart:  true 
+    part1:      ends_in
+    value1:     "2,3,4"
+    operator:   and
+    part2:      does_not_end_in
+    value2:     "12,13,14"
+  rule3:
+    multipart:  false 
+    part1:      ends_in
+    value1:     "0,5,6,7,8,9,11,12,13,14"

@@ -1,0 +1,17 @@
+#############################################################################
+#
+# Tr8n Default Gender List Rules
+#
+#############################################################################
+
+en-US:
+iw: 
+  rule1: 
+    operator: contains
+    value:    all_male
+  rule2: 
+    operator: contains
+    value:    all_female
+  rule3: 
+    operator: contains
+    value:    mixed

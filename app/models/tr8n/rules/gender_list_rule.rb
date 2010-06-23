@@ -24,23 +24,6 @@ class Tr8n::GenderListRule < Tr8n::LanguageRule
     [["all male objects", "all_male"], ["all female objects", "all_female"], ["objects of mixed gender", "mixed"]]
   end
   
-  def gender_token_value(token)
-    return nil unless token and token.respond_to?(Tr8n::Config.rules_engine[:gender_rule][:object_method])
-    token.send(Tr8n::Config.rules_engine[:gender_rule][:object_method])
-  end
-
-  def gender_token_value(token)
-    self.class.gender_token_value(token)
-  end
-
-  def gender_object_value_for(type)
-    Tr8n::Config.rules_engine[:gender_rule][:method_values][type]
-  end
-
-  def gender_object_value_for(type)
-    self.class.gender_object_value_for(type)
-  end
-
   def self.list_size_token_value(token)
     return nil unless token and token.respond_to?(Tr8n::Config.rules_engine[:gender_list_rule][:object_method])
     token.send(Tr8n::Config.rules_engine[:gender_list_rule][:object_method])
@@ -55,10 +38,10 @@ class Tr8n::GenderListRule < Tr8n::LanguageRule
     has_female = false
 
     arr.each do |object|
-      object_gender = gender_token_value(object)
+      object_gender = Tr8n::GenderRule.gender_token_value(object)
       return [false, false] unless object_gender
-      has_male = true if object_gender == gender_object_value_for("male")
-      has_female = true if object_gender == gender_object_value_for("female")
+      has_male = true if object_gender == Tr8n::GenderRule.gender_object_value_for("male")
+      has_female = true if object_gender == Tr8n::GenderRule.gender_object_value_for("female")
     end  
     
     [has_male, has_female]

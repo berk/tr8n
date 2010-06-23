@@ -42,11 +42,11 @@ class Tr8n::DecorationToken < Tr8n::Token
   end
     
   def handle_default_decorations(lambda_token_name, lambda_token_value, token_values)
-    unless Tr8n::Config.default_lambdas[lambda_token_name]
+    unless Tr8n::Config.default_decorations[lambda_token_name]
       raise Tr8n::TokenException.new("Invalid decoration token value")
     end
 
-    lambda_value = Tr8n::Config.default_lambdas[lambda_token_name].clone
+    lambda_value = Tr8n::Config.default_decorations[lambda_token_name].clone
 
     params = [lambda_token_value]
     params += token_values[lambda_token_name.to_sym] if token_values[lambda_token_name.to_sym]
@@ -81,7 +81,7 @@ class Tr8n::DecorationToken < Tr8n::Token
       else
         raise Tr8n::TokenException.new("Invalid decoration token value")
       end
-    elsif Tr8n::Config.default_lambdas[name]
+    elsif Tr8n::Config.default_decorations[name]
       substitution_value = handle_default_decorations(name, value, values)
     else
       raise Tr8n::TokenException.new("Missing decoration token value")

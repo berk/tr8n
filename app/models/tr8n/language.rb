@@ -18,6 +18,8 @@ class Tr8n::Language < ActiveRecord::Base
   end
   
   def self.for(locale)
+    return nil if locale.nil?
+    
     Tr8n::Cache.fetch("language_#{locale}") do 
       find_by_locale(locale)
     end
@@ -75,11 +77,15 @@ class Tr8n::Language < ActiveRecord::Base
   end
   
   def self.enabled_languages
-    find(:all, :conditions => ["enabled = ?", true], :order => "english_name asc")
+    Tr8n::Cache.fetch("enabled_languages") do 
+      find(:all, :conditions => ["enabled = ?", true], :order => "english_name asc")
+    end
   end
 
   def self.featured_languages
-    find(:all, :conditions => ["enabled = ? and featured_index is not null and featured_index > 0", true], :order => "featured_index desc")
+    Tr8n::Cache.fetch("featured_languages") do 
+      find(:all, :conditions => ["enabled = ? and featured_index is not null and featured_index > 0", true], :order => "featured_index desc")
+    end
   end
 
   def self.translate(label, desc = "", tokens = {}, options = {})
@@ -185,6 +191,14 @@ class Tr8n::Language < ActiveRecord::Base
 
   def after_save
     Tr8n::Cache.delete("language_#{locale}")
+    Tr8n::Cache.delete("featured_languages")
+    Tr8n::Cache.delete("enabled_languages")
+  end
+
+  def after_destroy
+    Tr8n::Cache.delete("language_#{locale}")
+    Tr8n::Cache.delete("featured_languages")
+    Tr8n::Cache.delete("enabled_languages")
   end
 
   def recently_added_forum_messages

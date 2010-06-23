@@ -1,0 +1,23 @@
+<%= render :partial => "/tr8n/common/header" %>
+
+<%=render(:partial => "basic_info", :locals => {:mode => :view}) %>
+
+<script>
+  function switchSectionMode(section, mode) {
+    new Ajax.Updater(section + '_container', '/tr8n/translator/update_translator_section', {
+      parameters: {section:section, mode:mode},
+      method: 'get'
+    });
+  }
+  
+  function submitSection(section) {
+    var params = $(section + '_form').serialize(true);
+    params['section'] = section;
+    new Ajax.Updater(section + '_container', '/tr8n/translator/update_translator_section', {
+      parameters: params,
+      method: 'post'
+    });
+  }
+</script>
+
+<%= render :partial => "/tr8n/common/footer" %>

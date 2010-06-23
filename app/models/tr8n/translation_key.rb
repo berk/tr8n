@@ -45,9 +45,14 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     key_source.update_details!(options)
   end
   
-  def self.generate_key(label, desc="")
-    key = "#{label};;;#{desc}"
-    Digest::MD5.hexdigest(key)
+  def self.generate_key(label, desc = "")
+#    no external specifications for now
+#
+#    key_method = Tr8n::Config.rules_engine[:key_method].clone
+#    key_method.gsub!("{label}", label.to_s)
+#    key_method.gsub!("{description}", desc.to_s)
+#    eval(key_method)
+    Digest::MD5.hexdigest("#{label};;;#{desc}")
   end
   
   def tokenized_label
@@ -76,7 +81,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
       end
     end
 
-    toks << Tr8n::Config.viewing_user_token
+    toks << Tr8n::Config.viewing_user_token_for(label)
     toks.uniq
   end
 
@@ -218,20 +223,29 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     {:key => self.key, :labels => valid_translations}
   end
 
+  def find_first_valid_translation(language, token_values)
+    # find the first translation in the order of the rank that matches the rules
+    valid_translations_for(language).each do |translation|
+      return translation if translation.matches_rules?(token_values)
+    end
+    
+    nil
+  end
+
   # language fallback approach
   # each language can have a fallback language
   def find_first_valid_translation_for_language(language, token_values)
-    # find the first translation in the order of the rank that matches the rules
-    valid_translations_for(language).each do |translation|
-      return [language, translation] if translation.matches_rules?(token_values)
-    end
+    translation = find_first_valid_translation(language, token_values)
+    return [language, translation] if translation
 
-    # recursevily go into the fallback language and look there
-    # no need to go to the default language - there obviously won't be any translations for it
-    # unless you really won't to keep the keys in the text, and translate the default language
-    if language.fallback_language and not language.fallback_language.default?
-      return find_first_valid_translation_for_language(language.fallback_language, token_values)
-    end
+    if Tr8n::Config.enable_fallback_languages?
+      # recursevily go into the fallback language and look there
+      # no need to go to the default language - there obviously won't be any translations for it
+      # unless you really won't to keep the keys in the text, and translate the default language
+      if language.fallback_language and not language.fallback_language.default?
+        return find_first_valid_translation_for_language(language.fallback_language, token_values)
+      end
+    end  
     
     [language, nil]
   end
@@ -239,13 +253,11 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   # translator fallback approach
   # each translator can have a fallback language, which may have a fallback language
   def find_first_valid_translation_for_translator(language, translator, token_values)
-    # find the first translation in the order of the rank that matches the rules
-    valid_translations_for(language).each do |translation|
-      return [language, translation] if translation.matches_rules?(token_values)
-    end
+    translation = find_first_valid_translation(language, token_values)
+    return [language, translation] if translation
     
     if translator.fallback_language and not translator.fallback_language.default?
-      return find_first_valid_translation_for_language(translator.fallback_language, token_values)      
+      return find_first_valid_translation_for_language(translator.fallback_language, token_values)
     end
 
     [language, nil]
@@ -258,7 +270,11 @@ class Tr8n::TranslationKey < ActiveRecord::Base
       return substitute_tokens(label, token_values, options.merge(:fallback => false), language)
     end
     
-    translation_language, translation = find_first_valid_translation_for_language(language, token_values)
+    if Tr8n::Config.enable_translator_language? and Tr8n::Config.current_user_is_translator?
+      translation_language, translation = find_first_valid_translation_for_translator(language, Tr8n::Config.current_translator, token_values)
+    else  
+      translation_language, translation = find_first_valid_translation_for_language(language, token_values)
+    end
     
     # if you want to present the label in it's sanitized form - for the phrase list
     if options[:default_language] 
@@ -266,7 +282,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     end
     
     if translation
-      translated_label = translation.translate(token_values, options)
+      translated_label = substitute_tokens(translation.label, token_values, options, language)
       return decorate_translation(language, translated_label, translation != nil, options.merge(:fallback => (translation_language != language)))
     end
 
@@ -281,6 +297,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
 
   # this is done when the translations engine is disabled
   def self.substitute_tokens(label, tokens, options = {})
+    return label if options[:skip_substitution] 
     Tr8n::TranslationKey.new(:label => label).substitute_tokens(label, tokens, options)
   end
 
@@ -329,6 +346,10 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   end
       
   def after_save
+    Tr8n::Cache.delete("translation_key_#{key}")
+  end
+
+  def after_destroy
     Tr8n::Cache.delete("translation_key_#{key}")
   end
 
