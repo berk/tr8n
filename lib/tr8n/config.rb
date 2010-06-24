@@ -229,6 +229,10 @@ class Tr8n::Config
     config[:enable_dictionary_lookup]
   end
 
+  def self.enable_language_flags?
+    config[:enable_language_flags]
+  end
+
   def self.enable_caching?
     config[:enable_caching]
   end
@@ -333,32 +337,62 @@ class Tr8n::Config
 
   def self.user_id(user)
     raise Tr8n::Exception.new("Site user integration is disabled") unless site_user_info_enabled?
-    user.send(site_user_info[:methods][:id])
+    begin
+      user.send(site_user_info[:methods][:id])
+    rescue Exception => ex
+      Tr8n::Logger.error("Failed to fetch user id: #{ex.to_s}")
+      return 0
+    end  
   end
 
   def self.user_name(user)
     raise Tr8n::Exception.new("Site user integration is disabled") unless site_user_info_enabled?
-    user.send(site_user_info[:methods][:name])
+    begin
+      user.send(site_user_info[:methods][:name])
+    rescue Exception => ex
+      Tr8n::Logger.error("Failed to fetch #{user_class_name} name: #{ex.to_s}")
+      return "Unknown user"
+    end  
   end
 
   def self.user_mugshot(user)
     raise Tr8n::Exception.new("Site user integration is disabled") unless site_user_info_enabled?
-    user.send(site_user_info[:methods][:mugshot])
+    begin
+      user.send(site_user_info[:methods][:mugshot])
+    rescue Exception => ex
+      Tr8n::Logger.error("Failed to fetch #{user_class_name} image: #{ex.to_s}")
+      return silhouette_image
+    end  
   end
 
   def self.user_link(user)
     raise Tr8n::Exception.new("Site user integration is disabled") unless site_user_info_enabled?
-    user.send(site_user_info[:methods][:link])
+    begin
+      user.send(site_user_info[:methods][:link])
+    rescue Exception => ex
+      Tr8n::Logger.error("Failed to fetch #{user_class_name} link: #{ex.to_s}")
+      return "/tr8n"
+    end  
   end
 
   def self.user_locale(user)
     raise Tr8n::Exception.new("Site user integration is disabled") unless site_user_info_enabled?
-    user.send(site_user_info[:methods][:locale])
+    begin
+      user.send(site_user_info[:methods][:locale])
+    rescue Exception => ex
+      Tr8n::Logger.error("Failed to fetch #{user_class_name} locale: #{ex.to_s}")
+      return default_locale
+    end  
   end
 
   def self.admin_user?(user = current_user)
     raise Tr8n::Exception.new("Site user integration is disabled") unless site_user_info_enabled?
-    user.send(site_user_info[:methods][:admin])
+    begin
+      user.send(site_user_info[:methods][:admin])
+    rescue Exception => ex
+      Tr8n::Logger.error("Failed to fetch #{user_class_name} admin flag: #{ex.to_s}")
+      return false
+    end  
   end
 
   def self.current_user_is_admin?
@@ -367,7 +401,12 @@ class Tr8n::Config
   
   def self.guest_user?(user = current_user)
     return true unless user
-    user.send(site_user_info[:methods][:guest])
+    begin
+      user.send(site_user_info[:methods][:guest])
+    rescue Exception => ex
+      Tr8n::Logger.error("Failed to fetch #{user_class_name} guest flag: #{ex.to_s}")
+      return true
+    end  
   end
   
   def self.current_user_is_guest?

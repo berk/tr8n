@@ -82,10 +82,9 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     @tokenized_label ||= Tr8n::TokenizedLabel.new(label)
   end
   
-  # do i need all these?
+  delegate :tokens, :tokens?, :to => :tokenized_label
   delegate :data_tokens, :data_tokens?, :to => :tokenized_label
   delegate :decoration_tokens, :decoration_tokens?, :to => :tokenized_label
-  delegate :tokens, :tokens?, :to => :tokenized_label
   delegate :translation_tokens, :translation_tokens?, :to => :tokenized_label
   delegate :sanitized_label, :tokenless_label, :words, :to => :tokenized_label
 
@@ -329,15 +328,13 @@ class Tr8n::TranslationKey < ActiveRecord::Base
 
     # substitute all data tokens
     Tr8n::TokenizedLabel.new(processed_label).data_tokens.each do |token|
-      # check if the token exists in the original list of tokens
-      # next if tokens.select{|tkn| (tkn.class == token.class and tkn.name == token.name)}.empty?
+      next unless tokenized_label.allowed_token?(token)
       processed_label = token.substitute(processed_label, token_values, options, language) 
     end
 
     # substitute all decoration tokens
     Tr8n::TokenizedLabel.new(processed_label).decoration_tokens.each do |token|
-      # check if the token exists in the original list of tokens
-      # next if tokens.select{|tkn| (tkn.class == token.class and tkn.name == token.name)}.empty?
+      next unless tokenized_label.allowed_token?(token)
       processed_label = token.substitute(processed_label, token_values, options, language) 
     end
     

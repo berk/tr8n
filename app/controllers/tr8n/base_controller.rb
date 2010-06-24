@@ -26,7 +26,7 @@ class Tr8n::BaseController < ApplicationController
   CHART_COLORS = ['AFD8F8', 'F6BD0F', '8BBA00', 'FF8E46', '008E8E', 'D64646', '8E468E', '588526', 'B3AA00', '008ED6', '9D080D', 'A186BE']
 
   before_filter :validate_tr8n_enabled, :except => [:translate]
-  before_filter :validate_guest_user, :except => [:select, :switch, :translate]
+  before_filter :validate_guest_user, :except => [:select, :switch, :translate, :table]
   before_filter :validate_current_user, :except => [:translate]
   
   layout Tr8n::Config.site_info[:tr8n_layout]
@@ -89,7 +89,8 @@ private
 
   def redirect_to_source
     return redirect_to(params[:source_url]) unless params[:source_url].blank?
-    redirect_to(request.env['HTTP_REFERER'])
+    redirect_to(request.env['HTTP_REFERER']) unless request.env['HTTP_REFERER'].blank?
+    redirect_to_site_default_url
   end
 
   def redirect_to_site_default_url

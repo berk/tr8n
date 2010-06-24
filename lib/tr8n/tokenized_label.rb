@@ -53,6 +53,16 @@ class Tr8n::TokenizedLabel
     @tokens = data_tokens + decoration_tokens
   end
 
+  def sanitized_tokens_hash
+    @sanitized_tokens_hash ||= begin
+      hash = {}
+      tokens.each do |token|
+        hash[token.sanitized_name] = token
+      end
+      hash
+    end
+  end
+  
   def tokens?
     tokens.any?
   end
@@ -100,5 +110,18 @@ class Tr8n::TokenizedLabel
       parts
     end
   end
+
+  def sanitized_tokens_hash
+    @sanitized_tokens_hash ||= begin
+      hash = {}
+      tokens.each do |token|
+        hash[token.sanitized_name] = token
+      end
+      hash
+    end
+  end
   
+  def allowed_token?(token)
+    not sanitized_tokens_hash[token.sanitized_name].nil?
+  end
 end

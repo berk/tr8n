@@ -16,7 +16,7 @@
 		          <% end %>
     			 </span>
           <div onClick="$('language_selector_locale').value='<%=language.locale%>'; $('language_selector_form').submit();">
-            <%=image_tag("/tr8n/images/flags/#{language.flag}.png", :style=>"vertical-align:middle")%>
+          	<%= tr8n_language_flag_tag(language) %>
 						<% if language == tr8n_current_language %>
 						  <strong><%=language.full_name%></strong>
             <% else %>
@@ -42,10 +42,16 @@
   <ul class="language_list">
     <% @all_languages.each do |language|%>
       <li onClick="$('language_selector_locale').value='<%=language.locale%>'; $('language_selector_form').submit();">
-        <span style="font-size:8px; float:right; color:#ccc;"><%="#{language.completeness || 0}%"%></span>
-      	
-        <%=image_tag("/tr8n/images/flags/#{language.flag}.png", :style=>"vertical-align:middle")%>
-        <%=language.full_name%>
+        <span style="font-size:8px; float:right; color:#ccc;">
+          <% if language.default? %>
+             100%
+          <% else %>
+             <%="#{language.completeness || 0}%"%>
+          <% end %>
+				</span>
+				
+      	<%= tr8n_language_flag_tag(language) %>
+        <%= language.full_name %>
       </li>
     <% end %>
   </ul>

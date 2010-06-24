@@ -14,26 +14,25 @@
     </th>
     <th style="width:50px"> </th>
   </tr>  
-  <% users.each_with_index do |user, index| %>
+  <% users.each_with_index do |language_user, index| %>
     <tr>
-      <td><%=link_to(user.language.english_name, :action => :view, :lang_id => user.language.id)%></td>
+      <td><%=link_to(language_user.language.english_name, :action => :view, :lang_id => language_user.language.id)%></td>
       <td>
-        <% if user.user %>
-          <%= Tr8n::Config.user_name(user.user) %>
-          (<%= Tr8n::Config.user_id(user.user) %>)
+        <% if language_user.user %>
+          <%= Tr8n::Config.user_name(language_user.user) %> (<%= link_to(Tr8n::Config.user_id(language_user.user), Tr8n::Config.user_link(language_user.user)) %>)
         <% else %>
           Deleted user
-        <% end %>   
+        <% end %>
       </td>
       <td>
-        <%= user.translator? %>
+        <%= language_user.translator? %>
       </td>
       <td>
-        <%=user.created_at.trl(:date_time)%>
+        <%= language_user.created_at.trl(:date_time)%>
       </td>
       <td style="text-align:right">
-        <% if user.translator? %>
-          <%=link_to("View", "/tr8n/admin/translator/view?translator_id=#{user.translator.id}")%>
+        <% if language_user.translator? %>
+          <%=link_to("View", "/tr8n/admin/translator/view?translator_id=#{language_user.translator.id}")%>
         <% end %>
       </td>
     </tr>

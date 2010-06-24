@@ -49,17 +49,20 @@ module Tr8n::HelperMethods
     html << "</div>"
   end
 
+  def tr8n_language_flag_tag(lang = Tr8n::Config.current_language, opts = {})
+    return "" unless Tr8n::Config.enable_language_flags?
+    html << image_tag("/tr8n/images/flags/#{lang.flag}.png", :style => "vertical-align:middle;", :title => trl("#{lang.english_name} flag"))
+    html << "&nbsp;" 
+  end
+
   def tr8n_language_name_tag(lang = Tr8n::Config.current_language, opts = {})
     show_flag = opts[:flag].nil? ? true : opts[:flag]
     name_type = opts[:name].nil? ? :full : opts[:name] # :full, :native, :english, :locale
     linked = opts[:linked].nil? ? true : opts[:linked] 
     
     html = "<span style='white-space: nowrap'>"
-    if show_flag
-      html << image_tag("/tr8n/images/flags/#{lang.flag}.png", :style => "vertical-align:middle;", :title => trl("#{lang.english_name} flag"))
-    end
+    html << tr8n_language_flag_tag(lang, opts) if show_flag
     
-    html << "&nbsp;" 
     name = case name_type
       when :native  then lang.native_name
       when :english then lang.english_name
