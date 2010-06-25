@@ -74,18 +74,22 @@ Here are some of the key elements with descriptions:
 
 * current_user_method must be defined in the application controller and it should return the current_user of the application. Below is a sample implementation of the method. You may already have it defined:
 
+
   def current_user
     @current_user ||= (session[:user_id] ? User.find_by_id(session[:user_id]) : User.new) || User.new   
   end
   helper_method :current_user
 
+
 * current_locale_method returns the current language of the application. This method is option. If not provided it will fallback on the following implementation:
+
 
   def current_locale
     session[:locale] = Tr8n::Config.default_locale unless session[:locale]
     session[:locale] = params[:locale] if params[:locale]
   end
   helper_method :current_locale
+
 
 * The default_locale of the site assumes that your default language is English, but if it is not the case, you can change to whatever language your site is written in.  
 * If you would like to have a translation sitemap in the translation tools, please review and provide your own sitemap.json file.
