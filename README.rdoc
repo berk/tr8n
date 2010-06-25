@@ -13,7 +13,8 @@ can be configured or extended for any application deployment.
 
 == Installation Instructions
 
-Tr8n is mostly fully self-contained. The only two plugins it depends on are will_paginate for results pagination and will_filter for filtering results. 
+Tr8n is mostly self-contained. The only two plugins it depends on are will_paginate created by Mislav Marohnić for results pagination 
+and will_filter created by me for filtering results in the admin interface. 
 
 To install the required plugins, run the following commands:
 
@@ -32,15 +33,43 @@ To install and initialize the engine itself, run the following commands:
   $ rake db:migrate 
   $ rake tr8n:init
 
-  $ cd public
-  $ ln -s ../vendor/plugins/tr8n/public/tr8n tr8n
+  $ cd public; ln -s ../vendor/plugins/tr8n/public/tr8n tr8n
 
+== Tr8n Notations
 
-== Tr8n Cheat Sheet
+The following is a short summary of the tr8n's internationalization notations:
 
-The following is a short summary of the tr8n's tr method notations:
+Data token:
 
+  <%= tr("Dear {user}", nil, :user => current_user) %>
+  
+Method token with an embedded method calls:
 
+  <%= tr("Dear {user.first_name} {user.last_name}", nil, :user => current_user) %>
+  
+Data token with a value substitution:
+
+  <%= tr("Dear {user}", nil, :user => [current_user, display_user(current_user)]) %>
+  
+Data token with a value substitution using symbol method call:
+
+  <%= tr("Dear {user}", nil, :user => [current_user, :first_name])  %>
+  
+Data token with a value substitution using symbol method call with parameters:
+
+  <%= tr("Dear {user}", nil, :user => [current_user, :some_method, "value"])  %>
+  
+Data token with a value substitution using lambda method call:
+
+  <%= tr("Dear {user}", nil, :user => [current_user, lambda{|val| html_for(val)}])  %>
+  
+Data token with a value substitution using lambda method call with parameters:
+
+  <%= tr("Dear {user}", nil, :user => [current_user, lambda{|val, test| html_for(val, test)}], "test"])  %>
+
+Hidden token:
+
+  <%= tr("{user} changed {_his_her} name", nil, :user => [current_user, :name], :_his_her => current_user.his_her)  %>
 
 
 
