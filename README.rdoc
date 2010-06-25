@@ -80,35 +80,75 @@ You can read more about them in the Tr8n Integration Guide.
 
 == Tr8n Internationalization Notations
 
-The following is a short summary of the tr8n's internationalization notations:
+The following is a short summary of the tr8n's internationalization notations.
 
-Data token:
+=== Definition of Tr8n Tokens
+
+It would have been boring if all of the labels in a site were just simple sentences without any dynamic data or decorations. 
+Tr8n tokens are there to support the dynamic information in a label. 
+
+Currently there are two major types of tokens defined in the extensible Tr8n syntax: data tokens and decoration tokens.
+Data tokens are defined as any strings surrounded by curly brackets inside of a label. So anything of this form 
+{TOKEN_NAME} is considered a data token. 
+
+Decoration tokens are defined as any string surrounded by squared brackets inside of a label. So anything of this form 
+[TOKEN_NAME: decorated value] is considered a decoration token. 
+
+There are a number of different flavors for data tokens. Below are some of the flavors with some examples. 
+
+=== Basic Data Tokens
+
+There is a number of ways to substitute a data token with a value. Below are some of the main examples.
+
+*Simple string substitution:*  
 
   <%= tr("Dear {user}", "Fragment sample", :user => current_user) %>
-  
-Method token with embedded method calls:
 
-  <%= tr("Dear {user.first_name} {user.last_name}", "Fragment sample", :user => current_user) %>
+The to_s function will be applied on the value of the current_user variable and substituted into the {user} token.
   
-Data token with a value substitution:
+*Value substitution:*
 
   <%= tr("Dear {user}", "Fragment sample", :user => [current_user, display_user(current_user)]) %>
   
-Data token with a value substitution using symbol method call:
+Notice one important thing that current_user is passed as a first element in the array. 
+This is done for gender rules evaluation - i will describe this in the later sections. 
+The second value is the actual value we want to subsitute into the {user} token.  
+  
+*Value substitution using symbol method call:*
 
   <%= tr("Dear {user}", "Fragment sample", :user => [current_user, :first_name])  %>
   
-Data token with a value substitution using symbol method call with parameters:
+As in the previous example, first object for rules engine, second is a symbol that represents a method that will be called on 
+the object and the result will be placed into the {user} token. 
+  
+*Value substitution using symbol method call with parameters:*
 
   <%= tr("Dear {user}", "Fragment sample", :user => [current_user, :some_method, "value"])  %>
   
-Data token with a value substitution using lambda method call:
+Same as the above example, but the method can be called with some parameters.
+  
+*Value substitution using lambda method call:*
 
   <%= tr("Dear {user}", "Fragment sample", :user => [current_user, lambda{|val| html_for(val)}])  %>
+
+The second parameter can also be a lambda. In that case current_user will be passed as a val into the lambda and the
+result of the lambda evaluation will be placed into the {user} token.  
   
-Data token with a value substitution using lambda method call with parameters:
+*Value substitution using lambda method call with parameters:*
 
   <%= tr("Dear {user}", "Fragment sample", :user => [current_user, lambda{|val, test| html_for(val, test)}], "test"])  %>
+
+Same as the above, but lambda has some additional parameters.
+
+You may be wondering why we need so many variations. They are all useful, as you will see it later.
+
+
+=== Method Tokens
+
+Method token with embedded method calls:
+
+  <%= tr("Dear {user.first_name} {user.last_name}", "Fragment sample", :user => current_user) %>
+
 
 Hidden tokens:
 
