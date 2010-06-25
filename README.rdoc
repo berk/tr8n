@@ -37,25 +37,26 @@ To install, configure and initialize Tr8n engine, run the following commands:
 
 = Integration Instructions
 
-Now you are ready to integrate t8n into your application. Tr8n comes with a bunch of default configurations that will apply to your application.
-When you run the "rake tr8n:sync" command the configuration files have been copied into your application config folder. 
+Now you are ready to integrate t8n into your application. Tr8n comes with a bunch of default configurations 
+that, mostly likely, will be applicable to your application. When you run the "rake tr8n:sync" command the 
+configuration files were copied into your application config folder under the tr8n folder. 
 
-The main Tr8n configuration file was copied here:
+The main Tr8n configuration file is located here:
 
   config/tr8n/config.yml
 
-It is self-explanatory. The most important parts of the config that you may want to review are the following:
-
-  site_info:  
-    current_user_method:      current_user          # provides current user object
-    current_locale_method:    current_locale        # provides current locale
-    title:                    Tr8n                  # site title, for customization 
-    default_url:              /home         
+The content of the file is mostly self-explanatory. The most important parts of the config that you may want to review and change are the following:
+  
+  site_info:                                        # site integration details
+    current_user_method:      current_user          # should be defined in application controller, provides current user object
+    current_locale_method:    current_locale        # should be defined in application controller, provides current site locale
+    title:                    Tr8n                  # site title, for customization of some messages
+    default_url:              /home                 # site default url
     default_locale:           en-US
     sitemap_path:             /config/tr8n/site/sitemap.json
     splash_screen:            /tr8n/common/splash_screen
-    admin_layout:             admin
-    tr8n_layout:              application
+    admin_layout:             admin                 # layout to be used for admin interface
+    tr8n_layout:              application           # layout to be used for tr8n ui
     user_info:  
       enabled:                true                  # if disabled, more configuration needed, read the guide
       class_name:             User
@@ -69,8 +70,9 @@ It is self-explanatory. The most important parts of the config that you may want
         locale:               locale                # user's selected locale
 
 
-* current_user_method must be defined in the application controller and it should return the current_user of the application. 
-Below is a sample implementation of the method. You may already have it defined:
+Here are some of the key elements with descriptions:
+
+* current_user_method must be defined in the application controller and it should return the current_user of the application. Below is a sample implementation of the method. You may already have it defined:
 
   def current_user
     @current_user ||= (session[:user_id] ? User.find_by_id(session[:user_id]) : User.new) || User.new   
@@ -83,8 +85,9 @@ Below is a sample implementation of the method. You may already have it defined:
     session[:locale] = Tr8n::Config.default_locale unless session[:locale]
     session[:locale] = params[:locale] if params[:locale]
   end
+  helper_method :current_locale
 
-* The default locale of the site assumes that your default language is English, but if it is not the case, you can change to whatever language your site is written in.  
+* The default_locale of the site assumes that your default language is English, but if it is not the case, you can change to whatever language your site is written in.  
 * If you would like to have a translation sitemap in the translation tools, please review and provide your own sitemap.json file.
 * Tr8n assumes that your user class is User. If it is not the case, change the class name to whatever object that represents your user.
 * Tr8n needs a number of methods to integrate with your users. Please review and provide the implementation for those methods.
