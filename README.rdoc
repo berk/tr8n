@@ -92,7 +92,7 @@ Data tokens are defined as any strings surrounded by curly brackets inside of a 
 {TOKEN_NAME} is considered a data token. 
 
 Decoration tokens are defined as any string surrounded by squared brackets inside of a label. So anything of this form 
-[TOKEN_NAME: decorated value] is considered a decoration token. 
+[ TOKEN_NAME: decorated value ] is considered a decoration token. 
 
 There are a number of different flavors for data tokens. Below are some of the flavors with some examples. 
 
@@ -100,13 +100,13 @@ There are a number of different flavors for data tokens. Below are some of the f
 
 There is a number of ways to substitute a data token with a value. Below are some of the main examples.
 
-*Simple string substitution:*  
+Simple string substitution:  
 
   <%= tr("Dear {user}", "Fragment sample", :user => current_user) %>
 
 The to_s function will be applied on the value of the current_user variable and substituted into the {user} token.
   
-*Value substitution:*
+==== Value substitution:
 
   <%= tr("Dear {user}", "Fragment sample", :user => [current_user, display_user(current_user)]) %>
   
@@ -114,49 +114,65 @@ Notice one important thing that current_user is passed as a first element in the
 This is done for gender rules evaluation - i will describe this in the later sections. 
 The second value is the actual value we want to subsitute into the {user} token.  
   
-*Value substitution using symbol method call:*
+==== Value substitution using symbol method call:
 
   <%= tr("Dear {user}", "Fragment sample", :user => [current_user, :first_name])  %>
   
 As in the previous example, first object for rules engine, second is a symbol that represents a method that will be called on 
 the object and the result will be placed into the {user} token. 
   
-*Value substitution using symbol method call with parameters:*
+==== Value substitution using symbol method call with parameters:
 
   <%= tr("Dear {user}", "Fragment sample", :user => [current_user, :some_method, "value"])  %>
   
 Same as the above example, but the method can be called with some parameters.
   
-*Value substitution using lambda method call:*
+==== Value substitution using lambda method call:
 
   <%= tr("Dear {user}", "Fragment sample", :user => [current_user, lambda{|val| html_for(val)}])  %>
 
 The second parameter can also be a lambda. In that case current_user will be passed as a val into the lambda and the
 result of the lambda evaluation will be placed into the {user} token.  
   
-*Value substitution using lambda method call with parameters:*
+==== Value substitution using lambda method call with parameters:
 
   <%= tr("Dear {user}", "Fragment sample", :user => [current_user, lambda{|val, test| html_for(val, test)}], "test"])  %>
 
 Same as the above, but lambda has some additional parameters.
 
-You may be wondering why we need so many variations. They are all useful, as you will see it later.
+You may be wondering why we need so many variations. Well, they are all useful, as you will see later.
 
 
 === Method Tokens
 
-Method token with embedded method calls:
+Method token allows you to call a method on a token itself. It is useful if you have multiple method calls on the same token in one sentence.
+Consider the following example:
 
   <%= tr("Dear {user.first_name} {user.last_name}", "Fragment sample", :user => current_user) %>
 
+Since the substitution is implied in the token definition itself, you don't have to use any of the basic data token substitution forms.
 
-Hidden tokens:
+=== Hidden Tokens
+
+Hidden tokens are used primarely for the default language dynamic data substitution that would not make sense in the translated label.
+Hidden tokens will not appear as tokens when translator opens the translation dialog. Consider the following examples: 
 
   <%= tr("{user} changed {_his_her} name", "Fragment sample", :user => current_user, :_his_her => current_user.his_her)  %>
   <%= tr("you have {count} {_messages}", "Fragment sample", :count => NUM, :_messages => "message".pluralize_for(NUM))  %>
 
-Decoration tokens:
+In the first cases _his_her will be subsituted in English to the appropriate phrase based on the current_user gender. And in the second case
+the correct form of message will be used based on whether the number is 1 or other.
 
-  <%= tr("[link: Click here] to visit our site", "Fragment sample", :link => ["www.google.com"])  %>
-  
+There is a better approach for the above examples, using the Transform tokens. Those kind of tokens require rules engine and will be described a little later. 
+
+=== Decoration tokens
+
+Decoration tokens are used to decorate some text in a label whether. Consider the following example:
+
+  <%= tr("[link: Click here] to visit our site", "Fragment sample", :link => lambda{|text| link_to(text, url)})  %>
+
+When this label is rendered "Click here" will be turned into a link. Similarly you can do any kind of HTML decorations inside of the label.
+
+
+
 
