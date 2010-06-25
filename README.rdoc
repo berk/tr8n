@@ -37,6 +37,9 @@ To install and initialize the engine itself, run the following commands:
 
 = Tr8n Notations
 
+The following sections give a quick overview for how to integrate tr8n into your application. 
+For indepth details use the Tr8n Integration Guide. 
+
 == Label Internationalization
 
 The function for internationalizing labels has the following signature:
@@ -47,6 +50,14 @@ The function for internationalizing labels has the following signature:
   * DESCRIPTION is an optional, but highly recommended string
   * TOKENS is an optional hash of token values - it is required if tokens are used in the label 
   * OPTIONS is an optional hash of options
+
+As you noticed, the DESCRIPTION is not mandatory, but it should be used in cases when the label alone is not sufficient enough to 
+determine the meaning of the sentence being translated. For example, when the translators use the bulk translation mode and look 
+at the list of strings, they won't be able to tell what the "Invite" by itself means. In that case DESCRIPTION will be very helpful. 
+
+The translations engine works by creating a hash value from the text and description of a phrase. That means that even a slight 
+change to the original text or description will cause your string to be counted as a completely new one. So make sure you start 
+off with a complete description you won't have to clarify later.
 
 There are a number of other flavors of the "tr" function like trl, trfe, trfn that set default options for various reasons. 
 You can read more about them in the Tr8n Integration Guide.
@@ -86,7 +97,7 @@ Data token with a value substitution using lambda method call with parameters:
 Hidden token:
 
   <%= tr("{user} changed {_his_her} name", "Fragment sample", :user => [current_user, :name], :_his_her => current_user.his_her)  %>
-  <%= tr("you have {count} {_messages}", "Fragment sample", :count => message_num, :_messages => "message".pluralize_for(message_num))  %>
+  <%= tr("you have {count} {_messages}", "Fragment sample", :count => NUM, :_messages => "message".pluralize_for(NUM))  %>
 
 
 
