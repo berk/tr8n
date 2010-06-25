@@ -1,18 +1,32 @@
-= tr8n Crowd-Source Translations Engine
+= Welcome to Tr8n Translation Engine
 
-tr8n engine is a Rails engine plugin for crowd-sourcing translations of any rails application
- 
+Tr8n translation engine is a rails engine plugin that allows for crowd-source translations and management of any internationalized text 
+throughout any rails based application. The power of the engine comes from its simple and friendly user interface that allows site users 
+to rapidly translate the site into hundreds of languages. The flexible and robust rules engine that powers Tr8n allows for any combinations 
+of language specific rules in any translatable sentence. Users themselves can provide information on what sentences depend on gender rules, 
+number rules or other rules. The language specific rules can be registered and managed for any language in the advanced user interface. 
+The engine also provides a set of powerful admin tools that allow admins to manage any aspect of the engine; enabling and disabling its features
+and monitoring translation process.
+
+The Tr8n engine itself is based on a very robust and flexible pluggable architecture where rule types and even syntax of the "tr" tokens 
+can be configured or extended for any application deployment.
+
 == Installation Instructions
+
+Tr8n is mostly fully self-contained. The only two plugins it depends on are will_paginate for results pagination and will_filter for filtering results. 
+
+To install the required plugins, run the following commands:
 
   $ script/plugin install git://github.com/mislav/will_paginate.git
   
   $ script/plugin install git://github.com/berk/will_filter.git
   $ rake will_filter:sync  
 
-  $ script/plugin install git://github.com/sbecker/asset_packager.git
-   
+
+To install and initialize the engine itself, run the following commands: 
+
   $ script/plugin install git://github.com/berk/tr8n.git
-  $ rake tr8n:sync  
+  $ rake tr8n:sync         
   
   $ script/generate tr8n_migration
   $ rake db:migrate 
@@ -20,4 +34,13 @@ tr8n engine is a Rails engine plugin for crowd-sourcing translations of any rail
 
   $ cd public
   $ ln -s ../vendor/plugins/tr8n/public/tr8n tr8n
+
+
+== Tr8n Cheat Sheet
+
+The following is a short summary of the tr8n's tr method notations:
+
+
+
+
 
