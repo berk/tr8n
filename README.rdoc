@@ -11,7 +11,7 @@ and monitoring translation process.
 The Tr8n engine itself is based on a very robust and flexible pluggable architecture where rule types and even syntax of the "tr" tokens 
 can be configured or extended for any application deployment.
 
-== Installation Instructions
+= Installation Instructions
 
 Tr8n is mostly self-contained. The only two plugins it depends on are will_paginate created by Mislav Marohnić for results pagination 
 and will_filter created by me for filtering results in the admin interface. 
@@ -35,41 +35,58 @@ To install and initialize the engine itself, run the following commands:
 
   $ cd public; ln -s ../vendor/plugins/tr8n/public/tr8n tr8n
 
-== Tr8n Notations
+= Tr8n Notations
+
+== Label Internationalization
+
+The function for internationalizing labels has the following signature:
+
+  tr(LABEL, DESCRIPTION = "", TOKENS = {}, OPTIONS = {})
+
+  * LABEL is a required string 
+  * DESCRIPTION is an optional, but highly recommended string
+  * TOKENS is an optional hash of token values - it is required if tokens are used in the label 
+  * OPTIONS is an optional hash of options
+
+There are a number of other flavors of the "tr" function like trl, trfe, trfn that set default options for various reasons. 
+You can read more about them in the Tr8n Integration Guide.
+
+== Tr8n Internationalization Notations
 
 The following is a short summary of the tr8n's internationalization notations:
 
 Data token:
 
-  <%= tr("Dear {user}", nil, :user => current_user) %>
+  <%= tr("Dear {user}", "Fragment sample", :user => current_user) %>
   
-Method token with an embedded method calls:
+Method token with embedded method calls:
 
-  <%= tr("Dear {user.first_name} {user.last_name}", nil, :user => current_user) %>
+  <%= tr("Dear {user.first_name} {user.last_name}", "Fragment sample", :user => current_user) %>
   
 Data token with a value substitution:
 
-  <%= tr("Dear {user}", nil, :user => [current_user, display_user(current_user)]) %>
+  <%= tr("Dear {user}", "Fragment sample", :user => [current_user, display_user(current_user)]) %>
   
 Data token with a value substitution using symbol method call:
 
-  <%= tr("Dear {user}", nil, :user => [current_user, :first_name])  %>
+  <%= tr("Dear {user}", "Fragment sample", :user => [current_user, :first_name])  %>
   
 Data token with a value substitution using symbol method call with parameters:
 
-  <%= tr("Dear {user}", nil, :user => [current_user, :some_method, "value"])  %>
+  <%= tr("Dear {user}", "Fragment sample", :user => [current_user, :some_method, "value"])  %>
   
 Data token with a value substitution using lambda method call:
 
-  <%= tr("Dear {user}", nil, :user => [current_user, lambda{|val| html_for(val)}])  %>
+  <%= tr("Dear {user}", "Fragment sample", :user => [current_user, lambda{|val| html_for(val)}])  %>
   
 Data token with a value substitution using lambda method call with parameters:
 
-  <%= tr("Dear {user}", nil, :user => [current_user, lambda{|val, test| html_for(val, test)}], "test"])  %>
+  <%= tr("Dear {user}", "Fragment sample", :user => [current_user, lambda{|val, test| html_for(val, test)}], "test"])  %>
 
 Hidden token:
 
-  <%= tr("{user} changed {_his_her} name", nil, :user => [current_user, :name], :_his_her => current_user.his_her)  %>
+  <%= tr("{user} changed {_his_her} name", "Fragment sample", :user => [current_user, :name], :_his_her => current_user.his_her)  %>
+  <%= tr("you have {count} {_messages}", "Fragment sample", :count => message_num, :_messages => "message".pluralize_for(message_num))  %>
 
 
 
