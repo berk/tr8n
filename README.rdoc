@@ -44,14 +44,22 @@ For full details use the Tr8n Integration Guide.
 
 The function for internationalizing labels has the following signature:
 
-  tr(LABEL, DESCRIPTION = "", TOKENS = {}, OPTIONS = {})
+  <%= tr(LABEL, DESCRIPTION = "", TOKENS = {}, OPTIONS = {}) %>
 
   * LABEL is a required string 
   * DESCRIPTION is an optional, but highly recommended string
   * TOKENS is an optional hash of token values - it is required if tokens are used in the label 
   * OPTIONS is an optional hash of options
 
-As you noticed, the DESCRIPTION is not mandatory, but it should be used in cases when the label alone is not sufficient enough to 
+The following is the first simplest example of an internationalized phrase:
+
+  <%= tr("Hello World") %>
+  
+or alternatively:
+
+  <%= "Hello World".translate %>
+ 
+As you might have noticed, the DESCRIPTION is not mandatory, but it should be used in cases when the label alone is not sufficient enough to 
 determine the meaning of the sentence being translated. For example, when the translators use the bulk translation mode and look 
 at the list of strings, they won't be able to tell what the "Invite" by itself means. In that case DESCRIPTION will be very helpful. 
 
