@@ -35,6 +35,81 @@ To install, configure and initialize Tr8n engine, run the following commands:
 
   $ cd public; ln -s ../vendor/plugins/tr8n/public/tr8n tr8n
 
+= Integration Instructions
+
+Now you are ready to integrate t8n into your application. Tr8n comes with a bunch of default configurations that will apply to your application.
+When you run the "rake tr8n:sync" command the configuration files have been copied into your application config folder. 
+
+The main Tr8n configuration file was copied here:
+
+  config/tr8n/config.yml
+
+It is self-explanatory. The most important parts of the config that you may want to review are the following:
+
+  site_info:  
+    current_user_method:      current_user          # provides current user object
+    current_locale_method:    current_locale        # provides current locale
+    title:                    Tr8n                  # site title, for customization 
+    default_url:              /home         
+    default_locale:           en-US
+    sitemap_path:             /config/tr8n/site/sitemap.json
+    splash_screen:            /tr8n/common/splash_screen
+    admin_layout:             admin
+    tr8n_layout:              application
+    user_info:  
+      enabled:                true                  # if disabled, more configuration needed, read the guide
+      class_name:             User
+      methods:  
+        id:                   id                    # user id 
+        name:                 name                  # user name
+        admin:                admin?                # if the user has amdin rights
+        guest:                guest?                # if the user is a guest
+        mugshot:              mugshot               # url of the user picture
+        link:                 link                  # link to the user page
+        locale:               locale                # user's selected locale
+
+
+* current_user_method must be defined in the application controller and it should return the current_user of the application. 
+Below is a sample implementation of the method. You may already have it defined:
+
+  def current_user
+    @current_user ||= (session[:user_id] ? User.find_by_id(session[:user_id]) : User.new) || User.new   
+  end
+  helper_method :current_user
+
+* current_locale_method returns the current language of the application. This method is option. If not provided it will fallback on the following implementation:
+
+  def current_locale
+    session[:locale] = Tr8n::Config.default_locale unless session[:locale]
+    session[:locale] = params[:locale] if params[:locale]
+  end
+
+* The default locale of the site assumes that your default language is English, but if it is not the case, you can change to whatever language your site is written in.  
+* If you would like to have a translation sitemap in the translation tools, please review and provide your own sitemap.json file.
+* Tr8n assumes that your user class is User. If it is not the case, change the class name to whatever object that represents your user.
+* Tr8n needs a number of methods to integrate with your users. Please review and provide the implementation for those methods.
+* If you don't like the Tr8n splash screen and would like to customize it for your application, you can provide the path to the partial that needs just a div tag with your splash screen in it. 
+
+== Tr8n Helper Tags
+
+Once you have configured the Tr8n engine, you are ready to use it. 
+You will need some of the following tags in your application:
+
+  <%= tr8n_scripts_tag %>
+
+You have to add this tag to the bottom of your application layout so that Tr8n scripts are initialized and your application can be translated.
+
+  <%= tr8n_language_selector_tag %>
+
+Usually this tag is added to the top right corner of the application layout. It will display the current language 
+and allow you to select a different language (out of the 109 languages that tr8n comes configured with).
+
+  <%= tr8n_language_strip_tag %>
+
+Usually this tag is added to the bottom of the application layout. It will display a strip of featured languages and will 
+allow you to select more languages using an arrow link. You will have to configure your featured languages using the admin tool of the Tr8n engine.
+
+
 = Tr8n Notations
 
 The following sections give a quick overview for how to integrate tr8n into your rails application. 
@@ -92,11 +167,11 @@ Data tokens are defined as any strings surrounded by curly brackets inside of a 
 {TOKEN_NAME} is considered a data token. 
 
 Decoration tokens are defined as any string surrounded by squared brackets inside of a label. So anything of this form 
-[ TOKEN_NAME: decorated value ] is considered a decoration token. 
+&#91;TOKEN_NAME: decorated value&#92; is considered a decoration token. 
 
-There are a number of different flavors for data tokens. Below are some of the flavors with some examples. 
+There are a number of different flavors of data tokens. Below are some of the flavors with some examples. 
 
-=== Basic Data Tokens
+=== Data Tokens
 
 There is a number of ways to substitute a data token with a value. Below are some of the main examples.
 
