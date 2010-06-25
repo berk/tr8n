@@ -55,9 +55,17 @@ As you noticed, the DESCRIPTION is not mandatory, but it should be used in cases
 determine the meaning of the sentence being translated. For example, when the translators use the bulk translation mode and look 
 at the list of strings, they won't be able to tell what the "Invite" by itself means. In that case DESCRIPTION will be very helpful. 
 
-The translations engine works by creating a hash value from the text and description of a phrase. That means that even a slight 
-change to the original text or description will cause your string to be counted as a completely new one. So make sure you start 
-off with a complete description you won't have to clarify later.
+Tr8n translation engine uses label and description to create a unique key for each phrase. So the description serves two purposes: 
+it creates a unique key for each label and it also gives a hint to the translators for the context in which the label is used. For example,
+the following two phrases will be registered as two independent entries in a database even though the have the same label, but a different description.
+The user will have to translate each one of them separately as they will have different translated labels in other languages.
+
+  <%= tr("Invite", "Link to invite your friends to join the site") %>
+  <%= tr("Invite", "An invitation you recieved from your friend") %>
+
+It is important to provide the best possible description for each phrase from the start. Keep in mind that changing a description 
+in the future, after it has already been translated, will register a new phrase in the database and invalidate all of its translations.  
+On the other hand, labels that are complete sentences may not need a description as they are fully self-contained.
 
 There are a number of other flavors of the "tr" function like trl, trfe, trfn that set default options for various reasons. 
 You can read more about them in the Tr8n Integration Guide.
