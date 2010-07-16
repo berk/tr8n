@@ -15,7 +15,7 @@
  								 <% end %>
 		          <% end %>
     			 </span>
-          <div onClick="$('language_selector_locale').value='<%=language.locale%>'; $('language_selector_form').submit();">
+          <div onClick="Tr8n.element('language_selector_locale').value='<%=language.locale%>'; Tr8n.element('language_selector_form').submit();">
           	<%= tr8n_language_flag_tag(language) %>
 						<% if language == tr8n_current_language %>
 						  <strong><%=language.full_name%></strong>
@@ -41,7 +41,7 @@
 <div id="tr8n_languages_list" class="inner" style="<%='display:none' if (@user_languages and @user_languages.size > 1) %>">
   <ul class="language_list">
     <% @all_languages.each do |language|%>
-      <li onClick="$('language_selector_locale').value='<%=language.locale%>'; $('language_selector_form').submit();">
+      <li onClick="Tr8n.element('language_selector_locale').value='<%=language.locale%>'; Tr8n.element('language_selector_form').submit();">
         <span style="font-size:8px; float:right; color:#ccc;">
           <% if language.default? %>
              100%

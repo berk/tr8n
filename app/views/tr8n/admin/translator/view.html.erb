@@ -120,7 +120,7 @@
 </table>
 <div style="padding:10px;background: #eee; border: 1px dotted #ccc; margin-bottom:20px">
   Promote this translator to be a manager for <%=select_tag("manager_language_id", options_for_select(Tr8n::Language.options, ""))%> 
-  <%=link_to_function("<span>Promote</span>", "promote($('manager_language_id').value);", :class => "tr8n_grey_button tr8n_pcb") %>	
+  <%=link_to_function("<span>Promote</span>", "promote(Tr8n.value('manager_language_id'));", :class => "tr8n_grey_button tr8n_pcb") %>	
 </div>
 
 <script>

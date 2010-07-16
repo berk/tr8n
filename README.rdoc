@@ -37,7 +37,7 @@ To install, configure and initialize Tr8n engine, run the following commands:
 
 = Integration Instructions
 
-Now you are ready to integrate t8n into your application. Tr8n comes with a bunch of default configurations 
+Now you are ready to integrate tr8n into your application. Tr8n comes with a bunch of default configurations 
 that, mostly likely, will be applicable to your application. When you run the "rake tr8n:sync" command the 
 configuration files were copied into your application config folder under the tr8n folder. 
 

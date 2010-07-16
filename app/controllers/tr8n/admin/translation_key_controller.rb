@@ -24,8 +24,7 @@
 class Tr8n::Admin::TranslationKeyController < Tr8n::Admin::BaseController
 
   def index
-    @model_filter = init_model_filter(Tr8n::TranslationKeyFilter)
-    @keys = Tr8n::TranslationKey.paginate(:order=>@model_filter.order_clause, :page=>page, :per_page=>@model_filter.per_page, :conditions=>@model_filter.sql_conditions)
+    @keys = Tr8n::TranslationKey.filter(:params => params, :filter => Tr8n::TranslationKeyFilter)
   end
 
   def view
@@ -44,18 +43,15 @@ class Tr8n::Admin::TranslationKeyController < Tr8n::Admin::BaseController
   end
 
   def key_sources
-    @model_filter = init_model_filter(Tr8n::TranslationKeySourceFilter)
-    @key_sources = Tr8n::TranslationKeySource.paginate(:order=>@model_filter.order_clause, :page=>page, :per_page=>@model_filter.per_page, :conditions=>@model_filter.sql_conditions)
+    @key_sources = Tr8n::TranslationKeySource.filter(:params => params, :filter => Tr8n::TranslationKeySourceFilter)
   end
 
   def sources
-    @model_filter = init_model_filter(Tr8n::TranslationSourceFilter)
-    @sources = Tr8n::TranslationSource.paginate(:order=>@model_filter.order_clause, :page=>page, :per_page=>@model_filter.per_page, :conditions=>@model_filter.sql_conditions)
+    @sources = Tr8n::TranslationSource.filter(:params => params, :filter => Tr8n::TranslationSourceFilter)
   end
 
   def locks
-    @model_filter = init_model_filter(Tr8n::TranslationKeyLockFilter)
-    @locks = Tr8n::TranslationKeyLock.paginate(:order=>@model_filter.order_clause, :page=>page, :per_page=>@model_filter.per_page, :conditions=>@model_filter.sql_conditions)
+    @locks = Tr8n::TranslationKeyLock.filter(:params => params, :filter => Tr8n::TranslationKeyLockFilter)
   end
    
    def lb_caller

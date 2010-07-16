@@ -149,7 +149,7 @@ class Tr8n::Token
       return parametrized_value
     end
     
-    raise Tr8n::TokenException.new("Invalid array second token value")
+    raise Tr8n::TokenException.new("Invalid array second token value: #{full_name} in #{original_label}")
   end
 
   

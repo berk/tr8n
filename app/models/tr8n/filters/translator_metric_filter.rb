@@ -23,10 +23,6 @@
 
 class Tr8n::TranslatorMetricFilter < Tr8n::BaseFilter
 
-  def initialize(identity)
-    super('Tr8n::TranslatorMetric', identity)
-  end
-
   def definition
     defs = super  
     defs[:language_id][:is] = :list
@@ -40,14 +36,6 @@ class Tr8n::TranslatorMetricFilter < Tr8n::BaseFilter
     end
 
     return []
-  end
-
-  def default_order
-    'created_at'
-  end
-  
-  def default_order_type
-    'desc'
   end
 
 end

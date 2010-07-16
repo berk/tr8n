@@ -22,9 +22,9 @@
 
 
   <div id="buttons_container" style="padding-top:15px;padding-bottom:5px;text-align:center">
-	    <button type="submit" class="translator_btn translator_submit_btn" onClick="$('permutation_form').submit(); return false;">
+	    <button type="submit" class="translator_btn translator_submit_btn" onClick="Tr8n.element('permutation_form').submit(); return false;">
 	        <span><%=trl("Generate")%></span>
 	    </button>
-       or <%= link_to_function(trl("Cancel"), "Effect.BlindDown('tranlsations_list', { duration: 0.2 });  Effect.BlindUp('permutations', { duration: 0.2 });") %>
+       or <%= link_to_function(trl("Cancel"), "Tr8n.blindDown('tranlsations_list');  Tr8n.blindUp('permutations');") %>
 	</div>
 </div>

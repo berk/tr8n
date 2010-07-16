@@ -306,7 +306,7 @@ class Tr8n::Config
   end
   
   def self.sitemap_sections
-    @sitemap_sections ||= load_json(site_info[:sitemap_json])
+    @sitemap_sections ||= load_json(site_info[:sitemap_path])
   end
   
   #########################################################

@@ -1,7 +1,7 @@
 namespace :tr8n do
   desc "Sync extra files from tr8n plugin."
   task :sync do
-    system "rsync -ruv vendor/plugins/tr8n/config ."
+    system "rsync -ruv vendor/plugins/tr8n/config/tr8n ./config"
   end
   
   desc "Initializes all of the tables with default data"
@@ -40,17 +40,6 @@ namespace :tr8n do
       lang = Tr8n::Language.for(locale)
       lang.featured_index = 10000 - (index * 100)
       lang.save
-    end
-  end
-  
-  # upgrade language rules to the new rule definition
-  task :update_gender_rules => :environment do
-    Tr8n::GenderRule.all.each do |r|
-      if r.definition and r.definition[:part1]
-        new_definition = {:operator => r.definition[:part1], :value => r.definition[:value1]}
-        r.definition = new_definition
-        r.save
-      end
     end
   end
   

@@ -23,10 +23,6 @@
 
 class Tr8n::LanguageFilter < Tr8n::BaseFilter
 
-  def initialize(identity)
-    super('Tr8n::Language', identity)
-  end
-
   def definition
     defs = super  
     defs[:fallback_language_id][:is] = :list
@@ -50,8 +46,8 @@ class Tr8n::LanguageFilter < Tr8n::BaseFilter
     'asc'
   end
 
-  def predefined_filters(profile)
-    super(profile) + [
+  def default_filters
+    super + [
       ["Enabled Languages", "enabled"],
       ["Disabled Languages", "disabled"],
       ["Left-to-Right Languages", "left"],
@@ -59,21 +55,25 @@ class Tr8n::LanguageFilter < Tr8n::BaseFilter
     ]
   end
 
-  def self.load_predefined_filter(profile, filter_name)
-    filter = super(profile, filter_name)
+  def default_filter_conditions(key)
+    super_conditions = super(key)
+    return super_conditions if super_conditions
 
-    case filter_name
+    case key
       when "enabled"
-        filter.add_condition(:enabled, :is, '1')
+        return [:enabled, :is, '1']
       when "disabled"
-        filter.add_condition(:enabled, :is, '0')
+        return [:enabled, :is, '0']
       when "left"
-        filter.add_condition(:right_to_left, :is, '0')
+        return [:right_to_left, :is, '0']
       when "right"
-        filter.add_condition(:right_to_left, :is, '1')
+        return [:right_to_left, :is, '1']
     end
+    
+  end
 
-    filter.empty? ? nil : filter
+  def default_filter_if_empty
+    nil
   end
 
 end

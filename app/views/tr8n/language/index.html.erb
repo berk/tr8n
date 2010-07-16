@@ -9,9 +9,8 @@
 
 <script>
   function switchSectionMode(section, mode) {
-    new Ajax.Updater(section + '_container', '/tr8n/language/update_language_section', {
-      parameters: {section:section, mode:mode},
-      method: 'get'
+    Tr8n.Utils.update(section + '_container', '/tr8n/language/update_language_section', {
+        parameters: {section:section, mode:mode}
     });
   }
   
@@ -21,9 +20,9 @@
         return;
     }
     
-    var params = $(section + '_form').serialize(true);
+    var params = Tr8n.Utils.serializeForm(section + '_form');
     params['section'] = section;
-    new Ajax.Updater(section + '_container', '/tr8n/language/update_language_section', {
+    Tr8n.Utils.update(section + '_container', '/tr8n/language/update_language_section', {
       parameters: params,
       method: 'post'
     });

@@ -24,8 +24,7 @@
 class Tr8n::Admin::LanguageController < Tr8n::Admin::BaseController
   
   def index
-    @model_filter = init_model_filter(Tr8n::LanguageFilter)  
-    @languages = Tr8n::Language.paginate(:order=>@model_filter.order_clause, :page=>page, :per_page=>@model_filter.per_page, :conditions=>@model_filter.sql_conditions)
+    @languages = Tr8n::Language.filter(:params => params, :filter => Tr8n::LanguageFilter)
   end
 
   def view
@@ -51,13 +50,11 @@ class Tr8n::Admin::LanguageController < Tr8n::Admin::BaseController
   end
 
   def metrics
-    @model_filter = init_model_filter(Tr8n::LanguageMetricFilter)  
-    @metrics = Tr8n::LanguageMetric.paginate(:order=>@model_filter.order_clause, :page=>page, :per_page=>@model_filter.per_page, :conditions=>@model_filter.sql_conditions)
+    @metrics = Tr8n::LanguageMetric.filter(:params => params, :filter => Tr8n::LanguageMetricFilter)
   end
 
   def users
-    @model_filter = init_model_filter(Tr8n::LanguageUserFilter)  
-    @users = Tr8n::LanguageUser.paginate(:order=>@model_filter.order_clause, :page=>page, :per_page=>@model_filter.per_page, :conditions=>@model_filter.sql_conditions)
+    @users = Tr8n::LanguageUser.filter(:params => params, :filter => Tr8n::LanguageUserFilter)
   end
 
   def calculate_metrics
@@ -68,8 +65,7 @@ class Tr8n::Admin::LanguageController < Tr8n::Admin::BaseController
   end
   
   def rules
-    @model_filter = init_model_filter(Tr8n::LanguageRuleFilter)  
-    @rules = Tr8n::LanguageRule.paginate(:order=>@model_filter.order_clause, :page=>page, :per_page=>@model_filter.per_page, :conditions=>@model_filter.sql_conditions)
+    @rules = Tr8n::LanguageRule.filter(:params => params, :filter => Tr8n::LanguageRuleFilter)
   end
   
   def lb_update

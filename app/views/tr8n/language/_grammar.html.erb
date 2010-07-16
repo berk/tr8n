@@ -8,11 +8,10 @@
       </div>
 			
 			<div style="padding-top:5px;padding-bottom:10px;font-size:12px;">
-          Tokens are parts of a phrase that are not translated, such as a profile name or a number. 
-					Translations in some languages can depend on the gender or numerical value of the tokens in the phrase. 
-					For example, the translation for "{actor} tagged {target} in {count} photos" can depend on the 
-					gender of the actor and target as well as the number of photos. If translations in your language depend 
-					on any of these rules, you can add them here.
+          <%=trl("Tokens are parts of a phrase that are not translated, such as a profile name or a number.", "Tr8n language management") %> 
+					<%=trl("Translations in some languages can depend on the gender or numerical value of the tokens in the phrase.", "Tr8n language management") %>
+					<%=trl("For example, the translation for \"{english_sample}\" can depend on the gender of the actor and target as well as the number of photos.", "Tr8n language management", :english_sample => "{actor} tagged {target} in {count} photos")%> 
+          <%=trl("If translations in your language depend on any of these rules, you can add them here.", "Tr8n language management") %>
 			</div>
 						
       <div id="language_rules" style="font-size:12px;">
@@ -53,33 +52,33 @@
     if (!confirm("<%=trl('Updating language rules may affect existing translations for this language. Are you sure you want to update this language?') %>")) 
        return;
        
-    $('grammar_form').submit();
+    Tr8n.submit('grammar_form');
   }
   
   function updateLanguageRules(language_id) {
-    performLanguageRulesOperation($('grammar_form').serialize(true));
+    performLanguageRulesOperation(Tr8n.Utils.serializeForm('grammar_form'));
   }
   
   function addLanguageRule(position) {
-    var form_hash = $('grammar_form').serialize(true);
+    var form_hash = Tr8n.Utils.serializeForm('grammar_form');
     form_hash['rule_action'] = "add_at_" + position;
     performLanguageRulesOperation(form_hash);
   }
   
   function deleteLanguageRule(position) {
-    var form_hash = $('grammar_form').serialize(true);
+    var form_hash = Tr8n.Utils.serializeForm('grammar_form');
     form_hash['rule_action'] = "delete_at_" + position;
     performLanguageRulesOperation(form_hash);
   }
   
   function clearLanguageRules() {
-    var form_hash = $('grammar_form').serialize(true);
+    var form_hash = Tr8n.Utils.serializeForm('grammar_form');
     form_hash['rule_action'] = "clear_all";
     performLanguageRulesOperation(form_hash);
   } 
   
-  function performLanguageRulesOperation(params){ 
-    new Ajax.Updater('language_rules', '/tr8n/language/update_rules', {
+  function performLanguageRulesOperation(params){
+    Tr8n.Utils.update('language_rules', '/tr8n/language/update_rules', {
       parameters: params,
       method: 'post'
     });

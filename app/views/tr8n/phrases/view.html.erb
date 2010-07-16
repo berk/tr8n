@@ -9,13 +9,13 @@
 	     <%=hidden_field_tag(:translation_key_id, @translation_key.id) %>
 	     <div style="padding-top:5px;">
 	          <%=trl("Show")%>
-	          <%=select_tag(:with_status, options_for_select(Tr8n::Translation.filter_status_options, params[:with_status]), :onChange => "$('translations_search_form').submit()")%>
+	          <%=select_tag(:with_status, options_for_select(Tr8n::Translation.filter_status_options, params[:with_status]), :onChange => "Tr8n.submit('translations_search_form')")%>
 	          <%=trl("submitted by")%>
-	          <%=select_tag(:submitted_by, options_for_select(Tr8n::Translation.filter_submitter_options, params[:submitted_by]), :onChange => "$('translations_search_form').submit()")%>
+	          <%=select_tag(:submitted_by, options_for_select(Tr8n::Translation.filter_submitter_options, params[:submitted_by]), :onChange => "Tr8n.submit('translations_search_form')")%>
 	          <%=trl("created on")%>
-	          <%=select_tag(:submitted_on, options_for_select(Tr8n::Translation.filter_date_options, params[:submitted_on]), :onChange => "$('translations_search_form').submit()")%>
+	          <%=select_tag(:submitted_on, options_for_select(Tr8n::Translation.filter_date_options, params[:submitted_on]), :onChange => "Tr8n.submit('translations_search_form')")%>
             <%=trl("grouped by")%>
-            <%=select_tag(:grouped_by, options_for_select(Tr8n::Translation.filter_group_by_options, params[:grouped_by]), :onChange => "$('translations_search_form').submit()")%>
+            <%=select_tag(:grouped_by, options_for_select(Tr8n::Translation.filter_group_by_options, params[:grouped_by]), :onChange => "Tr8n.submit('translations_search_form')")%>
 	     </div>
 	  <% end %>
 	</div>
@@ -63,24 +63,21 @@
 
 <script>
 	function addTranslation() {
-		Effect.BlindUp('tranlsations_list', { duration: 0.2 }); 
-		Effect.BlindDown('new_translation', { duration: 0.2 });
+		Tr8n.blindUp('tranlsations_list'); 
+		Tr8n.blindDown('new_translation');
 	}
 	
   function addContextRules() {
-    Effect.BlindUp('tranlsations_list', { duration: 0.2 }); 
-    Effect.BlindDown('permutations', { duration: 0.2 });
+    Tr8n.blindUp('tranlsations_list'); 
+    Tr8n.blindDown('permutations');
   }
 </script>	
 
 <% if @show_add_dialog %>
 	<script>
-//    $('tranlsations_list').hide(); 
-//    $('new_translation').show();
-
 		window.setTimeout(function() {
-	    Effect.BlindUp('tranlsations_list', { duration: 0.2 }); 
-	    Effect.BlindDown('new_translation', { duration: 0.2 });
+	    Tr8n.blindUp('tranlsations_list'); 
+	    Tr8n.blindDown('new_translation');
 		}, 500);
 	</script>	
 <% end %>

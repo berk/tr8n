@@ -24,18 +24,15 @@
 class Tr8n::Admin::ForumController < Tr8n::Admin::BaseController
 
   def index
-    @model_filter = init_model_filter(Tr8n::LanguageForumTopicFilter)
-    @topics = Tr8n::LanguageForumTopic.paginate(:order=>@model_filter.order_clause, :page=>page, :per_page=>@model_filter.per_page, :conditions=>@model_filter.sql_conditions)
+    @topics = Tr8n::LanguageForumTopic.filter(:params => params, :filter => Tr8n::LanguageForumTopicFilter)
   end
 
   def messages
-    @model_filter = init_model_filter(Tr8n::LanguageForumMessageFilter)
-    @messages = Tr8n::LanguageForumMessage.paginate(:order=>@model_filter.order_clause, :page=>page, :per_page=>@model_filter.per_page, :conditions=>@model_filter.sql_conditions)
+    @messages = Tr8n::LanguageForumMessage.filter(:params => params, :filter => Tr8n::LanguageForumMessageFilter)
   end
 
   def reports
-    @model_filter = init_model_filter(Tr8n::LanguageForumMessageFilter)
-    @reports = Tr8n::LanguageForumAbuseReport.paginate(:order=>@model_filter.order_clause, :page=>page, :per_page=>@model_filter.per_page, :conditions=>@model_filter.sql_conditions)
+    @reports = Tr8n::LanguageForumAbuseReport.filter(:params => params, :filter => Tr8n::LanguageForumAbuseReportFilter)
   end
 
   def delete_topic

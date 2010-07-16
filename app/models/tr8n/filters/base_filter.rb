@@ -21,35 +21,30 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-require 'model_filter'
+class Tr8n::BaseFilter < Wf::Filter
 
-class Tr8n::BaseFilter < ModelFilter
-
-  def initialize(class_name, identity)
-    super(class_name, identity)
-  end
-
-  def predefined_filters(profile)
+  def default_filters
     [
       ["Created Today", "created_today"],
-      ["Updated Today", "updated_today"],
+      ["Updated Today", "updated_today"]
     ]
   end
 
-  def self.load_predefined_filter(profile, filter_name)
-    filter = self.name.constantize.new(profile)
-    filter.key = filter_name
- 
-    if (filter_name == "created_today")
-      filter.add_condition(:created_at, :is_on, Date.today)
-      return filter
-    end
-
-    if (filter_name == "updated_today")
-      filter.add_condition(:updated_at, :is_on, Date.today)
-      return filter
-    end
-
-    filter
-  end  
+  def default_filter_conditions(key)
+    return [:created_at, :is_on, Date.today] if (key == "created_today")
+    return [:updated_at, :is_on, Date.today] if (key == "updated_today")
+  end
+  
+  def default_filter_if_empty
+    "created_today"
+  end
+  
+  def default_order
+    'created_at'
+  end
+  
+  def default_order_type
+    'desc'
+  end
+  
 end

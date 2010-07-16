@@ -27,7 +27,7 @@
            link_label = trl("Click here if this translation depends on the gender of the viewing user")
          end 
       %>
-      <%=link_to_function(link_label, "$('has_rules').value='true'; $('rules_trigger').hide(); Effect.BlindDown('translation_rules', { duration: 0.2 });") %>
+      <%=link_to_function(link_label, "Tr8n.element('has_rules').value='true'; Tr8n.hide('rules_trigger'); Tr8n.blindDown('translation_rules');") %>
 	  </div>
 		
     <div id="translation_rules" style="padding:5px; border: 1px dotted #ccc; background:#EFF8FF; display:none;">
@@ -62,7 +62,7 @@
 						      <%=token.name %>     
 						    </td>
 						    <td style="font-size:10px; padding:5px; vertical-align:middle;">
-						      <%=select_tag("rules[#{token.name}][rule_id]", options_for_select(rule_options, @rules[token].to_s), :onChange => "$('check_#{index}').checked = true;")%>      
+						      <%=select_tag("rules[#{token.name}][rule_id]", options_for_select(rule_options, @rules[token].to_s), :onChange => "Tr8n.element('check_#{index}').checked = true;")%>      
 						    </td>
 						  </tr>
 						<% end %>
@@ -72,7 +72,7 @@
 			<div style="color:grey; font-size:12px; padding-top:10px;"><%=trl("Select all of the rules that apply to this translation")%></div>
 			
 			<div style="padding-top:10px;font-size:12px; font-weight:normal;">
-        <%=link_to_function(trl("Click here if the translation does not depend on the token values."), "$('has_rules').value='false'; $('rules_trigger').show(); Effect.BlindUp('translation_rules', { duration: 0.2 });") %>
+        <%=link_to_function(trl("Click here if the translation does not depend on the token values."), "Tr8n.element('has_rules').value='false'; Tr8n.show('rules_trigger'); Tr8n.blindUp('translation_rules');") %>
 			</div>
     </div>
   <% end %>

@@ -1,6 +1,6 @@
 <%= render :partial => "/tr8n/admin/common/header" %>
 <%= render :partial => "tabs" %>
-<%= tr8n_will_filter %>
+<%= tr8n_will_filter(@languages) %>
 
 <%=link_to_function("+ Add new language", "tr8nLightbox.show('/tr8n/admin/language/lb_update', {height:300})") %>
 |

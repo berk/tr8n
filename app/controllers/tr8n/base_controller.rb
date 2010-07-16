@@ -89,7 +89,7 @@ private
 
   def redirect_to_source
     return redirect_to(params[:source_url]) unless params[:source_url].blank?
-    redirect_to(request.env['HTTP_REFERER']) unless request.env['HTTP_REFERER'].blank?
+    return redirect_to(request.env['HTTP_REFERER']) unless request.env['HTTP_REFERER'].blank?
     redirect_to_site_default_url
   end
 
@@ -106,7 +106,9 @@ private
   end
   
   def sanitize_label(label)
-    CGI::escapeHTML(label.strip)
+#  do not double escape    
+#  CGI::escapeHTML(label.strip)
+    label.strip
   end
 
   # handle disabled state for tr8n

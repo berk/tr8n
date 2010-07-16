@@ -32,8 +32,8 @@
 <% if [:edit, :view].include?(mode) %>
 	<script>
 	  function editTranslationRow(translation_id, section_key) {
-	    $('tr8n_votes_for_' + translation_id).hide();
-	    $('tr8n_spinner_for_' + translation_id).show();
+	    Tr8n.hide('tr8n_votes_for_' + translation_id);
+	    Tr8n.show('tr8n_spinner_for_' + translation_id);
 	    location = "/tr8n/translations/view?translation_id=" + translation_id + "&section_key=" + section_key;
 	  }
 	  
@@ -42,31 +42,30 @@
 	      return;
 	    }
 	    
-	    $('tr8n_votes_for_' + translation_id).hide();
-	    $('tr8n_spinner_for_' + translation_id).show();
+	    Tr8n.hide('tr8n_votes_for_' + translation_id);
+	    Tr8n.show('tr8n_spinner_for_' + translation_id);
 	    location = "/tr8n/translations/delete?translation_id=" + translation_id + "&section_key=" + section_key;
 	  }
 	  
 	  function updateTranslationRow(translation_id, mode) {
-	    $('tr8n_votes_for_' + translation_id).hide();
-	    $('tr8n_spinner_for_' + translation_id).show();
+	    Tr8n.hide('tr8n_votes_for_' + translation_id);
+	    Tr8n.show('tr8n_spinner_for_' + translation_id);
 	    
-	    new Ajax.Updater('translation_row_' + translation_id, '/tr8n/translations/update', {
-	      parameters: {translation_id:translation_id, mode:mode},
-	      evalScripts: true,
-	      method: 'get'
-	    });
+      Tr8n.Utils.update('translation_row_' + translation_id, '/tr8n/translations/update', {
+        evalScripts: true,
+        parameters: "translation_id=" + translation_id + "&mode=" + mode
+      });
 	  }
 	  
 	  function submitTranslationRow(translation_id) {
-	    $('tr8n_votes_for_' + translation_id).hide();
-	    $('tr8n_spinner_for_' + translation_id).show();
+	    Tr8n.hide('tr8n_votes_for_' + translation_id);
+	    Tr8n.show('tr8n_spinner_for_' + translation_id);
 	    
-	    new Ajax.Updater('translation_row_' + translation_id, '/tr8n/translations/update', {
-	      parameters: {translation_id:translation_id, label:$("translation_row_value_" + translation_id).value},
-	      evalScripts: true,
-	      method: 'post'
-	    });
+      Tr8n.Utils.update('translation_row_' + translation_id, '/tr8n/translations/update', {
+        evalScripts: true,
+        parameters: {translation_id: translation_id, label: Tr8n.value("translation_row_value_" + translation_id)},
+        method: 'post'
+      });
 	  }
 	</script>
 <% end %>

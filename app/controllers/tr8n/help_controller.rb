@@ -29,4 +29,12 @@ class Tr8n::HelpController < Tr8n::BaseController
 
   end
     
+  def lb_shortcuts
+    render :layout => false
+  end
+
+  def lb_credits
+    render :layout => false
+  end
+
 end

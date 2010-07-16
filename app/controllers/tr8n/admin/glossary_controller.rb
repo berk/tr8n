@@ -24,8 +24,7 @@
 class Tr8n::Admin::GlossaryController < Tr8n::Admin::BaseController
 
   def index
-    @model_filter = init_model_filter("Tr8n::Glossary")
-    @terms = Tr8n::Glossary.paginate(:order=>@model_filter.order_clause, :page=>page, :per_page=>@model_filter.per_page, :conditions=>@model_filter.sql_conditions)
+    @terms = Tr8n::Glossary.filter(:params => params, :filter => Tr8n::GlossaryFilter)
   end
   
   def lb_update

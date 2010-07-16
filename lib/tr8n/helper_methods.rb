@@ -144,12 +144,12 @@ module Tr8n::HelperMethods
     html = "<span id='#{content_id}_open' "
     html << "style='display:none'" unless open
     html << ">"
-    html << link_to_function("#{image_tag("/tr8n/images/arrow_down.gif", :style=>'text-align:center; vertical-align:middle')} #{label}", "$('#{content_id}_open').hide(); $('#{content_id}_closed').show(); Effect.BlindUp('#{content_id}', { duration: 0.2 });", :style=> "text-decoration:none")
+    html << link_to_function("#{image_tag("/tr8n/images/arrow_down.gif", :style=>'text-align:center; vertical-align:middle')} #{label}", "Tr8n.hide('#{content_id}_open'); Tr8n.show('#{content_id}_closed'); Tr8n.blindUp('#{content_id}');", :style=> "text-decoration:none")
     html << "</span>" 
     html << "<span id='#{content_id}_closed' "
     html << "style='display:none'" if open
     html << ">"
-    html << link_to_function("#{image_tag("/tr8n/images/arrow_right.gif", :style=>'text-align:center; vertical-align:middle')} #{label}", "$('#{content_id}_open').show(); $('#{content_id}_closed').hide(); Effect.BlindDown('#{content_id}', { duration: 0.2 });", :style=> "text-decoration:none")
+    html << link_to_function("#{image_tag("/tr8n/images/arrow_right.gif", :style=>'text-align:center; vertical-align:middle')} #{label}", "Tr8n.show('#{content_id}_open'); Tr8n.hide('#{content_id}_closed'); Tr8n.blindDown('#{content_id}');", :style=> "text-decoration:none")
     html << "</span>" 
   end  
   
@@ -218,12 +218,6 @@ module Tr8n::HelperMethods
          }, options
       )
     end
-  end
-
-  def tr8n_will_filter
-    html = render(:partial => "/model_filter/filter", :locals => {:model_filter => @model_filter})
-    html << "<br>"
-    html
   end
 
 private

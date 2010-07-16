@@ -97,7 +97,7 @@ class Tr8n::TranslationsController < Tr8n::BaseController
     @translation_key = @translation.translation_key
 
     # this is called from page translations page
-    if params[:short_version]
+    if params[:short_version] == "true"
       return render(:text => @translation.rank_label) 
     end
     

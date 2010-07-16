@@ -22,13 +22,13 @@
 				    </div>
 				    
 				    <%=image_tag("/tr8n/images/left_quote.png", :style=>"text-align:bottom;padding-bottom:5px;") %>
-				    <a onclick="$('tr8n_translation_label_<%=@translation_key.id%>').value=$('tr8n_translation_suggestion_<%=@translation_key.id%>').innerHTML; return false;" href="#">
+				    <a onclick="Tr8n.element('tr8n_translation_label_<%=@translation_key.id%>').value=Tr8n.element('tr8n_translation_suggestion_<%=@translation_key.id%>').innerHTML; return false;" href="#">
 				       <span id="tr8n_translation_suggestion_<%=@translation_key.id%>" style="font-size:12px;"></span>
 				    </a>
 				    <%=image_tag("/tr8n/images/right_quote.png", :style=>"text-align:bottom;padding-top:5px;") %>
 				    
 				    <script type="text/javascript">
-				      Event.observe(window, 'load', function() {
+				    	Tr8n.Utils.addEvent(window,'load',function(e) {
 				          tr8nTranslator.suggestTranslation("<%=@translation_key.id %>", "<%=@translation_key.tokenless_label %>", "<%=tr8n_current_language.locale%>");
 				      });
 				    </script>
@@ -70,11 +70,11 @@
 						</div>
 	          
 						<div id="tr8n_dictionary_opener" style="font-size:12px; font-weight:normal;">
-							  <%=link_to_function(trl("Click here to download dictionary definitions for the phrase words"), "$('tr8n_dictionary_opener').hide(); $('tr8n_dictionary_spinner').show(); downloadDictionaryDefinitions(); ") %>
+							  <%=link_to_function(trl("Click here to download dictionary definitions for the phrase words"), "downloadDictionaryDefinitions(); ") %>
 						</div>	
 	
 	          <div id="tr8n_dictionary_shower" style="display:none; font-size:12px; font-weight:normal;">
-	              <%=link_to_function(trl("show dictionary definitions"), "$('tr8n_dictionary_shower').hide(); $('tr8n_dictionary_hider').show(); Effect.Appear('tr8n_dictionary', {duration: 0.2, afterFinish: function() {scrollToElement($('buttons_container'));}}); ") %>
+	              <%=link_to_function(trl("show dictionary definitions"), "Tr8n.hide('tr8n_dictionary_shower'); Tr8n.show('tr8n_dictionary_hider'); Tr8n.appear('tr8n_dictionary'); Tr8n.scrollTo('buttons_container');") %>
 								&raquo;
 	          </div>  
 	
@@ -84,7 +84,7 @@
 						</div>
 	
 	          <div id="tr8n_dictionary_hider" style="display:none; font-size:12px; font-weight:normal;">
-	              &laquo; <%=link_to_function(trl("hide dictionary definitions"), "$('tr8n_dictionary_hider').hide(); $('tr8n_dictionary_shower').show(); Effect.Fade('tr8n_dictionary', { duration: 0.2 }); ") %>
+	              &laquo; <%=link_to_function(trl("hide dictionary definitions"), "Tr8n.hide('tr8n_dictionary_hider'); Tr8n.show('tr8n_dictionary_shower'); Tr8n.fade('tr8n_dictionary'); ") %>
 	          </div>  
 			  </div>	
       <% end %>
@@ -93,7 +93,7 @@
 		      <button type="submit" class="translator_btn translator_submit_btn" onClick="submitTranslation(); return false;">
 		          <span><%=trl("Translate")%></span>
 		      </button>
-		      or <%= link_to_function(trl("Cancel"), "Effect.BlindDown('tranlsations_list', { duration: 0.2 });  Effect.BlindUp('new_translation', { duration: 0.2 });") %>
+		      or <%= link_to_function(trl("Cancel"), "Tr8n.blindDown('tranlsations_list');  Tr8n.blindUp('new_translation');") %>
 		  </div>
 	
 	<% end %>
@@ -101,39 +101,24 @@
 
 <script>
 	function submitTranslation() {
-		if ($("tr8n_translation_label_<%=@translation_key.id%>").value.trim() == "") {
+		if (Tr8n.value("tr8n_translation_label_<%=@translation_key.id%>") == "") {
 			 alert("<%=trl('Translation must be provided.')%>");
 			 return;
 	  }
-    $('translation_form').submit();
+    Tr8n.submit('translation_form');
 	}
 	
 	function downloadDictionaryDefinitions() {
-    new Ajax.Request('/tr8n/phrases/dictionary', {
+		Tr8n.hide('tr8n_dictionary_opener'); 
+		Tr8n.show('tr8n_dictionary_spinner'); 
+    Tr8n.Utils.update('tr8n_dictionary', '/tr8n/phrases/dictionary', {
       parameters: {translation_key_id:"<%=@translation_key.id%>"},
-      method: 'get',
-      onSuccess: function(transport) {
-        $('tr8n_dictionary').update(transport.responseText);
-				$('tr8n_dictionary_spinner').hide();
-        new Effect.Appear('tr8n_dictionary', { 
-				    duration: 0.2,
-						afterFinish: function() {
-              scrollToElement($('buttons_container'));
-							$('tr8n_dictionary_hider').show();
-            } 
-				});
+      onComplete: function(response) {
+        Tr8n.hide('tr8n_dictionary_spinner');
+				Tr8n.appear('tr8n_dictionary');
+        Tr8n.scrollTo('buttons_container');
+        Tr8n.show('tr8n_dictionary_hider');
       }
-		});		
-	}
-	
-	function scrollToElement(theElement) {
-	  var selectedPosX = 0;
-	  var selectedPosY = 0;
-	  while(theElement != null){
-	    selectedPosX += theElement.offsetLeft;
-	    selectedPosY += theElement.offsetTop;
-	    theElement = theElement.offsetParent;
-	  }
-	  window.scrollTo(selectedPosX,selectedPosY);
+    });
 	}
 </script>

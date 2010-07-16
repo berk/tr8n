@@ -4,7 +4,7 @@
   <% form_tag({}, {:method => :get, :id => "translations_search_form"}) do %>
      <%=hidden_field_tag(:section_key, @section_key) %>
      <div style="float:right">
-          <button type="submit" class="translator_btn translator_small_btn" onClick="$('translations_search_form').submit(); return false;">
+          <button type="submit" class="translator_btn translator_small_btn" onClick="Tr8n.submit('translations_search_form'); return false;">
               <span><%=trl("Search")%></span>
           </button>
      </div>

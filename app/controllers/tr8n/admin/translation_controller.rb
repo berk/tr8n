@@ -24,8 +24,7 @@
 class Tr8n::Admin::TranslationController < Tr8n::Admin::BaseController
 
   def index
-    @model_filter = init_model_filter(Tr8n::TranslationFilter)
-    @translations = Tr8n::Translation.paginate(:order=>@model_filter.order_clause, :page=>page, :per_page=>@model_filter.per_page, :conditions=>@model_filter.sql_conditions)
+    @translations = Tr8n::Translation.filter(:params => params, :filter => Tr8n::TranslationFilter)
   end
 
   def view
@@ -45,8 +44,7 @@ class Tr8n::Admin::TranslationController < Tr8n::Admin::BaseController
   end
 
   def votes
-    @model_filter = init_model_filter(Tr8n::TranslationVoteFilter)
-    @votes = Tr8n::TranslationVote.paginate(:order=>@model_filter.order_clause, :page=>page, :per_page=>@model_filter.per_page, :conditions=>@model_filter.sql_conditions)
+    @votes = Tr8n::TranslationVote.filter(:params => params, :filter => Tr8n::TranslationVoteFilter)
   end
 
   def delete_vote

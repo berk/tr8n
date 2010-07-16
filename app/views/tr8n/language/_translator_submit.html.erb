@@ -41,7 +41,7 @@
 		        
 		            <div id="tr8n_google_suggestion_container_<%=@translation_key.id%>" style="" class="small_section">  
 		                <%=image_tag("/tr8n/images/left_quote.png", :style=>"text-align:bottom;padding-bottom:5px;") %>
-		                <a onclick="$('tr8n_translator_translation_label').value=$('tr8n_translation_suggestion_<%=@translation_key.id%>').innerHTML; return false;" href="#">
+		                <a onclick="Tr8n.element('tr8n_translator_translation_label').value=Tr8n.element('tr8n_translation_suggestion_<%=@translation_key.id%>').innerHTML; return false;" href="#">
 		                   <span class="small" id="tr8n_translation_suggestion_<%=@translation_key.id%>" title="<%=trl("Click to insert this suggested translation above")%>"></span>
 		                </a>
 		                <%=image_tag("/tr8n/images/right_quote.png", :style=>"text-align:bottom;padding-top:5px;") %>
@@ -93,5 +93,5 @@
 <% end %>
 
 <script>
-  $("tr8n_translator_translation_label").focus();
+  Tr8n.element("tr8n_translator_translation_label").focus();
 </script>

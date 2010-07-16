@@ -23,10 +23,6 @@
 
 class Tr8n::LanguageRuleFilter < Tr8n::BaseFilter
 
-  def initialize(identity)
-    super('Tr8n::LanguageRule', identity)
-  end
-
   def definition
     defs = super  
     defs[:language_id][:is] = :list
@@ -55,10 +51,9 @@ class Tr8n::LanguageRuleFilter < Tr8n::BaseFilter
   def default_order_type
     'asc'
   end
-
-  def self.load_predefined_filter(profile, filter_name)
-    filter = super(profile, filter_name)
-    filter.empty? ? nil : filter
+  
+  def default_order_type
+    nil
   end
 
 end

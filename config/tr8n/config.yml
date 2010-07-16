@@ -71,7 +71,8 @@ defaults: &defaults
   site_info:  
     current_user_method:      current_user          # provides current user object
     current_locale_method:    current_locale        # provides current locale
-    title:                    Tr8n                  # site title, for customization 
+    title:                    Tr8n                  # site title, for customization
+    contact_email:            admin@tr8n.org 
     default_url:              /home         
     default_locale:           en-US
     sitemap_path:             /config/tr8n/site/sitemap.json

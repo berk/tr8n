@@ -1,0 +1,26 @@
+<div style="text-align:center; margin-bottom:25px;">
+  <h2><%=trl("Tr8n Translation Engine Shortcuts", "Help shortcuts title")%></h2>
+  
+	<div style="overflow:auto;max-height:450px;">
+		<table style="width:100%">
+			<tr>
+				<td style="font-size:12px; font-weight:bold; padding:5px; border-bottom:1px solid #ccc;">Keys</td>
+		    <td style="font-size:12px; font-weight:bold; padding:5px; border-bottom:1px solid #ccc;">Description</td>
+			</tr>
+			
+		  <% Tr8n::Config.default_shortcuts.keys.sort.each do |key| %>
+			   <tr>
+			   	 <td style="font-size:10px; padding:5px;border-bottom:1px dotted #ccc;"><%=key%></td>
+		       <td style="font-size:10px; padding:5px;border-bottom:1px dotted #ccc;"><%=Tr8n::Config.default_shortcuts[key][:description]%></td>
+			   </tr>
+			<% end %>       
+			
+		</table>
+	</div>
+</div>
+
+<div class="buttons_container" style="text-align:center;">
+    <button type="submit" class="translator_btn translator_submit_btn" onClick="tr8nLightbox.hide(); return false;">
+        <span><%=trl("Close", "Lightbox close button")%></span>
+    </button>
+</div>

@@ -177,14 +177,11 @@ class Tr8n::LanguageController < Tr8n::BaseController
   
   # language selector management functions
   def lists
-    @mode = params[:mode] || "view"
-    
     if request.post? 
       if params[:language_action] == "remove"
         lu = Tr8n::LanguageUser.find(:first, :conditions => ["language_id = ? and user_id = ?", params[:language_id], tr8n_current_user.id])
         lu.destroy
       end
-      @mode = "edit"
     end
     
     @all_languages = Tr8n::Language.enabled_languages

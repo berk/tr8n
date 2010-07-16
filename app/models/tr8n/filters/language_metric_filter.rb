@@ -23,10 +23,6 @@
 
 class Tr8n::LanguageMetricFilter < Tr8n::BaseFilter
 
-  def initialize(identity)
-    super('Tr8n::LanguageMetric', identity)
-  end
-
   def definition
     defs = super  
     defs[:language_id][:is] = :list
@@ -42,29 +38,20 @@ class Tr8n::LanguageMetricFilter < Tr8n::BaseFilter
     return []
   end
 
-  def default_order
-    'created_at'
-  end
-  
-  def default_order_type
-    'desc'
-  end
-
-  def predefined_filters(profile)
-    super(profile) + [
+  def default_filters
+    super + [
       ["Totals", "totals"],
     ]
   end
 
-  def self.load_predefined_filter(profile, filter_name)
-    filter = super(profile, filter_name)
+  def default_filter_conditions(key)
+    super_conditions = super(key)
+    return super_conditions if super_conditions
  
     case filter_name
       when "totals"
-        filter.add_condition(:metric_date, :is_not_provided)
+        return [:metric_date, :is_not_provided]
     end   
-
-    filter.empty? ? nil : filter
   end
 
 end

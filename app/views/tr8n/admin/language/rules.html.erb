@@ -1,6 +1,6 @@
 <%= render :partial => "/tr8n/admin/common/header" %>
 <%= render :partial => "tabs" %>
-<%= tr8n_will_filter %>
+<%= tr8n_will_filter(@rules) %>
 
 <%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @rules} %>
 <%= render :partial => "rules", :locals => {:rules => @rules}%>

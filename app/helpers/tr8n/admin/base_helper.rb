@@ -23,6 +23,10 @@
 
 module Tr8n::Admin::BaseHelper
 
+  def tr8n_will_filter(results)
+    will_filter(results)
+  end
+
   def tr8n_will_paginate(collection = nil, options = {})
     super(collection, options.merge(:skip_decorations => true))
   end

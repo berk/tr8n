@@ -7,7 +7,7 @@
       <% rule.definition ||= {} %>
       
       <%=hidden_field_tag("rules[#{index}][id]", rule.id)%>
-      <%=select_tag("rules[#{index}][type]", options_for_select(Tr8n::LanguageRule.options, rule.class.name), :onChange=>"$('rule_#{index}_reset_values').value='true'; updateLanguageRules()")%>
+      <%=select_tag("rules[#{index}][type]", options_for_select(Tr8n::LanguageRule.options, rule.class.name), :onChange=>"Tr8n.element('rule_#{index}_reset_values').value='true'; updateLanguageRules()")%>
       <%=hidden_field_tag("rules[#{index}][reset_values]", "false", :id => "rule_#{index}_reset_values")%>
       
       <%=render :partial=> "#{rule.class.dependency}_rule", :locals => {:rule => rule, :index => index} %>
