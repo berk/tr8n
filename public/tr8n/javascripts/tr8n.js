@@ -652,7 +652,7 @@ Tr8n.Utils = {
 	
 	displayShortcuts: function() {
 		if (tr8nLightbox)
-		  tr8nLightbox.show('/tr8n/help/lb_shortcuts', {width:400, height:520});
+		  tr8nLightbox.show('/tr8n/help/lb_shortcuts', {width:400, height:480});
 	},	
 
   displayCredits: function() {

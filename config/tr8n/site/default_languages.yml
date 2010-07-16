@@ -21,7 +21,7 @@ az:
   native_name:    Азәрбајҹан дили 
 be: 
   english_name:   Belarusian 
-  native_name:    Беларуская 
+  native_name:    Беларуская
 bg: 
   english_name:   Bulgarian 
   native_name:    Български 
@@ -337,3 +337,35 @@ zu-ZA:
 mr-IN:
   english_name:   Marathi
   native_name:    मराठी 
+bn:
+  english_name:   Bengali 
+  native_name:    Bengali
+cb:
+  english_name:   Central Bikolano 
+  native_name:    Central Bikolano
+kn:
+  english_name:   Kannada 
+  native_name:    Kannada
+rw:
+  english_name:   Kinyarwanda 
+  native_name:    Kinyarwanda
+ml:
+  english_name:   Malayalam 
+  native_name:    Malayalam
+mo:
+  english_name:   Mohawk 
+  native_name:    Mohawk
+or:
+  english_name:   Oriya 
+  native_name:    Oriya
+pp:
+  english_name:   Papiamento 
+  native_name:    Papiamento
+rj:
+  english_name:   Rajasthani 
+  native_name:    Rajasthani
+te:  
+  english_name:   Telugu
+  native_name:    Telugu
+  
+  

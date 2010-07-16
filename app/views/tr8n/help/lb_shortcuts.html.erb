@@ -2,16 +2,16 @@
   <h2><%=trl("Tr8n Translation Engine Shortcuts", "Help shortcuts title")%></h2>
   
 	<div style="overflow:auto;max-height:450px;">
-		<table style="width:100%">
+		<table style="width:100%" celppading="0px" cellspacing="0px">
 			<tr>
-				<td style="font-size:12px; font-weight:bold; padding:5px; border-bottom:1px solid #ccc;">Keys</td>
-		    <td style="font-size:12px; font-weight:bold; padding:5px; border-bottom:1px solid #ccc;">Description</td>
+				<td style="font-size:12px; font-weight:bold; padding:5px; border-bottom:1px solid #ccc; text-align:left;">Keys</td>
+		    <td style="font-size:12px; font-weight:bold; padding:5px; border-bottom:1px solid #ccc; text-align:left;">Description</td>
 			</tr>
 			
 		  <% Tr8n::Config.default_shortcuts.keys.sort.each do |key| %>
 			   <tr>
-			   	 <td style="font-size:10px; padding:5px;border-bottom:1px dotted #ccc;"><%=key%></td>
-		       <td style="font-size:10px; padding:5px;border-bottom:1px dotted #ccc;"><%=Tr8n::Config.default_shortcuts[key][:description]%></td>
+			   	 <td style="font-size:10px; padding:5px;border-bottom:1px dotted #ccc; text-align:left;"><%=key%></td>
+		       <td style="font-size:10px; padding:5px;border-bottom:1px dotted #ccc; text-align:left;"><%=Tr8n::Config.default_shortcuts[key][:description]%></td>
 			   </tr>
 			<% end %>       
 			
