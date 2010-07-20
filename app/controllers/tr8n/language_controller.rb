@@ -172,6 +172,7 @@ class Tr8n::LanguageController < Tr8n::BaseController
     
     @all_languages = Tr8n::Language.enabled_languages
     @user_languages = Tr8n::LanguageUser.languages_for(tr8n_current_user) unless tr8n_current_user_is_guest?
+    
     render :layout => false 
   end
   

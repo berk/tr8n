@@ -21,25 +21,14 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-class Tr8n::TranslationFilter < Tr8n::BaseFilter
+module Tr8n::BaseHelper
 
-  def definition
-    defs = super  
-    defs[:language_id][:is] = :list
-    defs[:language_id][:is_not] = :list
-    defs
+  def tra(label, desc = "", tokens = {}, options = {})
+    if Tr8n::Config.config[:enable_admin_inline_mode]
+      tr(label, desc, tokens, options)
+    else
+      trl(label, desc, tokens, options)
+    end
   end
   
-  def value_options_for(criteria_key)
-    if criteria_key == :language_id
-      return Tr8n::Language.filter_options 
-    end
-
-    return []
-  end
-
-  def default_filter_if_empty
-    "created_today"
-  end
-
 end

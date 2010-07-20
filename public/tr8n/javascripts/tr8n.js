@@ -207,13 +207,14 @@ Tr8n.Translator.prototype = {
     }		
   },
 
-  insertDecorationToken: function (token) {
-    var txtarea = Tr8n.element('tr8n_translator_translation_label');
-    Tr8n.Utils.wrapText(txtarea, "[" + token + ": ", "]");
+  insertDecorationToken: function (token, txtarea_id) {
+		txtarea_id = txtarea_id || 'tr8n_translator_translation_label';
+    Tr8n.Utils.wrapText(txtarea_id, "[" + token + ": ", "]");
   },
 
-  insertToken: function (token) {
-    Tr8n.Utils.insertAtCaret('tr8n_translator_translation_label', "{" + token + "}");
+  insertToken: function (token, txtarea_id) {
+    txtarea_id = txtarea_id || 'tr8n_translator_translation_label';
+    Tr8n.Utils.insertAtCaret(txtarea_id, "{" + token + "}");
   },
 
   switchTranslatorMode: function(translation_key_id, mode, source_url) {
@@ -239,6 +240,7 @@ Tr8n.Translator.prototype = {
     Tr8n.hide('tr8n_translator_buttons_container');
     Tr8n.hide('tr8n_translator_dependencies_container');
     Tr8n.show('tr8n_translator_spinner');
+		Tr8n.element('tr8n_translator_form').action = '/tr8n/translations/permutate';
     Tr8n.submit('tr8n_translator_form');
   },
 
@@ -341,9 +343,9 @@ Tr8n.LanguageSelector.prototype = {
       top: trigger_position[1] + trigger.offsetHeight + 4 + 'px'
     }
 
-    if (trigger_position[0] < window.innerWidth/2 ) {
-      this.container.offsetLeft = trigger_position[0] + 'px';
-    }
+//    if (trigger_position[0] < window.innerWidth/2 ) {
+//      this.container.offsetLeft = trigger_position[0] + 'px';
+//    }
 
     this.container.style.left     = container_position.left;
     this.container.style.top      = container_position.top;
@@ -372,6 +374,14 @@ Tr8n.LanguageSelector.prototype = {
 
   disableInlineTranslations: function() {
     window.location = "/tr8n/language/switch?language_action=disable_inline_mode&source_url=" + location;
+  },
+
+  showDashboard: function() {
+    window.location = "/tr8n/dashboard";
+  },
+
+  manageLanguage: function() {
+    window.location = "/tr8n/language";
   },
 
   toggleInlineTranslations: function() {

@@ -27,7 +27,7 @@
   
 	  <% if tr8n_current_user_is_translator? %> 
 	    <div style="padding-top:5px;font-size: 11px;">
-	      <%=link_to_function(trl("Translation Tools"), "tr8nLanguageSelector.openTranslations()")%><br>
+	      <%=link_to_function(trl("Translation Tools"), "tr8nLanguageSelector.showDashboard()")%><br>
 	
 	      <span style="font-size: 11px;"><%=trl("Search for translations by other users, vote on translations or add your own translations.")%></span>
 	    </div>
@@ -35,7 +35,7 @@
 		
     <% if tr8n_current_user_is_admin? or (tr8n_current_user_is_translator? and tr8n_current_translator.manager?) %>
       <div style="padding-top:5px;font-size: 11px;">
-        <%=link_to_function(trl("Manage Language"), "tr8nLanguageSelector.openLanguage()")%> 
+        <%=link_to_function(trl("Manage Language"), "tr8nLanguageSelector.manageLanguage()")%> 
 				<span style="color: grey; font-size: 10px; padding-left:0.5em;">language admins only</span>
 				<br>
   

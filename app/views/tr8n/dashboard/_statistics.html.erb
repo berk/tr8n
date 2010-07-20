@@ -1,10 +1,10 @@
 <% if lang.total_metric.not_translated_count == 0 and lang.total_metric.key_count > 0 %>
   <div style="background-color:#ECFFEF; border: 1px dotted #ccc; font-size: 12px; padding:5px; margin-top:3x; margin-bottom:10px; color: #999;">
-    <%=trl("This language is fully translated.")%>
+    <%=tra("This language is fully translated.", "Dashboard section header")%>
   </div>
 <% else %>
   <div style="background-color:#EFF8FF; border: 1px dotted #ccc; font-size: 12px; padding:5px; margin-top:3x; margin-bottom:10px; color: #999;">
-    <%=trl("This language has [link: {count} {_phrases}] that need to be translated.", "", 
+    <%=tra("This language has [link: {count} {_phrases}] that need to be translated.", "Dashboard section header", 
             :count => lang.total_metric.not_translated_count,
             :link => lambda{|str| link_to(str, :controller => "/tr8n/phrases", :action => :index, :locale => lang.locale, :phrase_type => :without)},
             :_phrases => "phrase".pluralize_for(lang.total_metric.not_translated_count)
@@ -18,130 +18,18 @@
   </div>
 	
   <%=tr8n_toggler_tag("stats_content_#{lang.id}", "", true)%>
-	<%=trl("Language Statistics") %>
+	<%=tra("Language Statistics", "Dashboard section header") %>
 </div>
 
 <div id="stats_content_<%=lang.id%>" style="">
 	<table style="width:100%">
 	  <tr>
       <td style="width:50%; padding-top:3px; padding-right:3px; padding-bottom:10px;">
-        <table style="width:100%; border:1px dotted #ccc; background-color:white;">
-            <tr>
-              <td colspan="2" style="text-align:center; font-size:14px; padding-top:3px;">
-                <%=trl("Language Phrases")%>
-                <span style="font-size:10px;color:#ccc;">(<%=lang.total_metric.completeness%>% Complete)</span>
-              </td>
-            </tr> 
-            <tr>
-              <td style="vertical-align:middle; padding-left:5px;">
-                <table style="" cellpadding="1px"  cellspacing="1px">
-                  <tr>
-                    <td style="width:20px;"><div style="height:15px; width:15px; background-color:green;"></div></td>
-                    <td style="width:50px;">Approved:</td>
-                    <td style="width:40px;">
-                        <%=link_to(lang.total_metric.locked_key_count || 0, 
-                                  :controller => "/tr8n/phrases", :action => :index, :locale => lang.locale,
-                                  :phrase_type => :with, :phrase_status => :approved) %>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style=""><div style="height:15px; width:15px; background-color:yellow;"></div></td>
-                    <td style="">Pending Approval:</td>
-                    <td style="">
-                        <%=link_to(lang.total_metric.pending_approval_count || 0, 
-                                  :controller => "/tr8n/phrases", :action => :index, :locale => lang.locale,
-                                  :phrase_type => :with, :phrase_status => :pending) %>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style=""><div style="height:15px; width:15px; background-color:red;"></div></td>
-                    <td style="">Not Translated:</td>
-                    <td style="">
-                        <%=link_to(lang.total_metric.not_translated_count || 0, 
-                                  :controller => "/tr8n/phrases", :action => :index, :locale => lang.locale,
-                                  :phrase_type => :without) %>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style=""> </td>
-                    <td style="">Total Phrases:</td>
-                    <td style="">
-                        <%=link_to(lang.total_metric.key_count || 0, 
-                                  :controller => "/tr8n/phrases", :action => :index, :locale => lang.locale) %>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-              <td style="vertical-align:middle; width:220px; text-align:center">
-                <div id="language_chart_<%=lang.id%>"></div>     
-              </td>
-           </tr>
-           <tr>
-             <td colspan="4" align="center">
-                 <div style="color:#ccc"><%=trl("The statistics are calculated nightly")%></div>
-             </td>
-           </tr>
-        </table>
+          <%=render :partial => "language_metric", :locals => {:language_metric => lang.total_metric, :lang => lang} %>
       </td>      	  	
 	    <td style="width:50%;padding-top:3px; padding-bottom:10px;">
-	      <table style="width:100%; border:1px dotted #ccc; background-color:white;">
-	          <tr>
-	            <td colspan="2" style="text-align:center; font-size:14px; padding-top:3px;">
-	              <%=trl("Your Translations") %> 
-	            </td>
-	          </tr> 
-	          <tr>
-	            <td style="vertical-align:middle; padding-left:5px;">
-	              <table style="" cellpadding="1px" cellspacing="1px">
-	                <tr>
-	                  <td style="width:20px;"><div style="height:15px; width:15px; background-color:green;"></div></td>
-	                  <td style="width:50px;"><%=trl("Accepted:") %></td>
-	                  <td style="width:40px;">
-										    <%=link_to(translator_metric.accepted_translations || 0, 
-                                  :controller => "/tr8n/translations", :action => :index, :locale => lang.locale,
-                                  :submitted_by => :me, :with_status => :accepted) %>
-										</td>
-	                </tr>
-	                <tr>
-	                  <td style=" "><div style="height:15px; width:15px; background-color:yellow;"></div></td>
-	                  <td style=" "><%=trl("Pending:") %></td>
-	                  <td style=" ">
-                        <%=link_to(translator_metric.pending_vote_translations || 0, 
-                                  :controller => "/tr8n/translations", :action => :index, :locale => lang.locale,
-                                  :submitted_by => :me, :with_status => :pending) %>
-									 </td>
-	                </tr>
-	                <tr>
-	                  <td style=" "><div style="height:15px; width:15px; background-color:red;"></div></td>
-	                  <td style=" "><%=trl("Rejected:") %></td>
-	                  <td style=" ">
-                        <%=link_to(translator_metric.rejected_translations || 0, 
-                                  :controller => "/tr8n/translations", :action => :index, :locale => lang.locale,
-                                  :submitted_by => :me, :with_status => :rejected) %>
-										</td>
-	                </tr>
-	                <tr>
-	                  <td style=""> </td>
-	                  <td style=""><%=trl("Total Translations:") %></td>
-	                  <td style="">
-                        <%=link_to(translator_metric.total_translations || 0, 
-                                  :controller => "/tr8n/translations", :action => :index, :locale => lang.locale,
-                                  :submitted_by => :me) %>
-										</td>
-	                </tr>
-	              </table>
-	            </td>
-	            <td style="vertical-align:middle; width:220px; text-align:center">
-	              <div id="translator_chart_<%=lang.id%>"> </div>     
-	            </td>   
-	          </tr>
-           <tr>
-             <td colspan="4" align="center">
-                 <div style="color:#ccc"><%=trl("The ranks are calculated realtime")%></div>
-             </td>
-           </tr>
-	      </table>      
-	    </td>       
+          <%=render :partial => "translator_metric", :locals => {:translator_metric => translator_metric, :lang => lang} %>
+	    </td>        
 	  </tr>
 	</table>  
 </div>

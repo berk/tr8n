@@ -24,7 +24,7 @@
 class Tr8n::TranslationsController < Tr8n::BaseController
 
   before_filter :validate_current_translator
-  before_filter :validate_default_language, :except => [:translate, :vote]
+  before_filter :validate_default_language, :except => [:translate, :permutate, :vote]
   
   # for ssl access to the translator - using ssl_requirement plugin  
   ssl_allowed :translate  if respond_to?(:ssl_allowed)
@@ -40,18 +40,6 @@ class Tr8n::TranslationsController < Tr8n::BaseController
       return redirect_to(@source_url)
     end
 
-    if params[:translation_has_dependencies] == "true" 
-      new_translations = @translation_key.generate_rule_permutations(tr8n_current_language, tr8n_current_translator, params[:dependencies])
-      if params[:dependencies].blank?
-        trfe("You have not specified any context rules for this phrase.")
-      elsif new_translations.nil? or new_translations.empty?
-        trfn("The context rules you specified already exist. Please provide a translation for each context rule.")
-      else
-        trfn("We have created all possible combinations of the context rules. Please provide a translation for each rule.")
-      end  
-      return redirect_to(:controller => "/tr8n/phrases", :action => :view, :translation_key_id => @translation_key.id, :grouped_by => :context)
-    end
-    
     if params[:translation_id].blank?
       @translation = Tr8n::Translation.new(:translation_key => @translation_key, :language => tr8n_current_language, :translator => tr8n_current_translator)
     else  
@@ -91,27 +79,51 @@ class Tr8n::TranslationsController < Tr8n::BaseController
     redirect_to(@source_url)
   end
   
+  # generates phrase context rules permutations
+  def permutate
+    translation_key = Tr8n::TranslationKey.find(params[:translation_key_id])
+    source_url = params[:source_url] || request.env['HTTP_REFERER']
+    
+    unless request.post?
+      trfe("Please use a translator window for submitting translations")
+      return redirect_to(source_url)
+    end
+
+    new_translations = translation_key.generate_rule_permutations(tr8n_current_language, tr8n_current_translator, params[:dependencies])
+    if params[:dependencies].blank?
+      trfe("You did not specified any context rules for this phrase.")
+    elsif new_translations.nil? or new_translations.empty?
+      trfn("The context rules you specified already exist. Please provide a translation for each context rule.")
+    else
+      trfn("All possible combinations of the context rules for this phrase have been generated. Please provide a translation for each context rule.")
+    end  
+    
+    redirect_to(:controller => "/tr8n/phrases", :action => :view, :translation_key_id => translation_key.id, :grouped_by => :context)
+  end
+  
+  # ajax based method - collects votes for a translation
   def vote
-    @translation = Tr8n::Translation.find(params[:translation_id])
-    @translation.vote!(tr8n_current_translator, params[:vote])
-    @translation_key = @translation.translation_key
+    translation = Tr8n::Translation.find(params[:translation_id])
+    translation.vote!(tr8n_current_translator, params[:vote])
+    translation_key = translation.translation_key
 
     # this is called from page translations page
     if params[:short_version] == "true"
-      return render(:text => @translation.rank_label) 
+      return render(:text => translation.rank_label) 
     end
     
     # this is called from the inline translator with reordering the translations based on ranks
-    @translations = @translation_key.inline_translations_for(tr8n_current_language)
-    render(:partial => '/tr8n/common/translation_votes', :locals => {:translation_key => @translation_key, :translations => @translations, :section_key => ""})
+    translations = translation_key.inline_translations_for(tr8n_current_language)
+    render(:partial => '/tr8n/common/translation_votes', :locals => {:translation_key => translation_key, :translations => translations, :section_key => ""})
   end
-    
+
+  # list of translations    
   def index
     conditions = Tr8n::Translation.search_conditions_for(params)
     @translations = Tr8n::Translation.paginate(:per_page => per_page, :page => page, :conditions => conditions, :order => "created_at desc, rank desc")    
   end
 
-  #  ajax based method for updating individual translations
+  # ajax based method for updating individual translations
   def update
     @translation = Tr8n::Translation.find(params[:translation_id])
     mode = params[:mode] || :view
@@ -149,6 +161,7 @@ class Tr8n::TranslationsController < Tr8n::BaseController
     render(:partial => "translation", :locals => {:language => tr8n_current_language, :translation => @translation, :mode => mode.to_sym})
   end  
   
+  # deletes an individual translation
   def delete
     translation = Tr8n::Translation.find(params[:translation_id])
     translator = translation.translator

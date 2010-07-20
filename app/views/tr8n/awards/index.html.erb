@@ -4,17 +4,17 @@
   <div style="float:right; font-size:12px; padding-top:5px;">
   <% unless tr8n_current_language.default? %>
     <% if params[:mode] == "all" %>
-        <%=link_to(trl("Awards for #{tr8n_current_language.english_name} Language"), :mode => :current) %> 
+        <%=link_to(tra("Awards for #{tr8n_current_language.english_name} Language", 'Awards section'), :mode => :current) %> 
     <% else %>
-        <%=link_to(trl("Awards for All Languages"), :mode => :all) %> 
+        <%=link_to(tra("Awards for All Languages", 'Awards section'), :mode => :all) %> 
     <% end %>
   <% end %>  
   </div>
   
   <% if params[:mode] == "all" %> 
-    <%=trl("Awards for All Languages")%>
+    <%=tra("Awards for All Languages", 'Awards section header')%>
   <% else %>
-    <%=trl("Awards for #{tr8n_current_language.english_name} Language") %>
+    <%=tra("Awards for #{tr8n_current_language.english_name} Language", 'Awards section header') %>
   <% end %>  
 </div>
 
@@ -25,9 +25,9 @@
 <% unless @runners.empty? %>
   <div class="section_title">
     <% if params[:mode] == "all" %> 
-      <%=trl("Runner-Ups for All Languages")%>
+      <%=tra("Runner-Ups for All Languages", 'Awards section header')%>
     <% else %>
-      <%=trl("Runner-Ups for #{tr8n_current_language.english_name} Language") %>
+      <%=tra("Runner-Ups for #{tr8n_current_language.english_name} Language", 'Awards section header') %>
     <% end %>  
   </div>
   <div style="border: 1px dotted #ccc; padding:10px; margin-top:5px; margin-top:10px;">

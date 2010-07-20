@@ -23,6 +23,10 @@
 
 class Tr8n::Admin::BaseController < Tr8n::BaseController
 
+  if Tr8n::Config.admin_helpers.any?
+    helper *Tr8n::Config.admin_helpers
+  end
+
   before_filter :validate_admin
   
   layout Tr8n::Config.site_info[:admin_layout]

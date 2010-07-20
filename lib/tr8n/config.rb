@@ -308,7 +308,31 @@ class Tr8n::Config
   def self.sitemap_sections
     @sitemap_sections ||= load_json(site_info[:sitemap_path])
   end
+
+  def self.tr8n_helpers
+    return [] unless site_info[:tr8n_helpers]
+    @tr8n_helpers ||= site_info[:tr8n_helpers].collect{|helper| helper.to_sym}
+  end
+
+  def self.admin_helpers
+    return [] unless site_info[:admin_helpers]
+    @admin_helpers ||= site_info[:admin_helpers].collect{|helper| helper.to_sym}
+  end
   
+  def self.skip_before_filters
+    return [] unless site_info[:skip_before_filters]
+    @skip_before_filters ||= site_info[:skip_before_filters].collect{|filter| filter.to_sym}
+  end
+
+  def self.before_filters
+    return [] unless site_info[:before_filters]
+    @before_filters ||= site_info[:before_filters].collect{|filter| filter.to_sym}
+  end
+
+  def self.after_filters
+    return [] unless site_info[:after_filters]
+    @after_filters ||= site_info[:after_filters].collect{|filter| filter.to_sym}
+  end
   #########################################################
   # site user info
   # The following methods could be overloaded in the initializer

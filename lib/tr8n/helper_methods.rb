@@ -82,8 +82,11 @@ module Tr8n::HelperMethods
     html << "</span>"
   end
 
-  def tr8n_language_selector_tag
-    render(:partial => '/tr8n/common/language_selector')    
+  def tr8n_language_selector_tag(opts = {})
+    opts[:style] ||= "color:#1166bb;"
+    opts[:show_arrow] ||= true
+    opts[:arrow_style] ||= "font-size:8px;"
+    render(:partial => '/tr8n/common/language_selector', :locals => {:opts => opts})    
   end
 
   def tr8n_language_strip_tag(opts = {})

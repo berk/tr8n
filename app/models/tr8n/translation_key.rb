@@ -69,12 +69,6 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   end
   
   def self.generate_key(label, desc = "")
-#    no external specifications for now
-#
-#    key_method = Tr8n::Config.rules_engine[:key_method].clone
-#    key_method.gsub!("{label}", label.to_s)
-#    key_method.gsub!("{description}", desc.to_s)
-#    eval(key_method)
     Digest::MD5.hexdigest("#{label};;;#{desc}")
   end
   

@@ -13,7 +13,7 @@
 		    
 		  <%= f.text_area(:label, :id => "tr8n_translation_label_#{@translation_key.id}", :style=>"width:99%;height:60px;border:1px solid #ccc;background-color:white;padding:3px;", :class => "keyboardInput" ) %>
 		
-		  <%= render(:partial => "dependencies") %>
+		  <%= render(:partial => "tokens") %>
 	
 			<% if Tr8n::Config.enable_google_suggestions? %>  
 				<div id="tr8n_google_suggestion_container_<%=@translation_key.id%>" style="display:none; padding-top:10px; padding-bottom:10px;">
@@ -84,7 +84,7 @@
 						</div>
 	
 	          <div id="tr8n_dictionary_hider" style="display:none; font-size:12px; font-weight:normal;">
-	              &laquo; <%=link_to_function(trl("hide dictionary definitions"), "Tr8n.hide('tr8n_dictionary_hider'); Tr8n.show('tr8n_dictionary_shower'); Tr8n.fade('tr8n_dictionary'); ") %>
+	             <%=link_to_function(trl("&laquo; hide dictionary definitions"), "Tr8n.hide('tr8n_dictionary_hider'); Tr8n.show('tr8n_dictionary_shower'); Tr8n.fade('tr8n_dictionary'); ") %>
 	          </div>  
 			  </div>	
       <% end %>
@@ -93,7 +93,7 @@
 		      <button type="submit" class="translator_btn translator_submit_btn" onClick="submitTranslation(); return false;">
 		          <span><%=trl("Translate")%></span>
 		      </button>
-		      or <%= link_to_function(trl("Cancel"), "Tr8n.blindDown('tranlsations_list');  Tr8n.blindUp('new_translation');") %>
+		      or <%= link_to_function(trl("Cancel"), "Tr8n.show('tranlsations_list');  Tr8n.hide('new_translation');") %>
 		  </div>
 	
 	<% end %>

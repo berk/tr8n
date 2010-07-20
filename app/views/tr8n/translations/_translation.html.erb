@@ -50,21 +50,11 @@
   <% end %>
 
   <% if [:list, :short_list].include?(mode) %>
-	  <% color = translation.key.locked? ? "#ECFFEF" : "#FDFDDF" %>
-    <div style="font-size: 11px; color: grey; margin-top:5px; margin-bottom:5px; padding:3px; background:<%=color%>; border:1px dotted #ccc;">
-      <% if translation.key.locked? %>
-        <div style="float:right"><%=image_tag("/tr8n/images/lock.png", :style=>"width:12px", :title => trl("This phrase is locked"))%></div>
-      <% end %>
-		
-		  Original Phrase: <%=link_to(translation.key.sanitized_label, :controller => "/tr8n/phrases", :action => :view, :locale => language.locale, :translation_key_id => translation.key.id) %>
-			<% unless translation.key.description.blank? %>
-        <br><%= translation.key.description %>
-			<% end %>  
-    </div>
+	   <%= render :partial => "/tr8n/translations/original_phrase", :locals => {:translation => translation} %>
   <% end %>
 </td>
 
-<% unless mode == :list %> 
+<% if [:view, :edit].include?(mode) %> 
 	<td style="text-align:right; vertical-align:top; padding-top:3px;">
 	 <% if mode == :view %> 
 	    <% if translation.can_be_edited_by?(tr8n_current_translator) %>

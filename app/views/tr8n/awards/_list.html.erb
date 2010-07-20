@@ -1,9 +1,9 @@
 <table style="width:100%;" cellpadding="5">
   <tr style="border-bottom: 1px solid black;">
-    <th style="width:80px;color:grey;"><%=trl("Award")%></th>
-    <th style="width:200px;color:grey;"><%=trl("Name")%></th>
-    <th style="text-align:right;color:grey;"><%=trl("Total Translations")%></th>
-    <th style="text-align:right;color:grey;"><%=trl("Total Votes")%></th>
+    <th style="width:80px;color:grey;"><%=tra('Award', 'Awards section header')%></th>
+    <th style="width:200px;color:grey;"><%=tra('Name', 'Awards section header')%></th>
+    <th style="text-align:right;color:grey;"><%=tra('Total Translations', 'Awards section header')%></th>
+    <th style="text-align:right;color:grey;"><%=tra('Total Votes', 'Awards section header')%></th>
   </tr>
   
   <% metrics.each_with_index do |tm, index| %>
@@ -12,14 +12,14 @@
       <td>
         <% if show_medals %> 
           <% if index == 0 %>
-            <%=image_tag("/tr8n/images/medals/gold.png", :style => "height:60px", :title => trl("Gold Medal"))%>
+            <%=image_tag("/tr8n/images/medals/gold.png", :style => "height:60px", :title => trl('Gold Medal', 'Awards section header'))%>
           <% elsif index == 1 %>
-            <%=image_tag("/tr8n/images/medals/silver.png", :style => "height:60px", :title => trl("Silver Medal"))%>
+            <%=image_tag("/tr8n/images/medals/silver.png", :style => "height:60px", :title => trl('Silver Medal', 'Awards section header'))%>
           <% elsif index == 2 %>
-            <%=image_tag("/tr8n/images/medals/bronze.png", :style => "height:60px", :title => trl("Bronze Medal"))%>
+            <%=image_tag("/tr8n/images/medals/bronze.png", :style => "height:60px", :title => trl('Bronze Medal', 'Awards section header'))%>
           <% end %>
         <% else %>
-            <%=image_tag("/tr8n/images/medals/runner.png", :style => "height:60px", :title => trl("Runner-Up"))%>
+            <%=image_tag("/tr8n/images/medals/runner.png", :style => "height:60px", :title => trl('Runner-Up', 'Awards section header'))%>
         <% end %>  
       </td>
       <td>
@@ -39,7 +39,7 @@
       </td>
       <td style="text-align:right;padding:5px;">
         <%=tm.total_votes%>
-        (<span style="color:green"><%=tm.positive_votes || 0 %></span>/<span style="color:red"><%=tm.negative_votes || 0 %></span>)
+        (<span style="color:green" title="<%=trl('Number of positive votes', 'Awards section header')%>"><%=tm.positive_votes || 0 %></span>/<span style="color:red" title="<%=trl('Number of negative votes', 'Awards section header')%>"><%=tm.negative_votes || 0 %></span>)
       </td>
     </tr>
   <% end %>

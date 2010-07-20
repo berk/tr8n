@@ -1,10 +1,10 @@
 <div class="translations_navigation">
   <div style="font-size:22px; font-weight: bold;padding-bottom:15px;">
-	 <%=trl("Translation Tools") %>
+	 <%=tra("Translation Tools", "Tr8n tabs header") %>
 	 <% unless tr8n_current_language.default? %> 
-		 - <%=trl("#{tr8n_current_language.english_name} Language")%>
+		 - <%=tra("#{tr8n_current_language.english_name} Language")%>
 			 <% if tr8n_current_user_is_manager? %>
-			   <%=link_to(trl("manage"), "/tr8n/language", :style => "font-size:12px;")%>
+			   <%=link_to(tra("manage"), "/tr8n/language", :style => "font-size:12px;")%>
 			 <% end %>
 	 <% end %>  
 	</div>
@@ -31,7 +31,7 @@
         %>
         
         <li class="<%=classes.join(' ') %>">
-          <%=link_to(trl(tab[:title], "Tr8n feature"), tab[:link])%>
+          <%=link_to(tra(tab[:title], "Tr8n feature"), tab[:link])%>
         </li>
 
       <% end %>

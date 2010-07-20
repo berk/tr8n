@@ -10,22 +10,21 @@
 <% unless lang.recently_updated_votes.empty? %>
 	<div style="padding-top:10px; font-size:14px; border-bottom:1px solid #ccc; margin-bottom:5px;">
     <div style="float:right; font-size:12px;">
-       <%=link_to(trl("view all"), :controller => "/tr8n/translations", :action => :index, :with_translations=>:with, :submitted_by=>:me, :locale => lang.locale)%>
+       <%=link_to(tra("view all", "Link to view all translation votes"), :controller => "/tr8n/translations", :action => :index, :with_translations=>:with, :submitted_by=>:me, :locale => lang.locale)%>
     </div>
 
     <%=tr8n_toggler_tag("votes_content_#{lang.id}", "", false)%>
-	  <%=trl("Recent Translation Votes")%>
-		<span style="color:#ccc; font-size:12px;">(<%=trl("last 5")%>)</span>
+	  <%=tra("Recent Translation Votes", "Dashboard section header")%>
+		<span style="color:#ccc; font-size:12px;">(<%=tra("last 5", "Translations header for showing only the last 5 translation votes")%>)</span>
 	</div>
 	
 	<div id="votes_content_<%=lang.id%>" style="display:none">
 		<table class="translations_table">
 		  <tr style="border-bottom:1px solid #ccc;">
-		    <td class="topic_header" style="width:200px;"><%=trl("Voter")%></td>
-        <td class="topic_header" style="width:25px;text-align:right;"><%=trl("Vote")%></td>
-        <td class="topic_header" style="width:80px;text-align:right"><%=trl("Total Rank")%></td>
-        <td class="topic_header" style=""><%=trl("Translation")%></td>
-        <td class="topic_header" style="width:50px;">&nbsp;</td>
+		    <td class="topic_header" style="width:200px;"><%=tra("Voter", "Translation votes section header")%></td>
+        <td class="topic_header" style="width:25px;text-align:right;"><%=tra("Vote", "Translation votes section header")%></td>
+        <td class="topic_header" style="width:80px;text-align:right"><%=tra("Total Rank", "Translation votes section header")%></td>
+        <td class="topic_header" style=""><%=tra("Translation", "Translation votes section header")%></td>
 		  </tr>  
 		
 		  <% lang.recently_updated_votes.each do |vote| %>
@@ -59,30 +58,17 @@
             </td>
 						
             <td style="text-align:left; vertical-align:top; padding-top:3px;">
-				      <span title="Translation for: <%=translation.key.label%>">
+				      <span title="<%=trl('Translation for:', 'Translation votes header') %> <%=translation.key.label%>">
 				        <%= translation.label %> 
 				      </span>
               
               <% if translation.context %>
                 <div style="font-size: 11px; color: grey; padding-top:3px;">
-                  <%=trl("Context:")%> <%= translation.context %>  
+                  <%=tra('Context:', 'Translation context rule header')%> <%= translation.context %>  
                 </div>
               <% end %>
 							
-					    <% color = translation.key.locked? ? "#ECFFEF" : "#FDFFF0" %>
-					    <div style="font-size: 11px; color: grey; margin-top:5px; margin-bottom:5px; padding:3px; background:<%=color%>; border:1px dotted #ccc;">
-					      <% if translation.key.locked? %>
-					        <div style="float:right"><%=image_tag("/tr8n/images/lock.png", :style=>"width:12px", :title => trl("This phrase is locked"))%></div>
-					      <% end %>
-					    
-					      <%=link_to(translation.key.label, :controller => "/tr8n/phrases", :action => :view, :locale => lang.locale, :translation_key_id => translation.key.id) %>
-					      <br><%= translation.key.description %>  
-					    </div>
-            </td>
-						  
-	          <td style="text-align:right; padding-right:5px;">
-	            <%=link_to(image_tag("/tr8n/images/table_edit.png"), :controller => "/tr8n/translations", :action => :key, :locale => lang.locale, :translation_key_id => translation.key.id) %>
-	          </td>
+             <%= render :partial => "/tr8n/translations/original_phrase", :locals => {:translation => translation} %>
 		    </tr>
 		  <% end %>
 		</table>

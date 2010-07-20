@@ -1,8 +1,8 @@
 <div class="section_title">
   <% if tr8n_current_language.default? %>
-    <%=trl("Start a New Discussion Topic For All Translators")%>
+    <%=tra("Start a New Discussion Topic For All Translators")%>
 	<% else %>
-	   <%=trl("Start a New Discussion Topic For #{tr8n_current_language.english_name} Language")%>
+	   <%=tra("Start a New Discussion Topic For #{tr8n_current_language.english_name} Language")%>
 	<% end %>
 </div>
 
@@ -13,7 +13,7 @@
     <table style="width:99%">
       <tr>
         <td style="width:80px; text-align:right; padding-right:10px; font-weight:bold;">
-          <%=trl("Topic:")%>
+          <%=tra("Topic:")%>
         </td>
         <td>
           <%=text_field_tag(:topic, "", :style=>"width:99%")%>
@@ -21,7 +21,7 @@
       </tr>
       <tr>
         <td style="width:80px; text-align:right; padding-right:10px; padding-top:5px; font-weight:bold;">
-          <%=trl("Message:") %>
+          <%=tra("Message:") %>
         </td>
         <td style="padding-top:5px;">
           <%=text_area_tag(:message, "", :style=>"width:99%; height:50px;")%>
@@ -30,18 +30,18 @@
       <tr>
         <td></td>
         <td style="color:grey; font-size:12px; padding-top:10px; padding-bottom:10px;">
-           <%=trl("If your computer is not configured with your language keyboard, click on CTR+K to enable keyboards in foreign languages.")%>
+           <%=tra("If your computer is not configured with your language keyboard, click on CTR+SHIFT+K to enable keyboards in foreign languages.")%>
         </td>
       </tr>
     </table>
     
     <div style="padding-top:20px; padding-bottom:10px;text-align:center">
         <button type="submit" class="translator_btn translator_submit_btn" onClick=" Tr8n.submit('forum_topic_form'); return false;">
-            <span><%=trl("Start a New Discussion")%></span>
+            <span><%=tra("Start a New Discussion")%></span>
         </button>
         <% if include_cancel_button %>
         or 
-        <%=link_to(trl("Cancel"), :action => :index)%>
+        <%=link_to(tra("Cancel"), :action => :index)%>
         <% end %>  
     </div>
   <% end %>

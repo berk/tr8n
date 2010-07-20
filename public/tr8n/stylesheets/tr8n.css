@@ -1,4 +1,21 @@
 /****************************************/
+/*** General guidelines
+/****************************************/
+
+.tr8n                                           {width:100%; font-size:11px; font-family:arial;}
+.tr8n div                                       {font-family:arial;}    
+.tr8n a                                         {text-decoration:none; color:#16b; outline:none; border:0px;}
+.tr8n a:hover                                   {text-decoration:underline}
+.tr8n a img                                     {border:0px;}
+.tr8n table                                     {width:100%;border-collapse: collapse; font-size:12px; padding:0px; margin:0px;}
+.tr8n td                                        {vertical-align:top; padding:0px; spacing:0px;}
+.tr8n th                                        {vertical-align:top;text-align:left; padding:0px; spacing:0px;}
+.tr8n input                                     {border:1px solid #ccc; padding:3px; margin: 0px;}    
+.tr8n textarea                                  {border:1px solid #ccc; padding:3px;}    
+.tr8n select                                    {border:1px solid #ccc; padding:3px;}
+.tr8n .pagination                               {text-align:left; padding:0px; margin:0px;}
+
+/****************************************/
 /*** Classes for the translatable elements
 /****************************************/
 
@@ -72,23 +89,17 @@ button::-moz-focus-inner                        {border:none;}
 .tr8n_language_selector a img                   {border:0px;}
 .tr8n_language_selector a:hover                 {text-decoration:underline}
 
+.tr8n_language_strip                            {text-align:center; color:#777;}
+.tr8n_language_strip a                          {text-decoration:none; color:#777; outline:none; border:0px; font-size:10px;}
+.tr8n_language_strip a img                      {border:0px;}
+.tr8n_language_strip a:hover                    {text-decoration:underline}
+
 .language_list                                  {overflow:hidden;list-style-type:none;margin:0px;padding:0px;}
 .language_list li                               {background: white;font-size:11px;font-family:verdana;border-bottom:solid 1px #eee;margin-bottom:-1px;margin:0px;padding:2px;cursor:pointer;}
 .language_list li:hover                         {background: #F1F5FF;}
 
 .glossary_table                                 {}
 .glossary_table td                              {padding:4px;vertical-align:top; font-size:10px;}
-
-.tr8n                                           {width:100%; font-size:11px; font-family:arial;}
-.tr8n a                                         {text-decoration:none; color:#16b; outline:none; border:0px;}
-.tr8n a:hover                                   {text-decoration:underline}
-.tr8n a img                                     {border:0px;}
-.tr8n table                                     {width:100%;border-collapse: collapse; font-size:12px; padding:0px; margin:0px;}
-.tr8n td                                        {vertical-align:top;}
-.tr8n th                                        {vertical-align:top;text-align:left;}
-.tr8n input                                     {border:1px solid #ccc; padding:3px;}    
-.tr8n textarea                                  {border:1px solid #ccc; padding:3px;}    
-.tr8n select                                    {border:1px solid #ccc; padding:3px;}    
 
 
 .tr8n_lightbox_overlay                          {position: absolute; top: 0%; left: 0%; width: 100%; height: 100%; background-color: black; z-index:1001; -moz-opacity: 0.5; opacity:.50; filter: alpha(opacity=50); }
@@ -98,7 +109,7 @@ button::-moz-focus-inner                        {border:none;}
 /*** Classes for the feature tabs
 /****************************************/
    
-.translations_navigation                  {height:70px; position:relative; padding:15px 15px 0px; background-color:#f1f4f9; border-bottom:1px solid #ccc; border-top:1px solid #ccc; border-left:1px solid #ccc; border-right:1px solid #ccc; margin:0px; margin-bottom:10px;}
+.translations_navigation                  {height:70px; position:relative; padding:15px 15px 0px; background-color:#f1f4f9; border:1px solid #ccc; margin:0px; margin-bottom:10px;}
 
 .translations_tab_nav                     {list-style-type:none;bottom:-1px !important;position:absolute;margin:0px;padding:0px;font-family:arial;}
 .translations_tab_nav li                  {float:left;margin-right:2px;cursor:pointer;text-align:bottom;}

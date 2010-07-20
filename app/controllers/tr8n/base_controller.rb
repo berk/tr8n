@@ -25,6 +25,22 @@ class Tr8n::BaseController < ApplicationController
 
   CHART_COLORS = ['AFD8F8', 'F6BD0F', '8BBA00', 'FF8E46', '008E8E', 'D64646', '8E468E', '588526', 'B3AA00', '008ED6', '9D080D', 'A186BE']
 
+  if Tr8n::Config.tr8n_helpers.any?
+    helper *Tr8n::Config.tr8n_helpers
+  end
+
+  if Tr8n::Config.skip_before_filters.any?
+    skip_before_filter *Tr8n::Config.skip_before_filters
+  end
+
+  if Tr8n::Config.before_filters.any?
+    before_filter *Tr8n::Config.before_filters
+  end
+  
+  if Tr8n::Config.after_filters.any?
+    after_filter *Tr8n::Config.after_filters
+  end
+  
   before_filter :validate_tr8n_enabled, :except => [:translate]
   before_filter :validate_guest_user, :except => [:select, :switch, :translate, :table]
   before_filter :validate_current_user, :except => [:translate]

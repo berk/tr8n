@@ -6,7 +6,7 @@
   <div style="color:grey;font-size:10px;"><%=message.created_at.trl(:date_time) %></div>
   <div style="font-size:10px;">
     <% if tr8n_current_user_is_translator? and message.translator == tr8n_current_translator %>  
-      <%=link_to(trl("Delete"), {:action => :delete_message, :message_id => message.id}, {:confirm => trl("Are you sure you want to delete this message?")})%>
+      <%=link_to(tra("Delete"), {:action => :delete_message, :message_id => message.id}, {:confirm => trl("Are you sure you want to delete this message?")})%>
     <% end %>
   </div>
 </td>

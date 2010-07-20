@@ -1,5 +1,5 @@
 <div id="permutations" class="section_box colored" style="display:none">
-	<% form_for(:translation, @translation, :url => {:controller => "/tr8n/translations", :action => :translate}, :html => {:id => 'permutation_form', :method => :post}) do |f| %>
+	<% form_for(:translation, @translation, :url => {:controller => "/tr8n/translations", :action => :permutate}, :html => {:id => 'permutation_form', :method => :post}) do |f| %>
 	    <%= hidden_field_tag(:translation_key_id, @translation_key.id) %>
 	    <%= hidden_field_tag(:source_url, @source_url) %>
 	    <%= hidden_field_tag(:translation_has_dependencies, "true") %>
@@ -10,7 +10,7 @@
 	
       <div style="color:grey; font-size:12px; padding-top:5px; padding-bottom:10px;">
        <%=trl("Some translations depend on the gender of the viewing user or the token values.")%>
-       <%=trl("Select all of the rules that this translation depends on.")%>
+       <%=trl("Select all of the rules types that this translation depends on.")%>
        <%=trl("For example, if the translation depends on the gender of the viewing user, select the gender context for the viewing_user token.")%>
       </div>
 
@@ -22,9 +22,9 @@
 
 
   <div id="buttons_container" style="padding-top:15px;padding-bottom:5px;text-align:center">
-	    <button type="submit" class="translator_btn translator_submit_btn" onClick="Tr8n.element('permutation_form').submit(); return false;">
+	    <button type="submit" class="translator_btn translator_submit_btn" onClick="Tr8n.submit('permutation_form'); return false;">
 	        <span><%=trl("Generate")%></span>
 	    </button>
-       or <%= link_to_function(trl("Cancel"), "Tr8n.blindDown('tranlsations_list');  Tr8n.blindUp('permutations');") %>
+       or <%= link_to_function(trl("Cancel"), "Tr8n.show('tranlsations_list');  Tr8n.hide('permutations');") %>
 	</div>
 </div>

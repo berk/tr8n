@@ -26,5 +26,5 @@ class Tr8n::GlossaryFilter < Tr8n::BaseFilter
   def default_order_type
     nil
   end
-  
+
 end

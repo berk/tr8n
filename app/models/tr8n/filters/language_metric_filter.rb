@@ -54,4 +54,8 @@ class Tr8n::LanguageMetricFilter < Tr8n::BaseFilter
     end   
   end
 
+  def default_filter_if_empty
+    "updated_today"
+  end
+
 end

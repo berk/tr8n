@@ -63,22 +63,24 @@
 
 <script>
 	function addTranslation() {
-		Tr8n.blindUp('tranlsations_list'); 
-		Tr8n.blindDown('new_translation');
+		Tr8n.hide('tranlsations_list'); 
+    Tr8n.hide('permutations');
+		Tr8n.show('new_translation');
 	}
 	
   function addContextRules() {
-    Tr8n.blindUp('tranlsations_list'); 
-    Tr8n.blindDown('permutations');
+    Tr8n.hide('tranlsations_list'); 
+    Tr8n.hide('new_translation');
+    Tr8n.show('permutations');
   }
 </script>	
 
 <% if @show_add_dialog %>
 	<script>
-		window.setTimeout(function() {
-	    Tr8n.blindUp('tranlsations_list'); 
-	    Tr8n.blindDown('new_translation');
-		}, 500);
+   Tr8n.Utils.addEvent(window,'load',function(e) {
+	    Tr8n.hide('tranlsations_list'); 
+	    Tr8n.show('new_translation');
+	 });
 	</script>	
 <% end %>
 

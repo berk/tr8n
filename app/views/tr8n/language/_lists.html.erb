@@ -3,7 +3,8 @@
   <div class="inner" style="max-height:53px; overflow: auto; margin-bottom:5px;">
       <ul class="language_list">
       <% @user_languages.each do |user_language|%>
-        <% language = user_language.language %>  
+        <% language = user_language.language %>
+        <% next unless language %> 
         <li>
             <span style="font-size:8px; float:right; color:#ccc;">
 						  <% if language.default? %>

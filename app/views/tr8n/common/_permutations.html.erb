@@ -21,7 +21,7 @@
     <% tr8n_current_language.rule_classes.each do |rule_class| %>  
       <td style="text-align:center; font-size:10px; color: grey; border: 1px dotted #ccc; padding:5px; vertical-align:middle; background:white;">
         <% if rule_class.dependant?(token) %>
-          <%=check_box_tag("dependencies[#{token.name}][#{rule_class.dependency}]", "true", false)%>
+          <%=check_box_tag("dependencies[#{token.name}][#{rule_class.dependency}]", "true", false, :style => "width:20px;")%>
         <% else %>
           n/a  
         <% end %>  

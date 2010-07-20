@@ -1,0 +1,61 @@
+<table style="width:100%; border:1px dotted #ccc; background-color:white;">
+    <tr>
+      <td colspan="2" style="text-align:center; font-size:14px; padding:3px;">
+        <%=tra("Language Phrases", "Dashboard section header")%>
+        <span style="font-size:10px;color:#ccc;">
+				  (<%= tra("{count}% Complete", "Completeness of a language", :count => (language_metric.completeness || 0)) %>)
+				</span>
+      </td>
+    </tr> 
+    <tr>
+      <td style="vertical-align:middle; padding-left:5px;">
+        <table cellpadding="1px"  cellspacing="1px">
+          <tr>
+            <td style="width:20px;"><div style="height:15px; width:15px; background-color:green;"></div></td>
+            <td style="width:50px;"><%=tra("Approved:", "Header for approved phrases") %></td>
+            <td style="width:40px;">
+                <%=link_to(language_metric.locked_key_count || 0, 
+                          :controller => "/tr8n/phrases", :action => :index, :locale => lang.locale,
+                          :phrase_type => :with, :phrase_status => :approved) %>
+            </td>
+          </tr>
+          <tr>
+            <td><div style="height:15px; width:15px; background-color:yellow;"></div></td>
+            <td><%=tra("Pending Approval:", "Header for phrases that are pending approval") %></td>
+            <td>
+                <%=link_to(language_metric.pending_approval_count || 0, 
+                          :controller => "/tr8n/phrases", :action => :index, :locale => lang.locale,
+                          :phrase_type => :with, :phrase_status => :pending) %>
+            </td>
+          </tr>
+          <tr>
+            <td><div style="height:15px; width:15px; background-color:red;"></div></td>
+            <td><%=tra("Not Translated:", "Header for phrases without translation") %></td>
+            <td>
+                <%=link_to(language_metric.not_translated_count || 0, 
+                          :controller => "/tr8n/phrases", :action => :index, :locale => lang.locale,
+                          :phrase_type => :without) %>
+            </td>
+          </tr>
+          <tr>
+            <td> </td>
+            <td><%=tra("Total Phrases:", "Header for total phrase count") %></td>
+            <td>
+                <%=link_to(language_metric.key_count || 0, 
+                          :controller => "/tr8n/phrases", :action => :index, :locale => lang.locale) %>
+            </td>
+          </tr>
+        </table>
+      </td>
+      <td style="vertical-align:middle; width:220px; text-align:center">
+        <div id="language_chart_<%=lang.id%>"></div>     
+      </td>
+   </tr>
+   <tr>
+     <td colspan="4" align="center">
+        <div style="color:#ccc; text-align:center; width:100%;">
+          <%=tra("The statistics are calculated nightly", "Dashboard section header")%>
+        </div>
+     </td>
+   </tr>
+</table>

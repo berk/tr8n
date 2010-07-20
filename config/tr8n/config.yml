@@ -17,13 +17,27 @@ defaults: &defaults
   enable_glossary_hints:      true      # shows glossary in the translator    
   enable_software_keyboard:   true      # shows the soft keyboard icon  
   enable_google_suggestions:  true      # uses google for suggestions
-  enable_keyboard_shortcuts:  true      # adds some keyboard shortcuts like ctrl+t
+  enable_keyboard_shortcuts:  true      # adds some keyboard shortcuts like ctrl+shift+s
   enable_dictionary_lookup:   true      # shows dictionary words definitions
   
   enable_fallback_languages:  true      # for example: Catalan can fallback onto Spanish
   enable_translator_language: false     # translator can translate from non-default language
 
   enable_language_flags:      true      # shows flag icons next to the languages
+  enable_admin_inline_mode:   true      # allows tr8n engine sections to be inline translated
+  
+  #############################################################################
+  # Featured languages can be added as a bottom strip bar on all pages using
+  #
+  #  <%= tr8n_language_strip_tag %>
+  # 
+  # The featured languages can be configured in the admin tool.
+  # Alternatively, you can provide the list of languages here, and run:
+  # 
+  #  rake tr8n:featured_languages 
+  #
+  #############################################################################
+  featured_languages:         ["en-US", "es", "pt", "fr", "de", "it", "ru", "et", "iw", "zh-TW"]
   
   #############################################################################
   # Set the following flag to true if you would like to allow any registered 
@@ -78,7 +92,12 @@ defaults: &defaults
     sitemap_path:             /config/tr8n/site/sitemap.json
     splash_screen:            /tr8n/common/splash_screen
     admin_layout:             admin
+    admin_helpers:            []                    # if you need to add extra helpers
     tr8n_layout:              application
+    tr8n_helpers:             []                    # if you need to add extra helpers
+    before_filters:           []                    # filters from application controller
+    skip_before_filters:      []                    # filters from application controller
+    after_filters:            []                    # filters from application controller
     user_info:  
       enabled:                true    # if disabled, will fallback onto translators
       class_name:             User
@@ -99,8 +118,7 @@ defaults: &defaults
     data_token_classes:       [Tr8n::DataToken, Tr8n::HiddenToken, Tr8n::MethodToken, Tr8n::TransformToken]
     decoration_token_classes: [Tr8n::DecorationToken]
     allow_nil_token_values:   true
-    key_method:               "Digest::MD5.hexdigest(\"{label};;;{description}\")" # if changed all keys will be invalidated
-    numeric_rule:  
+    numeric_rule:             
       token_suffixes:         [count, num, age, hours, minutes, years, seconds]
       object_method:          to_i
     gender_rule:  

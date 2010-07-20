@@ -78,7 +78,7 @@ class Tr8n::Language < ActiveRecord::Base
   end
 
   def self.filter_options
-    all.collect{|lang| [lang.english_name, lang.id.to_s]}
+    find(:all, :order => "english_name asc").collect{|lang| [lang.english_name, lang.id.to_s]}
   end
   
   def enable!

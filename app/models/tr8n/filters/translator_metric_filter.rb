@@ -38,4 +38,8 @@ class Tr8n::TranslatorMetricFilter < Tr8n::BaseFilter
     return []
   end
 
+  def default_filter_if_empty
+    "updated_today"
+  end
+
 end

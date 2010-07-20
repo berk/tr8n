@@ -1,6 +1,8 @@
 <% if Tr8n::Config.enabled? and (Tr8n::Config.open_registration_mode? or Tr8n::Config.current_user_is_translator?) %>
-    <span style="color:#1166bb; cursor:pointer;" onClick="tr8nLanguageSelector.toggle();">
-		  <%= tr8n_language_name_tag(Tr8n::Config.current_language, :name => :native, :linked => false) %>
-      <%= image_tag("/tr8n/images/language_selector_arrow.gif", :style=>"padding-bottom:2px;", :id=>"tr8n_language_selector_trigger") %>
+    <span style="<%=opts[:style]%>; cursor:pointer;" onClick="tr8nLanguageSelector.toggle();">
+		  <%= tr8n_language_name_tag(Tr8n::Config.current_language, opts.merge(:name => :native, :linked => false)) %>
+			<% if opts[:show_arrow] %>
+			 <span style="<%=opts[:arrow_style]%>" id="tr8n_language_selector_trigger">▼</span>
+			<% end %>
     </span>
 <% end %>

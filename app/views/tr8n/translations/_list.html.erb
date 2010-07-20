@@ -4,11 +4,11 @@
 
 <table style="width:100%;" cellpadding="5px" cellspacing="3px">
   <tr style="border-bottom:1px solid #ccc;">
-    <td class="topic_header" style="width:200px;"><%=trl("Translator")%></td>
-    <td class="topic_header" style="width:25px;"><%=trl("Rank")%></td>
-    <td class="topic_header" style="width:80px;text-align:center"><%=trl("Your Vote")%></td>
-    <td class="topic_header" style=""><%=trl("Translation")%></td>
-    <% unless mode == :list %> 
+    <td class="topic_header" style="width:200px;"><%=tra("Translator")%></td>
+    <td class="topic_header" style="width:25px;"><%=tra("Rank")%></td>
+    <td class="topic_header" style="width:80px;text-align:center"><%=tra("Your Vote")%></td>
+    <td class="topic_header" style=""><%=tra("Translation")%></td>
+    <% if [:view, :edit].include?(mode) %> 
       <td class="topic_header" style="width:50px;">&nbsp;</td>
 		<% end %>
   </tr>  

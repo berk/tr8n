@@ -9,34 +9,38 @@ namespace :tr8n do
     Tr8n::Config.reset_all!
   end
   
+  desc "Adds missing languages from the yml file"
   task :update_languages => :environment do
-    {"am" => "hy", "gs" => "ka", "eu_ES" => "eu", "ur_PK" => "ur"}. each do |old, new|
-      lang = Tr8n::Language.for(old)
-      next unless lang
-      lang.update_attributes(:locale => new)
-    end
-    Tr8n::Language.all.each do |lang|
-      next unless lang.locale.index("_")
-      lang.update_attributes(:locale => lang.locale.gsub("_", "-"))
-    end
-  end
-  
-  task :clean_icons => :environment do
-    Tr8n::Language.all.each do |lang|
-      FileUtils.cp("#{RAILS_ROOT}/public/images/tr8n/flags/#{lang.flag}.png", "#{RAILS_ROOT}/public/images/tr8n/flags/used/#{lang.flag}.png")
+    Tr8n::Config.default_languages.each do |locale, info|
+      lang = Tr8n::Language.for(locale)
+      next if lang
+      
+      info[:right_to_left] = false if info[:right_to_left].nil?
+      info[:locale] = locale
+      info[:enabled] = true
+      lang = Tr8n::Language.create(info)
+
+      Tr8n::Config.language_rule_classes.each do |rule_class|
+        rule_class.default_rules_for(lang).each do |definition|
+          rule_class.create(:language => lang, :definition => definition)
+        end
+      end
     end
   end
 
+  desc "Resets all metrics"
   task :reset_metrics => :environment do
     Tr8n::LanguageMetric.reset_metrics
   end
 
+  desc "Calculates metrics"
   task :metrics => :environment do
     Tr8n::LanguageMetric.calculate_language_metrics
   end
 
-  task :featured => :environment do
-    ["en-US", "es", "pt", "fr", "de", "it", "ru", "et", "iw", "zh-TW"].each_with_index do |locale, index|
+  desc "Creates featured languages"
+  task :featured_languages => :environment do
+    Tr8n::Config.config[:featured_languages].each_with_index do |locale, index|
       lang = Tr8n::Language.for(locale)
       lang.featured_index = 10000 - (index * 100)
       lang.save

@@ -1,6 +1,6 @@
 <a name="reply_message">
   <div class="section_title">
-    <%=trl("Reply to This Discussion") %>
+    <%=tra("Reply to This Discussion") %>
   </div>
 </a>
 <div class="section_box colored">
@@ -10,7 +10,7 @@
     <table style="width:99%">
       <tr>
         <td style="width:80px; text-align:right; padding-right:10px; font-weight:bold;">
-          <%=trl("Your Reply:") %>
+          <%=tra("Your Reply:") %>
         </td>
         <td>
           <%=text_area_tag(:message, "", :style=>"width:99%; height:50px")%>
@@ -19,14 +19,14 @@
       <tr>
         <td></td>
         <td style="color:grey; font-size:12px; padding-top:10px; padding-bottom:10px;">
-           <%=trl("If your computer is not configured with your language keyboard, click on CTR+K to enable keyboards in foreign languages.")%>
+           <%=tra("If your computer is not configured with your language keyboard, click on CTR+SHIFT+K to enable keyboards in foreign languages.")%>
         </td>
       </tr>
     </table>
     
     <div style="padding-top:20px; padding-bottom:10px;text-align:center">
         <button type="submit" class="translator_btn translator_submit_btn" onClick="Tr8n.submit('forum_topic_form'); return false;">
-            <span><%=trl("Reply to This Discussion")%></span>
+            <span><%=tra("Reply to This Discussion")%></span>
         </button>
     </div>
   <% end %>

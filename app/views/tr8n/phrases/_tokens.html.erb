@@ -7,9 +7,9 @@
   <% if @translation_key.translation_tokens? %>
       <% @translation_key.translation_tokens.each do |token| %>
         <% if token.is_a?(Tr8n::DecorationToken) %>
-          <%= link_to_function(token.sanitized_name, "tr8nTranslator.insertDecorationToken('#{token.name}');", :title => trl("Click to insert this token above") ) %>
+          <%= link_to_function(token.sanitized_name, "tr8nTranslator.insertDecorationToken('#{token.name}', 'tr8n_translation_label_#{@translation_key.id}');", :title => trl("Click to insert this token above") ) %>
         <% else %>
-          <%= link_to_function(token.sanitized_name, "tr8nTranslator.insertToken('#{token.name}');", :title => trl("Click to insert this token above") ) %>
+          <%= link_to_function(token.sanitized_name, "tr8nTranslator.insertToken('#{token.name}', 'tr8n_translation_label_#{@translation_key.id}');", :title => trl("Click to insert this token above") ) %>
         <% end %>
       <% end %>
 			
@@ -32,7 +32,7 @@
 		
     <div id="translation_rules" style="padding:5px; border: 1px dotted #ccc; background:#EFF8FF; display:none;">
       <div style="font-size:14px; font-weight:normal; border-bottom: 1px dotted #ccc;">
-			   <%=trl("Token Dependency Rules")%>
+			   <%=trl("Token Dependency Rules For This Translation")%>
 			</div>
       
       <%=hidden_field_tag("has_rules", "true") %>
@@ -41,8 +41,8 @@
 					<table style="border:1px; width:auto;">
 					  <tr style="border-bottom:1px dotted #ccc;">
 					    <td style=""></td>
-					    <td style="font-size:10px; font-weight:bold; padding:5px;">Token</td>
-					    <td style="font-size:10px; font-weight:bold; padding:5px;">Context Rule</td>        
+					    <td style="font-size:10px; font-weight:bold; padding:5px;"><%=trl('Token', 'Tr8n translation rules header')%></td>
+					    <td style="font-size:10px; font-weight:bold; padding:5px;"><%=trl('Context Rule', 'Tr8n translation rules header')%></td>        
 					  </tr>
 					
 						<% @translation_key.language_rules_dependant_tokens.each_with_index do |token, index| %>
@@ -56,7 +56,7 @@
 		          %>
 						  <tr>
 						    <td style="padding:3px; vertical-align:middle;">
-						      <%=check_box_tag("rules[#{token.name}][selected]", "true", (@rules[token.name]!=nil), :id => "check_#{index}")%>     
+						      <%=check_box_tag("rules[#{token.name}][selected]", "true", (@rules[token.name]!=nil), :id => "check_#{index}", :style => "width:20px")%>     
 						    </td>
 						    <td style="font-size:10px; padding:3px; vertical-align:middle;">
 						      <%=token.name %>     
@@ -69,10 +69,10 @@
 					</table>
 		  </div>
 				
-			<div style="color:grey; font-size:12px; padding-top:10px;"><%=trl("Select all of the rules that apply to this translation")%></div>
+			<div style="color:grey; font-size:12px; padding-top:10px;"><%=trl("Select all of the rules that apply to this translation or [link: generate all context rules for this phrase].", '', :link => lambda{|t| link_to_function(t, 'addContextRules()')})%></div>
 			
 			<div style="padding-top:10px;font-size:12px; font-weight:normal;">
-        <%=link_to_function(trl("Click here if the translation does not depend on the token values."), "Tr8n.element('has_rules').value='false'; Tr8n.show('rules_trigger'); Tr8n.blindUp('translation_rules');") %>
+        <%=link_to_function(trl("&laquo; this translation has no context rules", 'Tr8n translation rules section'), "Tr8n.element('has_rules').value='false'; Tr8n.show('rules_trigger'); Tr8n.blindUp('translation_rules');") %>
 			</div>
     </div>
   <% end %>

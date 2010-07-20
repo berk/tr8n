@@ -35,10 +35,6 @@ class Tr8n::BaseFilter < Wf::Filter
     return [:updated_at, :is_on, Date.today] if (key == "updated_today")
   end
   
-  def default_filter_if_empty
-    "created_today"
-  end
-  
   def default_order
     'created_at'
   end

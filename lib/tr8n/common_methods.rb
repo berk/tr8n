@@ -43,6 +43,7 @@ module Tr8n::CommonMethods
     tr8n_current_user = nil
     begin
       tr8n_current_user = eval(Tr8n::Config.current_user_method)
+      tr8n_current_user = nil if tr8n_current_user.class.name != Tr8n::Config.user_class_name
     rescue Exception => ex
       raise Tr8n::Exception.new("Tr8n cannot be initialized because #{Tr8n::Config.current_user_method} failed with: #{ex.message}")
     end

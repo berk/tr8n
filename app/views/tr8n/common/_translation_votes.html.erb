@@ -1,14 +1,5 @@
 <div style="padding-bottom:5px;">
   <table style="width:100%;border-collapse: collapse;" cellpadding="5px" cellspacing="0px;" >
-    <% if translations.empty? %>
-        <tr>
-          <td colspan="3" style="color:black; font-size:10px; padding:3px;">
-            <%= trl("There are no translations for this phrase.") %> 
-            <%= trl("Be the first one to [link: translate it].", "", 
-                    :link => lambda{|str| link_to(str, :controller => "/tr8n/phrases", :action => :view, :translation_key_id => translation_key.id, :section_key => section_key)}  ) %>
-          </td>
-        </tr>
-    <% else %>   
       <tr style="border-bottom:1px dotted #ccc;">
         <td style="width:20px; color:grey; font-size:10px; text-align:right; padding-bottom:3px;"><%=trl("Rank")%></td>
         <td style="width:75px; color:grey; font-size:10px; text-align:center; padding-bottom:3px;"><%=trl("Your Vote")%></td>
@@ -43,6 +34,5 @@
           </td>
         </tr>
       <% end %>
-    <% end %>
   </table>
 </div>

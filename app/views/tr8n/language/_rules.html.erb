@@ -1,8 +1,8 @@
 <div style="padding-bottom:5px;">
   <% @rules.each_with_index do |rule, index| %>
     <div style="padding-bottom:3px;">
-      <input type="button" value=" + " onClick="addLanguageRule('<%=index%>')" style="cursor:pointer">
-      <input type="button" value=" - " onClick="deleteLanguageRule('<%=index%>')" style="cursor:pointer">
+      <input type="button" value=" + " onClick="addLanguageRule('<%=index%>')" style="cursor:pointer; width: 30px;">
+      <input type="button" value=" - " onClick="deleteLanguageRule('<%=index%>')" style="cursor:pointer; width: 30px;">
       
       <% rule.definition ||= {} %>
       

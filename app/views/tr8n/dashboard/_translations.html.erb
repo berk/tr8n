@@ -10,12 +10,12 @@
 <% unless lang.recently_updated_translations.empty? %>
 	<div style="padding-top:10px; font-size:14px; border-bottom:1px solid #ccc; margin-bottom:5px;">
     <div style="float:right; font-size:12px;">
-       <%=link_to(trl("view all"), :controller => "/tr8n/translations", :action => :index, :locale => lang.locale)%>
+       <%=link_to(tra("view all", "Link to view all translations"), :controller => "/tr8n/translations", :action => :index, :locale => lang.locale)%>
     </div>
 
     <%=tr8n_toggler_tag("trans_content_#{lang.id}", "", false)%>
-	  <%=trl("Recent Translations")%>
-		<span style="color:#ccc; font-size:12px;">(<%=trl("last 5")%>)</span>
+	  <%=tra("Recent Translations", "Dashboard section header")%>
+		<span style="color:#ccc; font-size:12px;">(<%=tra("last 5", "Translations header for showing only the last 5 translations")%>)</span>
 	</div>
 	
 	<div id="trans_content_<%=lang.id%>" class="translations_table" style="display:none;">
