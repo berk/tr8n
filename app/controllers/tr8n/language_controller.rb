@@ -89,10 +89,12 @@ class Tr8n::LanguageController < Tr8n::BaseController
   
   def index
     @rules = tr8n_current_language.rules
+    @cases = tr8n_current_language.cases
     @fallback_language = (tr8n_current_language.fallback_language || tr8n_default_language)
   end
   
   def update_language_section
+    @cases = tr8n_current_language.cases
     @rules = tr8n_current_language.rules
     @fallback_language = (tr8n_current_language.fallback_language || tr8n_default_language)
 
@@ -122,9 +124,23 @@ class Tr8n::LanguageController < Tr8n::BaseController
       end
     end
     
+    if params[:cases]
+      # remove old cases
+      tr8n_current_language.cases.each do |lcase|
+        lcase.destroy
+      end
+      
+      # create new cases
+      parse_language_cases.each do |lcase|
+        lcase.language = tr8n_current_language
+        lcase.save_with_log!(tr8n_current_translator)
+      end
+    end
+    
     tr8n_current_language.reload
     
     @rules = tr8n_current_language.rules
+    @cases = tr8n_current_language.cases
     @fallback_language = (tr8n_current_language.fallback_language || tr8n_default_language)
 
     render(:partial => params[:section], :locals => {:mode => :view})
@@ -135,7 +151,7 @@ class Tr8n::LanguageController < Tr8n::BaseController
     @rules = parse_language_rules
     
     unless params[:rule_action]
-      return render(:partial => "rules")
+      return render(:partial => "edit_rules")
     end
   
     if params[:rule_action].index("add_at")
@@ -148,7 +164,28 @@ class Tr8n::LanguageController < Tr8n::BaseController
       @rules = []
     end
     
-    render :partial => "rules"      
+    render :partial => "edit_rules"      
+  end
+  
+  # ajax method for updating language cases in edit mode
+  def update_cases
+    @cases = parse_language_cases
+    
+    unless params[:case_action]
+      return render(:partial => "edit_cases")
+    end
+  
+    if params[:case_action].index("add_at")
+      position = params[:case_action].split("_").last.to_i
+      @cases.insert(position, Tr8n::LanguageCase.new(:language => tr8n_current_language))
+    elsif params[:case_action].index("delete_at")
+      position = params[:case_action].split("_").last.to_i
+      @cases.delete_at(position)
+    elsif params[:case_action].index("clear_all")
+      @cases = []
+    end
+    
+    render :partial => "edit_cases"      
   end
   
   # language selector window
@@ -281,6 +318,19 @@ private
     end
     
     rulz
+  end
+
+  def parse_language_cases
+    cases = []
+    return cases unless params[:cases]
+    
+    index = 0  
+    while params[:cases]["#{index}"]
+      cases << Tr8n::LanguageCase.new(params[:cases]["#{index}"])
+      index += 1
+    end
+    
+    cases
   end
 
   def translate_phrase(language, phrase, opts = {})

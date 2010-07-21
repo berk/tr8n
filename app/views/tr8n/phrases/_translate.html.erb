@@ -13,7 +13,9 @@
 		    
 		  <%= f.text_area(:label, :id => "tr8n_translation_label_#{@translation_key.id}", :style=>"width:99%;height:60px;border:1px solid #ccc;background-color:white;padding:3px;", :class => "keyboardInput" ) %>
 		
-		  <%= render(:partial => "tokens") %>
+		  <% if @translation_key.translation_tokens? or tr8n_current_language.has_rules? %>
+          <%= render(:partial => "tokens") %>
+			<% end %>		
 	
 			<% if Tr8n::Config.enable_google_suggestions? %>  
 				<div id="tr8n_google_suggestion_container_<%=@translation_key.id%>" style="display:none; padding-top:10px; padding-bottom:10px;">

@@ -23,6 +23,19 @@ class CreateTr8nTables < ActiveRecord::Migration
     end
     add_index :tr8n_language_rules, [:language_id]
     add_index :tr8n_language_rules, [:language_id, :translator_id]
+
+    create_table :tr8n_language_cases do |t|
+      t.integer :language_id, :null => false
+      t.integer :translator_id
+      t.string  :keyword
+      t.string  :latin_name
+      t.string  :native_name
+      t.text    :description
+      t.timestamps
+    end
+    add_index :tr8n_language_cases, [:language_id]
+    add_index :tr8n_language_cases, [:language_id, :translator_id]
+    add_index :tr8n_language_cases, [:language_id, :keyword]
     
     create_table :tr8n_language_users do |t|
       t.integer :language_id,   :null => false
@@ -190,6 +203,7 @@ class CreateTr8nTables < ActiveRecord::Migration
     drop_table :tr8n_languages
     drop_table :tr8n_language_rules
     drop_table :tr8n_language_users
+    drop_table :tr8n_language_cases
     drop_table :tr8n_language_metrics
     drop_table :tr8n_translators
     drop_table :tr8n_translator_logs

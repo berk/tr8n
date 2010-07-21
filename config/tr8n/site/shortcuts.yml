@@ -2,7 +2,7 @@ Ctrl+Shift+S:
   description:  Displays Tr8n shortcuts 
   script:       "Tr8n.Utils.displayShortcuts();"
 
-Ctrl+Shift+T:       
+Ctrl+Shift+I:       
   description:  Turns on/off inline translations
   script:       "tr8nLanguageSelector.toggleInlineTranslations();"
   

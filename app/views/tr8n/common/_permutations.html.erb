@@ -1,33 +1,37 @@
-<% @dependant_tokens = @translation_key.language_rules_dependant_tokens %>
-<% td_width = (95/(tr8n_current_language.rule_classes.size)) %>  
-
-<table style="width:100%;">
-  <tr>
-    <td style="padding-left:5px; width:100px; font-size:10px; text-align:left; color:#ccc; font-weight:bold;">
-		  <%=trl("tokens")%>
-		</td>
-    <% tr8n_current_language.rule_classes.each do |rule_class| %>
-      <td style="font-size:10px; text-align:center; color:#ccc; font-weight:bold; width:<%=td_width%>%">
-         <%=trl(rule_class.dependency) %>
-      </td>    
-    <% end %>
-  </tr>
-            
-  <% @dependant_tokens.each do |token| %>
-  <tr>
-    <td style="font-size:10px; font-weight:bold; padding:5px; vertical-align:middle; ">
-      <%=token.name %>
-    </td>
-    <% tr8n_current_language.rule_classes.each do |rule_class| %>  
-      <td style="text-align:center; font-size:10px; color: grey; border: 1px dotted #ccc; padding:5px; vertical-align:middle; background:white;">
-        <% if rule_class.dependant?(token) %>
-          <%=check_box_tag("dependencies[#{token.name}][#{rule_class.dependency}]", "true", false, :style => "width:20px;")%>
-        <% else %>
-          n/a  
-        <% end %>  
-      </td>    
-    <% end %>
-  </tr>
-  <% end %>
-	 
-</table>
+<% if tr8n_current_language.rule_classes.size > 0 %>
+	<% @dependant_tokens = @translation_key.language_rules_dependant_tokens %>
+	<% td_width = (95/(tr8n_current_language.rule_classes.size))  %>  
+	
+	<table style="width:100%;">
+	  <tr>
+	    <td style="padding-left:5px; width:100px; font-size:10px; text-align:left; color:#ccc; font-weight:bold;">
+			  <%=trl("tokens")%>
+			</td>
+	    <% tr8n_current_language.rule_classes.each do |rule_class| %>
+	      <td style="font-size:10px; text-align:center; color:#ccc; font-weight:bold; width:<%=td_width%>%">
+	         <%=trl(rule_class.dependency) %>
+	      </td>    
+	    <% end %>
+	  </tr>
+	            
+	  <% @dependant_tokens.each do |token| %>
+	  <tr>
+	    <td style="font-size:10px; font-weight:bold; padding:5px; vertical-align:middle; ">
+	      <%=token.name %>
+	    </td>
+	    <% tr8n_current_language.rule_classes.each do |rule_class| %>  
+	      <td style="text-align:center; font-size:10px; color: grey; border: 1px dotted #ccc; padding:5px; vertical-align:middle; background:white;">
+	        <% if rule_class.dependant?(token) %>
+	          <%=check_box_tag("dependencies[#{token.name}][#{rule_class.dependency}]", "true", false, :style => "width:20px;")%>
+	        <% else %>
+	          n/a  
+	        <% end %>  
+	      </td>    
+	    <% end %>
+	  </tr>
+	  <% end %>
+		 
+	</table>
+<% else %>
+  <%=tr("The language does not have any rules defined and no rules permutations can be generated. Please contact the language manager to define language rules.")%>
+<% end %>	

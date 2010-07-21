@@ -4,8 +4,11 @@
 <%=render(:partial => "prohibited_words", :locals => {:mode => :view}) %>
 <% unless tr8n_current_language.default? %>
   <%=render(:partial => "grammar", :locals => {:mode => :view}) %>
+	
+	<% if Tr8n::Config.enable_language_cases? %>
+    <%=render(:partial => "language_cases", :locals => {:mode => :view}) %>
+	<% end %>	
 <% end %>
-
 
 <script>
   function switchSectionMode(section, mode) {
@@ -17,6 +20,11 @@
   function submitSection(section) {
     if (section == "grammar") {
       if (!confirm("<%=trl('Updating language rules may affect all existing translations for this language. Are you sure you want to do this?')%>"))
+        return;
+    }
+
+    if (section == "cases") {
+      if (!confirm("<%=trl('Updating language cases may affect all existing translations for this language. Are you sure you want to do this?')%>"))
         return;
     }
     

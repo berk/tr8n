@@ -4,6 +4,7 @@
   [ ["Languages", {:action => :index}],
     ["Language Users", {:action => :users}],
     ["Language Rules", {:action => :rules}],
+    ["Language Cases", {:action => :cases}],
     ["Language Metrics", {:action => :metrics}],
     ["Language Charts", {:action => :charts}]].each do |link|
       if controller.action_name == link.last[:action].to_s

@@ -1,0 +1,44 @@
+<%= render :partial => "/tr8n/common/header" %>
+
+<div class="section_title">
+  <div style="float:right; font-size:12px; padding-top:5px;">
+      <%=link_to_function(tra("+ Add more values "), "") %> 
+  </div>
+  
+  <%=tra("Language Case Values") %>
+</div>
+
+<div style="background:#EFF8FF; border: 1px dotted #ccc; padding:10px;">
+  <% form_tag({:action => :index}, {:method => :get, :id => "case_search_form"}) do %>
+      <div style="float:right">
+        <button type="submit" class="translator_btn translator_small_btn" onClick="Tr8n.submit('case_search_form'); return false;">
+            <span><%=tra("Search", "Search button label")%></span>
+        </button>
+      </div>
+      
+      <%=text_field_tag(:search, params[:search], {:style => "width:90%;font-size:12px;"})%>
+      <div style="padding-top:5px;">
+          <%=tra("Show")%>
+          <%=select_tag(:with_status, options_for_select(Tr8n::Translation.filter_status_options, params[:with_status]))%>
+          <%=tra("submitted by")%>
+          <%=select_tag(:submitted_by, options_for_select(Tr8n::Translation.filter_submitter_options, params[:submitted_by]))%>
+          <%=tra("created on")%>
+          <%=select_tag(:submitted_on, options_for_select(Tr8n::Translation.filter_date_options, params[:submitted_on]))%>
+      </div>          
+  <% end %>
+</div>
+
+<div style="margin-top:10px; margin-bottom:10px; border: 1px dotted #ccc; padding:10px;">
+  
+	<table>
+		<tr style="border-bottom:1px solid #ccc;">
+			<th class="topic_header"><%=tra("Original Value")%></th>
+    	<% tr8n_current_language.cases.each do |lcase| %>
+	      <th class="topic_header"><%=lcase.native_name%></th>
+		  <% end %>
+		</tr>
+	</table>
+
+</div>
+
+<%= render :partial => "/tr8n/common/footer" %>

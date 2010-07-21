@@ -21,27 +21,48 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-class Tr8n::LanguageRuleFilter < Tr8n::BaseFilter
+class Tr8n::LanguageCase < ActiveRecord::Base
+  set_table_name :tr8n_language_cases
 
-  def definition
-    defs = super  
-    defs[:language_id][:is] = :list
-    defs[:language_id][:is_not] = :list
-    defs[:type][:is] = :list
-    defs[:type][:is_not] = :list
-    defs
+  belongs_to :language, :class_name => "Tr8n::Language"   
+  belongs_to :translator, :class_name => "Tr8n::Translator"   
+  
+  def self.for_id(case_id)
+    Tr8n::Cache.fetch("language_case_#{case_id}") do 
+      find_by_id(case_id)
+    end
   end
   
-  def value_options_for(criteria_key)
-    if criteria_key == :language_id
-      return Tr8n::Language.filter_options 
+  def self.for(language)
+    find(:all, :conditions => ["language_id = ?", language.id])
+  end
+
+  def save_with_log!(new_translator)
+    if self.id
+      if changed?
+        self.translator = new_translator
+        translator.updated_language_case!(self)
+      end
+    else  
+      self.translator = new_translator
+      translator.added_language_case!(self)
     end
 
-    if criteria_key == :type
-      return Tr8n::Config.language_rule_classes.collect{|cls| cls.to_s}
-    end
+    save  
+  end
+  
+  def destroy_with_log!(new_translator)
+    new_translator.deleted_language_case!(self)
+    
+    destroy
+  end
 
-    return []
+  def after_save
+    Tr8n::Cache.delete("language_case_#{id}")
+  end
+
+  def after_destroy
+    Tr8n::Cache.delete("language_case_#{id}")
   end
 
 end

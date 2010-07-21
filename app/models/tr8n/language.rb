@@ -27,6 +27,7 @@ class Tr8n::Language < ActiveRecord::Base
   belongs_to :fallback_language,    :class_name => 'Tr8n::Language', :foreign_key => :fallback_language_id
   
   has_many :language_rules,         :class_name => 'Tr8n::LanguageRule',        :dependent => :destroy, :order => "type asc"
+  has_many :language_cases,         :class_name => 'Tr8n::LanguageCase',        :dependent => :destroy, :order => "id asc"
   has_many :language_users,         :class_name => 'Tr8n::LanguageUser',        :dependent => :destroy
   has_many :translations,           :class_name => 'Tr8n::Translation',         :dependent => :destroy
   has_many :translation_votes,      :class_name => 'Tr8n::TranslationKey',      :dependent => :destroy
@@ -34,6 +35,7 @@ class Tr8n::Language < ActiveRecord::Base
   has_many :language_metrics,       :class_name => 'Tr8n::LanguageMetric'
   
   alias :rules :language_rules
+  alias :cases :language_cases
   alias :users :language_users
 
   def self.find_or_create(lcl, english_name)

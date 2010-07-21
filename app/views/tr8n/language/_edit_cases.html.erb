@@ -1,0 +1,41 @@
+<table style="width:100%" cellpadding="0" cellspacing="0">
+	<tr style="border-bottom:1px solid #ccc;">
+    <th style="width:70px !important;">&nbsp;</th>
+		<th style="width:80px"><%= tra("Keyword", "Language case keyword") %></th>
+    <th style="width:150px"><%= tra("Latin Name", "Language case latin name") %></th>
+    <th style="width:200px"><%= tra("Native Name", "Language case native name") %></th>
+    <th style="width:50%"><%= tra("Description", "Language case description") %></th>
+	</tr>
+	
+	<% @cases.each_with_index do |lcase, index| %>
+      <tr>
+        <td style="width:70px !important;">
+		      <input type="button" value=" + " onClick="addLanguageCase('<%=index+1%>')" style="cursor:pointer; width: 30px;">
+		      <input type="button" value=" - " onClick="deleteLanguageCase('<%=index%>')" style="cursor:pointer; width: 30px;">
+      	</td>
+        <td>
+				   <%= text_field_tag("cases[#{index}][keyword]", lcase.keyword, :style => "width:90%; border: 1px solid red;")%>
+				</td>
+        <td>
+           <%= text_field_tag("cases[#{index}][latin_name]", lcase.latin_name, :style => "width:95%;")%>
+				</td>
+        <td>
+           <%= text_field_tag("cases[#{index}][native_name]", lcase.native_name, :style => "width:95%;")%>
+				</td>
+        <td>
+           <%= text_field_tag("cases[#{index}][description]", lcase.description, :style => "width:95%")%>
+				</td>
+      </tr>
+	<% end %>
+</table>
+
+<div style="padding-top:15px;font-size:12px;">
+	<%= link_to_function(tra("+ Add Language Case"), "addLanguageCase('#{@cases.size}')") %>
+	<% if @cases.any? %>
+	  | <%= link_to_function(tra("Clear All", "Clear all language cases"), "clearLanguageCases()") %>
+	<% end %>
+</div>	
+
+<div style="color:grey; font-size:10px; padding-top:15px; padding-bottom:5px;">
+  <%=tra("Modifying the case keyword value will invalidate all translated values provided for the case.")%>
+</div>

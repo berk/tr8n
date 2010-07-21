@@ -38,6 +38,16 @@ namespace :tr8n do
     Tr8n::LanguageMetric.calculate_language_metrics
   end
 
+  desc "Initializes default language cases"
+  task :language_cases => :environment do
+    Tr8n::LanguageCase.delete_all
+    Tr8n::Language.all.each do |lang|
+      Tr8n::Config.default_cases_for(lang.locale).each do |lcase|
+        Tr8n::LanguageCase.create(lcase.merge(:language => lang))
+      end
+    end 
+  end
+
   desc "Creates featured languages"
   task :featured_languages => :environment do
     Tr8n::Config.config[:featured_languages].each_with_index do |locale, index|

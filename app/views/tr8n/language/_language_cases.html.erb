@@ -1,0 +1,99 @@
+<style>
+	#language_cases table {
+		
+	}
+
+  #language_cases td {
+    padding:1px;
+		margin:0px;
+  }
+</style>
+<div id="language_cases_container" style="font-size:12px;">
+  <%=render(:partial => "header", :locals => {:section => "language_cases", :label => "Language Cases", :description => "", :mode => mode})%>
+  
+  <% form_for(:language, tr8n_current_language, :url => {:action => :index}, :html => {:id => 'language_cases_form', :method => :post}) do |f| %>
+    <div class="section_box colored">
+      <div style="float:right; padding-right:5px;">
+          <%=tr8n_help_icon_tag %>
+      </div>
+      <div ondblclick="switchSectionMode('language_cases', 'edit')">
+      	
+				<div style="padding-top:5px;padding-bottom:15px;font-size:12px;">
+					<%=tra("A language case is an inflection or use of a noun (or pronoun) to show its relation to other words in the sentence.")%>
+					<%=tra("In some languages, like Russian, the form of a token {actor} will changed based on where and how the token is used in a sentence.", "", :actor => "{actor}")%>
+          <%=tra("For instance, in '{example}', {actor} token will be in the genitive form of the language.", "", 
+                  :example => "{target} received a gift from {actor}",
+                  :actor => "{actor}")%>
+					<br><br>
+          <%=tra("This section allows you to define the various cases of your language so that translators can provide the correct form for each dynamic value of any token.")%>
+				</div>
+
+        <div id="language_cases">
+         <% if mode == :edit %>
+            <%= render :partial => "edit_cases" %> 
+				 <% elsif @cases.empty? %>
+					  <div style="font-style:italic;">
+					    <%=tra("There are no language cases defined for this language.")%>
+					    <%=tra("[link: Click here] to add language cases.", "", :link => lambda{|txt| link_to_function(txt, "switchSectionMode('language_cases', 'edit')")})%>
+					  </div>
+				<% else %>
+						<table style="width:100%">
+						  <tr style="border-bottom:1px solid #ccc;">
+						    <th style="width:10%"><%= tra("Keyword", "Language case keyword") %></th>
+						    <th style="width:20%"><%= tra("Latin Name", "Language case latin name") %></th>
+						    <th style="width:20%"><%= tra("Native Name", "Language case native name") %></th>
+						    <th style="width:50%"><%= tra("Description", "Language case description") %></th>
+						  </tr>
+						  
+						  <% @cases.each_with_index do |lcase, index| %>
+						      <tr>
+						        <td style="padding:1px;"><%= lcase.keyword %></td>
+						        <td style="padding:1px;"><%= lcase.latin_name %></td>
+						        <td style="padding:1px;"><%= lcase.native_name %></td>
+						        <td style="padding:1px;"><%= lcase.description %></td>
+						      </tr>
+						  <% end %>
+						</table>
+						
+			      <div style="padding-top:15px;">
+			          <%=link_to(tra("Click here to view the current case values submitted by translators"), :controller => "/tr8n/language_cases", :action => :index) %>
+			      </div>
+												    
+					<% end %>
+        </div>	
+      </div>
+    </div>
+  <% end %>
+	
+</div>
+
+<script>
+  function updateLanguageCases(language_id) {
+    performLanguageCasesOperation(Tr8n.Utils.serializeForm('language_cases_form'));
+  }
+  
+  function addLanguageCase(position) {
+    var form_hash = Tr8n.Utils.serializeForm('language_cases_form');
+    form_hash['case_action'] = "add_at_" + position;
+    performLanguageCasesOperation(form_hash);
+  }
+  
+  function deleteLanguageCase(position) {
+    var form_hash = Tr8n.Utils.serializeForm('language_cases_form');
+    form_hash['case_action'] = "delete_at_" + position;
+    performLanguageCasesOperation(form_hash);
+  }
+  
+  function clearLanguageCases() {
+    var form_hash = Tr8n.Utils.serializeForm('language_cases_form');
+    form_hash['case_action'] = "clear_all";
+    performLanguageCasesOperation(form_hash);
+  } 
+  
+  function performLanguageCasesOperation(params){
+    Tr8n.Utils.update('language_cases', '/tr8n/language/update_cases', {
+      parameters: params,
+      method: 'post'
+    });
+  }
+</script>

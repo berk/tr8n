@@ -61,39 +61,15 @@ class Tr8n::Config
   end
   
   def self.reset!
-#    thread based variables
-
+    # thread based variables
     Thread.current[:current_language]  = nil
     Thread.current[:current_user] = nil
     Thread.current[:current_translator] = nil
-    
-#    the following can be shared between threads and requests
-
-#    @enabled                    = nil
-#    @config                     = nil
-#    @features                   = nil
-#    @sitemap_sections           = nil
-#
-#    @language_rule_classes      = nil
-#    @language_rule_dependencies = nil
-#    @language_rule_suffixes     = nil
-#    
-#    @data_token_classes         = nil
-#    @decoration_token_classes   = nil
-#
-#    @default_language           = nil
-#    
-#    @default_rank_styles        = nil
-#    @default_rules              = nil
-#    @default_languages          = nil
-#    @default_decorations        = nil
-#    @default_glossary           = nil
-#    @default_shortcuts          = nil
   end
 
   def self.models
     [ 
-       Tr8n::LanguageRule, Tr8n::LanguageUser, Tr8n::Language, Tr8n::LanguageMetric,
+       Tr8n::LanguageRule, Tr8n::LanguageCase, Tr8n::LanguageUser, Tr8n::Language, Tr8n::LanguageMetric,
        Tr8n::TranslationKey, Tr8n::TranslationKeySource, Tr8n::TranslationSource, Tr8n::TranslationKeyLock,
        Tr8n::Translation, Tr8n::TranslationVote, Tr8n::Glossary,
        Tr8n::Translator, Tr8n::TranslatorLog, Tr8n::TranslatorMetric,
@@ -118,6 +94,10 @@ class Tr8n::Config
         rule_class.default_rules_for(lang).each do |definition|
           rule_class.create(:language => lang, :definition => definition)
         end
+      end
+      
+      default_cases_for(locale).each do |lcase|
+        Tr8n::LanguageCase.create(lcase.merge(:language => lang))
       end
     end
     
@@ -203,6 +183,10 @@ class Tr8n::Config
 
   def self.enable_inline_translations?
     config[:enable_inline_translations]
+  end
+  
+  def self.enable_language_cases?
+    config[:enable_language_cases]
   end
   
   def self.enable_key_source_tracking?
@@ -535,6 +519,12 @@ class Tr8n::Config
 
   def self.default_date_rules(locale = default_locale)
     load_default_rules("date", locale)
+  end
+
+  def self.default_cases_for(locale = default_locale)
+    @default_cases ||= load_yml("/config/tr8n/rules/default_cases.yml", nil)
+    return [] unless @default_cases[locale.to_s]
+    @default_cases[locale.to_s].values
   end
 
   #########################################################

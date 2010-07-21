@@ -518,7 +518,10 @@ Tr8n.Utils = {
     options.method = options.method || 'get';
 
     var self=this;
-    url = (options.method == 'get') ? url+"?"+options.parameters : url;
+		if (options.method == 'get' && options.parameters != '') {
+			url = url + (url.indexOf('?') == -1 ? '?' : '&') + options.parameters;
+		}
+		
     var request = this.getRequest();
 		
     request.onreadystatechange = function() {
@@ -587,7 +590,9 @@ Tr8n.Utils = {
     return [valueL, valueT];
   },
 
-  wrapText: function (obj, beginTag, endTag) {
+  wrapText: function (obj_id, beginTag, endTag) {
+    var obj = document.getElementById(obj_id);
+		
     if (typeof obj.selectionStart == 'number') {
         // Mozilla, Opera, and other browsers
         var start = obj.selectionStart;
@@ -604,7 +609,7 @@ Tr8n.Utils = {
         if(typeof range.text == 'string')
           document.selection.createRange().text = beginTag + range.text + endTag;
     } else
-        obj.value += text;
+        obj.value += beginTag + " " + endTag;
 
     return true;
   },

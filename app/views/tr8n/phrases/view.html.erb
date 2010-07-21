@@ -49,10 +49,11 @@
 		<%= trl("If you don't like any of the translations for this phrase, [link: add your own translation].", "",
           :link => lambda{|str| link_to_function(str, "addTranslation()")}) %>
 
-    <%=trl("If this translation depends on a {token} or the gender of the viewing user, then [link: generate context rules for this phrase].", "",
-          :token => "{token}",
-          :link => lambda{|str| link_to_function(str, "addContextRules()")}) %> 
-					 
+    <% if tr8n_current_language.has_rules? %>
+	    <%=trl("If this translation depends on a {token} or the gender of the viewing user, then [link: generate context rules for this phrase].", "",
+	          :token => "{token}",
+	          :link => lambda{|str| link_to_function(str, "addContextRules()")}) %> 
+		<% end %>			 
     </div>
   <% end %>
   

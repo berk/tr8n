@@ -1,0 +1,68 @@
+#############################################################################
+#
+# Tr8n Default Language Cases
+#
+#############################################################################
+
+en-US:
+  case1:
+    keyword:          "nom"
+    latin_name:       "Nominative"
+    native_name:      "Nominative" 
+    description:      "Used for any noun  or pronoun that is the  subject of a verb"
+  case2:
+    keyword:          "obj"
+    latin_name:       "Objective"
+    native_name:      "Objective" 
+    description:      "Used in the direct object, indirect object, object of preposition, object complement, and subject of an infinitive"
+  case3:
+    keyword:          "pos"
+    latin_name:       "Possessive"
+    native_name:      "Possessive" 
+    description:      "Used to indicate possession (i.e., ownership). It is usually created by adding 's to the word"
+ru:
+  case1:                
+    keyword:          "nom"
+    latin_name:       "Nominative"
+    native_name:      "Именительный падеж" 
+    description:      "Есть - Кто? Что?"
+  case2:               
+    keyword:          "gen"
+    latin_name:       "Genitive"
+    native_name:      "Родительный падеж" 
+    description:      "Нет - Кого? Чего?"
+  case3:               
+    keyword:          "dat"
+    latin_name:       "Dative"
+    native_name:      "Дательный падеж" 
+    description:      "Рад - Кому? Чему?"
+  case4:               
+    keyword:          "acc"
+    latin_name:       "Accusative"
+    native_name:      "Винительный падеж" 
+    description:      "Вижу - Кого? Что?"
+  case5:               
+    keyword:          "ins"
+    latin_name:       "Instrumentative"
+    native_name:      "Творительный падеж" 
+    description:      "Доволен - Кем? Чем?"
+  case6:               
+    keyword:          "pre"
+    latin_name:       "Preposition"
+    native_name:      "Предложный падеж" 
+    description:      "Думаю - О ком? О чём?"
+  case7:               
+    keyword:          "voc"
+    latin_name:       "Vocative"
+    native_name:      "Звательный падеж" 
+    description:      "Используются при обращении к человеку (им. падеж: Аня — звательный: Ань!)"
+  case8:               
+    keyword:          "loc"
+    latin_name:       "Locative"
+    native_name:      "Местный падеж" 
+    description:      "Дело - В ком? В чём?"
+  case9:               
+    keyword:          "pos"
+    latin_name:       "Possessive"
+    native_name:      "Притяжательный падеж" 
+    description:      "Чей?"

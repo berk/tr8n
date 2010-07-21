@@ -32,9 +32,11 @@ class Tr8n::TranslatorLog < ActiveRecord::Base
   ADMIN_LEVEL = 20
   ABUSE_LEVEL = 100
   
-  ACTIONS = [:got_blocked, :got_unblocked, :got_promoted, :got_demoted, :enabled_inline_translations, 
-  :disabled_inline_translations, :switched_language, :deleted_language_rule, :added_language_rule,
-  :updated_language_rule, :used_abusive_language, :added_translation, :updated_translation, :deleted_translation, 
+  ACTIONS = [:got_blocked, :got_unblocked, :got_promoted, :got_demoted, 
+  :enabled_inline_translations, :disabled_inline_translations, :switched_language, 
+  :deleted_language_rule, :added_language_rule, :updated_language_rule, 
+  :deleted_language_case, :added_language_case, :updated_language_case, 
+  :used_abusive_language, :added_translation, :updated_translation, :deleted_translation, 
   :voted_on_translation, :locked_translation_key, :unlocked_translation_key]
   
   
@@ -93,6 +95,10 @@ class Tr8n::TranslatorLog < ActiveRecord::Base
       rule = Tr8n::LanguageRule.find_by_id(reference) unless reference.blank?
       html << " for " << rule.language.english_name if rule and rule.language
       html << " : " << rule.description if rule
+    elsif [:deleted_language_case, :added_language_case, :updated_language_case].include?(act)
+      lcase = Tr8n::LanguageCase.find_by_id(reference) unless reference.blank?
+      html << " for " << lcase.language.english_name if lcase and lcase.language
+      html << " : " << lcase.description if lcase
     elsif [:used_abusive_language].include?(act)
       lang = Tr8n::Language.find_by_id(reference) unless reference.blank?
       html << " in " << lang.english_name if lang

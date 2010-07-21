@@ -142,6 +142,18 @@ class Tr8n::Translator < ActiveRecord::Base
     Tr8n::TranslatorLog.log_manager(self, :updated_language_rule, rule.id)
   end
 
+  def deleted_language_case!(lcase)
+    Tr8n::TranslatorLog.log_manager(self, :deleted_language_case, lcase.id)
+  end
+
+  def added_language_case!(lcase)
+    Tr8n::TranslatorLog.log_manager(self, :added_language_case, lcase.id)
+  end
+
+  def updated_language_case!(lcase)
+    Tr8n::TranslatorLog.log_manager(self, :updated_language_case, lcase.id)
+  end
+
   def used_abusive_language!(language = Tr8n::Config.current_language)
     Tr8n::TranslatorLog.log_abuse(self, :used_abusive_language, language.id)
   end

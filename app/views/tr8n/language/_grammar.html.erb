@@ -8,23 +8,23 @@
       </div>
 			
 			<div style="padding-top:5px;padding-bottom:10px;font-size:12px;">
-          <%=trl("Tokens are parts of a phrase that are not translated, such as a profile name or a number.", "Tr8n language management") %> 
-					<%=trl("Translations in some languages can depend on the gender or numerical value of the tokens in the phrase.", "Tr8n language management") %>
-					<%=trl("For example, the translation for \"{english_sample}\" can depend on the gender of the actor and target as well as the number of photos.", "Tr8n language management", :english_sample => "{actor} tagged {target} in {count} photos")%> 
-          <%=trl("If translations in your language depend on any of these rules, you can add them here.", "Tr8n language management") %>
+          <%=tra("Tokens are parts of a phrase that are not translated, such as a profile name or a number.", "Tr8n language management") %> 
+					<%=tra("Translations in some languages can depend on the gender or numerical value of the tokens in the phrase.", "Tr8n language management") %>
+					<%=tra("For example, the translation for \"{english_sample}\" can depend on the gender of the actor and target as well as the number of photos.", "Tr8n language management", :english_sample => "{actor} tagged {target} in {count} photos")%> 
+          <%=tra("If translations in your language depend on any of these rules, you can add them here.", "Tr8n language management") %>
 			</div>
 						
       <div id="language_rules" style="font-size:12px;">
-      	
-        <% if @rules.empty? %>
-          <%=trl("There are no language rules defined for this language.")%>
-        <% end %>
-				
         <% if mode == :edit %>
-            <%= render(:partial => "rules") %>  
-        <% else %>
+            <%= render(:partial => "edit_rules") %>  
+        <% elsif @rules.empty? %>
+          <div style="font-style:italic;">
+            <%=tra("There are no language rules defined for this language.")%>
+						<%=tra("[link: Click here] to add language rules.", "", :link => lambda{|txt| link_to_function(txt, "switchSectionMode('grammar', 'edit')")})%>
+          </div>
+				<% else %>
 				    <div style="padding-bottom:15px;">
-				    	<%=trl("Translations in this language may depend on the token's:")%>
+				    	<%=tra("Translations in this language may depend on the token's:")%>
 					  </div>
 
 						<% 
@@ -48,13 +48,6 @@
 </div>
 
 <script>
-  function submitGrammarRules() {
-    if (!confirm("<%=trl('Updating language rules may affect existing translations for this language. Are you sure you want to update this language?') %>")) 
-       return;
-       
-    Tr8n.submit('grammar_form');
-  }
-  
   function updateLanguageRules(language_id) {
     performLanguageRulesOperation(Tr8n.Utils.serializeForm('grammar_form'));
   }
