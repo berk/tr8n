@@ -1,3 +1,26 @@
+#--
+# Copyright (c) 2010 Michael Berkovich, Geni Inc
+#
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+#++
+
 class CreateTr8nTables < ActiveRecord::Migration
   def self.up
     create_table :tr8n_languages do |t|
@@ -37,6 +60,16 @@ class CreateTr8nTables < ActiveRecord::Migration
     add_index :tr8n_language_cases, [:language_id, :translator_id]
     add_index :tr8n_language_cases, [:language_id, :keyword]
     
+    create_table :tr8n_language_case_value_maps do |t|
+      t.string  :key, :null => false
+      t.integer :language_id, :null => false
+      t.integer :translator_id
+      t.text    :map
+      t.timestamps
+    end
+    add_index :tr8n_language_case_value_maps, [:key, :language_id]
+    add_index :tr8n_language_case_value_maps, [:translator_id]
+    
     create_table :tr8n_language_users do |t|
       t.integer :language_id,   :null => false
       t.integer :user_id,       :null => false
@@ -70,6 +103,7 @@ class CreateTr8nTables < ActiveRecord::Migration
       t.integer :user_id,     :null => false
       t.boolean :inline_mode, :default => false
       t.boolean :blocked,     :default => false
+      t.boolean :reported,    :default => false
       t.integer :fallback_language_id
       t.integer :rank,        :default => 0 
       t.timestamps
@@ -204,6 +238,7 @@ class CreateTr8nTables < ActiveRecord::Migration
     drop_table :tr8n_language_rules
     drop_table :tr8n_language_users
     drop_table :tr8n_language_cases
+    drop_table :tr8n_language_case_value_maps
     drop_table :tr8n_language_metrics
     drop_table :tr8n_translators
     drop_table :tr8n_translator_logs
@@ -213,7 +248,6 @@ class CreateTr8nTables < ActiveRecord::Migration
     drop_table :tr8n_translation_key_sources
     drop_table :tr8n_translation_key_locks
     drop_table :tr8n_translations
-    drop_table :tr8n_translation_rules
     drop_table :tr8n_translation_votes
     drop_table :tr8n_glossary
     drop_table :tr8n_language_forum_messages

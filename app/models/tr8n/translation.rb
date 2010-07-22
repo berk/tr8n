@@ -35,12 +35,18 @@ class Tr8n::Translation < ActiveRecord::Base
   alias :key :translation_key
   alias :votes :translation_votes
 
+  VIOLATION_INDICATOR = -10
+
   def vote!(translator, score)
+    score = score.to_i
     vote = Tr8n::TranslationVote.find_or_create(self, translator)
     vote.update_attributes(:vote => score.to_i)
     update_rank!
     
     self.translator.update_rank!(language) if self.translator
+    
+    # add the translator to the watch list
+    self.translator.update_attributes(:reported => true) if score < VIOLATION_INDICATOR
     
     translator.voted_on_translation!(self)
     translator.update_metrics!(language)

@@ -27,7 +27,31 @@ class Tr8n::LanguageCasesController < Tr8n::BaseController
     
   # used by a client app
   def index
-    
+    conditions = []
+    @maps = Tr8n::LanguageCaseValueMap.paginate(:per_page => per_page, :page => page, :conditions => conditions, :order => "updated_at desc")    
   end
 
+  def lb_value_map
+    @map = Tr8n::LanguageCaseValueMap.find_by_id(params[:map_id]) if params[:map_id]
+    @map ||= Tr8n::LanguageCaseValueMap.new(:language => tr8n_current_language)
+    
+    render :layout => false
+  end
+
+  def update_value_map
+    map = Tr8n::LanguageCaseValueMap.find_by_id(params[:map_id]) unless params[:map_id].blank?
+    map ||= Tr8n::LanguageCaseValueMap.new(:language => tr8n_current_language)
+    map.update_attributes(params[:map])
+    map.save
+    
+    redirect_to(:action => :index)
+  end
+  
+  def delete_value_map
+    map = Tr8n::LanguageCaseValueMap.find_by_id(params[:map_id]) unless params[:map_id].blank?
+    map.destroy if map
+
+    redirect_to(:action => :index)
+  end
+  
 end

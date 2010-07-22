@@ -21,55 +21,51 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-class Tr8n::LanguageFilter < Tr8n::BaseFilter
+class Tr8n::LanguageCaseValueMap < ActiveRecord::Base
+  set_table_name :tr8n_language_case_value_maps
 
-  def definition
-    defs = super  
-    defs[:fallback_language_id][:is] = :list
-    defs[:fallback_language_id][:is_not] = :list
-    defs
+  belongs_to :language, :class_name => "Tr8n::Language"   
+  belongs_to :translator, :class_name => "Tr8n::Translator"   
+  
+  serialize :map
+  
+  def self.for(language, key)
+    Tr8n::Cache.fetch("language_case_value_map_#{language.id}_#{key}") do 
+      find_by_language_id_and_key(language.id, key)
+    end
   end
   
-  def value_options_for(criteria_key)
-    if criteria_key == :fallback_language_id
-      return Tr8n::Language.filter_options 
-    end
-
-    return []
-  end
-
-  def default_order
-    'english_name'
+  def value_for(case_key)
+    return unless map
+    map[case_key]
   end
   
-  def default_order_type
-    'asc'
+  def save_with_log!(new_translator)
+#    if self.id
+#      if changed?
+#        self.translator = new_translator
+#        translator.updated_language_case!(self)
+#      end
+#    else  
+#      self.translator = new_translator
+#      translator.added_language_case!(self)
+#    end
+
+    save  
   end
-
-  def default_filters
-    super + [
-      ["Enabled Languages", "enabled"],
-      ["Disabled Languages", "disabled"],
-      ["Left-to-Right Languages", "left"],
-      ["Right-to-Left Languages", "right"]
-    ]
-  end
-
-  def default_filter_conditions(key)
-    super_conditions = super(key)
-    return super_conditions if super_conditions
-
-    case key
-      when "enabled"
-        return [:enabled, :is, '1']
-      when "disabled"
-        return [:enabled, :is, '0']
-      when "left"
-        return [:right_to_left, :is, '0']
-      when "right"
-        return [:right_to_left, :is, '1']
-    end
+  
+  def destroy_with_log!(new_translator)
+#    new_translator.deleted_language_case!(self)
     
+    destroy
+  end
+
+  def after_save
+    Tr8n::Cache.delete("language_case_value_map_#{language.id}_#{key}")
+  end
+
+  def after_destroy
+    Tr8n::Cache.delete("language_case_value_map_#{language.id}_#{key}")
   end
 
 end

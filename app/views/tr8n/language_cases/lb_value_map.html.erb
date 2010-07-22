@@ -1,0 +1,42 @@
+<% form_for(:map, @map, :url => {:action => :update_value_map}, :html => {:id => 'tr8n_form', :method => :post, :class => "tr8n"}) do |form| %>
+  <%= hidden_field_tag :map_id, @map.id %>
+  
+  <h2><%=tra("Language Case Values")%></h2>
+  <table cellpadding="0" celspacing="0">
+      <tr style="border:1px dotted #ccc; background-color:#FDFFF0;">
+          <th style="padding:2px; width:20%; vertical-align:middle">
+              <%=tra("Keyword:")%>
+          </th>
+          <td style="padding:2px;">
+              <%= form.text_field :key, :style=>"width:100%; border:1px solid red;" %>
+          </td>
+      </tr>
+			
+			<tr>
+				<td colspan="2" style="padding-bottom:5px;">&nbsp;</td>
+			</tr>	
+			
+      <% tr8n_current_language.cases.each do |lcase| %>
+      <tr>
+          <th style="padding:2px;">
+              <%=lcase.native_name%>:
+          </th>
+          <td style="padding:2px;">
+              <%= text_field_tag "map[map][#{lcase.keyword}]", @map.value_for(lcase.keyword), :style=>"width:100%;" %>
+							<div style="color:#ccc;">
+							 <%=lcase.description%>
+							</div>
+          </td>
+      </tr>
+      <% end %>
+			
+  </table>
+
+  <div style="text-align:center;padding-top:10px;">
+	    <button type="submit" class="translator_btn translator_submit_btn" onClick="Tr8n.submit('tr8n_form'); return false;">
+	        <span><%=tra("Save")%></span>
+	    </button>
+			
+     <%=link_to_function(tra("close", "Tr8n lightbox close button"), "tr8nLightbox.hide()", :class => "tr8n_cancel_link") %>
+	</div>
+<% end %>
