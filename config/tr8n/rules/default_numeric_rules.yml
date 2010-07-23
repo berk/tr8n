@@ -2,6 +2,14 @@
 #
 # Tr8n Default Numeric Rules
 #
+# Definition:
+#   multipart:    true, false
+#   part1:        is, is_not, ends_in, does_not_end_in
+#   value1:       USER_SPECIFIED
+#   operator:     and, or  
+#   part2:        is, is_not, ends_in, does_not_end_in
+#   value2:       USER_SPECIFIED
+#
 #############################################################################
 
 en-US: 

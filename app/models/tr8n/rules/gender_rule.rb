@@ -117,21 +117,6 @@ class Tr8n::GenderRule < Tr8n::LanguageRule
     {:type => self.class.dependency, :operator => definition[:operator], :value => definition[:value]}
   end
 
-  # used by language rules setup page
-  def token_description
-    if definition[:operator] == "is"
-      return "token object may have a gender, which is <strong>a #{definition[:value]}</strong>" if ["male", "female"].include?(definition[:value])
-      return "token object may have <strong>a neutral gender</strong>" if "neutral" == definition[:value]
-      return "token object may have <strong>an unknown gender</strong>" if "unknown" == definition[:value]
-    end
-    
-    if definition[:operator] == "is_not"
-      return "token object may have a gender, which is <strong>not a #{definition[:value]}</strong>" if ["male", "female"].include?(definition[:value])
-      return "token object may have a gender, which is <strong>not neutral</strong>" if "neutral" == definition[:value]
-      return "token object may have a gender, which is <strong>not unknown</strong>" if "unknown" == definition[:value]
-    end
-  end
-
   # used to describe a context of a given translation
   def description
     if definition[:operator] == "is"
@@ -145,6 +130,8 @@ class Tr8n::GenderRule < Tr8n::LanguageRule
       return "does not have a neutral gender" if "neutral" == definition[:value]
       return "does not have an unknown gender" if "unknown" == definition[:value]
     end
+
+    "has an unknown rule"
   end
 
 end

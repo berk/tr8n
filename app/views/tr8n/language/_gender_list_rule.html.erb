@@ -1,0 +1,21 @@
+<%=select_tag("rules[#{index}][definition][part1]", options_for_select(rule.class.part1_options, rule.definition[:part1]), :style => "width:120px", :onChange=>"updateLanguageRules()")%>
+<%=select_tag("rules[#{index}][definition][value1]", options_for_select(rule.class.value1_options, rule.definition[:value1]), :style => "width:140px", :onChange=>"updateLanguageRules()")%>
+
+<% multipart = (rule.definition[:multipart].to_s == "true") %>
+
+<% link_style = 'display:none' if multipart %>
+<span id="extension_link_<%=index%>" style="vertical-align:bottom;<%= link_style %>">
+  <%=link_to_function(tra("more &raquo;"), "Tr8n.element('rule_#{index}_second_part').show(); Tr8n.element('extension_link_#{index}').hide(); Tr8n.element('rule_#{index}_multipart').value='true';")%>
+</span>
+
+<% second_part_style = 'display:none' unless multipart %>
+<span id="rule_<%=index%>_second_part" style="<%= second_part_style %>">
+  <%=hidden_field_tag("rules[#{index}][definition][multipart]", rule.definition[:multipart].to_s, :id => "rule_#{index}_multipart")%>
+  
+	<%=select_tag("rules[#{index}][definition][part2]", options_for_select(rule.class.part2_options(rule.definition[:value1]), rule.definition[:part2]), :style => "width:120px", :onChange=>"updateLanguageRules()")%>
+	<%=select_tag("rules[#{index}][definition][value2]", options_for_select(rule.class.value2_options(rule.definition[:value1]), rule.definition[:value2]), :style => "width:140px")%>
+  
+  <span id="extension_link_<%=index%>" style="vertical-align:bottom;">
+    <%=link_to_function(tra("&laquo; less"), "Tr8n.element('rule_#{index}_second_part').hide(); Tr8n.element('extension_link_#{index}').show(); Tr8n.element('rule_#{index}_multipart').value='false';")%>
+  </span>
+</span>

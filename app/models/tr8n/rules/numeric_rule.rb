@@ -148,10 +148,6 @@ class Tr8n::NumericRule < Tr8n::LanguageRule
     }
   end
 
-  # used by language rules setup page
-  def token_description
-    "#{self.class.description} <strong>#{description}</strong>"
-  end
 
   # used to describe a context of a given translation
   def description
@@ -168,7 +164,8 @@ class Tr8n::NumericRule < Tr8n::LanguageRule
     return "is not #{humanize_values(value)}" if name == :is_not
     return "ends in #{humanize_values(value)}" if name == :ends_in
     return "does not end in #{humanize_values(value)}" if name == :does_not_end_in
-    "unknown rule"
+
+    "has an unknown rule"
   end
   
   def humanize_description(desc)

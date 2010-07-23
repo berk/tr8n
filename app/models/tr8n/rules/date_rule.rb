@@ -112,21 +112,12 @@ class Tr8n::DateRule < Tr8n::LanguageRule
     false    
   end
 
-  # used by language rules setup page
-  def token_description
-    if self.class.date_options.collect{|o| o.last}.include?(definition[:value])
-      return "token object may be a date, which is in the <strong>#{definition[:value]}</strong>"
-    end
-    
-    "unknown rule"
-  end
-
   # used to describe a context of a given translation
   def description
     if self.class.date_options.collect{|o| o.last}.include?(definition[:value])
       return "is in the #{definition[:value]}"
     end
     
-    "unknown rule"
+    "has an unknown rule"
   end
 end

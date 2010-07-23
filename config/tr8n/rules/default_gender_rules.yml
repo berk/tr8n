@@ -2,6 +2,10 @@
 #
 # Tr8n Default Gender Rules
 #
+# Definition:
+#   operator:     is, is_not
+#   value1:       male, female, unknown
+#
 #############################################################################
 
 en-US:

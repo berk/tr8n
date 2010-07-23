@@ -132,7 +132,10 @@ defaults: &defaults
         male:                 male
         neutral:              neutral
         unknown:              unknown
-    gender_list_rule:         # works together with gender rule 
+    list_rule:                # use list_rule if your site does not support user genders 
+      object_method:          size
+      token_suffixes:         [list]
+    gender_list_rule:         # similiar to list rule, but works together with gender rule 
       object_method:          size
       token_suffixes:         [list]
     date_rule:                # date rule

@@ -24,7 +24,7 @@
           </div>
 				<% else %>
 				    <div style="padding-bottom:15px;">
-				    	<%=tra("Translations in this language may depend on the token's:")%>
+				    	<%=tra("Translations in this language may depend on the following token rules:")%>
 					  </div>
 
 						<% 
@@ -32,7 +32,7 @@
                @rules.each{|rule| (@types[rule.class.dependency] ||= []) << rule}
                @types.keys.sort.each do |dependency| 
             %>
-									<strong><%=dependency%></strong>
+									<strong><%=@types[dependency].first.class.dependency_label %></strong>
 									
 									<ol style="font-size: 12px; padding-left:10px; margin:1em; list-style-type:square; margin-top:0px;">
 									<% @types[dependency].each do |rule| %> 

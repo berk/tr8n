@@ -2,6 +2,10 @@
 #
 # Tr8n Default Date Rules
 #
+# Definition:
+#   operator:     is_in
+#   value1:       past, future, present
+#
 #############################################################################
 
 en-US: 
