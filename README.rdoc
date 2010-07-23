@@ -265,7 +265,7 @@ Hidden tokens will not appear as tokens when translator opens the translation di
 In the first cases _his_her will be subsituted in English to the appropriate phrase based on the current_user gender. And in the second case
 the correct form of message will be used based on whether the number is 1 or other.
 
-There is a better approach for the above examples, using the Transform tokens. Those kind of tokens require rules engine and will be described a little later. 
+There is a better approach for the above examples, using the Transform tokens.  But there may still be situations when hidden token can be useful. 
 
 === Transform tokens
 
@@ -292,12 +292,27 @@ In this case if the users array contains a single element it will use the first 
 
 === Decoration tokens
 
-Decoration tokens are used to decorate some text in a label whether. Consider the following example:
+Decoration tokens are used to decorate some text in a label. Consider the following example:
 
   <%= tr("[link: Click here] to visit our site", "Fragment sample", :link => lambda{|text| link_to(text, url)})  %>
 
-When this label is rendered "Click here" will be turned into a link. Similarly you can do any kind of HTML decorations inside of the label.
+When this label is rendered "Click here" will be turned into a link. Similarly you can do any kind of HTML decorations inside of the label. 
+Alternative ways for using decorations are:
 
+  <%= tr("[link: Click here] to visit our site", "Fragment sample", :link => "<a href='http://www.google.com'>{$0}</a>")  %>
 
+{$0} is the translated value of the link. And another way, using a default decoration:
 
+  <%= tr("[link: Click here] to visit our site", "Fragment sample", :link => ['http://www.google.com'])  %>
+
+The default decorations are defined in the config/tr8n/tokens/decorations.yml file. The are presented in the following form:
+
+  bold:       "<strong>{$0}</strong>"
+  italic:     "<i>{$0}</i>"
+  link:       "<a href='{$1}' style='{$2}'>{$0}</a>" 
+
+You can edit the file and add as many of the default decorations as you need. Notice that you do not need to provide token parameters for decorations that only use {$0} token. 
+So this would work just fine:
+
+  <%= tr("This is some [bold: very cool] stuff!")  %>
 
