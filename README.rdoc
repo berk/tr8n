@@ -303,7 +303,7 @@ Alternative ways for using decorations are:
 
 {$0} is the translated value of the link. And another way, using a default decoration:
 
-  <%= tr("[link: Click here] to visit our site", "Fragment sample", :link => ['http://www.google.com'])  %>
+  <%= tr("[link: Click here] to visit Google", nil, :link => ['http://www.google.com'])  %>
 
 The default decorations are defined in the config/tr8n/tokens/decorations.yml file. The are presented in the following form:
 
