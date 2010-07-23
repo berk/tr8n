@@ -267,6 +267,29 @@ the correct form of message will be used based on whether the number is 1 or oth
 
 There is a better approach for the above examples, using the Transform tokens. Those kind of tokens require rules engine and will be described a little later. 
 
+=== Transform tokens
+
+Transform tokens are used together with rules defined in the rules engine. Their primary job is to provide shortcuts for rule based tokens in the site native language. Consider the following example:
+
+  <%= tr("{user} changed {user| his, her} name", "Fragment sample", :user => current_user)  %>
+
+Notice that the hidden token has been replaced by the transform token. Keep in mind that {user} token must be registered as a gender based token. Consider another example:  
+
+  <%= tr("You have {count|| message, messages}", "Fragment sample", :count => messages.size)  %>
+
+Notice that, in this case, {count} must be registered as a number based token. When the native language rule is evaluated it will use the singular or plural form of the word "message" based on the value of count.
+A single pipe indicates that the comma delimited word(s) that follow it are dependent on the token value, but the token itself should not be displayed. A double pipe indicates that the value of the token should be displayd as well. 
+You don't have to provide the plural form of the word if it can be derived from a singular form. So {count|| message} will be good enough and it will be pluralized by the engine automatically.
+Every rule has support for a transform token. For example:
+
+  <%= tr("Michael {date| turned, turns, will turn} 33 on {date}", "Fragment sample", :date => some_date)  %>
+
+This is the case when piped token is used for a date token object. And one more example for a list:
+
+  <%= tr("{users|| likes, like} this link", "Fragment sample", :users => [users_list, lambda{|user| user.first_name}])  %>
+  
+In this case if the users array contains a single element it will use the first form, otherwise it will use the plural form.
+
 === Decoration tokens
 
 Decoration tokens are used to decorate some text in a label whether. Consider the following example:
