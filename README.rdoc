@@ -299,7 +299,7 @@ Decoration tokens are used to decorate some text in a label. Consider the follow
 When this label is rendered "Click here" will be turned into a link. Similarly you can do any kind of HTML decorations inside of the label. 
 Alternative ways for using decorations are:
 
-  <%= tr("[link: Click here] to visit our site", "Fragment sample", :link => "<a href='http://www.google.com'>{$0}</a>")  %>
+  <%= tr("[link: Click here] to visit Google", nil, :link => "<a href='http://www.google.com'>{$0}</a>")  %>
 
 {$0} is the translated value of the link. And another way, using a default decoration:
 
