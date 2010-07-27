@@ -107,6 +107,10 @@ module Tr8n::HelperMethods
   def tr8n_scripts_tag
     render(:partial => '/tr8n/common/scripts')    
   end
+  
+  def tr8n_client_sdk_scripts_tag
+    javascript_include_tag("/tr8n/javascripts/tr8n_client_sdk.js")
+  end
 
   def tr8n_translator_rank_tag(translator, rank = nil)
     return "" unless translator
