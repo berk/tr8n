@@ -83,4 +83,18 @@ class Tr8n::ForumController < Tr8n::BaseController
     redirect_to(:action => :topic, :topic_id => message.language_forum_topic.id)
   end  
 
+  def report_message
+    message = Tr8n::LanguageForumMessage.find_by_id(params[:message_id])
+    
+    unless message
+      trfe("This message does not exist")
+      return redirect_to(:action => :index)
+    end  
+
+    message.submit_abuse_report(tr8n_current_translator)
+    
+    trfn("The message has been reported")
+    redirect_to(:action => :topic, :topic_id => message.language_forum_topic.id)    
+  end
+
 end

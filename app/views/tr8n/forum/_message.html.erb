@@ -6,10 +6,12 @@
   <div style="color:grey;font-size:10px;"><%=message.created_at.trl(:date_time) %></div>
   <div style="font-size:10px;">
     <% if tr8n_current_user_is_translator? and message.translator == tr8n_current_translator %>  
-      <%=link_to(tra("Delete"), {:action => :delete_message, :message_id => message.id}, {:confirm => trl("Are you sure you want to delete this message?")})%>
+      <%=link_to(tra("Delete", "Link to delete forum message"), {:action => :delete_message, :message_id => message.id}, {:confirm => trl("Are you sure you want to delete this message?")})%>
+		<% else %>	
+      <%=link_to(tra("Report", "Link to report an abusive forum message"), {:action => :report_message, :message_id => message.id}, {:confirm => trl("If you report this message, the message will be reviewed and the author of the message will be put on a watch list. Are you sure you want to report this message?")})%>
     <% end %>
   </div>
 </td>
 <td style="padding:5px; width:700px;">
-  <%=message.message %>
+  <%=message.toHTML %>
 </td>

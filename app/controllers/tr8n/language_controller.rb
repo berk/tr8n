@@ -23,79 +23,21 @@
 
 class Tr8n::LanguageController < Tr8n::BaseController
 
-  before_filter :validate_current_translator, :except => [:select, :switch, :translate]
+  before_filter :validate_current_translator, :except => [:select, :switch]
   before_filter :validate_language_management, :only => [:index]
     
   # for ssl access to the translator - using ssl_requirement plugin  
-  ssl_allowed :translator, :select, :lists, :switch, :translate, :remove  if respond_to?(:ssl_allowed)
+  ssl_allowed :translator, :select, :lists, :switch, :remove  if respond_to?(:ssl_allowed)
 
-  # used by a client app
-  def translate
-    return sanitize_api_response({"error" => "Api is disabled"}) unless Tr8n::Config.enable_api?
-
-#   return sanitize_api_response({"error" => "You must be logged in to use the api"}) if tr8n_current_user_is_guest?
-
-    language = Tr8n::Language.for(params[:language]) || tr8n_current_language
-    source = params[:source] || "API" 
-    return sanitize_api_response(translate_phrase(language, params, {:source => source})) if params[:label]
-    
-    # API signature
-    # {:source => "", :language => "", :phrases => [{:label => ""}]}
-    
-    # get all phrases for the specified source
-    if params[:batch] == "true"
-      if params[:sources].blank? and params[:source].blank?
-        return sanitize_api_response({"error" => "No source/sources have been provided for the batch request."})
-      end
-      
-      source_names = params[:sources] || [params[:source]]
-      sources = Tr8n::TranslationSource.find(:all, :conditions => ["source in (?)", source_names])
-      source_ids = sources.collect{|source| source.id}
-      
-      if source_ids.empty?
-        conditions = ["1=2"]
-      else
-        conditions = ["(id in (select distinct(translation_key_id) from tr8n_translation_key_sources where translation_source_id in (?)))"]
-        conditions << source_ids.uniq
-      end
-      
-      translations = []
-      Tr8n::TranslationKey.find(:all, :conditions => conditions).each_with_index do |tkey, index|
-        trn = tkey.translate(language, {}, {:api => true})
-        translations << trn 
-      end
-      
-      return sanitize_api_response({:phrases => translations})
-    elsif params[:phrases]
-      phrases = []
-      begin
-        phrases = HashWithIndifferentAccess.new({:data => JSON.parse(params[:phrases])})[:data]
-      rescue Exception => ex
-        return sanitize_api_response({"error" => "Invalid request. JSON parsing failed: #{ex.message}"})
-      end
-      
-      translations = []
-      phrases.each do |phrase|
-        phrase = {:label => phrase} if phrase.is_a?(String)
-        translations << translate_phrase(language, phrase, {:source => source})
-      end
-      return sanitize_api_response({:phrases => translations})    
-    end
-    
-    sanitize_api_response({"error" => "Invalid API request. Please read the documentation and try again."})
-  rescue Tr8n::KeyRegistrationException => ex
-    sanitize_api_response({"error" => ex.message})
-  end
-  
   def index
-    @rules = tr8n_current_language.rules
+    @rules = rules_by_dependency(tr8n_current_language.rules)
     @cases = tr8n_current_language.cases
     @fallback_language = (tr8n_current_language.fallback_language || tr8n_default_language)
   end
   
   def update_language_section
     @cases = tr8n_current_language.cases
-    @rules = tr8n_current_language.rules
+    @rules = rules_by_dependency(tr8n_current_language.rules)
     @fallback_language = (tr8n_current_language.fallback_language || tr8n_default_language)
 
     unless request.post?
@@ -109,7 +51,7 @@ class Tr8n::LanguageController < Tr8n::BaseController
 
     tr8n_current_language.update_attributes(params[:language])
     
-    if params[:rules]
+    if params[:section] == 'grammar'
       old_rule_ids = tr8n_current_language.rules.collect{|rule| rule.id}
       parse_language_rules.each do |rule|
         rule.language = tr8n_current_language
@@ -124,7 +66,7 @@ class Tr8n::LanguageController < Tr8n::BaseController
       end
     end
     
-    if params[:cases]
+    if params[:section] == 'language_cases'
       # remove old cases
       tr8n_current_language.cases.each do |lcase|
         lcase.destroy
@@ -139,7 +81,7 @@ class Tr8n::LanguageController < Tr8n::BaseController
     
     tr8n_current_language.reload
     
-    @rules = tr8n_current_language.rules
+    @rules = rules_by_dependency(tr8n_current_language.rules)
     @cases = tr8n_current_language.cases
     @fallback_language = (tr8n_current_language.fallback_language || tr8n_default_language)
 
@@ -148,20 +90,20 @@ class Tr8n::LanguageController < Tr8n::BaseController
   
   # ajax method for updating language rules in edit mode
   def update_rules
-    @rules = parse_language_rules
+    @rules = rules_by_dependency(parse_language_rules)
     
     unless params[:rule_action]
       return render(:partial => "edit_rules")
     end
-  
+
     if params[:rule_action].index("add_at")
       position = params[:rule_action].split("_").last.to_i
-      @rules.insert(position, tr8n_current_language.default_rule)
+      cls = Tr8n::Config.language_rule_dependencies[params[:rule_type]]
+      @rules[cls.dependency].insert(position, cls.new(:language => tr8n_current_language))
     elsif params[:rule_action].index("delete_at")
       position = params[:rule_action].split("_").last.to_i
-      @rules.delete_at(position)
-    elsif params[:rule_action].index("clear_all")
-      @rules = []
+      cls = Tr8n::Config.language_rule_dependencies[params[:rule_type]]
+      @rules[cls.dependency].delete_at(position)
     end
     
     render :partial => "edit_rules"      
@@ -294,28 +236,31 @@ private
     rulz = []
     return rulz unless params[:rules]
     
-    index = 0  
-    while params[:rules]["#{index}"]
-      rule_params = params[:rules]["#{index}"]
-      rule_definition = params[:rules]["#{index}"][:definition]
-      
-      if rule_params.delete(:reset_values) == "true"
-        rule_definition = {}
+    Tr8n::Config.language_rule_classes.each do |cls|
+      next unless params[:rules][cls.dependency]
+      index = 0    
+      while params[:rules][cls.dependency]["#{index}"]
+        rule_params = params[:rules][cls.dependency]["#{index}"]
+        rule_definition = params[:rules][cls.dependency]["#{index}"][:definition]
+        
+        if rule_params.delete(:reset_values) == "true"
+          rule_definition = {}
+        end
+  
+        rule_id = rule_params[:id]
+        
+        if rule_id.blank?
+          rulz << cls.new(:definition => rule_definition)
+        else
+          rule = cls.find_by_id(rule_id)
+          rule = cls.new unless rule
+          rule.definition = rule_definition
+          rulz << rule
+        end
+        index += 1
       end
-
-      rule_class = rule_params[:type]
-      rule_id = rule_params[:id]
-      
-      if rule_id.blank?
-        rulz << rule_class.constantize.new(:definition => rule_definition)
-      else
-        rule = rule_class.constantize.find_by_id(rule_id)
-        rule = rule_class.constantize.new unless rule
-        rule.definition = rule_definition
-        rulz << rule
-      end
-      index += 1
-    end
+    
+    end 
     
     rulz
   end
@@ -333,16 +278,14 @@ private
     cases
   end
 
-  def translate_phrase(language, phrase, opts = {})
-    return "" if phrase[:label].strip.blank?
-    language.translate(phrase[:label], phrase[:description], {}, {:api => true, :source => opts[:source]})
+  def rules_by_dependency(rules)
+    types = {}
+    Tr8n::Config.language_rule_classes.each do |cls|
+      types[cls.dependency] = []
+    end 
+
+    rules.each{|rule| (types[rule.class.dependency] ||= []) << rule}
+    types
   end
-  
-  def sanitize_api_response(response)
-    if Tr8n::Config.api[:response_encoding] == "xml"
-      render(:text => response.to_xml)
-    else
-      render(:text => response.to_json)
-    end      
-  end
+
 end

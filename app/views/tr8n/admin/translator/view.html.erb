@@ -77,8 +77,8 @@
             
         </th>
         <td>
-          <%=link_to("View Translations", "/tr8n/admin/translation?mf_c_0=translator_id&mf_co_0=is&mf_cv_0_0=#{@translator.id}") %>
-          | <%=link_to("View Metrics", "/tr8n/admin/translator/metrics?mf_c_0=translator_id&mf_co_0=is&mf_cv_0_0=#{@translator.id}") %>
+          <%=link_to("View Translations", "/tr8n/admin/translation?wf_c0=translator_id&wf_o0=is&wf_v0_0=#{@translator.id}") %>
+          | <%=link_to("View Metrics", "/tr8n/admin/translator/metrics?wf_c0=translator_id&wf_o0=is&wf_v0_0=#{@translator.id}") %>
 
           <% if @translator.blocked? %>
             | <%=link_to_function("Unblock", "performTranslatorAction('unblock')") %>
@@ -87,7 +87,9 @@
           <% end %>  
 									
           | <%=link_to("Delete", {:action => :delete, :translator_id => @translator.id}, :confirm => "Are you sure you want to do that?")%>
-					
+
+          | <%=link_to("View Reported Translations", "/tr8n/admin/translation?wf_c0=translator_id&wf_o0=is&wf_v0_0=#{@translator.id}&wf_c1=rank&wf_o1=is_less_than&wf_v1_0=-100") %>
+          | <%=link_to("View Reported Forum Messages", "/tr8n/admin/forum/reports?wf_c0=author_id&wf_o0=is&wf_v0_0=#{@translator.id}") %>
         </td>
     </tr>    
 </table>
@@ -174,7 +176,7 @@
 
 <h1>
   <div style="font-size:12px; float:right;padding-top:10px;">
-    <%=link_to("view all", "/tr8n/admin/translator/log?mf_c_0=translator_id&mf_co_0=is&mf_cv_0_0=#{@translator.id}")%>
+    <%=link_to("view all", "/tr8n/admin/translator/log?wf_c0=translator_id&wf_o0=is&wf_v0_0=#{@translator.id}")%>
   </div>
 	Recent Activity <span style="color:grey; font-size:12px;">(last 20 actions)</span>
 </h1>

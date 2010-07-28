@@ -1,0 +1,3 @@
+<%=select_tag("rules[#{rule.class.dependency}][#{index}][definition][operator]", options_for_select(rule.class.operator_options, rule.definition[:operator]), :style => "width:120px", :onChange=>"updateLanguageRules()")%>
+<%=select_tag("rules[#{rule.class.dependency}][#{index}][definition][value]", options_for_select(rule.class.list_options, rule.definition[:value]), :style => "")%>
+

@@ -28,4 +28,6 @@ class Tr8n::LanguageForumAbuseReport < ActiveRecord::Base
   belongs_to :translator,             :class_name => "Tr8n::Translator"   
   belongs_to :language_forum_message, :class_name => "Tr8n::LanguageForumMessage"
   
+  alias :message :language_forum_message
+  
 end

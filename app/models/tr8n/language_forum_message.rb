@@ -31,5 +31,16 @@ class Tr8n::LanguageForumMessage < ActiveRecord::Base
   has_many :language_forum_abuse_reports, :class_name => "Tr8n::LanguageForumAbuseReport", :dependent => :destroy
 
   alias :topic :language_forum_topic
+
+  def submit_abuse_report(reporter)
+    report = Tr8n::LanguageForumAbuseReport.find(:first, :conditions => ["language_forum_message_id = ? and translator_id = ?", self.id, reporter.id])
+    report ||= Tr8n::LanguageForumAbuseReport.create(:language_forum_message => self, :translator => reporter, :language => language)
+    translator.update_attributes(:reported => true)
+    report
+  end
   
+  def toHTML
+    return "" unless message
+    message.gsub("\n", "<br>")
+  end
 end

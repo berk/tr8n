@@ -21,7 +21,7 @@
 			   </div>
 			</td>
       <td>
-      	<%=link_to(key_source.source.source, "/tr8n/admin/translation_key/key_sources?mf_c_0=translation_source_id&mf_co_0=is&mf_cv_0_0=#{key_source.source.id}") %>
+      	<%=link_to(key_source.source.source, "/tr8n/admin/translation_key/key_sources?wf_c0=translation_source_id&wf_o0=is&wf_v0_0=#{key_source.source.id}") %>
         <div style="color:grey; font-size:10px;">
         <% if key_source.details %>
             <% key_source.details.each do |key, value| %>

@@ -35,7 +35,7 @@
         <%=translator.blocked?%>
       </td>  
       <td style="text-align:right">
-        <%= link_to(translator.total_metric.total_translations || 0, "/tr8n/admin/translation?mf_c_0=translator_id&mf_co_0=is&mf_cv_0_0=#{translator.id}") %>
+        <%= link_to(translator.total_metric.total_translations || 0, "/tr8n/admin/translation?wf_c0=translator_id&wf_o0=is&wf_v0_0=#{translator.id}") %>
       </td>  
       <td style="text-align:right">
         <%=translator.total_metric.total_votes || 0 %>

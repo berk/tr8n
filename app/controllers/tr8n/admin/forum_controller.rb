@@ -49,4 +49,10 @@ class Tr8n::Admin::ForumController < Tr8n::Admin::BaseController
     redirect_to_source
   end  
     
+  def delete_report
+    report = Tr8n::LanguageForumAbuseReport.find_by_id(params[:report_id]) if params[:report_id]
+    report.destroy if report
+
+    redirect_to_source
+  end
 end

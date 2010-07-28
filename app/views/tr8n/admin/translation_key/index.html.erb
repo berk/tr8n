@@ -26,7 +26,7 @@
 			</td>      
       <td><%=key.tokens.join(", ")%></td>
       <td style="text-align:right">
-        <%=link_to(key.translations.size, "/tr8n/admin/translation/index?mf_c_0=translation_key_id&mf_co_0=is&mf_cv_0_0=#{key.id}") %>
+        <%=link_to(key.translations.size, "/tr8n/admin/translation/index?wf_c0=translation_key_id&wf_o0=is&wf_v0_0=#{key.id}") %>
       </td>      
       <td style="text-align:right">
         <%=link_to("View", :action => :view, :key_id => key.id) %>

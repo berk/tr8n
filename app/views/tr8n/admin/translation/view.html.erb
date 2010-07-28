@@ -99,7 +99,7 @@
         <td>
           <%=link_to("View Translation Key", "/tr8n/admin/translation_key/view?key_id=#{@translation.translation_key.id}") %>
           |          
-          <%=link_to("View Translation Votes", "/tr8n/admin/translation/votes?mf_c_0=translation_id&mf_co_0=is&mf_cv_0_0=#{@translation.id}") %>
+          <%=link_to("View Translation Votes", "/tr8n/admin/translation/votes?wf_c0=translation_id&wf_o0=is&wf_v0_0=#{@translation.id}") %>
           |          
           <%=link_to("Delete", {:action => :delete, :translation_id => @translation.id, :source => :translation}, {:confirm => "Are you sure you want to delete this translation?"}) %>
         </td>
