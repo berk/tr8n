@@ -1,4 +1,6 @@
-<div id="translation_tokens" style="padding-top:10px; padding-bottom:5px; font-size:10px;">
+<% if @translation_key.tokens? or @translation_key.permutatable? %>
+
+<div id="translation_tokens" style="padding-bottom:5px; font-size:12px;">
   <div class="section_title">
   	 <%=trl("Translation Tokens")%>
 	</div>
@@ -13,22 +15,22 @@
         <% end %>
       <% end %>
 			
-      <div style="color:grey; font-size:10px; padding-top:10px; padding-bottom:10px;">
+      <div style="color:grey; font-size:12px; padding-top:10px; padding-bottom:10px;">
 			   <%=trl("Click on a token to insert it into the label")%>
 			</div>
   <% end %>
 
-  <% if tr8n_current_language.has_rules? %>
-	  <div id="rules_trigger" style="font-size:12px; font-weight:normal;">
-		  <% 
+  <% if @translation_key.permutatable? %>
+    <div id="rules_trigger" style="font-size:12px; font-weight:normal;">
+      <% 
          if @translation_key.translation_tokens? 
-			     link_label = trl("Click here if this translation depends on any of the token values or the gender of the viewing user")
+           link_label = tra("Click here if this translation depends on any of the token values or the gender of the viewing user")
          else
-           link_label = trl("Click here if this translation depends on the gender of the viewing user")
+           link_label = tra("Click here if this translation depends on the gender of the viewing user")
          end 
       %>
       <%=link_to_function(link_label, "Tr8n.element('has_rules').value='true'; Tr8n.hide('rules_trigger'); Tr8n.blindDown('translation_rules');") %>
-	  </div>
+    </div>
 		
     <div id="translation_rules" style="padding:5px; border: 1px dotted #ccc; background:#EFF8FF; display:none;">
       <div style="font-size:14px; font-weight:normal; border-bottom: 1px dotted #ccc;">
@@ -78,3 +80,4 @@
   <% end %>
   
 </div>
+<% end %>

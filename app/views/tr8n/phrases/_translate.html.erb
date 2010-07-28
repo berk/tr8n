@@ -10,15 +10,17 @@
 		  <%= hidden_field_tag(:source_url, @source_url) %>
 		  <%= hidden_field_tag(:translation_has_dependencies, "false") %>
 		  <%= hidden_field_tag(:section_key, @section_key) %>
-		    
-		  <%= f.text_area(:label, :id => "tr8n_translation_label_#{@translation_key.id}", :style=>"width:99%;height:60px;border:1px solid #ccc;background-color:white;padding:3px;", :class => "keyboardInput" ) %>
-		
+		  
+			<div style="padding-bottom:10px;">  
+		    <%= f.text_area(:label, :id => "tr8n_translation_label_#{@translation_key.id}", :style=>"width:99%;height:60px;border:1px solid #ccc;background-color:white;padding:3px;", :class => "keyboardInput" ) %>
+		  </div>
+			
 		  <% if @translation_key.translation_tokens? or tr8n_current_language.has_rules? %>
           <%= render(:partial => "tokens") %>
 			<% end %>		
 	
 			<% if Tr8n::Config.enable_google_suggestions? %>  
-				<div id="tr8n_google_suggestion_container_<%=@translation_key.id%>" style="display:none; padding-top:10px; padding-bottom:10px;">
+				<div id="tr8n_google_suggestion_container_<%=@translation_key.id%>" style="display:none; padding-bottom:10px;">
 				    <div class="section_title">
 				        <%=trl("Suggested Translation")%>
 				    </div>

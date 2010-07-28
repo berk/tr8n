@@ -11,7 +11,7 @@
             <div class="strong small" style="padding-top:10px;"><%=trl("Enter #{tr8n_current_language.english_name} Translation:")%></div>
             <%= f.text_area(:label, :id => "tr8n_translator_translation_label", :class => "keyboardInput", :style=>"width:368px;") %>
 		
-            <% if Tr8n::Config.current_language.has_rules? %>
+            <% if @translation_key.permutatable? %>
 	            <div style="float:right; font-size:10px;">
 	               <%=link_to_function(trl("generate context rules for this phrase"), "tr8nTranslator.switchTranslatorMode('#{@translation_key.id}', 'dependencies', '#{@source_url}')", :class=>"translation_action") %>
 							</div>

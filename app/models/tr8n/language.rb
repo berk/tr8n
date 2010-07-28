@@ -62,10 +62,24 @@ class Tr8n::Language < ActiveRecord::Base
     locale
   end
   
+  # deprecated
   def has_rules?
+    rules?
+  end
+
+  def rules?
     not rules.empty?
   end
   
+  def gender_rules?
+    return false unless rules?
+    
+    rules.each do |rule|
+      return true if rule.class.dependency == 'gender'
+    end
+    false
+  end
+
   def full_name
     return english_name if english_name == native_name
     "#{english_name} - #{native_name}"

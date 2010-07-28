@@ -97,8 +97,13 @@ class Tr8n::TranslationKey < ActiveRecord::Base
       end
     end
 
-    toks << Tr8n::Config.viewing_user_token_for(label)
+    toks << Tr8n::Config.viewing_user_token_for(label) if language.gender_rules?
     toks.uniq
+  end
+
+  # determines whether the key can have rules generated for the language
+  def permutatable?(language = Tr8n::Config.current_language)
+    language_rules_dependant_tokens(language).any?
   end
 
   def glossary
