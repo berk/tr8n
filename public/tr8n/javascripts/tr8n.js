@@ -32,34 +32,41 @@ var Tr8n = Tr8n || {
   },
   value:function(element_id) {
     return Tr8n.element(element_id).value;
-  },
-	hide: function(element_id) {
+  }
+};
+
+/****************************************************************************
+**** Tr8n Effects Helper Functions - Can be overloaded by JS frameworks
+****************************************************************************/
+
+Tr8n.Effects = {
+  hide: function(element_id) {
     Tr8n.element(element_id).style.display = "none";
-	},
+  },
   show: function(element_id) {
-		var style = (Tr8n.element(element_id).tagName == "SPAN") ? "inline" : "block";
+    var style = (Tr8n.element(element_id).tagName == "SPAN") ? "inline" : "block";
     Tr8n.element(element_id).style.display = style;
   },
   blindUp: function(element_id) {
-    Tr8n.hide(element_id);    
+    Tr8n.Effects.hide(element_id);    
   },
   blindDown: function(element_id) {
-    Tr8n.show(element_id);    
+    Tr8n.Effects.show(element_id);    
   },
-	appear: function(element_id) {
-		Tr8n.show(element_id);
-	},
+  appear: function(element_id) {
+    Tr8n.Effects.show(element_id);
+  },
   fade: function(element_id) {
-    Tr8n.hide(element_id);
+    Tr8n.Effects.hide(element_id);
   },
-	submit: function(element_id) {
-		Tr8n.element(element_id).submit();
-	},
-	focus: function(element_id) {
+  submit: function(element_id) {
+    Tr8n.element(element_id).submit();
+  },
+  focus: function(element_id) {
     Tr8n.element(element_id).focus();
   },
-	scrollTo: function(element_id) {
-		var theElement = Tr8n.element(element_id);
+  scrollTo: function(element_id) {
+    var theElement = Tr8n.element(element_id);
     var selectedPosX = 0;
     var selectedPosY = 0;
     while(theElement != null){
@@ -68,8 +75,8 @@ var Tr8n = Tr8n || {
       theElement = theElement.offsetParent;
     }
     window.scrollTo(selectedPosX,selectedPosY);
-	}
-};
+  }	
+}
 
 /****************************************************************************
 **** Tr8n Translator

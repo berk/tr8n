@@ -88,6 +88,7 @@ class Tr8n::Admin::LanguageController < Tr8n::Admin::BaseController
     else
       trfn("The new language has been addeded")
       language = Tr8n::Language.create(params[:language])
+      language.reset!
     end
     
     redirect_to_source

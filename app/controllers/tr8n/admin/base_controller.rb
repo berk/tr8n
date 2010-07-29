@@ -48,7 +48,8 @@ private
         {"title" => "Translations", "description" => "Admin tab", "controller" => "translation"},
         {"title" => "Translators", "description" => "Admin tab", "controller" => "translator"},
         {"title" => "Glossary", "description" => "Admin tab", "controller" => "glossary"},
-        {"title" => "Forum", "description" => "Admin tab", "controller" => "forum"}
+        {"title" => "Forum", "description" => "Admin tab", "controller" => "forum"},
+        {"title" => "Client SDK", "description" => "Admin tab", "controller" => "clientsdk"}
     ]
   end
   helper_method :tr8n_admin_tabs

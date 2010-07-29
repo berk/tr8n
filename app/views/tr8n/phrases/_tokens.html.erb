@@ -29,7 +29,7 @@
            link_label = tra("Click here if this translation depends on the gender of the viewing user")
          end 
       %>
-      <%=link_to_function(link_label, "Tr8n.element('has_rules').value='true'; Tr8n.hide('rules_trigger'); Tr8n.blindDown('translation_rules');") %>
+      <%=link_to_function(link_label, "Tr8n.element('has_rules').value='true'; Tr8n.Effects.hide('rules_trigger'); Tr8n.Effects.blindDown('translation_rules');") %>
     </div>
 		
     <div id="translation_rules" style="padding:5px; border: 1px dotted #ccc; background:#EFF8FF; display:none;">
@@ -74,7 +74,7 @@
 			<div style="color:grey; font-size:12px; padding-top:10px;"><%=trl("Select all of the rules that apply to this translation or [link: generate all context rules for this phrase].", '', :link => lambda{|t| link_to_function(t, 'addContextRules()')})%></div>
 			
 			<div style="padding-top:10px;font-size:12px; font-weight:normal;">
-        <%=link_to_function(trl("&laquo; this translation has no context rules", 'Tr8n translation rules section'), "Tr8n.element('has_rules').value='false'; Tr8n.show('rules_trigger'); Tr8n.blindUp('translation_rules');") %>
+        <%=link_to_function(trl("&laquo; this translation has no context rules", 'Tr8n translation rules section'), "Tr8n.element('has_rules').value='false'; Tr8n.Effects.show('rules_trigger'); Tr8n.Effects.blindUp('translation_rules');") %>
 			</div>
     </div>
   <% end %>

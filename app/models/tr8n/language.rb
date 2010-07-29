@@ -50,6 +50,21 @@ class Tr8n::Language < ActiveRecord::Base
     end
   end
 
+  def reset!
+    rules.delete_all
+    cases.delete_all
+    
+    Tr8n::Config.language_rule_classes.each do |rule_class|
+      rule_class.default_rules_for(self).each do |definition|
+        rule_class.create(:language => self, :definition => definition)
+      end
+    end
+    
+    Tr8n::Config.default_cases_for(locale).each do |lcase|
+      Tr8n::LanguageCase.create(lcase.merge(:language => self))
+    end
+  end
+  
   def current?
     self.locale == Tr8n::Config.current_language.locale
   end

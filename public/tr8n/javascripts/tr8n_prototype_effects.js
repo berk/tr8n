@@ -25,10 +25,7 @@
 **** Tr8n Prototype Effects Functions
 ****************************************************************************/
 
-var Tr8n = Tr8n || {
-  element:function(element_id) {
-    return $(element_id);
-  },
+Tr8n.Effects = {
   hide: function(element_id) {
     $(element_id).hide();
   },
@@ -48,10 +45,21 @@ var Tr8n = Tr8n || {
     Effect.Fade(element_id, { duration: 0.2 });
   },
   submit: function(element_id) {
-    Tr8n.$(element_id).submit();
+    $(element_id).submit();
   },
   focus: function(element_id) {
-    Tr8n.$(element_id).focus();
-  }
-};
+    $(element_id).focus();
+  },  
+  scrollTo: function(element_id) {
+    var theElement = $(element_id);
+    var selectedPosX = 0;
+    var selectedPosY = 0;
+    while(theElement != null){
+      selectedPosX += theElement.offsetLeft;
+      selectedPosY += theElement.offsetTop;
+      theElement = theElement.offsetParent;
+    }
+    window.scrollTo(selectedPosX,selectedPosY);
+  }	
+}
 

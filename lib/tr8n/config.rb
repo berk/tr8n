@@ -88,17 +88,7 @@ class Tr8n::Config
       lang = Tr8n::Language.find_or_create(locale, info[:english_name])
       info[:right_to_left] = false if info[:right_to_left].nil?
       lang.update_attributes(info.merge(:enabled => true))
-      lang.rules.delete_all
-      
-      language_rule_classes.each do |rule_class|
-        rule_class.default_rules_for(lang).each do |definition|
-          rule_class.create(:language => lang, :definition => definition)
-        end
-      end
-      
-      default_cases_for(locale).each do |lcase|
-        Tr8n::LanguageCase.create(lcase.merge(:language => lang))
-      end
+      lang.reset!
     end
     
     Tr8n::Glossary.delete_all
@@ -240,7 +230,7 @@ class Tr8n::Config
   def self.enable_translator_language?
     config[:enable_translator_language]
   end
-  
+
   #########################################################
   # Config Sections
   def self.site_info
@@ -291,6 +281,14 @@ class Tr8n::Config
   
   def self.sitemap_sections
     @sitemap_sections ||= load_json(site_info[:sitemap_path])
+  end
+
+  def self.effects_library_path
+    site_info[:effects_library_path]
+  end
+
+  def self.enable_effects?
+    site_info[:enable_effects]
   end
 
   def self.tr8n_helpers
@@ -554,9 +552,12 @@ class Tr8n::Config
   end
 
   #########################################################
-  # localization
   def self.enable_api?
     api[:enabled]
+  end
+
+  def self.enable_client_sdk?
+    config[:enable_client_sdk]
   end
   
 end

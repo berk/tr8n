@@ -11,7 +11,7 @@
 <div style="background:#EFF8FF; border: 1px dotted #ccc; padding:10px;">
   <% form_tag({:action => :index}, {:method => :get, :id => "case_search_form"}) do %>
       <div style="float:right">
-        <button type="submit" class="translator_btn translator_small_btn" onClick="Tr8n.submit('case_search_form'); return false;">
+        <button type="submit" class="translator_btn translator_small_btn" onClick="Tr8n.Effects.submit('case_search_form'); return false;">
             <span><%=tra("Search", "Search button label")%></span>
         </button>
       </div>

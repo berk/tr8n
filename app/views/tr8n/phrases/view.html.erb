@@ -9,13 +9,13 @@
 	     <%=hidden_field_tag(:translation_key_id, @translation_key.id) %>
 	     <div style="padding-top:5px;">
 	          <%=trl("Show")%>
-	          <%=select_tag(:with_status, options_for_select(Tr8n::Translation.filter_status_options, params[:with_status]), :onChange => "Tr8n.submit('translations_search_form')")%>
+	          <%=select_tag(:with_status, options_for_select(Tr8n::Translation.filter_status_options, params[:with_status]), :onChange => "Tr8n.Effects.submit('translations_search_form')")%>
 	          <%=trl("submitted by")%>
-	          <%=select_tag(:submitted_by, options_for_select(Tr8n::Translation.filter_submitter_options, params[:submitted_by]), :onChange => "Tr8n.submit('translations_search_form')")%>
+	          <%=select_tag(:submitted_by, options_for_select(Tr8n::Translation.filter_submitter_options, params[:submitted_by]), :onChange => "Tr8n.Effects.submit('translations_search_form')")%>
 	          <%=trl("created on")%>
-	          <%=select_tag(:submitted_on, options_for_select(Tr8n::Translation.filter_date_options, params[:submitted_on]), :onChange => "Tr8n.submit('translations_search_form')")%>
+	          <%=select_tag(:submitted_on, options_for_select(Tr8n::Translation.filter_date_options, params[:submitted_on]), :onChange => "Tr8n.Effects.submit('translations_search_form')")%>
             <%=trl("grouped by")%>
-            <%=select_tag(:grouped_by, options_for_select(Tr8n::Translation.filter_group_by_options, params[:grouped_by]), :onChange => "Tr8n.submit('translations_search_form')")%>
+            <%=select_tag(:grouped_by, options_for_select(Tr8n::Translation.filter_group_by_options, params[:grouped_by]), :onChange => "Tr8n.Effects.submit('translations_search_form')")%>
 	     </div>
 	  <% end %>
 	</div>
@@ -64,24 +64,24 @@
 
 <script>
 	function addTranslation() {
-		Tr8n.hide('tranlsations_list'); 
-    Tr8n.hide('permutations');
-		Tr8n.show('new_translation');
+		Tr8n.Effects.hide('tranlsations_list'); 
+    Tr8n.Effects.hide('permutations');
+		Tr8n.Effects.show('new_translation');
 	}
 	
   function addContextRules() {
-    Tr8n.hide('tranlsations_list'); 
-    Tr8n.hide('new_translation');
-    Tr8n.show('permutations');
+    Tr8n.Effects.hide('tranlsations_list'); 
+    Tr8n.Effects.hide('new_translation');
+    Tr8n.Effects.show('permutations');
   }
 </script>	
 
 <% if @show_add_dialog %>
 	<script>
-   Tr8n.Utils.addEvent(window,'load',function(e) {
-	    Tr8n.hide('tranlsations_list'); 
-	    Tr8n.show('new_translation');
-	 });
+		window.setTimeout(function() {
+		      Tr8n.Effects.blindUp('tranlsations_list'); 
+		      Tr8n.Effects.blindDown('new_translation');
+    }, 500);
 	</script>	
 <% end %>
 

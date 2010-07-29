@@ -21,7 +21,15 @@
   WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ****************************************************************************/
 
-var Tr8n = Tr8n || {}
+var Tr8n = Tr8n || {
+  element:function(element_id) {
+    if (typeof element_id == 'string') return document.getElementById(element_id);
+    return element_id;
+  },
+  value:function(element_id) {
+    return Tr8n.element(element_id).value;
+  }
+};
 
 /****************************************************************************
 **** Tr8n Proxy
@@ -31,6 +39,8 @@ Tr8n.Proxy = function(options) {
 	var self = this;
   this.options = options;
 	this.options['url'] = this.options['url'] || '/tr8n/api/v1/language/translate'; 
+  this.options['scheduler_interval'] = this.options['scheduler_interval'] || 20000; 
+	this.logger_enabled = true;
 	
 	this.logger = new Tr8n.Proxy.Logger({
     'proxy': self,
@@ -42,11 +52,18 @@ Tr8n.Proxy = function(options) {
 	});
 	
 	this.initTranslations();
+	this.runScheduledTasks();
 }
 
 Tr8n.Proxy.prototype = {
   log: function(msg) {
     this.logger.debug(msg);
+  },
+	disableLogger: function() {
+		this.logger_enabled = false;
+	},
+  enableLogger: function() {
+    this.logger_enabled = true;
   },
   debug: function(msg) {
     this.logger.debug(msg);
@@ -82,7 +99,7 @@ Tr8n.Proxy.prototype = {
 		if (!this.options['rules']) return null;
 		
 		for (rule_type in this.options['rules']) {
-			var suffixes = this.options['rules'][rule_type]['suffixes'];
+			var suffixes = this.options['rules'][rule_type]['token_suffixes'];
 			if (!suffixes) continue;
 			
       if (Tr8n.Proxy.Utils.indexOf(suffixes, token_suffix) != -1 )
@@ -92,16 +109,10 @@ Tr8n.Proxy.prototype = {
   },
 	
 	registerMissingTranslationKey: function(translation_key) {
-		if (!this.missing_translation_keys) {
-			this.missing_translation_key_count = 0;
-			this.missing_translation_keys = {};
-		}
+    this.missing_translation_keys = this.missing_translation_keys || {};
 		if (!this.missing_translation_keys[translation_key.key]) {
 		  this.missing_translation_keys[translation_key.key] = translation_key;
-			this.missing_translation_key_count ++;
 	  }
-		
-		this.submitMissingTranslationKeys();
 	},
 	
 	registerTranslationKeys: function(translations) {
@@ -114,7 +125,7 @@ Tr8n.Proxy.prototype = {
 	
   submitMissingTranslationKeys: function() {
     if (!this.missing_translation_keys) {
-			this.error('No missing translation keys to submit...');
+			this.log('No missing translation keys to submit...');
 			return;
 	  }
 		
@@ -128,6 +139,7 @@ Tr8n.Proxy.prototype = {
       phrases = phrases + "}";
 		}
 		phrases = phrases + "]";
+    this.missing_translation_keys = null;
 		
     var self = this;
     this.debug('Submitting missing translation keys: ' + phrases);
@@ -137,17 +149,13 @@ Tr8n.Proxy.prototype = {
       onSuccess: function(response) {
         self.log("Received response from the server");
         self.log(response.responseText);
-				self.missing_translation_keys = [];
-				self.missing_translation_key_count = 0;
-				 
-        var translations = eval("[" + response.responseText + "]")[0]['phrases'];
-				self.registerTranslationKeys(translations);
+				self.registerTranslationKeys(eval("[" + response.responseText + "]")[0]['phrases']);
       }
     }); 
   },
 	
-	initTranslations: function() {
-    if (this.translations) return;
+	initTranslations: function(forced) {
+    if (!forced && this.translations) return;
 
 		var self = this;
 		self.log("Fetching translations from the server...");
@@ -158,11 +166,21 @@ Tr8n.Proxy.prototype = {
 			onSuccess: function(response) {
         self.log("Received response from the server");
         self.log(response.responseText);
-        var translations = eval("[" + response.responseText + "]")[0]['phrases'];
-        self.registerTranslationKeys(translations);
+        self.registerTranslationKeys(eval("[" + response.responseText + "]")[0]['phrases']);
 			}
 		});	
-	}
+	},
+	
+  runScheduledTasks: function() {
+    var self = this;
+		
+    this.log("Running scheduled tasks...");
+		this.submitMissingTranslationKeys();
+		
+		window.setTimeout(function() {
+			self.runScheduledTasks();
+		}, this.options['scheduler_interval']);
+  },
 }
 
 /****************************************************************************
@@ -253,7 +271,7 @@ Tr8n.Proxy.TranslationKey.prototype = {
     }
 
     this.getProxy().registerMissingTranslationKey(this);
-    this.getLogger().debug('No translation found');
+    this.getLogger().debug('No translation found. Using default...');
     return this.substituteTokens(this.label, token_values, options);    
   },
 	
@@ -306,7 +324,15 @@ Tr8n.Proxy.LanguageRule.prototype = {
   },
   getLogger: function() {
     return this.getProxy().logger;
-  }
+  },
+	getTokenValue: function(token_name, token_values) {
+		var object = token_values[token_name];
+		if (!object) { 
+      this.getLogger().error("Invalid token value for token: " + token_name);
+		}
+		
+		return object;		
+	}
 }
 
 /****************************************************************************
@@ -326,13 +352,22 @@ Tr8n.Proxy.NumericRule.transform = function(count, values) {
 	return values[1];	 
 }
 
-Tr8n.Proxy.NumericRule.prototype.evaluate = function(token, token_values) {
-//	"count":{"value1":"2,3,4","operator":"and","type":"number","multipart":true,"part2":"does_not_end_in","value2":"12,13,14","part1":"ends_in"}
+Tr8n.Proxy.NumericRule.prototype.evaluate = function(token_name, token_values){
+	//	"count":{"value1":"2,3,4","operator":"and","type":"number","multipart":true,"part2":"does_not_end_in","value2":"12,13,14","part1":"ends_in"}
 	
-  var token_value = token_values[token];
-	if (!token_value) return false;  
-	token_value = "" + token_value;
-
+	var object = this.getTokenValue(token_name, token_values);
+	if (!object) return false;
+  
+	var token_value = null;
+  if (typeof object == 'string' || typeof object == 'number') {
+    token_value = "" + object;
+	} else if (typeof object == 'object' && object['subject']) { 
+    token_value = "" + object['subject'];
+	} else {
+    this.getLogger().error("Invalid token value for numeric token: " + token_name);
+		return false;
+	}
+	
   var result1 = this.evaluatePartialRule(token_value, this.definition['part1'], this.definition['value1'].split(','));
 	if (!this.definition['multipart']) return result1;
 
@@ -392,8 +427,43 @@ Tr8n.Proxy.GenderRule.transform = function(object, values) {
   return values[0] + "/" + values[1];  
 }
 
-Tr8n.Proxy.GenderRule.prototype.evaluate = function(token, token_values) {
-  return true;
+Tr8n.Proxy.GenderRule.prototype.evaluate = function(token_name, token_values) {
+
+  var object = this.getTokenValue(token_name, token_values);
+  if (!object) return false;
+
+	var gender = "";
+	
+  if (typeof object != 'object') {
+    this.getLogger().error("Invalid token value for gender based token: " + token_name + ". Token value must be an object.");
+		return false;
+  } 
+
+	if (!object['subject']) {
+		this.getLogger().error("Invalid token subject for gender based token: " + token_name + ". Token value must contain a subject. Subject can be a string or an object with a gender.");
+		return false;
+	}
+	
+  if (typeof object['subject'] == 'string') {
+  	gender = object['subject'];
+  } else if (typeof object['subject'] == 'object') {
+    gender = object['subject']['gender'];
+		if (!gender) {
+	    this.getLogger().error("Cannot determine gender for token subject: " + token_name);
+	    return false;
+		}
+	} else {
+    this.getLogger().error("Invalid token subject for gender based token: " + token_name + ". Subject does not have a gender.");
+		return false;
+	}
+	
+  if (this.definition['operator'] == "is") {
+	   return (gender == this.definition['value']);
+	} else if (this.definition['operator'] == "is_not") {
+     return (gender != this.definition['value']);
+	}
+	
+  return false;
 }
 
 /****************************************************************************
@@ -745,6 +815,7 @@ Tr8n.Proxy.Logger = function(options) {
 
 Tr8n.Proxy.Logger.prototype = {
   log: function(msg) {
+		if (!this.options['proxy'].logger_enabled) return;
 		if (!this.options['element_id']) return;
 		
 		var str = Tr8n.Proxy.Utils.element(this.options['element_id']).innerHTML;
@@ -839,7 +910,7 @@ Tr8n.Proxy.Utils = {
 
   ajax: function(url, options) {
     options = options || {};
-    options.parameters = Tr8n.Utils.toQueryParams(options.parameters);
+    options.parameters = Tr8n.Proxy.Utils.toQueryParams(options.parameters);
     options.method = options.method || 'get';
 
     var self=this;
@@ -869,6 +940,22 @@ Tr8n.Proxy.Utils = {
   }	
 }
 
+/****************************************************************************
+**** Tr8n Proxy Initialization
+****************************************************************************/
+//var tr8nProxy;
+//
+//function initializeTr8nClientSDK(source, debugger) {
+//  tr8nProxy = tr8nProxy || new Tr8n.Proxy({
+//    "source": source,
+//    "debugger": debugger,
+//    "decorations": {"bold": "<strong>{$0}</strong>", "italic": "<i>{$0}</i>", "link": "<a href='{$href}'>{$0}</a>"},
+//    "rules": {"number":{"token_suffixes":["count", "num"]}, 
+//              "gender":{"token_suffixes":["user", "profile", "actor", "target"]},
+//              "list":{"token_suffixes":["list"]}, "date":{"token_suffixes":["date"]}
+//    }
+//  });
+//}
 
 /****************************************************************************
 ***

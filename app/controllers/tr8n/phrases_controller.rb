@@ -239,10 +239,11 @@ private
   def sitemap_section_for(key)
     key_hash = {}
     Tr8n::Config.sitemap_sections.each do |section|
-      next unless section[:enabled]
       generate_sitemap_keys(section[:sections], key_hash)
     end
-    key_hash[key]
+
+    # handle direct source navigation
+    key_hash[key] || {:label=>key, :description=>"Reserved section", :sources=>[key], :key=>key}
   end
   
   def generate_sitemap_keys(sections, key_hash)

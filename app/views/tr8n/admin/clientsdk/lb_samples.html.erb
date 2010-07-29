@@ -1,0 +1,52 @@
+<%
+  examples = [
+    {:label => "Hello World", :tokens => "", :alt => "The simplest possible example. No tokens used"},
+    {:label => "{tr8n} is awesome!", :tokens => "{'tr8n':'TR8N'}", :alt => "Uses simple token to demonstrate subsitution."},
+    {:label => "You have {count|| message, messages}!", :tokens => "{'count':5}", :alt => "Uses count token and numeric rule"},
+    {:label => "Dear {user}, your gender is in the subject!", :tokens => "{'user':{'subject':'male', 'value':'Michael'}}", :alt => "Uses user token and gender rule."},
+    {:label => "Dear {user}, your gender is in an object!", :tokens => "{'user':{'subject':{'gender': 'male'}, 'value':'Michael'}}", :alt => "Uses user token and gender rule."},
+    {:label => "Some [bold: decoration] stuff!", :tokens => "{'bold': '<strong>{$0}</strong>'}", :alt => "Uses decoration token."},
+    {:label => "Using default [bold: decorations]!", :tokens => "", :alt => "Uses decoration token with a fallback default decoration."},
+    {:label => "More default [italic: decorations]!", :tokens => "", :alt => "Uses decoration token with a fallback default decoration."},
+    {:label => "[link: Click here] is a link default decoration!", :tokens => "{'link':{'href':'http://www.google.com'}}", :alt => "Uses decoration token with a fallback default decoration."},
+    {:label => "You have [link: {count|| message, messages}] in your mailbox!", :tokens => "{'link':{'href':'http://www.google.com'}, 'count': 5}", :alt => "Uses decoration and data tokens together."},
+  ]
+%>
+
+<div style='padding-top:5px; padding-bottom:5px; font-size: 18px;'>
+  <span style="font-size:12px; color:grey; float:right; padding-top:5px;">
+    Click on the example to use it in the test tool.
+  </span> 
+
+	Tr8n Client SDK JavaScript Examples
+</div>
+
+
+<% form_tag("", :class => "tr8n") do %>
+	<div style="height:350px; overflow:auto;">
+		<table class="admin_table">
+			<tr>
+				<th>Label</th>
+				<th>Tokens</th>
+			</tr>	
+			
+			<% examples.each_with_index do |ex, index| %>
+				<tr style='cursor:pointer;' onClick="useExample(<%=index%>)" title="<%=ex[:alt]%>">
+					<td>
+						<%=hidden_field_tag("tr8n_example_label_#{index}", ex[:label]) %>
+						<%=h(ex[:label])%>
+					</td>
+					<td>
+            <%=hidden_field_tag("tr8n_example_tokens_#{index}", ex[:tokens]) %>
+						<%=h(ex[:tokens])%>
+					</td>
+				</tr>
+			<% end %>
+
+		</table>
+	</div>	
+<% end %>
+
+<div style="text-align:center;padding-top:10px;">
+   <%=link_to_function("<span>#{trl("Close", "Tr8n lightbox close button")}</span>", "tr8nLightbox.hide();", :class => "tr8n_grey_button tr8n_pcb") %> 
+</div>

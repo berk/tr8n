@@ -9,7 +9,7 @@
 		<% if featured_languages.size > 0 %>
 				<% if opts[:javascript] %>
 				  <span id="tr8n_more_strip_languages">
-				    <%=link_to_function("&raquo;", "Tr8n.hide('tr8n_more_strip_languages'); Tr8n.appear('tr8n_other_strip_languages');") %>
+				    <%=link_to_function("&raquo;", "Tr8n.Effects.hide('tr8n_more_strip_languages'); Tr8n.Effects.appear('tr8n_other_strip_languages');") %>
 					</span>	
 					
 					<span id="tr8n_other_strip_languages" style="display:none">
@@ -18,7 +18,7 @@
 			      <% end %>
 						
 			      <span id="tr8n_less_strip_languages">
-			        <%=link_to_function("&laquo;", "Tr8n.show('tr8n_more_strip_languages'); Tr8n.fade('tr8n_other_strip_languages');") %>
+			        <%=link_to_function("&laquo;", "Tr8n.Effects.show('tr8n_more_strip_languages'); Tr8n.Effects.fade('tr8n_other_strip_languages');") %>
 			      </span> 
 					</span>
 				<% else %>

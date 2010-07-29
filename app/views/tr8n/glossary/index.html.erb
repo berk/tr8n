@@ -7,7 +7,7 @@
   <% form_tag({:action => :index}, {:method => :get, :id => "glossary_search_form"}) do %>
     <%=text_field_tag(:search, params[:search], {:style => "width:400px;height:20px;font-size:14px;"})%>
     
-    <button type="submit" class="translator_btn translator_small_btn" onClick="Tr8n.submit('glossary_search_form'); return false;">
+    <button type="submit" class="translator_btn translator_small_btn" onClick="Tr8n.Effects.submit('glossary_search_form'); return false;">
         <span><%=tra("Search")%></span>
     </button>
   <% end %>

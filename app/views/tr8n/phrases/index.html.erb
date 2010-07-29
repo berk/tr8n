@@ -5,7 +5,7 @@
   <% form_tag({:action => :index}, {:method => :get, :id => "translations_search_form"}) do %>
       <%=hidden_field_tag(:section_key, @section_key) %>
 		  <div style="float:right">
-        <button type="submit" class="translator_btn translator_small_btn" onClick="Tr8n.submit('translations_search_form'); return false;">
+        <button type="submit" class="translator_btn translator_small_btn" onClick="Tr8n.Effects.submit('translations_search_form'); return false;">
             <span><%=tra("Search", "Search button label")%></span>
         </button>
 		  </div>
@@ -67,9 +67,9 @@
 <script>
   function toggleFilterOptions() {
     if (Tr8n.element("phrase_type").value == "with") {
-      Tr8n.show("extended_filter_options");
+      Tr8n.Effects.show("extended_filter_options");
     } else {
-      Tr8n.hide("extended_filter_options");
+      Tr8n.Effects.hide("extended_filter_options");
     }
   }
 </script>

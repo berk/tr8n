@@ -32,8 +32,8 @@
 <% if [:edit, :view].include?(mode) %>
 	<script>
 	  function editTranslationRow(translation_id, section_key) {
-	    Tr8n.hide('tr8n_votes_for_' + translation_id);
-	    Tr8n.show('tr8n_spinner_for_' + translation_id);
+	    Tr8n.Effects.hide('tr8n_votes_for_' + translation_id);
+	    Tr8n.Effects.show('tr8n_spinner_for_' + translation_id);
 	    location = "/tr8n/translations/view?translation_id=" + translation_id + "&section_key=" + section_key;
 	  }
 	  
@@ -42,14 +42,14 @@
 	      return;
 	    }
 	    
-	    Tr8n.hide('tr8n_votes_for_' + translation_id);
-	    Tr8n.show('tr8n_spinner_for_' + translation_id);
+	    Tr8n.Effects.hide('tr8n_votes_for_' + translation_id);
+	    Tr8n.Effects.show('tr8n_spinner_for_' + translation_id);
 	    location = "/tr8n/translations/delete?translation_id=" + translation_id + "&section_key=" + section_key;
 	  }
 	  
 	  function updateTranslationRow(translation_id, mode) {
-	    Tr8n.hide('tr8n_votes_for_' + translation_id);
-	    Tr8n.show('tr8n_spinner_for_' + translation_id);
+	    Tr8n.Effects.hide('tr8n_votes_for_' + translation_id);
+	    Tr8n.Effects.show('tr8n_spinner_for_' + translation_id);
 	    
       Tr8n.Utils.update('translation_row_' + translation_id, '/tr8n/translations/update', {
         evalScripts: true,
@@ -58,8 +58,8 @@
 	  }
 	  
 	  function submitTranslationRow(translation_id) {
-	    Tr8n.hide('tr8n_votes_for_' + translation_id);
-	    Tr8n.show('tr8n_spinner_for_' + translation_id);
+	    Tr8n.Effects.hide('tr8n_votes_for_' + translation_id);
+	    Tr8n.Effects.show('tr8n_spinner_for_' + translation_id);
 	    
       Tr8n.Utils.update('translation_row_' + translation_id, '/tr8n/translations/update', {
         evalScripts: true,

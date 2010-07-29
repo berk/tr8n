@@ -22,9 +22,9 @@
 
 
   <div id="buttons_container" style="padding-top:15px;padding-bottom:5px;text-align:center">
-	    <button type="submit" class="translator_btn translator_submit_btn" onClick="Tr8n.submit('permutation_form'); return false;">
+	    <button type="submit" class="translator_btn translator_submit_btn" onClick="Tr8n.Effects.submit('permutation_form'); return false;">
 	        <span><%=trl("Generate")%></span>
 	    </button>
-       or <%= link_to_function(trl("Cancel"), "Tr8n.show('tranlsations_list');  Tr8n.hide('permutations');") %>
+       or <%= link_to_function(trl("Cancel"), "Tr8n.Effects.show('tranlsations_list');  Tr8n.Effects.hide('permutations');") %>
 	</div>
 </div>

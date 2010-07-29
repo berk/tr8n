@@ -83,6 +83,39 @@ class Tr8n::Api::V1::LanguageController < Tr8n::Api::V1::BaseController
     sanitize_api_response({"error" => ex.message})
   end
   
+  def register_phrases
+    return sanitize_api_response({"error" => "Api is disabled"}) unless Tr8n::Config.enable_api?
+
+#   return sanitize_api_response({"error" => "You must be logged in to use the api"}) if tr8n_current_user_is_guest?
+
+    language = Tr8n::Language.for(params[:language]) || tr8n_current_language
+    source = params[:source] || "API" 
+    
+    # API signature
+    # {:source => "", :language => "", :phrases => [{:label => ""}]}
+    
+    unless params[:phrases]
+      return sanitize_api_response({"error" => "Invalid API request. Please read the documentation and try again."})
+    end
+  
+    phrases = []
+    begin
+      phrases = HashWithIndifferentAccess.new({:data => JSON.parse(params[:phrases])})[:data]
+    rescue Exception => ex
+      return sanitize_api_response({"error" => "Invalid request. JSON parsing failed: #{ex.message}"})
+    end
+    
+    translations = []
+    phrases.each do |phrase|
+      phrase = {:label => phrase} if phrase.is_a?(String)
+      translations << translate_phrase(language, phrase, {:source => source})
+    end
+    return sanitize_api_response({:phrases => translations})    
+    
+  rescue Tr8n::KeyRegistrationException => ex
+    sanitize_api_response({"error" => ex.message})
+  end
+  
 private
   
   def translate_phrase(language, phrase, opts = {})

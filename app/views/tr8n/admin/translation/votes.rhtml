@@ -1,11 +1,5 @@
 <%= render :partial => "/tr8n/admin/common/header" %>
-<h1>
-  <span style="font-size:12px; float:right; padding-top:10px;">
-    <%=link_to("View Translations", {:action => :index})%> 
-  </span> 
-  Translation Votes
-</h1>
-
+<%= render :partial => "tabs" %>
 <%= tr8n_will_filter(@votes) %>
 
 <%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @votes} %>
