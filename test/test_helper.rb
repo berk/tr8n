@@ -1,4 +1,4 @@
-# this will need to go away once 
+# this will need to go away once we make tr8n a gem
 $LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__) + "/../../will_filter/app/models")
 
 require 'pp'

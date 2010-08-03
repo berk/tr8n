@@ -21,30 +21,40 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-####################################################################### 
-# 
-# Data Token Forms:
-#
-# {count} 
-# {count:number} 
-# {user:gender}
-# {today:date} 
-# {user_list:list}
-# {long_token_name} 
-# {user1}
-# {user1:user}
-# {user1:user::pos}
-#
-# Data tokens can be associated with any rules through the :dependency
-# notation or using the nameing convetnion of the token suffix, defined
-# in the tr8n configuration file
-#
-####################################################################### 
+class Tr8n::RussianGenderListRule < Tr8n::GenderListRule
 
-class Tr8n::DataToken < Tr8n::Token
+  # params: [object, one element male, one lement female, one element uknown, at least two elements]
+  # {user_list | one element male, one lement female, one element uknown, at least two elements}
+
+  # TODO: finish implementation
+  def self.transform(*args)
+    unless args.size == 3
+      raise Tr8n::Exception.new("Invalid transform arguments")
+    end
+    
+    object = args[0]
+    list_size = list_size_token_value(object)
+
+    unless list_size
+      raise Tr8n::Exception.new("Token #{object.class.name} does not respond to #{Tr8n::Config.rules_engine[:gender_list_rule][:object_method]}")
+    end
+    
+    list_size = list_size.to_i
+    
+    return args[1] if list_size == 1
+    return args[2] if list_size >= 2
+    
+    # should we raise an exception here if the list is empty?
+    ""  
+  end  
   
-  def self.expression
-    /(\{[^_][\w]+(:[\w]+)?(::[\w]+)?\})/
-  end
+  # params: [one element, at least two elements]
+  def self.default_transform(*args)
+    unless args.size == 2
+      raise Tr8n::Exception.new("Invalid transform arguments for list token")
+    end
+    
+    args[1]
+  end  
 
 end

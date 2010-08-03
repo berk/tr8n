@@ -84,13 +84,56 @@ class Tr8n::Token
     name.to_sym
   end
 
+  def pipeless_name
+    @pipeless_name ||= declared_name.split('|').first
+  end
+  
+  def case_key
+    return nil unless declared_name.index('::')
+    
+    @case_key ||= begin
+      cases = declared_name.scan(/((::[\w]+)+)/).flatten.uniq
+      if cases.any?
+        cases.last.gsub("::", "")
+      else
+        nil
+      end
+    end
+  end
+  
+  def has_case_key?
+    not case_key.blank?
+  end
+  
+  def caseless_name
+    @caseless_name ||= begin
+      if has_case_key?
+        pipeless_name.gsub("::#{case_key}", "")
+      else  
+        pipeless_name
+      end
+    end
+  end
+  
+  def name_with_case
+    return name unless has_case_key?
+    "#{name}::#{case_key}"
+  end
+  
   def type
-    return nil unless declared_name.index(':')
-    @type ||= declared_name.split('|').first.split(':').last
+    return nil unless caseless_name.index(':')
+    @type ||= begin 
+      parts = caseless_name.split(':')
+      if parts.size == 1 # provided : without a type
+        nil
+      else
+        parts.last
+      end
+    end
   end
   
   def has_type?
-    type != nil
+    not type.blank?
   end
   
   def language_rule
@@ -117,8 +160,10 @@ class Tr8n::Token
   end
 
   def sanitize_token_value(value, options = {})
-    return value.to_s if (not options[:sanitize_values]) or value.html_safe?
-    ERB::Util.html_escape(value.to_s)
+    value = value.to_s unless value.is_a?(String)
+    
+    return value if (not options[:sanitize_values]) or value.html_safe?
+    ERB::Util.html_escape(value)
   end
 
   def evaluate_token_method_array(object, method_array, options)
@@ -163,15 +208,17 @@ class Tr8n::Token
   # if you want to pass options, then make the second parameter an array as well    
   # tr("{user_list} joined Geni", "", 
   #       {:user_list => [[user1, user2, user3], 
-  #                       [:name],          # this can be any of the value methods
-  #                       {:expandable => true, 
-  #                        :to_sentence => true, 
-  #                        :limit => 3, 
-  #                        :separator => ','
-  #                       }
-  #                      ]}}
+  #                         [:name],          # this can be any of the value methods
+  #                         { :expandable => true, 
+  #                           :to_sentence => true, 
+  #                           :limit => 3, 
+  #                           :separator => ',',
+  #                           :translate_items => false
+  #                         }
+  #                       ]
+  #                      ]})
   # 
-  # acceptable params:  expandable, to_sentence, limit, separator
+  # acceptable params:  expandable, to_sentence, limit, separator, translate_items
   #
   ##########################################################################################
   
@@ -185,11 +232,9 @@ class Tr8n::Token
         evaluate_token_method_array(obj, token_value, options)
       end
     end
- 
-    # if there is only one element in the array, use it and get out
-    return objects.first if objects.size == 1
-    
+
     list_options = {
+      :translate_items => false,
       :expandable => true,
       :to_sentence => true,
       :limit => 4,
@@ -199,6 +244,11 @@ class Tr8n::Token
     if token_value.second.is_a?(Array) and token_value.size == 3
       list_options.merge!(token_value.last) 
     end
+
+    objects = objects.collect{|obj| obj.translate("List element", {}, options)} if list_options[:translate_items]
+
+    # if there is only one element in the array, use it and get out
+    return objects.first if objects.size == 1
  
     list_options[:expandable] = false if options[:skip_decorations]
     
@@ -221,12 +271,12 @@ class Tr8n::Token
              
     uniq_id = Tr8n::TranslationKey.generate_key(original_label, objects.join(","))         
     result << "<span id=\"tr8n_other_link_#{uniq_id}\">" << " " << "and".translate("List elements joiner", {}, options) << " "
-    result << "<a href='#' onClick=\"$('tr8n_other_link_#{uniq_id}').hide(); $('tr8n_other_elements_#{uniq_id}').show(); return false;\">"
-    result << "{num} {_others}".translate("List elements joiner", {:num => remaining_ary.size, :_others => "other".pluralize_for(remaining_ary.size)}, options)
+    result << "<a href='#' onClick=\"Tr8n.Effects.hide('tr8n_other_link_#{uniq_id}'); Tr8n.Effects.show('tr8n_other_elements_#{uniq_id}'); return false;\">"
+    result << "{num|| other}".translate("List elements joiner", {:num => remaining_ary.size}, options)
     result << "</a></span>"
     result << "<span id=\"tr8n_other_elements_#{uniq_id}\" style='display:none'>" << list_options[:separator]
     result << "#{remaining_ary[0..-2].join(list_options[:separator])} #{"and".translate("List elements joiner", {}, options)} #{remaining_ary.last}"
-    result << "<a href='#' style='font-size:smaller;white-space:nowrap' onClick=\"$('tr8n_other_link_#{uniq_id}').show(); $('tr8n_other_elements_#{uniq_id}').hide(); return false;\"> "
+    result << "<a href='#' style='font-size:smaller;white-space:nowrap' onClick=\"Tr8n.Effects.show('tr8n_other_link_#{uniq_id}'); Tr8n.Effects.hide('tr8n_other_elements_#{uniq_id}'); return false;\"> "
     result << "&laquo; less".translate("List elements joiner", {}, options)    
     result << "</a></span>"
   end
@@ -255,6 +305,17 @@ class Tr8n::Token
   def allowed_in_translation?
     true
   end
+
+  def apply_case(value, options, language)
+    stripped_value = value.gsub(/<\/?[^>]*>/, "")
+    parts = stripped_value.split(" ")
+    parts.each do |p|
+      lcvm = Tr8n::LanguageCaseValueMap.for(language, p)
+      next unless lcvm and lcvm.map and lcvm.map[case_key]
+      value.gsub!(p, lcvm.map[case_key])
+    end
+    value
+  end
   
   def substitute(label, values = {}, options = {}, language = Tr8n::Config.current_language)
     unless values.key?(name_key)
@@ -268,7 +329,11 @@ class Tr8n::Token
     end
     
     object = object.to_s if object.nil?
-    label.gsub(full_name, token_value(object, options))
+    
+    substitution_value = token_value(object, options)
+    substitution_value = apply_case(substitution_value, options, language) if has_case_key?     
+
+    label.gsub(full_name, substitution_value)
   end
   
   # return sanitized form

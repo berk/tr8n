@@ -185,8 +185,8 @@ Tr8n.Translator.prototype = {
   },
 
   voteOnTranslation: function(key, translation_id, vote) {
-    Tr8n.hide('tr8n_votes_for_' + translation_id);
-		Tr8n.show('tr8n_spinner_for_' + translation_id);
+    Tr8n.Effects.hide('tr8n_votes_for_' + translation_id);
+		Tr8n.Effects.show('tr8n_spinner_for_' + translation_id);
 
     // the long version updates and reorders translations - used in translator and phrase list
     // the short version only updates the total results - used everywhere else
@@ -207,8 +207,8 @@ Tr8n.Translator.prototype = {
         },
         method: 'post',
         onComplete: function() {
-          Tr8n.hide('tr8n_spinner_for_' + translation_id);
-          Tr8n.show('tr8n_votes_for_' + translation_id);
+          Tr8n.Effects.hide('tr8n_spinner_for_' + translation_id);
+          Tr8n.Effects.show('tr8n_votes_for_' + translation_id);
         }
       });
     }		
@@ -232,10 +232,10 @@ Tr8n.Translator.prototype = {
   },
 
   submitTranslation: function() {
-    Tr8n.hide('tr8n_translator_translation_container');
-    Tr8n.hide('tr8n_translator_buttons_container');
-    Tr8n.show('tr8n_translator_spinner');
-    Tr8n.submit('tr8n_translator_form');
+    Tr8n.Effects.hide('tr8n_translator_translation_container');
+    Tr8n.Effects.hide('tr8n_translator_buttons_container');
+    Tr8n.Effects.show('tr8n_translator_spinner');
+    Tr8n.Effects.submit('tr8n_translator_form');
   },
 
   submitViewingUserDependency: function() {
@@ -244,11 +244,11 @@ Tr8n.Translator.prototype = {
   },
 
   submitDependencies: function() {
-    Tr8n.hide('tr8n_translator_buttons_container');
-    Tr8n.hide('tr8n_translator_dependencies_container');
-    Tr8n.show('tr8n_translator_spinner');
+    Tr8n.Effects.hide('tr8n_translator_buttons_container');
+    Tr8n.Effects.hide('tr8n_translator_dependencies_container');
+    Tr8n.Effects.show('tr8n_translator_spinner');
 		Tr8n.element('tr8n_translator_form').action = '/tr8n/translations/permutate';
-    Tr8n.submit('tr8n_translator_form');
+    Tr8n.Effects.submit('tr8n_translator_form');
   },
 
   translate: function(label, callback, opts) {

@@ -27,7 +27,13 @@ class Tr8n::LanguageCasesController < Tr8n::BaseController
     
   # used by a client app
   def index
-    conditions = []
+    conditions = ["language_id = ?", tr8n_current_language.id]
+    
+    unless params[:search].blank?
+      conditions[0] << "and key like ?" 
+      conditions << "%#{params[:search]}%"
+    end
+    
     @maps = Tr8n::LanguageCaseValueMap.paginate(:per_page => per_page, :page => page, :conditions => conditions, :order => "updated_at desc")    
   end
 

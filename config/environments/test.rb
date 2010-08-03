@@ -21,6 +21,11 @@ config.action_controller.allow_forgery_protection = false
 # ActionMailer::Base.deliveries array.
 config.action_mailer.delivery_method = :test
 
+#Dir[File.expand_path(File.dirname(__FILE__) + "/../../will_filter/app/models/wf/*.rb")].each do |file|
+#  pp file
+#  require file
+#end
+
 ["lib/core_ext/**",
  "lib/tr8n", 
  "lib/tr8n/tokens"].each do |dir|

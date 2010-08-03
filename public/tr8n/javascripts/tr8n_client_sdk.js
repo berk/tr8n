@@ -21,6 +21,15 @@
   WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ****************************************************************************/
 
+/****************************************************************************
+****
+**** This JavaScript Client SDK supports English as the native site language.
+**** If your site native language is other than English, please read
+**** the integration guide for details on how to make the SDK work with 
+**** your native language.
+****
+****************************************************************************/
+
 var Tr8n = Tr8n || {
   element:function(element_id) {
     if (typeof element_id == 'string') return document.getElementById(element_id);
@@ -347,6 +356,9 @@ Tr8n.Proxy.NumericRule = function(definition, options) {
 Tr8n.Proxy.NumericRule.prototype = new Tr8n.Proxy.LanguageRule();
 
 // English based transform method
+// FORM: [singular, plural]
+// {count | message, messages}
+// {count | person, people}
 Tr8n.Proxy.NumericRule.transform = function(count, values) {
 	if (count == 1) return values[0];
 	return values[1];	 
@@ -354,7 +366,6 @@ Tr8n.Proxy.NumericRule.transform = function(count, values) {
 
 Tr8n.Proxy.NumericRule.prototype.evaluate = function(token_name, token_values){
 	//	"count":{"value1":"2,3,4","operator":"and","type":"number","multipart":true,"part2":"does_not_end_in","value2":"12,13,14","part1":"ends_in"}
-	
 	var object = this.getTokenValue(token_name, token_values);
 	if (!object) return false;
   
@@ -413,18 +424,23 @@ Tr8n.Proxy.GenderRule = function(definition, options) {
 
 Tr8n.Proxy.GenderRule.prototype = new Tr8n.Proxy.LanguageRule();
 
-// English doesn't really need this method, as there is no gender distinction
+//  FORM: [male, female, unknown]
+//  {user | registered on}
+//  {user | he, she}
+//  {user | he, she, he/she}
 Tr8n.Proxy.GenderRule.transform = function(object, values) {
-	if (typeof object == 'string') {
+  if (values.length == 1) return values[0];
+	
+  if (typeof object == 'string') {
     if (object == 'male') return values[0];
     if (object == 'female') return values[1];
-	} else if (typeof object == 'object') {
-	  if (object['gender'] == 'male') return values[0];
-	  if (object['gender'] == 'female') return values[1];
-	}
-	
+  } else if (typeof object == 'object') {
+    if (object['gender'] == 'male') return values[0];
+    if (object['gender'] == 'female') return values[1];
+  }
+
   if (values.length == 3) return values[2];
-  return values[0] + "/" + values[1];  
+  return values[0] + "/" + values[1]; 
 }
 
 Tr8n.Proxy.GenderRule.prototype.evaluate = function(token_name, token_values) {

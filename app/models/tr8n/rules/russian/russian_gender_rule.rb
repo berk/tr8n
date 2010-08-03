@@ -21,30 +21,42 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-####################################################################### 
-# 
-# Data Token Forms:
-#
-# {count} 
-# {count:number} 
-# {user:gender}
-# {today:date} 
-# {user_list:list}
-# {long_token_name} 
-# {user1}
-# {user1:user}
-# {user1:user::pos}
-#
-# Data tokens can be associated with any rules through the :dependency
-# notation or using the nameing convetnion of the token suffix, defined
-# in the tr8n configuration file
-#
-####################################################################### 
+class Tr8n::RussianGenderRule < Tr8n::GenderRule
 
-class Tr8n::DataToken < Tr8n::Token
-  
-  def self.expression
-    /(\{[^_][\w]+(:[\w]+)?(::[\w]+)?\})/
+  # FORM: [object, male, female, unknown]
+  # {user | he, she}
+  # {user | he, she, he/she}
+  def self.transform(*args)
+    unless [3, 4].include?(args.size)
+      raise Tr8n::Exception.new("Invalid transform arguments for gender token")
+    end
+    
+    object = args[0]
+    object_value = gender_token_value(object)
+    
+    unless object_value
+      raise Tr8n::Exception.new("Token #{object.class.name} does not respond to #{Tr8n::Config.rules_engine[:gender_rule][:object_method]}")
+    end
+    
+    if (object_value == gender_object_value_for("male"))
+      return args[1]
+    elsif (object_value == gender_object_value_for("female"))
+      return args[2]
+    end
+
+    return args[3] if args.size == 4
+    
+    "#{args[1]}/#{args[2]}"  
   end
+  
+  # params: [male form, female form, unknown form]
+  def self.default_transform(*args)
+    unless [2, 3].include?(args.size)
+      raise Tr8n::Exception.new("Invalid transform arguments for gender token")
+    end
+    
+    # always use masculine form for the translation label
+    args[0]
+  end  
 
 end

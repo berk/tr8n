@@ -39,7 +39,7 @@
 class Tr8n::TransformToken < Tr8n::Token
     
   def self.expression
-    /(\{[^_][\w]+(:[\w]+)?\s*\|\|?[^{^}]+\})/
+    /(\{[^_][\w]+(:[\w]+)?(::[\w]+)?\s*\|\|?[^{^}]+\})/
   end
 
   def name

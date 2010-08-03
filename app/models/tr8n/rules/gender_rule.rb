@@ -65,12 +65,15 @@ class Tr8n::GenderRule < Tr8n::LanguageRule
   end
   
   # FORM: [object, male, female, unknown]
+  # {user | registered on}
   # {user | he, she}
   # {user | he, she, he/she}
   def self.transform(*args)
-    unless [3, 4].include?(args.size)
+    unless [2, 3, 4].include?(args.size)
       raise Tr8n::Exception.new("Invalid transform arguments for gender token")
     end
+    
+    return args[1] if args.size == 2
     
     object = args[0]
     object_value = gender_token_value(object)
@@ -92,7 +95,7 @@ class Tr8n::GenderRule < Tr8n::LanguageRule
   
   # params: [male form, female form, unknown form]
   def self.default_transform(*args)
-    unless [2, 3].include?(args.size)
+    unless [1, 2, 3].include?(args.size)
       raise Tr8n::Exception.new("Invalid transform arguments for gender token")
     end
     

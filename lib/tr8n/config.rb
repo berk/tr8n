@@ -511,7 +511,7 @@ class Tr8n::Config
     load_default_rules("gender_list", locale)
   end
 
-  def self.default_ist_rules(locale = default_locale)
+  def self.default_list_rules(locale = default_locale)
     load_default_rules("list", locale)
   end
 
