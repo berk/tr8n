@@ -51,15 +51,21 @@ class Tr8n::Language < ActiveRecord::Base
   end
 
   def reset!
+    reset_language_rules!
+    reset_language_cases!
+  end
+  
+  def reset_language_rules!
     rules.delete_all
-    cases.delete_all
-    
     Tr8n::Config.language_rule_classes.each do |rule_class|
       rule_class.default_rules_for(self).each do |definition|
         rule_class.create(:language => self, :definition => definition)
       end
     end
-    
+  end
+  
+  def reset_language_cases!
+    cases.delete_all
     Tr8n::Config.default_cases_for(locale).each do |lcase|
       Tr8n::LanguageCase.create(lcase.merge(:language => self))
     end
@@ -95,6 +101,24 @@ class Tr8n::Language < ActiveRecord::Base
     false
   end
 
+  def cases?
+    not cases.empty?
+  end
+
+  def case_keyword_maps
+    @case_keyword_maps ||= begin
+      hash = {} 
+      cases.each do |lcase| 
+        hash[lcase.keyword] = lcase
+      end
+      hash
+    end
+  end
+  
+  def valid_case?(case_keyword)
+    case_keyword_maps[case_keyword] != nil
+  end
+  
   def full_name
     return english_name if english_name == native_name
     "#{english_name} - #{native_name}"

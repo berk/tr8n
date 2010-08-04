@@ -9,7 +9,7 @@ en-US:
     keyword:          "nom"
     latin_name:       "Nominative"
     native_name:      "Nominative" 
-    description:      "Used for any noun  or pronoun that is the  subject of a verb"
+    description:      "Used for any noun or pronoun that is the  subject of a verb"
   case2:
     keyword:          "obj"
     latin_name:       "Objective"
@@ -51,18 +51,3 @@ ru:
     latin_name:       "Preposition"
     native_name:      "Предложный падеж" 
     description:      "Думаю - О ком? О чём?"
-  case7:               
-    keyword:          "voc"
-    latin_name:       "Vocative"
-    native_name:      "Звательный падеж" 
-    description:      "Используются при обращении к человеку (им. падеж: Аня — звательный: Ань!)"
-  case8:               
-    keyword:          "loc"
-    latin_name:       "Locative"
-    native_name:      "Местный падеж" 
-    description:      "Дело - В ком? В чём?"
-  case9:               
-    keyword:          "pos"
-    latin_name:       "Possessive"
-    native_name:      "Притяжательный падеж" 
-    description:      "Чей?"

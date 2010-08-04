@@ -127,6 +127,7 @@ Tr8n.Translator.prototype = {
     var self = this;
     if (tr8nLanguageSelector) tr8nLanguageSelector.hide();
     if (tr8nLightbox) tr8nLightbox.hide();
+    if (tr8nLanguageCaseManager) tr8nLanguageCaseManager.hide();
 
     var html          = "";
     var splash_screen = Tr8n.element('tr8n_splash_screen');
@@ -292,6 +293,125 @@ Tr8n.Translator.prototype = {
 }
 
 /****************************************************************************
+**** Tr8n Language Case Manager
+****************************************************************************/
+
+Tr8n.LanguageCaseManager = function(options) {
+  var self = this;
+  this.options = options;
+  this.case_key = null;
+
+  this.container                = document.createElement('div');
+  this.container.className      = 'tr8n_language_case_manager';
+  this.container.id             = 'tr8n_language_case_manager';
+  this.container.style.display  = "none";
+
+  document.body.appendChild(this.container)
+
+  var event_type = Tr8n.Utils.isOpera() ? 'click' : 'contextmenu';
+
+  Tr8n.Utils.addEvent(document, event_type, function(e) {
+    if (Tr8n.Utils.isOpera() && !e.ctrlKey) return;
+
+    var case_node = Tr8n.Utils.findElement(e, ".tr8n_language_case");
+    var link_node = Tr8n.Utils.findElement(e, "a");
+
+    if (case_node == null) return;
+
+    if (link_node) {
+      var temp_href = link_node.href;
+      link_node.href='javascript:void(0);';
+      setTimeout(function() {link_node.href = temp_href;}, 500);
+    }
+
+    if (e.stop) e.stop();
+    if (e.preventDefault) e.preventDefault();
+    if (e.stopPropagation) e.stopPropagation();
+
+    self.show(case_node);
+  });
+}
+
+Tr8n.LanguageCaseManager.prototype = {
+  hide: function() {
+    this.container.style.display = "none";
+  },
+
+  show: function(case_node) {
+    var self = this;
+    if (tr8nLanguageSelector) tr8nLanguageSelector.hide();
+    if (tr8nLightbox) tr8nLightbox.hide();
+    if (tr8nTranslator) tr8nTranslator.hide();
+
+    var html          = "";
+    var splash_screen = Tr8n.element('tr8n_splash_screen');
+
+    if (splash_screen) {
+      html += splash_screen.innerHTML;
+    } else {
+      html += "<div style='font-size:18px;text-align:center; margin:5px; padding:10px; background-color:black;'>";
+      html += "  <img src='/tr8n/images/tr8n_logo.jpg' style='width:280px; vertical-align:middle;'>";
+      html += "  <img src='/tr8n/images/loading3.gif' style='width:200px; height:20px; vertical-align:middle;'>";
+      html += "</div>"
+    }
+    this.container.innerHTML = html;
+    this.container.style.display  = "block";
+
+    var stem                = {v:"top", h:"left",width:10, height:12};
+    var stem_type           = "top_left";
+    var target_dimensions   = {width:case_node.offsetWidth, height:case_node.offsetHeight};
+    var target_position     = Tr8n.Utils.cumulativeOffset(case_node);
+    var container_position  = {
+      left: (target_position[0] + 'px'),
+      top : (target_position[1] + target_dimensions.height + stem.height + 'px')
+    }
+
+    var stem_offset         = target_dimensions.width/2;
+    var scroll_buffer       = 100;
+    var scroll_height       = target_position[1] - scroll_buffer;
+
+    if (window.innerWidth < target_position[0] + target_dimensions.width + window.innerWidth/2) {
+      container_position.left = target_position[0] + target_dimensions.width - this.container.offsetWidth + "px";
+      stem_offset = target_dimensions.width/2;
+      stem.h = "right";
+    }
+
+    window.scrollTo(target_position[0], scroll_height);
+    this.container.style.left     = container_position.left;
+    this.container.style.top      = container_position.top;
+    this.case_key                 = case_node.getAttribute('case_key');
+
+    window.setTimeout(function() {
+      Tr8n.Utils.update('tr8n_language_case_manager', '/tr8n/language_cases/manager', {
+        evalScripts: true,
+        parameters: {
+            case_key: self.case_key,
+            stem_type: stem.v + "_" + stem.h,
+            stem_offset: stem_offset
+        }
+      });
+    }, 500);
+  },
+
+  switchCaseMapMode: function(mode) {
+    var self = this;
+    Tr8n.Utils.update('tr8n_language_cases_form', '/tr8n/language_cases/switch_manager_mode', {
+      evalScripts: true,
+      parameters: {mode: mode, case_key: self.case_key}
+		});
+	},
+	
+  submitCaseMap: function() {
+//    Tr8n.Effects.hide('tr8n_translator_translation_container');
+//    Tr8n.Effects.hide('tr8n_translator_buttons_container');
+//    Tr8n.Effects.show('tr8n_translator_spinner');
+//    Tr8n.Effects.submit('tr8n_translator_form');
+  }
+    
+}
+
+
+/****************************************************************************
 **** Tr8n Language Selector
 ****************************************************************************/
 
@@ -326,6 +446,7 @@ Tr8n.LanguageSelector.prototype = {
     var self = this;
     if (tr8nTranslator) tr8nTranslator.hide();
     if (tr8nLightbox) tr8nLightbox.hide();
+    if (tr8nLanguageCaseManager) tr8nLanguageCaseManager.hide();
 
     var splash_screen = Tr8n.element('tr8n_splash_screen');
 
@@ -397,6 +518,7 @@ Tr8n.LanguageSelector.prototype = {
 }
 
 
+
 /****************************************************************************
 **** Tr8n Lightbox
 ****************************************************************************/
@@ -428,6 +550,7 @@ Tr8n.Lightbox.prototype = {
     var self = this;
     if(tr8nTranslator) tr8nTranslator.hide();
     if(tr8nLanguageSelector) tr8nLanguageSelector.hide();
+    if (tr8nLanguageCaseManager) tr8nLanguageCaseManager.hide();
 
     this.container.innerHTML = "<div style='font-size:18px;text-align:left;padding:10px;'><img src='/tr8n/images/spinner.gif' style='vertical-align:middle'> Loading...</div>";
 
@@ -691,12 +814,14 @@ Tr8n.Utils = {
 var tr8nTranslator = null;
 var tr8nLanguageSelector = null;
 var tr8nLightbox = null;
+var tr8nLanguageCaseManager = null;
 
 function initializeTr8n() {
   var setup = function() {
-    tr8nTranslator        = new Tr8n.Translator();
-    tr8nLanguageSelector  = new Tr8n.LanguageSelector();
-    tr8nLightbox          = new Tr8n.Lightbox();
+    tr8nTranslator            = new Tr8n.Translator();
+    tr8nLanguageSelector      = new Tr8n.LanguageSelector();
+    tr8nLightbox              = new Tr8n.Lightbox();
+    tr8nLanguageCaseManager   = new Tr8n.LanguageCaseManager();
   }
   Tr8n.Utils.addEvent(window,'load',setup);
 }

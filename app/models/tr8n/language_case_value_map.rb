@@ -35,9 +35,25 @@ class Tr8n::LanguageCaseValueMap < ActiveRecord::Base
     end
   end
   
+  # add a better way to determine the gender dependency
+  def gender_based?
+    return false unless map
+    map.each do |key, value|
+      return true if value.is_a?(Hash) 
+    end
+    false
+  end
+  
   def value_for(case_key)
     return unless map
-    map[case_key]
+    return map[case_key] unless map[case_key].is_a?(Hash)
+    map[case_key]['male']
+  end
+
+  def gender_value_for(case_key, gender)
+    return unless map
+    return map[case_key] unless map[case_key].is_a?(Hash)
+    map[case_key][gender]
   end
   
   def save_with_log!(new_translator)

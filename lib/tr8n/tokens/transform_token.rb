@@ -118,7 +118,7 @@ class Tr8n::TransformToken < Tr8n::Token
     
     params = [token_object(object)] + piped_params
     substitution_value = "" 
-    substitution_value << token_value(object, options) if allowed_in_translation?
+    substitution_value << token_value(object, options, language) if allowed_in_translation?
     substitution_value << " " unless substitution_value.blank?
     substitution_value << language_rule.transform(*params)
     

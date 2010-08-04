@@ -22,6 +22,7 @@
 .tr8n_not_translated                           {border-bottom: 2px solid red;}
 .tr8n_translated                               {border-bottom: 2px solid green;}
 .tr8n_fallback                                 {border-bottom: 2px solid yellow;}
+.tr8n_language_case                            {border: 1px dotted blue;}
 
 /****************************************/
 /*** Classes for the popup windows
@@ -88,6 +89,32 @@ button::-moz-focus-inner                        {border:none;}
 .tr8n_language_selector a                       {text-decoration:none; color:#16b; outline:none; border:0px;}
 .tr8n_language_selector a img                   {border:0px;}
 .tr8n_language_selector a:hover                 {text-decoration:underline}
+
+.tr8n_language_case_manager                               {position: absolute;top: 0;left: 0;font-family: verdana; font-size:11px; width: 400px;background: #f4f4f4;border:solid 1px #e8e8e8;border-color:#e8e8e8 #bababa #bababa #e8e8e8;padding: 0;margin: 0;z-index: 10000;-webkit-box-shadow:2px 2px 3px rgba(0,0,0,0.6);-moz-box-shadow:2px 2px 3px rgba(0,0,0,0.6);box-shadow:2px 2px 3px rgba(0,0,0,0.6);}
+.tr8n_language_case_manager img                           {vertical-align:text-top !important;}
+.tr8n_language_case_manager a                             {text-decoration:none; color:#16b; outline:none; border:0px;}
+.tr8n_language_case_manager a:hover                       {text-decoration:underline}
+.tr8n_language_case_manager a img                         {border:0px}
+.tr8n_language_case_manager .supplemental                 {float:right; padding:2px;}
+.tr8n_language_case_manager .quiet                        {color: #666;}  
+.tr8n_language_case_manager .small                        {font-size:11px;}  
+.tr8n_language_case_manager .desc                         {color:grey;font-size:10px;padding-left:5px;padding-top:1px;border-left:solid 1px #ccc;margin-left:3px;}
+.tr8n_language_case_manager .strong                       {font-weight:bold;}
+.tr8n_language_case_manager .stem                         {position:absolute;margin:0;}
+.tr8n_language_case_manager .stem.top_left                {top:-12px;}
+.tr8n_language_case_manager .stem.top_right               {top:-12px;-moz-transform: scaleX(-1); -webkit-transform: scaleX(-1); transform: scaleX(-1); filter: fliph;}
+.tr8n_language_case_manager .stem.bottom_left             {bottom:-12px;-moz-transform: scaleY(-1); -webkit-transform: scaleY(-1); transform: scaleY(-1); filter: flipv;}
+.tr8n_language_case_manager .stem.bottom_right            {bottom:-12px;-moz-transform: scaleX(-1), scaleY(-1); -webkit-transform: scaleX(-1), scaleY(-1); transform: scaleX(-1), scaleY(-1); filter: fliph, flipv;}
+.tr8n_language_case_manager .hd                           {font-size:10px;text-transform: uppercase;color:#444;padding:5px;margin: 5px;}
+.tr8n_language_case_manager .bd                           {border:solid 1px #bababa;border-color:#bababa #e8e8e8 #e8e8e8 #bababa;margin:5px;background-color: white;}
+.tr8n_language_case_manager .spinner                      {text-align:center;padding:10px;}
+.tr8n_language_case_manager .votes_container              {border-bottom:1px dotted #ccc; max-height:350px; overflow:auto; font-size:11px;}
+.tr8n_language_case_manager .hints_container              {font-size:10px; padding-left:10px;}
+.tr8n_language_case_manager .tokens_container             {padding-top:10px; font-size:10px; padding-bottom:5px; border-bottom:dotted 1px #ccc;}
+.tr8n_language_case_manager .buttons_container            {padding-top:10px; padding-bottom:15px;text-align:center;}
+.tr8n_language_case_manager .original_text                {background-color:#f9f8f7;border: 1px dotted #ccc;padding:5px;margin-bottom:5px;}
+.tr8n_language_case_manager .quote                        {padding:10px;}
+.tr8n_language_case_manager .quote img                    {vertical-align:middle !important}
 
 .tr8n_language_strip                            {text-align:center; color:#777;}
 .tr8n_language_strip a                          {text-decoration:none; color:#777; outline:none; border:0px; font-size:10px;}

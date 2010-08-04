@@ -159,29 +159,50 @@ class Tr8n::Token
     language_rule != nil
   end
 
-  def sanitize_token_value(value, options = {})
+  def sanitize_token_value(value, options, language)
     value = value.to_s unless value.is_a?(String)
     
-    return value if (not options[:sanitize_values]) or value.html_safe?
-    ERB::Util.html_escape(value)
+    if options[:sanitize_values] and not value.html_safe?
+      value = ERB::Util.html_escape(value)
+    end
+    
+    if has_case_key?
+      value = apply_case(value, options, language)
+    end
+    
+    value
   end
 
-  def evaluate_token_method_array(object, method_array, options)
+  ##############################################################################
+  #
+  # gets the value based on various evaluation methods
+  #
+  # tr("Hello {user}", "", {:user => [current_user, current_user.name]}}
+  # tr("Hello {user}", "", {:user => [current_user, "{$0} {$1}", "param1"]}}
+  # tr("Hello {user}", "", {:user => [current_user, :name]}}
+  # tr("Hello {user}", "", {:user => [current_user, :method_name, "param1"]}}
+  # tr("Hello {user}", "", {:user => [current_user, lambda{|user| user.name}]}}
+  # tr("Hello {user}", "", {:user => [current_user, lambda{|user, param1| user.name}, "param1"]}}
+  #
+  ##############################################################################
+  def evaluate_token_method_array(object, method_array, options, language)
     # if single object in the array return string value of the object
-    return sanitize_token_value(object) if method_array.size == 1
+    return sanitize_token_value(object, options, language) if method_array.size == 1
     
+    # second params identifies the method to be used with the object
     method = method_array.second
+    
     params = method_array[2..-1]
     params_with_object = [object] + params
 
     # if second param is symbol, invoke the method on the object with the remaining values
     if method.is_a?(Symbol)
-      return sanitize_token_value(object.send(method, *params), options.merge(:sanitize_values => true))
+      return sanitize_token_value(object.send(method, *params), options.merge(:sanitize_values => true), language)
     end
 
     # if second param is lambda, call lambda with the remaining values
     if method.is_a?(Proc)
-      return sanitize_token_value(method.call(*params_with_object))
+      return sanitize_token_value(method.call(*params_with_object), options, language)
     end
     
     # if the second param is a string, substitute all of the numeric params,  
@@ -189,53 +210,59 @@ class Tr8n::Token
     if method.is_a?(String)
       parametrized_value = method.clone
       params_with_object.each_with_index do |val, i|
-        parametrized_value.gsub!("{$#{i}}", sanitize_token_value(val, options))  
+        parametrized_value.gsub!("{$#{i}}", sanitize_token_value(val, options, language))  
       end
-      return parametrized_value
+      return sanitize_token_value(parametrized_value, options, language)
     end
     
     raise Tr8n::TokenException.new("Invalid array second token value: #{full_name} in #{original_label}")
   end
-
   
-  ##########################################################################################
+  ##############################################################################
   #
-  # tr("{user_list} joined Geni", "", {:user_list => [[user1, user2, user3], :name]}}
+  # tr("Hello {user_list}!", "", {:user_list => [[user1, user2, user3], :name]}}
   #
-  # first element is an array, the rest of the elements are similar to the regular tokens
-  # lambda, symbol, string, with parameters that follow
+  # first element is an array, the rest of the elements are similar to the 
+  # regular tokens lambda, symbol, string, with parameters that follow
   #
   # if you want to pass options, then make the second parameter an array as well    
   # tr("{user_list} joined Geni", "", 
   #       {:user_list => [[user1, user2, user3], 
-  #                         [:name],          # this can be any of the value methods
+  #                         [:name],      # this can be any of the value methods
   #                         { :expandable => true, 
   #                           :to_sentence => true, 
   #                           :limit => 3, 
   #                           :separator => ',',
-  #                           :translate_items => false
+  #                           :translate_items => false,
+  #                           :minimizable => true
   #                         }
   #                       ]
   #                      ]})
   # 
-  # acceptable params:  expandable, to_sentence, limit, separator, translate_items
+  # acceptable params:  expandable, 
+  #                     to_sentence, 
+  #                     limit, 
+  #                     separator, 
+  #                     translate_items,
+  #                     minimizable
   #
-  ##########################################################################################
+  ##############################################################################
   
-  def token_array_value(token_value, options = {}) 
+  def token_array_value(token_value, options, language) 
     objects = token_value.first
     
     objects = objects.collect do |obj|
       if token_value.second.is_a?(Array)
-        evaluate_token_method_array(obj, [obj] + token_value.second, options)
+        evaluate_token_method_array(obj, [obj] + token_value.second, options, language)
       else
-        evaluate_token_method_array(obj, token_value, options)
+        evaluate_token_method_array(obj, token_value, options, language)
       end
     end
 
     list_options = {
       :translate_items => false,
       :expandable => true,
+      :minimizable => true,
       :to_sentence => true,
       :limit => 4,
       :separator => ", "
@@ -276,12 +303,18 @@ class Tr8n::Token
     result << "</a></span>"
     result << "<span id=\"tr8n_other_elements_#{uniq_id}\" style='display:none'>" << list_options[:separator]
     result << "#{remaining_ary[0..-2].join(list_options[:separator])} #{"and".translate("List elements joiner", {}, options)} #{remaining_ary.last}"
-    result << "<a href='#' style='font-size:smaller;white-space:nowrap' onClick=\"Tr8n.Effects.show('tr8n_other_link_#{uniq_id}'); Tr8n.Effects.hide('tr8n_other_elements_#{uniq_id}'); return false;\"> "
-    result << "&laquo; less".translate("List elements joiner", {}, options)    
-    result << "</a></span>"
+
+    if list_options[:minimizable]
+      result << "<a href='#' style='font-size:smaller;white-space:nowrap' onClick=\"Tr8n.Effects.show('tr8n_other_link_#{uniq_id}'); Tr8n.Effects.hide('tr8n_other_elements_#{uniq_id}'); return false;\"> "
+      result << "&laquo; less".translate("List elements joiner", {}, options)    
+      result << "</a>"
+    end
+    
+    result << "</span>"
   end
 
-  def token_value(object, options)
+  # evaluate all possible methods for the token value and return sanitized result
+  def token_value(object, options, language)
     # token is an array
     if object.is_a?(Array)
       # if you provided an array, it better have some values
@@ -291,29 +324,60 @@ class Tr8n::Token
 
       # if the first value of an array is an array handle it here
       if object.first.kind_of?(Enumerable)
-        return token_array_value(object, options)
+        return token_array_value(object, options, language)
       end
 
       # if the first item in the array is an object, process it
-      return evaluate_token_method_array(object.first, object, options)
+      return evaluate_token_method_array(object.first, object, options, language)
     end
 
     # simple token
-    sanitize_token_value(object)    
+    sanitize_token_value(object, options, language)    
   end
 
   def allowed_in_translation?
     true
   end
 
+  def decorate_language_case(case_map_key, case_value, options = {})
+    return case_value if options[:skip_decorations]
+    return case_value if Tr8n::Config.current_user_is_guest?
+    return case_value unless Tr8n::Config.current_user_is_translator?
+    return case_value unless Tr8n::Config.current_translator.enable_inline_translations?
+    
+    "<span class='tr8n_language_case' case_key='#{case_map_key.gsub("'", "\'")}'>#{case_value}</span>"
+  end
+
   def apply_case(value, options, language)
-    stripped_value = value.gsub(/<\/?[^>]*>/, "")
-    parts = stripped_value.split(" ")
+    return value unless Tr8n::Config.enable_language_cases?
+    return value unless language.cases? and language.valid_case?(case_key)
+    
+    html_tag_expression = /<\/?[^>]*>/
+    html_tokens = value.scan(html_tag_expression).uniq
+    parts = value.gsub(html_tag_expression, "").split(" ").uniq
+    
+    # replace html tokens with temporary placeholders
+    html_tokens.each_with_index do |html_token, index|
+      value = value.gsub(html_token, "{$#{index}}")
+    end
+    
     parts.each do |p|
       lcvm = Tr8n::LanguageCaseValueMap.for(language, p)
-      next unless lcvm and lcvm.map and lcvm.map[case_key]
-      value.gsub!(p, lcvm.map[case_key])
+      case_value = p
+      
+      if lcvm and lcvm.map 
+        unless lcvm.value_for(case_key).blank?
+          case_value = lcvm.value_for(case_key)
+        end
+      end
+      value = value.gsub(p, decorate_language_case(p, case_value, options))
     end
+    
+    # replace back the temporary placeholders with the html tokens  
+    html_tokens.each_with_index do |html_token, index|
+      value = value.gsub("{$#{index}}", html_token)
+    end
+
     value
   end
   
@@ -329,11 +393,8 @@ class Tr8n::Token
     end
     
     object = object.to_s if object.nil?
-    
-    substitution_value = token_value(object, options)
-    substitution_value = apply_case(substitution_value, options, language) if has_case_key?     
 
-    label.gsub(full_name, substitution_value)
+    label.gsub(full_name, token_value(object, options, language))
   end
   
   # return sanitized form

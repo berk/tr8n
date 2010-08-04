@@ -20,12 +20,8 @@ namespace :tr8n do
       info[:locale] = locale
       info[:enabled] = true
       lang = Tr8n::Language.create(info)
-
-      Tr8n::Config.language_rule_classes.each do |rule_class|
-        rule_class.default_rules_for(lang).each do |definition|
-          rule_class.create(:language => lang, :definition => definition)
-        end
-      end
+      
+      lang.reset!
     end
   end
 
@@ -41,11 +37,8 @@ namespace :tr8n do
 
   desc "Initializes default language cases"
   task :language_cases => :environment do
-    Tr8n::LanguageCase.delete_all
     Tr8n::Language.all.each do |lang|
-      Tr8n::Config.default_cases_for(lang.locale).each do |lcase|
-        Tr8n::LanguageCase.create(lcase.merge(:language => lang))
-      end
+      lang.reset_language_cases!
     end 
   end
 

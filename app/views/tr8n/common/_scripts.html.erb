@@ -21,7 +21,7 @@
   <% end %>
 
   <% if Tr8n::Config.enable_google_suggestions? %>  
-    <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="<%=request.ssl? ? 'https' : 'http' %>://www.google.com/jsapi"></script>
     <script type="text/javascript">
        initializeTr8nGoogleSuggestions();
     </script>

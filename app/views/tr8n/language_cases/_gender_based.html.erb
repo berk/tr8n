@@ -1,0 +1,36 @@
+<table cellpadding="0" celspacing="0" style="width:100%">
+	  <tr>
+	  	  <td></td>
+				<td style="font-weight:bold;color:grey;text-align:left;font-size:10px;"><%=trl("Male", "Gender")%></td>
+        <td style="font-weight:bold;color:grey;text-align:left;font-size:10px;"><%=trl("Female", "Gender")%></td>
+        <td style="font-weight:bold;color:grey;text-align:left;font-size:10px;"><%=trl("Unknown", "Gender")%></td>
+	  </tr>
+    <% tr8n_current_language.cases.each do |lcase| %>
+    <tr>
+       <td rowspan="2" style="padding:2px;font-size:10px;color:grey;vertical-align:top;">
+			    <div style="font-weight:bold;">
+            <%=lcase.native_name%>:
+					</div>	
+					(::<%=lcase.keyword%>)
+       </td>
+       <td style="padding:2px;vertical-align:top;">
+            <%= text_field_tag "map[map][#{lcase.keyword}][male]", @map.gender_value_for(lcase.keyword, 'male'), :style=>"width:100%;padding: 3px 0px;" %>
+       </td>
+       <td style="padding:2px;vertical-align:top;">
+            <%= text_field_tag "map[map][#{lcase.keyword}][female]", @map.gender_value_for(lcase.keyword, 'female'), :style=>"width:100%;padding: 3px 0px;" %>
+       </td>
+       <td style="padding:2px;vertical-align:top;">
+            <%= text_field_tag "map[map][#{lcase.keyword}][unknown]", @map.gender_value_for(lcase.keyword, 'unknown'), :style=>"width:100%;padding: 3px 0px;" %>
+       </td>
+    </tr>
+		<tr>
+			<td colspan="3" style="color:#ccc;padding-bottom:10px;">
+         <%=lcase.description%>
+			</td>
+		</tr>
+    <% end %>
+</table>
+
+<div style="padding:5px;">
+  <%=link_to_function(trl("Click here if the cases do not depend on the token gender or the gender is implied in the word itself."), "tr8nLanguageCaseManager.switchCaseMapMode('gender_neutral')")%>
+</div>

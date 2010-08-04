@@ -36,28 +36,42 @@ class Tr8n::LanguageCasesController < Tr8n::BaseController
     
     @maps = Tr8n::LanguageCaseValueMap.paginate(:per_page => per_page, :page => page, :conditions => conditions, :order => "updated_at desc")    
   end
-
+  
   def lb_value_map
     @map = Tr8n::LanguageCaseValueMap.find_by_id(params[:map_id]) if params[:map_id]
     @map ||= Tr8n::LanguageCaseValueMap.new(:language => tr8n_current_language)
     
     render :layout => false
   end
+  
+  def delete_value_map
+    map = Tr8n::LanguageCaseValueMap.find_by_id(params[:map_id]) if params[:map_id]
+    map.destroy if map
 
+    redirect_to(:action => :index)
+  end
+  
+  def manager
+    @map = Tr8n::LanguageCaseValueMap.for(tr8n_current_language, params[:case_key])
+    @map ||= Tr8n::LanguageCaseValueMap.create(:language => tr8n_current_language, :key => params[:case_key])
+    
+    render :layout => false
+  end
+  
   def update_value_map
     map = Tr8n::LanguageCaseValueMap.find_by_id(params[:map_id]) unless params[:map_id].blank?
     map ||= Tr8n::LanguageCaseValueMap.new(:language => tr8n_current_language)
     map.update_attributes(params[:map])
     map.save
     
-    redirect_to(:action => :index)
+    redirect_to_source
   end
   
-  def delete_value_map
-    map = Tr8n::LanguageCaseValueMap.find_by_id(params[:map_id]) unless params[:map_id].blank?
-    map.destroy if map
-
-    redirect_to(:action => :index)
+  def switch_manager_mode
+    @map = Tr8n::LanguageCaseValueMap.for(tr8n_current_language, params[:case_key])
+    @map ||= Tr8n::LanguageCaseValueMap.create(:language => tr8n_current_language, :key => params[:case_key])
+    
+    render :partial => params[:mode]
   end
   
 end

@@ -1,0 +1,14 @@
+<div class="original_text">
+  <div class="supplemental">
+    <%= tr8n_help_icon_tag %>
+  </div>
+  
+  <div class="quiet small"><%=trl("Original Word")%></div>
+  <div class="quote">
+    <%=image_tag("/tr8n/images/left_quote.png") %>
+    <%=@map.key %>
+    <%=image_tag("/tr8n/images/right_quote.png") %>
+  </div>
+</div>
+
+<%=tr8n_spinner_tag("tr8n_translator_spinner", "Saving...")%>
