@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<overlay id="tr8nOverlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <script type="application/javascript" src="chrome://tr8n/content/md5.js"/>
+  <script type="application/javascript" src="chrome://tr8n/content/tr8n.js"/>
+  <menupopup id="menu_ToolsPopup">
+    <menuitem id="tr8nToolsMenuItem" label="Enable Tr8n" insertbefore="sanitizeSeparator" oncommand="Tr8n.toggle();"/>
+  </menupopup>
+</overlay>

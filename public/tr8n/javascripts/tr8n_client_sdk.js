@@ -284,7 +284,7 @@ Tr8n.Proxy.TranslationKey.prototype = {
     return this.substituteTokens(this.label, token_values, options);    
   },
 	
-	generateKey: function() {
+  generateKey: function() {
     this.key = this.label + ";;;";
 		if (this.description) this.key = this.key + this.description;
 			 

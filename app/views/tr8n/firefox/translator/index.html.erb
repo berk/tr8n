@@ -1,0 +1,19 @@
+<html>
+	<body style="margin:0px; padding:0px; font-size:12px; background-color: #eee;">
+	    <%= tr8n_scripts_tag %>
+		<div class="tr8n_translator" style="width:99%; height:99%; -webkit-box-shadow:0px 0px;-moz-box-shadow:0px 0px;box-shadow:0px 0px;">
+			<div class="hd">
+			  <div class="supplemental">
+			    <%=link_to_function(image_tag("/tr8n/images/close.gif", :title=>trl("Close"), :id=>"tr8nCancelBtn"), "")%>
+			  </div>
+				
+			  <%= tr8n_language_flag_tag(tr8n_current_language) %>
+			  <%= trl("#{tr8n_current_language.english_name} Translation") %>
+			</div>
+			
+			<div id="tr8n_translator_container" class="bd" style="height:90%;">
+			  <%= render(:partial => "translator_#{@mode}") %>
+			</div>  
+		</div>
+	</body>
+</html>	

@@ -32,9 +32,9 @@
 				    <%=image_tag("/tr8n/images/right_quote.png", :style=>"text-align:bottom;padding-top:5px;") %>
 				    
 				    <script type="text/javascript">
-				    	Tr8n.Utils.addEvent(window,'load',function(e) {
-				          tr8nTranslator.suggestTranslation("<%=@translation_key.id %>", "<%=@translation_key.tokenless_label %>", "<%=tr8n_current_language.locale%>");
-				      });
+					    window.setTimeout(function() {
+                  tr8nTranslator.suggestTranslation("<%=@translation_key.id %>", "<%=@translation_key.tokenless_label %>", "<%=tr8n_current_language.locale%>");
+					    }, 500);				    	
 				    </script>
 				  
 				    <div style="color:grey; font-size:12px; padding-top:10px;">

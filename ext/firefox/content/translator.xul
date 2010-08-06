@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/"?>
+<dialog id="translatorDialog" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" 
+	title="Tr8n Translator" 
+	buttons=",">
+   		
+  <script type="application/javascript" src="chrome://tr8n/content/translator.js"/>
+  
+  <groupbox flex="1" height="450" minheight="450" width="400" minwidth="400" maxwidth="400">
+	  <browser id="translatorBrowser" type="content" src="http://localhost:3001/tr8n/firefox/translator/splash_screen" flex="1"/>
+  </groupbox>  
+  
+</dialog>

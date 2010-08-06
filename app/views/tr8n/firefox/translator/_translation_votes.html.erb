@@ -1,0 +1,48 @@
+<div style="padding-bottom:5px;">
+  <table style="width:100%;border-collapse: collapse;" cellpadding="5px" cellspacing="0px;" >
+      <tr style="border-bottom:1px dotted #ccc;">
+        <td style="width:20px; color:grey; font-size:10px; text-align:right; padding-bottom:3px;"><%=trl("Rank")%></td>
+        <td style="width:75px; color:grey; font-size:10px; text-align:center; padding-bottom:3px;"><%=trl("Your Vote")%></td>
+        <td style="color:grey; font-size:10px; padding-bottom:3px;"><%=trl("Translation")%></td>
+      </tr>  
+      <% translations[0..9].each do |trn| %>
+        <% style = "border-bottom:1px dotted #ccc;" unless translations.last == trn %>
+        <tr style="<%=style%>">
+          <td style="text-align:right;vertical-align:top; padding-top:3px;">
+					  <%=tr8n_spinner_tag("tr8n_spinner_for_#{trn.id}", "", "")%>
+					 
+            <div id="tr8n_votes_for_<%=trn.id%>" style="font-size:12px;">
+              <%= trn.rank_label %> 
+            </div>  
+          </td>  
+          <td style="text-align:center;vertical-align:top; padding-top:3px;">
+            <% if trn.translation_key.locked? %>
+              <div style="text-align:center; padding-top:4px;"><%=image_tag("/tr8n/images/lock.png", :style=>"width:12px", :title => trl("This phrase is locked"))%></div>
+						<% else %>
+              <%=link_to_function(image_tag("/tr8n/images/thumb_up.png", :title=>trl("Vote up this translation")), "voteOnTranslation('#{trn.translation_key.key}', '#{trn.id}', 1)")%> 
+              <%=link_to_function(image_tag("/tr8n/images/thumb_down.png", :title=>trl("Vote down this translation")), "voteOnTranslation('#{trn.translation_key.key}','#{trn.id}', -1)")%> 
+              <%=link_to_function(image_tag("/tr8n/images/exclamation.png", :title=>trl("Report this translation")), "voteOnTranslation('#{trn.translation_key.key}','#{trn.id}', -100)")%>
+            <% end %>   
+          </td>
+          <td style="text-align:left;vertical-align:top;font-size:11px; padding-top:3px;">
+            <%= trn.label %>
+          </td>
+        </tr>
+      <% end %>
+  </table>
+</div>
+
+<script>
+  function voteOnTranslation(key, translation_id, vote) {
+    Tr8n.Effects.hide('tr8n_votes_for_' + translation_id);
+	Tr8n.Effects.show('tr8n_spinner_for_' + translation_id);
+
+    Tr8n.Utils.update('tr8n_translator_votes_for_' + key, '/tr8n/firefox/translator/vote', {
+	    parameters: {
+	      translation_id: translation_id,
+	      vote: vote
+	    },
+	    method: 'post'
+	});
+  }
+</script>
