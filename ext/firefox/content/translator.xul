@@ -4,10 +4,10 @@
 	title="Tr8n Translator" 
 	buttons=",">
    		
-  <script type="application/javascript" src="chrome://tr8n/content/translator.js"/>
+  <script type="application/javascript" src="chrome://tr8n/content/tr8n_translator.js"/>
   
   <groupbox flex="1" height="450" minheight="450" width="400" minwidth="400" maxwidth="400">
-	  <browser id="translatorBrowser" type="content" src="http://localhost:3001/tr8n/firefox/translator/splash_screen" flex="1"/>
+	   <browser id="translatorBrowser" type="content" src="http://localhost:3001/tr8n/firefox/translator/splash_screen" flex="1" />
   </groupbox>  
   
 </dialog>

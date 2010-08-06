@@ -26,8 +26,6 @@ class Tr8n::Firefox::TranslatorController < Tr8n::Firefox::BaseController
   before_filter :init_tr8n
   
   def index
-    pp params
-    
     @source_url = params[:source] || "Firefox"
     
     if params[:label]
@@ -53,6 +51,8 @@ class Tr8n::Firefox::TranslatorController < Tr8n::Firefox::BaseController
     @translation_key = Tr8n::TranslationKey.find(params[:translation_key_id])
     @translations = @translation_key.translations_for(tr8n_current_language)
     @source_url = params[:source_url] || request.env['HTTP_REFERER']
+    
+    pp @source_url
     
     unless request.post?
       trfe("Please use a translator window for submitting translations")
