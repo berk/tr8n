@@ -28,10 +28,12 @@ class Tr8n::Firefox::TranslatorController < Tr8n::Firefox::BaseController
   def index
     @source_url = params[:source] || "Firefox"
     
-    if params[:label]
-      @translation_key = Tr8n::TranslationKey.find_or_create(params[:label], "", {:source => @source_url})
-    else
+    if params[:translation_key]
+      @translation_key = Tr8n::TranslationKey.find_by_key(params[:translation_key])
+    elsif params[:translation_key_id]
       @translation_key = Tr8n::TranslationKey.find(params[:translation_key_id])
+    else
+      @translation_key = Tr8n::TranslationKey.find_or_create(params[:label], "", {:source => @source_url})
     end
     
     @translations = @translation_key.inline_translations_for(tr8n_current_language)
@@ -41,7 +43,7 @@ class Tr8n::Firefox::TranslatorController < Tr8n::Firefox::BaseController
       @mode = params[:mode]
       return render(:partial => "translator_#{@mode}")
     else 
-      @mode = (@translations.empty? ? "submit" : "votes") unless @mode
+      @mode = (@translations.empty? ? "submit" : "votes") 
     end
 
     render(:layout => false)    

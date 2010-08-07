@@ -34,6 +34,7 @@ Tr8n.Firefox = {
 	translation_keys: {},
 	proxy: {},
   selected_label: "",
+  selected_key: "",
 	inline_translations_enabled: false,
   	
 	init: function() {
@@ -62,7 +63,6 @@ Tr8n.Firefox = {
   getElement: function(id) {
 		return document.getElementById(id);
 	},
-
 
 	getBrowserElement: function(id) {
     return Tr8n.Firefox.getBrowserDocument().getElementById(id);
@@ -117,13 +117,18 @@ Tr8n.Firefox = {
 	},
 
   getSource: function() {
-		return Tr8n.Firefox.getBrowserWindow().content.location + "";
+		var location = Tr8n.Firefox.getBrowserWindow().content.location + "";
+		return location.split("?")[0];
 	},
 	
 	getSelectedLabel: function() {
 		return Tr8n.Firefox.selected_label;
 	},
-	
+
+  getSelectedKey: function() {
+    return Tr8n.Firefox.selected_key;
+  },
+
 	handleClickEvent: function(event) {
 		if (event.stop) event.stop();
 		if (event.preventDefault) event.preventDefault();
@@ -132,6 +137,7 @@ Tr8n.Firefox = {
 		if (event.target.className == 'tr8n') {
 			var label = event.target.innerHTML;
 			Tr8n.Firefox.selected_label = Tr8n.Firefox.sanitizeString(label);
+      Tr8n.Firefox.selected_key = event.target.getAttribute('translation_key');
 			window.openDialog('chrome://tr8n/content/translator.xul', 'Tr8n Translator', 'chrome,centerscreen,modal');
 		}
 	},
@@ -173,6 +179,7 @@ Tr8n.Firefox = {
     for (var i = 0; i < spanNodes.length; i++) {
 			var spanNode = spanNodes[i];
       spanNode.innerHTML = translation;
+      spanNode.setAttribute('translation_key', translation_key);
 			
       if (Tr8n.Firefox.inline_translations_enabled) {
 	  	  spanNode.style.borderBottom = '2px solid green';
@@ -213,7 +220,7 @@ Tr8n.Firefox = {
     Tr8n.Firefox.translation_keys = {};
 	
     for (var i = 0; i < arr.length; i++) {
-      if (arr[i].parentNode.tagName == "script") continue;
+      if (arr[i].parentNode.tagName == "script" || arr[i].parentNode.tagName == "SCRIPT") continue;
 			if (arr[i].nodeValue.replace(/ /g, '').length == 0) continue;
 			// if (arr[i].nodeValue.indexOf("<!-") != -1) continue;
 			
@@ -237,8 +244,9 @@ Tr8n.Firefox = {
 			} else {
 				Tr8n.Firefox.translation_keys[tkey.key].push(arr[i].parentNode);
 			}
-			
     }
+		
+    // Tr8n.Firefox.getProxy().submitMissingTranslationKeys();
 	}
 }
 

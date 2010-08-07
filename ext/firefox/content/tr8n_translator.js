@@ -35,7 +35,12 @@ Tr8n.Translator = {
     Tr8n.Translator.eventsRegistered = false;
 		
 	  var url = "http://localhost:3001/tr8n/firefox/translator";
-    url = url + "?label=" + encodeURIComponent(Tr8n.Translator.getExtension().getSelectedLabel());
+		
+		if (Tr8n.Translator.getExtension().getSelectedKey()) {
+      url = url + "?translation_key=" + Tr8n.Translator.getExtension().getSelectedKey();
+		} else {
+      url = url + "?label=" + encodeURIComponent(Tr8n.Translator.getExtension().getSelectedLabel());
+		}
 		url = url + "&source=" + encodeURIComponent(Tr8n.Translator.getExtension().getSource()); 		
 
     Tr8n.Translator.log(url);

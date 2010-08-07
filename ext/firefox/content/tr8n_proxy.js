@@ -98,7 +98,7 @@ Tr8n.Proxy.prototype = {
       var translation_key = this.missing_translation_keys[key];
       if (phrases!="[") phrases = phrases + ",";
       phrases = phrases + "{";
-      phrases = phrases + '"label":"' + translation_key.label + '", ';
+      phrases = phrases + '"label":"' + Tr8n.Proxy.Utils.replaceAll(translation_key.label, '"', '\"') + '", ';
       phrases = phrases + '"description":"' + translation_key.description + '"';
       phrases = phrases + "}";
     }
