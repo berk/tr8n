@@ -43,7 +43,7 @@ Tr8n.Proxy = function(options) {
   });
   
   this.initTranslations();
-  //this.runScheduledTasks();
+  // this.runScheduledTasks();
 }
 
 Tr8n.Proxy.prototype = {

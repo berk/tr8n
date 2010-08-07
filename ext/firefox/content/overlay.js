@@ -21,6 +21,7 @@
   WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ****************************************************************************/
 
+
 var Tr8n = Tr8n || {};
 
 /****************************************************************************
@@ -62,13 +63,27 @@ Tr8n.Firefox = {
 		return document.getElementById(id);
 	},
 
+
 	getBrowserElement: function(id) {
     return Tr8n.Firefox.getBrowserDocument().getElementById(id);
   },
 
+  toggleInlineTranslations: function() {
+    if (!Tr8n.Firefox.inline_translations_enabled) {
+      Tr8n.Firefox.getElement("tr8n_enable_inline_mode_toolbar_button").label = "Disable Inline Translations";
+			Tr8n.Firefox.inline_translations_enabled = true;
+	  } else {
+      Tr8n.Firefox.getElement("tr8n_enable_inline_mode_toolbar_button").label = "Enable Inline Translations";
+      Tr8n.Firefox.inline_translations_enabled = false;
+		}
+		
+    Tr8n.Firefox.getBrowserWindow().content.location.reload();
+	},
+
  	toggle: function() {
 		if (!Tr8n.Firefox.enabled) {
-			Tr8n.Firefox.getElement("tr8nToolsMenuItem").label = "Disable Tr8n";
+			Tr8n.Firefox.getElement("tr8n_tools_menu_item").label = "Disable Tr8n";
+			Tr8n.Firefox.getElement("tr8n_enable_toolbar_button").label = "Disable Tr8n";
 			Tr8n.Firefox.registerDocumentElements(Tr8n.Firefox.getBrowserDocument());
 			Tr8n.Firefox.enabled = true;
 			
@@ -79,12 +94,14 @@ Tr8n.Firefox = {
 		} else {
 			
 			Tr8n.Firefox.getBrowserWindow().content.location.reload();
-			Tr8n.Firefox.getElement("tr8nToolsMenuItem").label = "Enable Tr8n";
+			Tr8n.Firefox.getElement("tr8n_tools_menu_item").label = "Enable Tr8n";
+      Tr8n.Firefox.getElement("tr8n_enable_toolbar_button").label = "Enable Tr8n";
 			Tr8n.Firefox.enabled = false;
 		}
 	},
 	
 	registerClicks: function() {
+		if (!Tr8n.Firefox.inline_translations_enabled) return;
 		window.content.document.addEventListener('contextmenu', Tr8n.Firefox.handleClickEvent, false);
 	},
 	
@@ -95,7 +112,7 @@ Tr8n.Firefox = {
 		Tr8n.Firefox.log("Registering document elements...");
 		if (Tr8n.Firefox.enabled) {
 			Tr8n.Firefox.registerDocumentElements(Tr8n.Firefox.getBrowserDocument());
-			Tr8n.Firefox.registerClicks();
+ 	    Tr8n.Firefox.registerClicks();
 		}
 	},
 
@@ -198,6 +215,7 @@ Tr8n.Firefox = {
     for (var i = 0; i < arr.length; i++) {
       if (arr[i].parentNode.tagName == "script") continue;
 			if (arr[i].nodeValue.replace(/ /g, '').length == 0) continue;
+			// if (arr[i].nodeValue.indexOf("<!-") != -1) continue;
 			
 			// we need to handle empty spaces better
 			var original_label = Tr8n.Firefox.sanitizeString(arr[i].nodeValue);

@@ -66,6 +66,9 @@ class Tr8n::Api::V1::LanguageController < Tr8n::Api::V1::BaseController
       
       return sanitize_api_response({:phrases => translations})
     elsif params[:phrases]
+      
+      pp params[:phrases]
+      
       phrases = []
       begin
         phrases = HashWithIndifferentAccess.new({:data => JSON.parse(params[:phrases])})[:data]
