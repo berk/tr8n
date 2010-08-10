@@ -215,7 +215,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   # returns back grouped by context
   def find_all_valid_translations(translations)
     if translations.empty?
-      return {:key => self.key, :label => self.label}
+      return {:key => self.key, :label => self.label, :original => true}
     end
     
     # if the first translation does not depend on any of the context rules
