@@ -12,7 +12,7 @@
       Label
     </th>
     <th>
-      Description
+      Translator
     </th>
     <th>
       Locked
@@ -24,8 +24,13 @@
   <% @locks.each_with_index do |lock, index| %>
     <tr>
       <td><%=lock.language.english_name%></td>      
-      <td><%=lock.translation_key.label%></td>      
-      <td><%=lock.translation_key.description%></td>      
+      <td>
+        <%=link_to(lock.key.label, :action => :view, :key_id => lock.key.id)%>
+         <div style="color:grey; font-size:10px;">
+            <%=lock.key.description %>
+         </div>
+			</td>      
+      <td><%=link_to(lock.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :translator_id => lock.translator.id) if lock.translator %></td>
       <td><%=lock.locked?%></td>      
       <td style="text-align:right">
         <%=lock.updated_at.trl(:date_time) %>

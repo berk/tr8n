@@ -100,7 +100,7 @@ class Tr8n::TransformToken < Tr8n::Token
   end
 
   # return only the internal part
-  def prepare_label_for_suggestion(label)
+  def prepare_label_for_suggestion(label, index)
     validate_language_rule
     label.gsub(full_name, language_rule.default_transform(*piped_params))    
   end

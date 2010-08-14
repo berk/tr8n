@@ -28,6 +28,8 @@ class Tr8n::TranslationKeyLock < ActiveRecord::Base
   belongs_to :language,         :class_name => "Tr8n::Language"
   belongs_to :translator,       :class_name => "Tr8n::Translator"
 
+  alias :key :translation_key
+  
   def self.find_or_create(translation_key, language)
     lock = find(:first, :conditions => ["translation_key_id = ? and language_id = ?", translation_key.id, language.id])
     lock || create(:translation_key => translation_key, :language => language)

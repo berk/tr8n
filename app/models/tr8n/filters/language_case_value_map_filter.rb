@@ -21,8 +21,21 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-class Tr8n::Firefox::BaseController < Tr8n::BaseController
+class Tr8n::LanguageCaseValueMapFilter < Tr8n::BaseFilter
 
-  skip_before_filter [:validate_tr8n_enabled, :validate_guest_user, :validate_current_user]
+  def definition
+    defs = super  
+    defs[:language_id][:is] = :list
+    defs[:language_id][:is_not] = :list
+    defs
+  end
+  
+  def value_options_for(criteria_key)
+    if criteria_key == :language_id
+      return Tr8n::Language.filter_options 
+    end
+
+    return []
+  end
 
 end

@@ -1,0 +1,35 @@
+<%= render :partial => "/tr8n/admin/common/header" %>
+<%= render :partial => "tabs" %>
+<%= tr8n_will_filter(@case_values) %>
+
+<%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @case_values} %>
+
+<table class="admin_table">
+<thead>
+  <tr>
+    <th style="">Language</th>
+    <th style="">Key</th>
+    <th style="">Values</th>
+    <th style="">Reported</th>
+    <th style="">Translator</th>
+    <th style="">Created At</th>
+  </tr>
+</thead>
+<tbody>
+  <% @case_values.each do |case_value| -%>
+    <tr>
+      <td><%= case_value.language ? link_to(case_value.language.english_name, :action => :view,  :lang_id => case_value.language.id) : "Unknown" %></td>
+      <td><%= case_value.key %></td>
+      <td>
+      	
+      </td>
+      <td><%= case_value.reported? %></td>
+      <td><%= case_value.translator ? case_value.translator.name : "System generated" %></td>
+      <td><%= case_value.created_at %></td>
+    </tr>
+  <% end -%>
+</tbody>
+</table>
+
+<%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @case_values} %>
+<%= render :partial => "/tr8n/admin/common/footer" %>

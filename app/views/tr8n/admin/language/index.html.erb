@@ -2,7 +2,7 @@
 <%= render :partial => "tabs" %>
 <%= tr8n_will_filter(@languages) %>
 
-<%=link_to_function("+ Add new language", "tr8nLightbox.show('/tr8n/admin/language/lb_update', {height:300})") %>
+<%=link_to_function("+ Add new language", "tr8nLightbox.show('/tr8n/admin/language/lb_update', {height:350})") %>
 |
 <%=link_to("Calculate recent metrics", {:action => :calculate_metrics}, :confirm => "Are you sure you want to run this opperation?")%>
 
@@ -69,7 +69,7 @@
       <td style="text-align:right">
         <%=link_to("View", :action => :view, :lang_id => lang.id) %>
 				|
-        <%=link_to_function("Update", "tr8nLightbox.show('/tr8n/admin/language/lb_update?lang_id=#{lang.id}', {height:300})") %>
+        <%=link_to_function("Update", "tr8nLightbox.show('/tr8n/admin/language/lb_update?lang_id=#{lang.id}', {height:350})") %>
         <% unless lang.default? %>
            |  
           <% if lang.enabled? %>

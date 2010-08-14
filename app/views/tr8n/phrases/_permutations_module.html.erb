@@ -1,4 +1,4 @@
-<div id="permutations" class="section_box colored" style="display:none">
+<div id="permutations_module" class="section_box colored" style="display:none">
 	<% form_for(:translation, @translation, :url => {:controller => "/tr8n/translations", :action => :permutate}, :html => {:id => 'permutation_form', :method => :post}) do |f| %>
 	    <%= hidden_field_tag(:translation_key_id, @translation_key.id) %>
 	    <%= hidden_field_tag(:source_url, @source_url) %>
@@ -25,6 +25,6 @@
 	    <button type="submit" class="translator_btn translator_submit_btn" onClick="Tr8n.Effects.submit('permutation_form'); return false;">
 	        <span><%=trl("Generate")%></span>
 	    </button>
-       or <%= link_to_function(trl("Cancel"), "Tr8n.Effects.show('tranlsations_list');  Tr8n.Effects.hide('permutations');") %>
+       or <%= link_to_function(trl("Cancel"), "viewTranslations()") %>
 	</div>
 </div>

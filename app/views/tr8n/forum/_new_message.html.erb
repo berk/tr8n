@@ -1,8 +1,8 @@
-<a name="reply_message">
-  <div class="section_title">
-    <%=tra("Reply to This Discussion") %>
-  </div>
-</a>
+<div class="section_title">
+  <%=tra("Reply to This Discussion") %>
+	<a name="reply_message">&nbsp;</a>
+</div>
+
 <div class="section_box colored">
   <% form_tag({:action => :topic}, {:method => :post, :id => "forum_topic_form"}) do %>
     <%=hidden_field_tag(:topic_id, @topic.id)%>
@@ -13,13 +13,7 @@
           <%=tra("Your Reply:") %>
         </td>
         <td>
-          <%=text_area_tag(:message, "", :style=>"width:99%; height:50px")%>
-        </td>
-      </tr>
-      <tr>
-        <td></td>
-        <td style="color:grey; font-size:12px; padding-top:10px; padding-bottom:10px;">
-           <%=tra("If your computer is not configured with your language keyboard, click on CTR+SHIFT+K to enable keyboards in foreign languages.")%>
+          <%=text_area_tag(:message, "", :class => "keyboardInput", :style=>"width:99%; height:70px")%>
         </td>
       </tr>
     </table>

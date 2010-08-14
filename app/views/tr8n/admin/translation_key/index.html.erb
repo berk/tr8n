@@ -8,11 +8,11 @@
     <th>
       Label
     </th>
-    <th>
-      Tokens
-    </th>
     <th style="text-align:right">
       Translations
+    </th>
+    <th style="text-align:right">
+      Created At
     </th>
     <th style="width:80px"></th>
   </tr>  
@@ -24,9 +24,11 @@
             <%=key.description %>
          </div>
 			</td>      
-      <td><%=key.tokens.join(", ")%></td>
       <td style="text-align:right">
         <%=link_to(key.translations.size, "/tr8n/admin/translation/index?wf_c0=translation_key_id&wf_o0=is&wf_v0_0=#{key.id}") %>
+      </td>  
+      <td style="text-align:right">
+        <%=key.created_at.trl(:date_time) %>
       </td>      
       <td style="text-align:right">
         <%=link_to("View", :action => :view, :key_id => key.id) %>

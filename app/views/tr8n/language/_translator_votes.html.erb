@@ -3,8 +3,14 @@
   
   <div class="section">
     <div class="small_section_title">
-      <div style="float:right;font-weight:normal;font-size:10px">
-        <%=link_to(trl("view all"), {:controller => "/tr8n/phrases", :action => :view, :translation_key_id => @translation_key.id}) %>
+      <div style="float:right;font-weight:normal;font-size:10px;color:grey;">
+        <%=link_to(trl("view all"), {:controller => "/tr8n/phrases", :action => :view, :translation_key_id => @translation_key.id, :anchor => "translations"}) %>
+				|
+				<% 
+           comments_size = @translation_key.comments.size
+           link_title = (comments_size > 0) ? "view comments (#{comments_size})" : "add comments"
+        %>
+        <%=link_to(trl(link_title), {:controller => "/tr8n/phrases", :action => :view, :translation_key_id => @translation_key.id, :anchor => "comments"}) %>
       </div>
       <strong><%=trl("Vote on Translations")%></strong>
     </div>

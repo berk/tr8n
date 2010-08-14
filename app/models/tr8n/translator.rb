@@ -211,7 +211,10 @@ class Tr8n::Translator < ActiveRecord::Base
     return super unless Tr8n::Config.site_user_info_enabled?
     
     return "Deleted User" unless user
-    Tr8n::Config.user_name(user)
+    user_name = Tr8n::Config.user_name(user)
+    return "No Name" if user_name.blank?
+    
+    user_name
   end
 
   def mugshot

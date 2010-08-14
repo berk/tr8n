@@ -6,191 +6,300 @@
 af: 
   english_name:   Afrikaans 
   native_name:    Afrikaans 
+  google_key:     af
+ak: 
+  english_name:   Akan 
+  native_name:    Akan 
+  google_key:     ak
 hy:
   english_name:   Armenian
   native_name:    Հայերեն
+  google_key:     hy
 sq:
   english_name:   Albanian
   native_name:    Shqiptar
+  google_key:     sq
+am:
+  english_name:   Amharic
+  native_name:    Amharic
+  google_key:     am
 ar: 
   english_name:   Arabic
   native_name:    العربية 
   right_to_left:  true
+  google_key:     ar
 az: 
   english_name:   Azerbaijani 
   native_name:    Азәрбајҹан дили 
+  google_key:     az
 be: 
   english_name:   Belarusian 
   native_name:    Беларуская
+  google_key:     be
 bg: 
   english_name:   Bulgarian 
   native_name:    Български 
+  google_key:     bg
+bh: 
+  english_name:   Bihari 
+  native_name:    Bihari
+  google_key:     bh
+br: 
+  english_name:   Breton 
+  native_name:    Breton
+  google_key:     br
+km: 
+  english_name:   Cambodian 
+  native_name:    Cambodian  
+  google_key:     km
 ca: 
   english_name:   Catalan 
   native_name:    Català  
+  google_key:     ca
+ny:
+  english_name:   Chichewa 
+  native_name:    Chichewa  
+  google_key:     ny
 zh-TW: 
   english_name:   Chinese (Traditional) 
   native_name:    中文(台灣) 
+  google_key:     zh-TW
 zh-CN: 
   english_name:   Chinese (Simplified) 
   native_name:    中文(简体) 
+  google_key:     zh-CN
 hr: 
   english_name:   Croatian 
   native_name:    Hrvatski
+  google_key:     hr
 cs: 
   english_name:   Czech 
-  native_name:    Český 
+  native_name:    Český
+  google_key:     cs
+co:  
+  english_name:   Corsican 
+  native_name:    Corsican
+  google_key:     co
 da: 
   english_name:   Danish  
   native_name:    Danske 
+  google_key:     da
 nl: 
   english_name:   Dutch 
   native_name:    Flemish 
+  google_key:     nl
 en-US: 
   english_name:   English (US) 
   native_name:    English (US)  
+  google_key:     en
 en-CAN: 
   english_name:   English (Canadian) 
   native_name:    English (Canadian)  
+  google_key:     en
 en-UK: 
   english_name:   English (UK) 
   native_name:    English (UK)  
+  google_key:     en
 en-SC: 
   english_name:   English (Scottish) 
   native_name:    English (Scottish)  
+  google_key:     en
 et: 
   english_name:   Estonian 
   native_name:    Eesti 
+  google_key:     et
 eu: 
   english_name:   Basque 
-  native_name:    Euskara 
+  native_name:    Euskara
+  google_key:     eu 
 tl: 
   english_name:   Filipino 
   native_name:    Filipino 
+  google_key:     tl
 fi: 
   english_name:   Finnish 
   native_name:    Suomi 
+  google_key:     fi
 fr: 
   english_name:   French  
   native_name:    Français 
+  google_key:     fr
+fy: 
+  english_name:   Frisian  
+  native_name:    Frisian 
+  google_key:     fy
 gl: 
   english_name:   Galician  
   native_name:    Galician 
+  google_key:     gl
 ka: 
   english_name:   Georgian 
   native_name:    ქართული 
+  google_key:     ka
 de: 
   english_name:   German  
   native_name:    Deutsch  
+  google_key:     de
 el: 
   english_name:   Greek 
   native_name:    Ελληνικά 
+  google_key:     el
 ht: 
   english_name:   Haitian Creole 
   native_name:    Ayisyen 
+  google_key:     ht
 iw: 
   english_name:   Hebrew
   native_name:    עברית  
   right_to_left:  true
+  google_key:     iw
 hi: 
   english_name:   Hindi 
   native_name:    हिन्दी 
+  google_key:     hi
 hu: 
   english_name:   Hungarian 
   native_name:    Magyar 
+  google_key:     hu
+ha: 
+  english_name:   Hausa 
+  native_name:    Hausa
+  google_key:     ha
+haw: 
+  english_name:   Hawaiian 
+  native_name:    Hawaiian
+  google_key:     haw
 is: 
   english_name:   Icelandic 
   native_name:    Íslenska 
+  google_key:     is
 id: 
   english_name:   Indonesian 
   native_name:    Indonesia 
+  google_key:     id
 ga: 
   english_name:   Irish 
   native_name:    Gaeilge
+  google_key:     ga
 it: 
   english_name:   Italian 
   native_name:    Italiano 
+  google_key:     it
+ig: 
+  english_name:   Igbo 
+  native_name:    Igbo
+  google_key:     ig
+ia: 
+  english_name:   Interlingua 
+  native_name:    Interlingua
+  google_key:     ia
 ja: 
   english_name:   Japanese 
   native_name:    日本語 
+  google_key:     ja
 ko: 
   english_name:   Korean 
   native_name:    한국어 
+  google_key:     ko
 lv: 
   english_name:   Latvian 
   native_name:    Latviešu 
+  google_key:     lv
 lt: 
   english_name:   Lithuanian 
   native_name:    Lietuvių 
+  google_key:     lt
 mk: 
   english_name:   Macedonian 
   native_name:    Македонски 
+  google_key:     mk
 ms: 
   english_name:   Malay 
   native_name:    Melayu 
+  google_key:     ms
 mt: 
   english_name:   Maltese 
   native_name:    Malti 
+  google_key:     mt
 "no": 
   english_name:   Norwegian 
   native_name:    Norsk (bokmål) 
+  google_key:     "no"
 fa: 
   english_name:   Persian
   native_name:    فارسی
   right_to_left:  true
+  google_key:     fa
 pl: 
   english_name:   Polish 
   native_name:    Polski 
+  google_key:     pl
 pt: 
   english_name:   Portuguese (Portugal) 
-  native_name:    Português (Portugal) 
+  native_name:    Português (Portugal)
+  google_key:     pt-PT
 ro: 
   english_name:   Romanian 
   native_name:    Română 
+  google_key:     ro
 ru: 
   english_name:   Russian 
   native_name:    Русский 
+  google_key:     ru
 sr: 
   english_name:   Serbian 
   native_name:    Српски 
+  google_key:     sr
 sk: 
   english_name:   Slovak 
   native_name:    Slovenský jazyk 
+  google_key:     sk
 sl:
   english_name:   Slovenian 
   native_name:    Slovenski 
+  google_key:     sl
 es:
   english_name:   Spanish (Spain) 
-  native_name:    Español (España)  
+  native_name:    Español (España)
+  google_key:     es
 sw: 
   english_name:   Swahili 
   native_name:    Swahili  
+  google_key:     sw
 sv:
   english_name:   Swedish 
   native_name:    Svenska 
+  google_key:     sv
 th:
   english_name:   Thai 
   native_name:    ภาษาไทย 
+  google_key:     th
 tr: 
   english_name:   Turkish 
   native_name:    Türkçe 
+  google_key:     tr
 uk: 
   english_name:   Ukranian 
   native_name:    Українська 
+  google_key:     uk
 ur:
   english_name:   Urdu 
   native_name:    اردو
   right_to_left:  true
+  google_key:     ur
 vi:
   english_name:   Vietnamese 
   native_name:    Tiếng Việt 
+  google_key:     vi
 cy: 
   english_name:   Welsh 
   native_name:    Cymraeg 
+  google_key:     cy
 yi: 
   english_name:   Yiddish
   native_name:    ייִדיש
   right_to_left:  true
+  google_key:     yi
 ab: 
   english_name:   Abkhazian 
   native_name:    Аҧсуа 
@@ -203,6 +312,7 @@ bo:
 bs: 
   english_name:   Bosnian 
   native_name:    Bosanski 
+  google_key:     bs
 cv: 
   english_name:   Chuvash 
   native_name:    чӑваш 
@@ -212,6 +322,7 @@ fj:
 kz: 
   english_name:   Kazakh 
   native_name:    Қазақша 
+  google_key:     kk
 ks: 
   english_name:   Kashmiri 
   native_name:    कश्मीरी 
@@ -219,145 +330,205 @@ ku:
   english_name:   Kurdish
   native_name:    كوردی‎ 
   right_to_left:  true
+  google_key:     ku
 ky: 
-  english_name:   Kirghiz 
+  english_name:   Kyrgyz 
   native_name:    Кыргыз 
+  google_key:     ky
 kl: 
   english_name:   Klingon 
   native_name:    tlhIngan 
+  google_key:     xx-klingon
 la: 
   english_name:   Latin 
   native_name:    Latina 
+  google_key:     la
 mn: 
   english_name:   Mongolian 
   native_name:    Монгол 
+  google_key:     mn
 ne: 
   english_name:   Nepali 
   native_name:    नेपाली 
+  google_key:     ne
 nv: 
   english_name:   Navajo 
   native_name:    Dinékʼehǰí 
 pa: 
-  english_name:   Panjabi 
+  english_name:   Punjabi 
   native_name:    ਪੰਜਾਬੀ 
+  google_key:     pa
 tg: 
   english_name:   Tajik 
-  native_name:    Тоҷикӣ 
+  native_name:    Тоҷикӣ
+  google_key:     tg
 tk: 
   english_name:   Turkmen 
   native_name:    Türkmen 
+  google_key:     tk
 tt: 
   english_name:   Tatar 
   native_name:    Татарча 
+  google_key:     tt
 pf: 
   english_name:   Tahitian 
   native_name:    Mā`ohi 
 uz: 
   english_name:   Uzbek 
   native_name:    Ўзбек 
+  google_key:     uz
 en-PI: 
   english_name:   English (Pirate) 
   native_name:    English (Pirate) 
+  google_key:     xx-pirate
 fr-CAN: 
   english_name:   French (Canadian)  
   native_name:    Français (Canada) 
+  facebook-key:   fr-CAN
 fb-LT: 
   english_name:   Leet Speak 
   native_name:    1337 
+  facebook-key:   fb-LT
 sa-IN: 
   english_name:   Sanskrit 
   native_name:    संस्कृतम् 
+  facebook-key:   sa-IN
 gu-IN: 
   english_name:   Gujarati 
   native_name:    ગુજરાતી 
+  google_key:     gu
+  facebook-key:   gu-IN
 zh-HK: 
   english_name:   Chinese (Hong Kong) 
   native_name:    中文(香港) 
+  facebook-key:   zh-HK
 ta-IN: 
   english_name:   Tamil 
   native_name:    தமிழ் 
+  google_key:     ta
+  facebook-key:   ta-IN
 pt-BZ: 
   english_name:   Portuguese (Brazil) 
   native_name:    Português (Brazil) 
+  google_key:     pt-BR
+  facebook-key:   pt-BZ
 eo-EO: 
   english_name:   Esperanto 
   native_name:    Esperanto 
+  google_key:     eo
+  facebook-key:   eo-EO
 fo-FO: 
   english_name:   Faroese 
   native_name:    Føroyskt 
+  google_key:     fo
+  facebook-key:   fo-FO
 ps-AF: 
   english_name:   Pashto 
   native_name:    پښتو 
   right_to_left:  true
+  google_key:     ps
+  facebook-key:   ps-AF
 gn-PY: 
   english_name:   Guaraní 
   native_name:    Avañe\ẽ 
+  facebook-key:   gn-PY
 ay-BO: 
   english_name:   Aymara 
   native_name:    Aymar aru 
+  facebook-key:   ay-BO
 jv-ID: 
   english_name:   Javanese 
-  native_name:    Basa Jawa 
+  native_name:    Basa Jawa
+  google_key:     jw
+  facebook-key:   jv-ID
 ck-US: 
   english_name:   Cherokee
   native_name:    Cherokee 
+  facebook-key:   ck-US
 se-NO: 
   english_name:   North Sami 
   native_name:    Davvisámegiella 
+  facebook-key:   se-NO
 es-CL: 
   english_name:   Spanish (Chile) 
   native_name:    Español (Chile) 
+  google_key:     es
+  facebook-key:   es-CL
 es-CO: 
   english_name:   Spanish (Colombia) 
   native_name:    Español (Colombia) 
+  google_key:     es
+  facebook-key:   es-CO
 es-MX: 
   english_name:   Spanish (Mexico) 
   native_name:    Español (México) 
+  google_key:     es
+  facebook-key:   es-MX
 es-VE: 
   english_name:   Spanish (Venezuela) 
   native_name:    Español (Venezuela) 
+  google_key:     es
+  facebook-key:   es-VE
 li-NL: 
   english_name:   Limburgish 
   native_name:    Limburgs 
+  facebook-key:   li-NL
 mg-MG: 
   english_name:   Malagasy 
   native_name:    Malagasy 
+  google_key:     mg
+  facebook-key:   mg-MG
 qu-PE:
   english_name:   Quechua 
   native_name:    Qhichwa 
+  google_key:     qu
+  facebook-key:   qu-PE
 rm-CH:
   english_name:   Romansh 
   native_name:    Rumantsch 
+  google_key:     rm
+  facebook-key:   rm-CH
 xh-ZA:
   english_name:   Xhosa 
   native_name:    isiXhosa 
+  facebook-key:   xh-ZA
 zu-ZA:
   english_name:   Zulu 
   native_name:    isiZulu 
+  google_key:     zu
+  facebook-key:   zu-ZA
 mr-IN:
   english_name:   Marathi
   native_name:    मराठी 
+  google_key:     mr
+  facebook-key:   mr-IN
 bn:
   english_name:   Bengali 
   native_name:    Bengali
+  google_key:     bn
 cb:
   english_name:   Central Bikolano 
   native_name:    Central Bikolano
 kn:
   english_name:   Kannada 
   native_name:    Kannada
+  google_key:     kn
 rw:
   english_name:   Kinyarwanda 
   native_name:    Kinyarwanda
+  google_key:     rw
 ml:
   english_name:   Malayalam 
   native_name:    Malayalam
+  google_key:     ml
 mo:
   english_name:   Mohawk 
   native_name:    Mohawk
+  google_key:     mo
 or:
   english_name:   Oriya 
   native_name:    Oriya
+  google_key:     or
 pp:
   english_name:   Papiamento 
   native_name:    Papiamento
@@ -367,5 +538,123 @@ rj:
 te:  
   english_name:   Telugu
   native_name:    Telugu
-  
+  google_key:     te
+rn:
+  english_name:   Kirundi 
+  native_name:    Kirundi
+  google_key:     rn
+lo:
+  english_name:   Laothian 
+  native_name:    Laothian
+  google_key:     lo
+ln:
+  english_name:   Lingala 
+  native_name:    Lingala
+  google_key:     ln
+lg:
+  english_name:   Luganda 
+  native_name:    Luganda
+  google_key:     lg
+ach:
+  english_name:   Luo 
+  native_name:    Luo
+  google_key:     ach
+mi:
+  english_name:   Maori 
+  native_name:    Maori
+  google_key:     mi
+mfe:
+  english_name:   Mauritian Creole 
+  native_name:    Mauritian Creole
+  google_key:     mfe
+md:
+  english_name:   Moldavian 
+  native_name:    Moldavian
+sr-ME:
+  english_name:   Montenegrin 
+  native_name:    Montenegrin
+  google_key:     sr-ME
+nn:
+  english_name:   Norwegian (Nynorsk) 
+  native_name:    Norwegian (Nynorsk)
+  google_key:     nn
+oc:
+  english_name:   Occitan 
+  native_name:    Occitan
+  google_key:     oc
+om:
+  english_name:   Oromo 
+  native_name:    Oromo
+  google_key:     om
+nyn:
+  english_name:   Runyakitara 
+  native_name:    Runyakitara
+  google_key:     nyn
+gd:
+  english_name:   Scots Gaelic 
+  native_name:    Scots Gaelic
+  google_key:     gd
+sh:
+  english_name:   Serbo-Croatian 
+  native_name:    Serbo-Croatian
+  google_key:     sh
+st:
+  english_name:   Sesotho
+  native_name:    Sesotho
+  google_key:     st
+tn:
+  english_name:   Setswana
+  native_name:    Setswana
+  google_key:     tn
+sn:
+  english_name:   Shona
+  native_name:    Shona
+  google_key:     sn
+sd:
+  english_name:   Sindhi
+  native_name:    Sindhi
+  google_key:     sd
+si:
+  english_name:   Sinhalese
+  native_name:    Sinhalese
+  google_key:     si
+so:
+  english_name:   Somali
+  native_name:    Somali
+  google_key:     so
+su:
+  english_name:   Sundanese
+  native_name:    Sundanese
+  google_key:     su
+te:
+  english_name:   Telugu
+  native_name:    Telugu
+ti:
+  english_name:   Tigrinya
+  native_name:    Tigrinya
+  google_key:     ti
+to:
+  english_name:   Tonga
+  native_name:    Tonga
+  google_key:     to
+tw:
+  english_name:   Twi
+  native_name:    Twi
+  google_key:     tw
+ug:
+  english_name:   Uighur
+  native_name:    Uighur
+  google_key:     ug
+xh:
+  english_name:   Xhosa
+  native_name:    Xhosa
+  google_key:     xh
+yo:
+  english_name:   Yoruba
+  native_name:    Yoruba
+  google_key:     yo
+gn:
+  english_name:   Guarani
+  native_name:    Guarani
+  google_key:     gn
   

@@ -50,6 +50,19 @@ class Tr8n::Admin::TranslationKeyController < Tr8n::Admin::BaseController
     @sources = Tr8n::TranslationSource.filter(:params => params, :filter => Tr8n::TranslationSourceFilter)
   end
 
+  def comments
+    @comments = Tr8n::TranslationKeyComment.filter(:params => params, :filter => Tr8n::TranslationKeyCommentFilter)
+  end
+
+  def delete_comment
+    comment = Tr8n::TranslationKeyComment.find_by_id(params[:comment_id])
+    comment.destroy if comment
+    
+    trfn("Comment has been deleted")
+    
+    redirect_to_source
+  end
+
   def locks
     @locks = Tr8n::TranslationKeyLock.filter(:params => params, :filter => Tr8n::TranslationKeyLockFilter)
   end

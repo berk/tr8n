@@ -89,10 +89,24 @@ class Tr8n::TokenizedLabel
   def tokenless_label
     @tokenless_label ||= begin
       lbl = label.clone
-      data_tokens.each do |token|
-        lbl = token.prepare_label_for_suggestion(lbl)
+      tokens.each_with_index do |token, index|
+        lbl = token.prepare_label_for_suggestion(lbl, index)
       end
       lbl
+    end
+  end 
+
+  def suggestion_tokens
+    @suggestion_tokens ||= begin
+      toks = []
+      tokens.each do |token|
+        if token.is_a?(Tr8n::DecorationToken)
+          toks << token.name
+        else  
+          toks << token.sanitized_name          
+        end
+      end
+      toks
     end
   end 
   

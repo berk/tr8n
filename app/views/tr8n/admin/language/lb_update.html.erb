@@ -52,7 +52,25 @@
               <%= form.text_field :featured_index %>
           </td>
       </tr>			
+      <tr>
+          <th>
+              Google Key:
+          </th>
+          <td>
+              <%= form.text_field :google_key %>
+          </td>
+      </tr>     
+      <tr>
+          <th>
+              Facebook Key:
+          </th>
+          <td>
+              <%= form.text_field :facebook_key %>
+          </td>
+      </tr>     
   </table>
+  
+	<div>Note: providing google key/locale will enable google suggestions for that language.</div>
 
   <%= render :partial => "/tr8n/admin/common/lightbox_buttons" %>
 <% end %>

@@ -1,0 +1,31 @@
+<div class="section_box colored">
+  <% form_tag({:action => :submit_comment}, {:method => :post, :id => "translation_key_comments_form"}) do %>
+    <%= hidden_field_tag(:translation_key_id, @translation_key.id)%>
+    <%= hidden_field_tag(:section_key, @section_key) %>
+    
+    <table style="width:99%">
+      <tr>
+        <td style="width:80px; text-align:right; padding-right:10px; font-weight:bold;">
+          <%=tra("Your Comment:") %>
+        </td>
+        <td>
+          <%=text_area_tag(:message, "", :class => "keyboardInput", :style=>"width:99%; height:70px")%>
+        </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td style="color:grey; font-size:12px; padding-top:10px; padding-bottom:10px;">
+           <%=tra("Leave your comments here if you would like to discuss translations for this particular phrase.")%>
+           <%=tra("If you would like to discuss translations in general, leave your comments in the [link: language forum].", "", :link => ["/tr8n/forum"])%>
+        </td>
+      </tr>
+    </table>
+    
+    <div style="padding-top:20px; padding-bottom:10px;text-align:center">
+        <button type="submit" class="translator_btn translator_submit_btn" onClick="Tr8n.Effects.submit('translation_key_comments_form'); return false;">
+            <span><%=tra("Submit Comment")%></span>
+        </button>
+    </div>
+  <% end %>
+  
+</div>  

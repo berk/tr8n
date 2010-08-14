@@ -31,7 +31,7 @@ class Tr8n::LanguageCaseValueMap < ActiveRecord::Base
   
   def self.for(language, key)
     Tr8n::Cache.fetch("language_case_value_map_#{language.id}_#{key}") do 
-      find_by_language_id_and_key(language.id, key)
+      find(:first, :conditions => ["language_id = ? and key = ? and reported is null or reported = ?", language.id, key, false])
     end
   end
   
@@ -44,12 +44,29 @@ class Tr8n::LanguageCaseValueMap < ActiveRecord::Base
     false
   end
   
-  def value_for(case_key)
+  def value_for(object, case_key)
     return unless map
-    return map[case_key] unless map[case_key].is_a?(Hash)
-    map[case_key]['male']
+    
+    # male female definition
+    if map[case_key].is_a?(Hash)
+      object_gender = Tr8n::GenderRule.gender_token_value(object)
+      if object_gender == Tr8n::GenderRule.gender_object_value_for("male")
+        return map[case_key]['male']
+      elsif object_gender == Tr8n::GenderRule.gender_object_value_for("female")
+        return map[case_key]['female']
+      end
+      return map[case_key]['unknown']
+    end
+    
+    map[case_key] 
   end
 
+  def implied_value_for(case_key)
+    return unless map
+    return gender_value_for(case_key, "male") if map[case_key].is_a?(Hash)   
+    map[case_key]
+  end
+  
   def gender_value_for(case_key, gender)
     return unless map
     return map[case_key] unless map[case_key].is_a?(Hash)
@@ -57,23 +74,23 @@ class Tr8n::LanguageCaseValueMap < ActiveRecord::Base
   end
   
   def save_with_log!(new_translator)
-#    if self.id
-#      if changed?
-#        self.translator = new_translator
-#        translator.updated_language_case!(self)
-#      end
-#    else  
-#      self.translator = new_translator
-#      translator.added_language_case!(self)
-#    end
+#    new_translator.updated_language_case_values!(self)
 
+    self.translator = new_translator
     save  
   end
   
   def destroy_with_log!(new_translator)
-#    new_translator.deleted_language_case!(self)
+#    new_translator.deleted_language_case_values!(self)
     
     destroy
+  end
+
+  def report_with_log!(new_translator)
+    # new_translator.reported_language_case_values!(self)
+
+    update_attributes(:reported => true)
+    self.translator.update_attributes(:reported => true) 
   end
 
   def after_save

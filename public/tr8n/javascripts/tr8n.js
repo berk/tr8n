@@ -279,10 +279,15 @@ Tr8n.Translator.prototype = {
     });
   },
 
-  suggestTranslation: function(translation_key_id, original, lang) {
+  suggestTranslation: function(translation_key_id, original, tokens, lang) {
     google.language.translate(original, "en", lang, function(result) {
       if (!result.error) {
-        Tr8n.element("tr8n_translation_suggestion_" + translation_key_id).innerHTML = result.translation;
+				var suggestion = result.translation;
+				tokens = tokens.split(",");
+				for (var i=0; i<tokens.length; i++) {
+					suggestion = Tr8n.Utils.replaceAll(suggestion, "(" + i + ")", tokens[i]);
+				}
+        Tr8n.element("tr8n_translation_suggestion_" + translation_key_id).innerHTML = suggestion;
         Tr8n.element("tr8n_google_suggestion_container_" + translation_key_id).style.display = "block";
         var suggestion_section = Tr8n.element('tr8n_google_suggestion_section');
         if (suggestion_section) suggestion_section.style.display = "block";
@@ -401,13 +406,21 @@ Tr8n.LanguageCaseManager.prototype = {
 		});
 	},
 	
+  reportCaseMap: function(map_id) {
+    var msg = "Reporting these values will remove them from the system and the translator will be put on a watch list. \n\nAre you sure you want to report these values?";
+    if (!confirm(msg)) return;
+		
+		Tr8n.element("tr8n_language_case_form").action = "/tr8n/language_cases/report_value_map";
+    Tr8n.Effects.hide('tr8n_language_case_container');
+    Tr8n.Effects.show('tr8n_language_case_report_spinner');
+    Tr8n.Effects.submit('tr8n_language_case_form');
+  },
+	
   submitCaseMap: function() {
-//    Tr8n.Effects.hide('tr8n_translator_translation_container');
-//    Tr8n.Effects.hide('tr8n_translator_buttons_container');
-//    Tr8n.Effects.show('tr8n_translator_spinner');
-//    Tr8n.Effects.submit('tr8n_translator_form');
+		Tr8n.Effects.hide('tr8n_language_case_container');
+    Tr8n.Effects.show('tr8n_language_case_submit_spinner');
+    Tr8n.Effects.submit('tr8n_language_case_form');
   }
-    
 }
 
 
@@ -628,6 +641,13 @@ Tr8n.Utils = {
     return form_obj; 
   }, 
 
+  replaceAll: function(label, key, value) {
+    while (label.indexOf(key) != -1) {
+      label = label.replace(key, value);
+    }
+    return label;
+  },
+
   getRequest: function() {
     var factories = [
       function() { return new ActiveXObject("Msxml2.XMLHTTP"); },
@@ -822,8 +842,18 @@ function initializeTr8n() {
     tr8nLanguageSelector      = new Tr8n.LanguageSelector();
     tr8nLightbox              = new Tr8n.Lightbox();
     tr8nLanguageCaseManager   = new Tr8n.LanguageCaseManager();
+		
+	  Tr8n.Utils.addEvent(document, "keyup", function(event) {
+	    if (event.keyCode == 27) { // Capture Esc key
+	      tr8nTranslator.hide();
+        tr8nLanguageSelector.hide();
+        tr8nLightbox.hide();
+        tr8nLanguageCaseManager.hide();
+	    }
+	  });
   }
-  Tr8n.Utils.addEvent(window,'load',setup);
+	
+  Tr8n.Utils.addEvent(window, 'load', setup);
 }
 
 function initializeTr8nGoogleSuggestions() {

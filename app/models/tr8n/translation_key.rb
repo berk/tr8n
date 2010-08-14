@@ -30,6 +30,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   has_many :translation_key_locks,    :class_name => "Tr8n::TranslationKeyLock",    :dependent => :destroy
   has_many :translation_key_sources,  :class_name => "Tr8n::TranslationKeySource",  :dependent => :destroy
   has_many :translation_sources,      :class_name => "Tr8n::TranslationSource",     :through => :translation_key_sources
+  has_many :translation_key_comments, :class_name => "Tr8n::TranslationKeyComment", :dependent => :destroy, :order => "created_at desc"
   
   alias :locks :translation_key_locks
   alias :sources :translation_sources
@@ -76,11 +77,16 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     @tokenized_label ||= Tr8n::TokenizedLabel.new(label)
   end
   
+  # comments are left for a specific language
+  def comments(language = Tr8n::Config.current_language)
+    Tr8n::TranslationKeyComment.find(:all, :conditions => ["language_id = ? and translation_key_id = ?", language.id, self.id])
+  end
+  
   delegate :tokens, :tokens?, :to => :tokenized_label
   delegate :data_tokens, :data_tokens?, :to => :tokenized_label
   delegate :decoration_tokens, :decoration_tokens?, :to => :tokenized_label
   delegate :translation_tokens, :translation_tokens?, :to => :tokenized_label
-  delegate :sanitized_label, :tokenless_label, :words, :to => :tokenized_label
+  delegate :sanitized_label, :tokenless_label, :suggestion_tokens, :words, :to => :tokenized_label
 
   # returns only the tokens that depend on one or more rules of the language, if any defined for the language
   def language_rules_dependant_tokens(language = Tr8n::Config.current_language)

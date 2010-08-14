@@ -71,6 +71,7 @@ class Tr8n::Admin::LanguageController < Tr8n::Admin::BaseController
   def cases
     @cases = Tr8n::LanguageCase.filter(:params => params, :filter => Tr8n::LanguageCaseFilter)
   end
+
   
   def lb_update
     @language = Tr8n::Language.find_by_id(params[:lang_id]) unless params[:lang_id].blank?
@@ -93,5 +94,24 @@ class Tr8n::Admin::LanguageController < Tr8n::Admin::BaseController
     
     redirect_to_source
   end
+  
+  def case_values
+    @case_values = Tr8n::LanguageCaseValueMap.filter(:params => params, :filter => Tr8n::LanguageCaseValueMapFilter)
+  end
+  
+  def lb_value_map
+    @map = Tr8n::LanguageCaseValueMap.find_by_id(params[:map_id]) if params[:map_id]
+    @map ||= Tr8n::LanguageCaseValueMap.new(:language => tr8n_current_language)
+    
+    render :layout => false
+  end
+  
+  def delete_value_map
+    map = Tr8n::LanguageCaseValueMap.find_by_id(params[:map_id]) if params[:map_id]
+    map.destroy if map
+
+    redirect_to(:action => :index)
+  end
+  
   
 end

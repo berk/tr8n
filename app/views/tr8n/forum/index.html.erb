@@ -27,12 +27,12 @@
                 <td style="vertical-align:top;padding-right:5px;">
                   <%=tr8n_user_mugshot_tag(topic.translator, :linked => true)%>
                 </td>
-                <td style="vertical-align:top">
+                <td style="vertical-align:top;">
                   <%=tr8n_user_tag(topic.translator, :linked => true)%>
                   <div style="color:grey;">
                       <%=topic.created_at.trl(:date_time) %>
                   </div>
-                  <div style="font-size:10px;">
+                  <div style="font-size:10px">
                     <% if tr8n_current_user_is_translator? and topic.translator == tr8n_current_translator %>  
                         <%=link_to(tra("Delete"), {:action => :delete_topic, :topic_id => topic.id}, 
                           {:confirm => trl("Are you sure you want to delete this topic and all of the messages under it?")})%>
@@ -71,7 +71,7 @@
       <table style="width:100%;">
         <tr>
           <td align='left'><%= page_entries_info(@topics, :entry_name => "forum topic", :skip_decorations => true) %></td>
-          <td align='right'><%= will_paginate(@topics, :skip_decorations => true) %></td>
+          <td align='right'><%= will_paginate(@topics, :skip_decorations => true, :style => "text-align:right;") %></td>
         </tr>
       </table>
     </div>

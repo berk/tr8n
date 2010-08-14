@@ -25,6 +25,18 @@ namespace :tr8n do
     end
   end
 
+  desc "Updates languages with missing keys"
+  task :update_language_keys => :environment do
+    Tr8n::Config.default_languages.each do |locale, info|
+      lang = Tr8n::Language.for(locale)
+      next unless lang
+      
+      lang.google_key = info[:google_key] 
+      lang.facebook_key = info[:facebook_key] 
+      lang.save      
+    end
+  end
+
   desc "Resets all metrics"
   task :reset_metrics => :environment do
     Tr8n::LanguageMetric.reset_metrics

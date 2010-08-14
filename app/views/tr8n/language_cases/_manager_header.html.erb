@@ -1,5 +1,6 @@
 <div class="original_text">
   <div class="supplemental">
+    <%=link_to_function(image_tag("/tr8n/images/exclamation.png", :title=>trl("Report these language case values")), "tr8nLanguageCaseManager.reportCaseMap('#{@map.id}')")%>
     <%= tr8n_help_icon_tag %>
   </div>
   
@@ -11,4 +12,5 @@
   </div>
 </div>
 
-<%=tr8n_spinner_tag("tr8n_translator_spinner", "Saving...")%>
+<%=tr8n_spinner_tag("tr8n_language_case_submit_spinner", "Saving...")%>
+<%=tr8n_spinner_tag("tr8n_language_case_report_spinner", "Reporting...")%>

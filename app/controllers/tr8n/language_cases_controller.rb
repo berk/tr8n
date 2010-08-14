@@ -24,10 +24,11 @@
 class Tr8n::LanguageCasesController < Tr8n::BaseController
 
   before_filter :validate_current_translator
+  before_filter :validate_language_management, :only => [:index]
     
   # used by a client app
   def index
-    conditions = ["language_id = ?", tr8n_current_language.id]
+    conditions = ["language_id = ? and reported is null or reported = ?", tr8n_current_language.id, false]
     
     unless params[:search].blank?
       conditions[0] << "and key like ?" 
@@ -37,41 +38,41 @@ class Tr8n::LanguageCasesController < Tr8n::BaseController
     @maps = Tr8n::LanguageCaseValueMap.paginate(:per_page => per_page, :page => page, :conditions => conditions, :order => "updated_at desc")    
   end
   
-  def lb_value_map
-    @map = Tr8n::LanguageCaseValueMap.find_by_id(params[:map_id]) if params[:map_id]
-    @map ||= Tr8n::LanguageCaseValueMap.new(:language => tr8n_current_language)
-    
-    render :layout => false
-  end
-  
-  def delete_value_map
-    map = Tr8n::LanguageCaseValueMap.find_by_id(params[:map_id]) if params[:map_id]
-    map.destroy if map
-
-    redirect_to(:action => :index)
-  end
-  
   def manager
     @map = Tr8n::LanguageCaseValueMap.for(tr8n_current_language, params[:case_key])
-    @map ||= Tr8n::LanguageCaseValueMap.create(:language => tr8n_current_language, :key => params[:case_key])
+    @map ||= Tr8n::LanguageCaseValueMap.create(:language => tr8n_current_language, :translator => tr8n_current_translator, :key => params[:case_key])
     
     render :layout => false
-  end
-  
-  def update_value_map
-    map = Tr8n::LanguageCaseValueMap.find_by_id(params[:map_id]) unless params[:map_id].blank?
-    map ||= Tr8n::LanguageCaseValueMap.new(:language => tr8n_current_language)
-    map.update_attributes(params[:map])
-    map.save
-    
-    redirect_to_source
   end
   
   def switch_manager_mode
     @map = Tr8n::LanguageCaseValueMap.for(tr8n_current_language, params[:case_key])
-    @map ||= Tr8n::LanguageCaseValueMap.create(:language => tr8n_current_language, :key => params[:case_key])
+    @map ||= Tr8n::LanguageCaseValueMap.create(:language => tr8n_current_language, :key => params[:case_key], :reported => false)
     
     render :partial => params[:mode]
+  end
+  
+  def update_value_map
+    map = Tr8n::LanguageCaseValueMap.find_by_id(params[:map_id]) unless params[:map_id].blank?
+    map ||= Tr8n::LanguageCaseValueMap.create(:language => tr8n_current_language, :reported => false)
+    map.map = params[:map][:map]
+    map.save_with_log!(tr8n_current_translator)
+
+    redirect_to_source
+  end
+  
+  def delete_value_map
+    map = Tr8n::LanguageCaseValueMap.find_by_id(params[:map_id]) if params[:map_id]
+    map.destroy_with_log!(tr8n_current_translator) if map
+
+    redirect_to_source
+  end
+  
+  def report_value_map
+    map = Tr8n::LanguageCaseValueMap.find_by_id(params[:map_id]) unless params[:map_id].blank?
+    map.report_with_log!(tr8n_current_translator) if map
+    
+    redirect_to_source
   end
   
 end

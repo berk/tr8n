@@ -1,10 +1,6 @@
 <%= render :partial => "/tr8n/common/header" %>
 
 <div class="section_title">
-  <div style="float:right; font-size:12px; padding-top:5px;">
-    	<%=link_to_function("+ Add case values", "tr8nLightbox.show('/tr8n/language_cases/lb_value_map', {height:500})") %>
-  </div>
-  
   <%=tra("Language Case Values") %>
 </div>
 
@@ -34,12 +30,13 @@
 		
 		<% @maps.each do |map| %>
 		  <tr style="border-bottom:1px dotted #ccc;">
-			  <td style="padding:2px; font-weight:bold;"><%=map.key%></td>
+			  <td style="padding:2px; font-weight:bold;">
+				  <span case_key="<%=map.key%>" class="tr8n_language_case"><%=map.key%></span>
+				</td>
 	      <% tr8n_current_language.cases.each do |lcase| %>
-	        <td style="padding:2px;"><%=map.value_for(lcase.keyword) %></td>
+	        <td style="padding:2px;"><%=map.implied_value_for(lcase.keyword) %></td>
 	      <% end %>
 				<td style="text-align:right; vertical-align:top; width:60px; padding:2px;">
-					<%=link_to_function(image_tag("/tr8n/images/pencil.png"), "tr8nLightbox.show('/tr8n/language_cases/lb_value_map?map_id=#{map.id}', {height:500})")%>
 					<%=link_to(image_tag("/tr8n/images/cross.png"), "/tr8n/language_cases/delete_value_map?map_id=#{map.id}", :confirm => tra("Are you sure you want to delete this case map?"))%>
 				</td>
 			</tr>

@@ -1,0 +1,41 @@
+<%= render :partial => "/tr8n/admin/common/header" %>
+<%= render :partial => "tabs" %>
+<%= tr8n_will_filter(@comments) %>
+<%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @comments} %>
+
+
+<table class="admin_table">
+  <tr>
+    <th>
+      Language
+    </th>
+    <th style="width:10%">
+      Author
+    </th>
+    <th>
+      Translation Key
+    </th>
+    <th>
+      Message
+    </th>
+    <th style="width:15%">
+      Created At
+    </th>
+    <th></th>
+  </tr>  
+  <% @comments.each_with_index do |comment, index| %>
+    <tr>
+      <td><%=comment.language.english_name%></td>      
+      <td><%=link_to(comment.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :translator_id => comment.translator.id) if comment.translator %></td>
+      <td><%=link_to(comment.key.label[0..30], :action => :view, :key_id => comment.key.id)%><%="..." if comment.key.label.length > 30 %></td>      
+      <td><%=comment.toHTML%></td>
+      <td><%=comment.created_at%></td>
+      <td style="text-align:right; width:50px">
+        <%=link_to("Delete", {:action => :delete_comment, :comment_id => comment.id}, {:confirm => "Are you sure you want to delete this comment?"}) %>
+      </td>
+    </tr>
+  <% end %>
+</table>
+
+<%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @comments} %>
+<%= render :partial => "/tr8n/admin/common/footer" %>

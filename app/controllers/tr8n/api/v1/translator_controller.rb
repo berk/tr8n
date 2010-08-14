@@ -21,53 +21,14 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-####################################################################### 
-# 
-# Hidden Token Forms:
-#
-# {_he_she} 
-# {_posted__items}
-#
-#  '_' escaped as '/'
-#  '__' escaped as '__'
-# 
-# Hidden tokens cannot have rules and are there for default language
-# substitutions only
-#
-####################################################################### 
+class Tr8n::Api::V1::TranslatorController < Tr8n::Api::V1::BaseController
 
+  # returns a list of all languages
+  def index
+    return sanitize_api_response({:error => "Api is disabled"}) unless Tr8n::Config.enable_api?
+    return sanitize_api_response({:guest => true}) if tr8n_current_user_is_guest?
 
-class Tr8n::HiddenToken < Tr8n::Token
-  
-  def self.expression
-    /(\{_[\w]+\})/
-  end
-
-  def allowed_in_translation?
-    false
-  end
-
-  def language_rule
-    nil
-  end
-
-  # return humanized form
-  def prepare_label_for_translator(label)
-    label.gsub(full_name, humanized_name)
-  end
-
-  # return humanized form
-  def prepare_label_for_suggestion(label, index)
-    label.gsub(full_name, humanized_name)
-  end
-  
-  def humanized_name
-    @humanized_name ||= begin
-      hnm = name[1..-1].clone
-      hnm.gsub!('__', ' ')
-      hnm.gsub!('_', '/')
-      hnm
-    end
+    sanitize_api_response({:guest => false, :name => tr8n_current_translator.name})
   end
   
 end

@@ -1,0 +1,36 @@
+<div id="comments_module">
+	<div class="section_title">
+	  <%=tra("Comments") %>
+		<a name="comments">&nbsp;</a>
+	</div>
+
+	<div class="section_box">
+		<% if @comments.any? %>
+		  <div style="margin-bottom:5px; padding-bottom:2px; border-bottom:1px solid #ccc; ">
+		    <table style="width:100%;">
+		      <tr>
+		        <td align='left'><%= page_entries_info(@comments, {:entry_name => "comment", :skip_decorations => true}) %></td>
+		        <td style="text-align:right"><%= will_paginate(@comments, :style=>"text-align:right", :skip_decorations => true) %></td>
+		      </tr>
+		    </table>
+		  </div>
+	
+		  <table style="width:100%; ">
+		    <% @comments.each do |comment| %>
+		      <%
+		        style = (comment == @comments.last ? "" : "border-bottom:1px dotted #ccc;" )
+		      %>  
+		      <tr style="<%=style%>">
+		        <%= render :partial => "comment", :locals => {:comment => comment} %> 
+		      </tr>
+		    <% end %>
+		  </table>
+		<% else %>
+		  <div style="font-size:12px;">
+		    <%=tra("This phrase has no comments.")%>
+			</div>	
+    <% end %>		
+	  <%= render :partial => "new_comment" %>  
+	</div>
+</div>
+

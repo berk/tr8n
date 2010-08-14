@@ -26,6 +26,17 @@ class Tr8n::Api::V1::LanguageController < Tr8n::Api::V1::BaseController
   # for ssl access to the translator - using ssl_requirement plugin  
   ssl_allowed :translate  if respond_to?(:ssl_allowed)
 
+  # returns a list of all languages
+  def index
+    return sanitize_api_response({"error" => "Api is disabled"}) unless Tr8n::Config.enable_api?
+
+    languages = []
+    Tr8n::Language.enabled_languages.each do |lang|
+      languages << {:locale => lang.locale, :name => lang.full_name}
+    end
+    sanitize_api_response({:languages => languages})
+  end
+  
   def translate
     return sanitize_api_response({"error" => "Api is disabled"}) unless Tr8n::Config.enable_api?
 
@@ -33,8 +44,6 @@ class Tr8n::Api::V1::LanguageController < Tr8n::Api::V1::BaseController
 
     language = Tr8n::Language.for(params[:language]) || tr8n_current_language
     source = CGI.unescape(params[:source]) || "API"
-    
-    pp source
     
     return sanitize_api_response(translate_phrase(language, params, {:source => source})) if params[:label]
     
@@ -67,8 +76,6 @@ class Tr8n::Api::V1::LanguageController < Tr8n::Api::V1::BaseController
       return sanitize_api_response({:phrases => translations})
     elsif params[:phrases]
       
-      pp params[:phrases]
-      
       phrases = []
       begin
         phrases = HashWithIndifferentAccess.new({:data => JSON.parse(params[:phrases])})[:data]
@@ -81,8 +88,6 @@ class Tr8n::Api::V1::LanguageController < Tr8n::Api::V1::BaseController
         phrase = {:label => phrase} if phrase.is_a?(String)
         translations << translate_phrase(language, phrase, {:source => source})
       end
-      
-      pp translations
       
       return sanitize_api_response({:phrases => translations})    
     end
@@ -99,11 +104,4 @@ private
     language.translate(phrase[:label], phrase[:description], {}, {:api => true, :source => opts[:source]})
   end
   
-  def sanitize_api_response(response)
-    if Tr8n::Config.api[:response_encoding] == "xml"
-      render(:text => response.to_xml)
-    else
-      render(:text => response.to_json)
-    end      
-  end
 end

@@ -11,7 +11,7 @@
 							</div> 
             </div>
 						
-            <%= text_field_tag "map[map][#{lcase.keyword}]", @map.value_for(lcase.keyword), :style=>"width:100%;padding: 3px 0px;" %>
+            <%= text_field_tag "map[map][#{lcase.keyword}]", @map.implied_value_for(lcase.keyword), :style=>"width:99%;padding: 3px 0px;" %>
             <div style="color:#ccc;">
              <%=lcase.description%>
             </div>

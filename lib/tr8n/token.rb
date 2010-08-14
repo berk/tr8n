@@ -119,6 +119,16 @@ class Tr8n::Token
     return name unless has_case_key?
     "#{name}::#{case_key}"
   end
+
+  # used by the translator submit dialog
+  def name_for_case(case_key)
+    "#{name}::#{case_key}"
+  end
+  
+  # used by the translator submit dialog
+  def sanitized_name_for_case(case_key)
+    "{#{name_for_case(case_key)}}"
+  end
   
   def type
     return nil unless caseless_name.index(':')
@@ -159,15 +169,15 @@ class Tr8n::Token
     language_rule != nil
   end
 
-  def sanitize_token_value(value, options, language)
-    value = value.to_s unless value.is_a?(String)
+  def sanitize_token_value(object, value, options, language)
+    value = "#{value.to_s}" unless value.is_a?(String)
     
     if options[:sanitize_values] and not value.html_safe?
       value = ERB::Util.html_escape(value)
     end
     
     if has_case_key?
-      value = apply_case(value, options, language)
+      value = apply_case(object, value, options, language)
     end
     
     value
@@ -176,6 +186,8 @@ class Tr8n::Token
   ##############################################################################
   #
   # gets the value based on various evaluation methods
+  #
+  # examples:
   #
   # tr("Hello {user}", "", {:user => [current_user, current_user.name]}}
   # tr("Hello {user}", "", {:user => [current_user, "{$0} {$1}", "param1"]}}
@@ -187,32 +199,35 @@ class Tr8n::Token
   ##############################################################################
   def evaluate_token_method_array(object, method_array, options, language)
     # if single object in the array return string value of the object
-    return sanitize_token_value(object, options, language) if method_array.size == 1
+    if method_array.size == 1
+      return sanitize_token_value(object, object.to_s, options, language)
+    end  
     
     # second params identifies the method to be used with the object
     method = method_array.second
-    
     params = method_array[2..-1]
     params_with_object = [object] + params
 
-    # if second param is symbol, invoke the method on the object with the remaining values
-    if method.is_a?(Symbol)
-      return sanitize_token_value(object.send(method, *params), options.merge(:sanitize_values => true), language)
-    end
-
-    # if second param is lambda, call lambda with the remaining values
-    if method.is_a?(Proc)
-      return sanitize_token_value(method.call(*params_with_object), options, language)
-    end
-    
     # if the second param is a string, substitute all of the numeric params,  
     # with the original object and all the following params
     if method.is_a?(String)
       parametrized_value = method.clone
-      params_with_object.each_with_index do |val, i|
-        parametrized_value.gsub!("{$#{i}}", sanitize_token_value(val, options, language))  
+      if parametrized_value.index("{$")
+        params_with_object.each_with_index do |val, i|
+           parametrized_value.gsub!("{$#{i}}", sanitize_token_value(object, val, options.merge(:skip_decorations => true), language))  
+        end
       end
-      return sanitize_token_value(parametrized_value, options, language)
+      return sanitize_token_value(object, parametrized_value, options, language)
+    end
+
+    # if second param is symbol, invoke the method on the object with the remaining values
+    if method.is_a?(Symbol)
+      return sanitize_token_value(object, object.send(method, *params), options.merge(:sanitize_values => true), language)
+    end
+
+    # if second param is lambda, call lambda with the remaining values
+    if method.is_a?(Proc)
+      return sanitize_token_value(object, method.call(*params_with_object), options, language)
     end
     
     raise Tr8n::TokenException.new("Invalid array second token value: #{full_name} in #{original_label}")
@@ -247,7 +262,6 @@ class Tr8n::Token
   #                     minimizable
   #
   ##############################################################################
-  
   def token_array_value(token_value, options, language) 
     objects = token_value.first
     
@@ -332,7 +346,7 @@ class Tr8n::Token
     end
 
     # simple token
-    sanitize_token_value(object, options, language)    
+    sanitize_token_value(object, object.to_s, options, language)    
   end
 
   def allowed_in_translation?
@@ -348,7 +362,19 @@ class Tr8n::Token
     "<span class='tr8n_language_case' case_key='#{case_map_key.gsub("'", "\'")}'>#{case_value}</span>"
   end
 
-  def apply_case(value, options, language)
+
+  ##############################################################################
+  #
+  # chooses the appropriate case for the token value. case is identified with ::
+  #
+  # examples:
+  #
+  # tr("Hello {user::nom}", "", :user => current_user)
+  # tr("{actor} gave {target::dat} a present", "", :actor => user1, :target => user2)
+  # tr("This is {user::pos} toy", "", :user => current_user) 
+  #
+  ##############################################################################
+  def apply_case(object, value, options, language)
     return value unless Tr8n::Config.enable_language_cases?
     return value unless language.cases? and language.valid_case?(case_key)
     
@@ -365,11 +391,11 @@ class Tr8n::Token
       lcvm = Tr8n::LanguageCaseValueMap.for(language, p)
       case_value = p
       
-      if lcvm and lcvm.map 
-        unless lcvm.value_for(case_key).blank?
-          case_value = lcvm.value_for(case_key)
-        end
+      if lcvm
+        map_case_value = lcvm.value_for(object, case_key)
+        case_value = map_case_value unless map_case_value.blank?
       end
+
       value = value.gsub(p, decorate_language_case(p, case_value, options))
     end
     
@@ -393,8 +419,9 @@ class Tr8n::Token
     end
     
     object = object.to_s if object.nil?
-
-    label.gsub(full_name, token_value(object, options, language))
+    
+    value = token_value(object, options, language)
+    label.gsub(full_name, value)
   end
   
   # return sanitized form
@@ -403,8 +430,8 @@ class Tr8n::Token
   end
 
   # return tokenless form
-  def prepare_label_for_suggestion(label)
-    label.gsub(full_name, "")
+  def prepare_label_for_suggestion(label, index)
+    label.gsub(full_name, "(#{index})")
   end
   
   def to_s

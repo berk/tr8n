@@ -2,11 +2,12 @@
   links = []
   current_tab ||= ""
   [ ["Languages", {:action => :index}],
-    ["Language Users", {:action => :users}],
-    ["Language Rules", {:action => :rules}],
-    ["Language Cases", {:action => :cases}],
-    ["Language Metrics", {:action => :metrics}],
-    ["Language Charts", {:action => :charts}]].each do |link|
+    ["Users", {:action => :users}],
+    ["Rules", {:action => :rules}],
+    ["Cases", {:action => :cases}],
+    ["Case Values", {:action => :case_values}],
+    ["Metrics", {:action => :metrics}],
+    ["Charts", {:action => :charts}]].each do |link|
       if controller.action_name == link.last[:action].to_s
         current_tab = link.first if current_tab.blank?
         links << link.first

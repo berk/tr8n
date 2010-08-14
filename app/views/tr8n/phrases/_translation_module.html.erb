@@ -1,4 +1,4 @@
-<div id="new_translation" class="section_box colored" style="display:none">
+<div id="translation_module" class="section_box colored" style="display:none">
 	<div style="font-size:17px;padding-bottom:3px;font-weight:bold;">
 	  <%=trl("Translation for #{tr8n_current_language.english_name} Language")%>
 	</div>
@@ -7,7 +7,6 @@
 		  <%= hidden_field_tag(:translation_id, @translation.id) %>
 		  <%= hidden_field_tag(:new_translation, (@translation.id == nil).to_s ) %>
 		  <%= hidden_field_tag(:translation_key_id, @translation_key.id) %>
-		  <%= hidden_field_tag(:source_url, @source_url) %>
 		  <%= hidden_field_tag(:translation_has_dependencies, "false") %>
 		  <%= hidden_field_tag(:section_key, @section_key) %>
 		  
@@ -19,7 +18,7 @@
           <%= render(:partial => "tokens") %>
 			<% end %>		
 	
-			<% if Tr8n::Config.enable_google_suggestions? %>  
+			<% if Tr8n::Config.enable_google_suggestions? and tr8n_current_language.suggestible? %>  
 				<div id="tr8n_google_suggestion_container_<%=@translation_key.id%>" style="display:none; padding-bottom:10px;">
 				    <div class="section_title">
 				        <%=trl("Suggested Translation")%>
@@ -31,9 +30,10 @@
 				    </a>
 				    <%=image_tag("/tr8n/images/right_quote.png", :style=>"text-align:bottom;padding-top:5px;") %>
 				    
+            <% sanitized_label = @translation_key.tokenless_label.gsub('"', '\"') %>
 				    <script type="text/javascript">
 					    window.setTimeout(function() {
-                  tr8nTranslator.suggestTranslation("<%=@translation_key.id %>", "<%=@translation_key.tokenless_label %>", "<%=tr8n_current_language.locale%>");
+                  tr8nTranslator.suggestTranslation("<%=@translation_key.id %>", "<%=sanitized_label %>", "<%=@translation_key.suggestion_tokens.join(',')%>", "<%=tr8n_current_language.google_key%>");
 					    }, 500);				    	
 				    </script>
 				  
@@ -97,7 +97,7 @@
 		      <button type="submit" class="translator_btn translator_submit_btn" onClick="submitTranslation(); return false;">
 		          <span><%=trl("Translate")%></span>
 		      </button>
-		      or <%= link_to_function(trl("Cancel"), "Tr8n.Effects.show('tranlsations_list');  Tr8n.Effects.hide('new_translation');") %>
+		      or <%= link_to_function(trl("Cancel"), "viewTranslations()") %>
 		  </div>
 	
 	<% end %>

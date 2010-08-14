@@ -54,9 +54,6 @@ class Tr8n::PhrasesController < Tr8n::BaseController
 
     # for new translation
     @translation = Tr8n::Translation.new(:translation_key => @translation_key, :language => tr8n_current_language, :translator => tr8n_current_translator)
-    @source_url = "/tr8n/phrases/view?translation_key_id=#{@translation_key.id}&section_key=#{@section_key}"
-    @cancel_url = @source_url
-    @cancel_url = {:action => :index, :section_key => @section_key} if params[:source]
     @rules = {}
     
     conditions = Tr8n::Translation.search_conditions_for(params)
@@ -67,6 +64,9 @@ class Tr8n::PhrasesController < Tr8n::BaseController
     conditions << @translation_key.id
     
     @translations = Tr8n::Translation.find(:all, :conditions => conditions, :order => "rank desc, created_at desc")
+    @comments = Tr8n::TranslationKeyComment.paginate(:page => page, :per_page => per_page, 
+                      :conditions => ["language_id = ? and translation_key_id = ?", tr8n_current_language.id, @translation_key.id], 
+                      :order => "created_at desc")
     
     @grouping = {}
     if params[:grouped_by] != "nothing"
@@ -223,6 +223,31 @@ class Tr8n::PhrasesController < Tr8n::BaseController
     @translation_key = Tr8n::TranslationKey.find(params[:translation_key_id])
     @definitions = Tr8n::Dictionary.load_definitions_for(@translation_key.words)
     render :partial => "dictionary", :layout => false
+  end
+  
+  def submit_comment
+    @translation_key = Tr8n::TranslationKey.find(params[:translation_key_id])
+    Tr8n::TranslationKeyComment.create(:language => tr8n_current_language, 
+                                       :translator => tr8n_current_translator, 
+                                       :translation_key => @translation_key,
+                                       :message => params[:message])
+
+    trfn("Your comment has been added.")
+    
+    redirect_to_source
+  end
+
+  def delete_comment
+    comment = Tr8n::TranslationKeyComment.find_by_id(params[:comment_id]) unless params[:comment_id].blank?
+    comment.destroy if comment
+    
+    trfn("Your comment has been removed.")
+    
+    redirect_to_source
+  end
+
+  def report_comment
+    
   end
     
 private

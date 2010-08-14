@@ -18,7 +18,7 @@
   </tr>  
   <% @messages.each_with_index do |msg, index| %>
     <tr>
-      <td><%=link_to(msg.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :translator_id => translator.id) if msg.translator %></td>
+      <td><%=link_to(msg.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :translator_id => msg.translator.id) if msg.translator %></td>
       <td><%=msg.created_at%></td>
       <td><%=msg.toHTML%></td>
       <td style="text-align:right; width:50px">

@@ -14,13 +14,13 @@
 					(::<%=lcase.keyword%>)
        </td>
        <td style="padding:2px;vertical-align:top;">
-            <%= text_field_tag "map[map][#{lcase.keyword}][male]", @map.gender_value_for(lcase.keyword, 'male'), :style=>"width:100%;padding: 3px 0px;" %>
+            <%= text_field_tag "map[map][#{lcase.keyword}][male]", @map.gender_value_for(lcase.keyword, 'male'), :style=>"width:80px;padding: 3px 0px;" %>
        </td>
        <td style="padding:2px;vertical-align:top;">
-            <%= text_field_tag "map[map][#{lcase.keyword}][female]", @map.gender_value_for(lcase.keyword, 'female'), :style=>"width:100%;padding: 3px 0px;" %>
+            <%= text_field_tag "map[map][#{lcase.keyword}][female]", @map.gender_value_for(lcase.keyword, 'female'), :style=>"width:80px;padding: 3px 0px;" %>
        </td>
        <td style="padding:2px;vertical-align:top;">
-            <%= text_field_tag "map[map][#{lcase.keyword}][unknown]", @map.gender_value_for(lcase.keyword, 'unknown'), :style=>"width:100%;padding: 3px 0px;" %>
+            <%= text_field_tag "map[map][#{lcase.keyword}][unknown]", @map.gender_value_for(lcase.keyword, 'unknown'), :style=>"width:80px;padding: 3px 0px;" %>
        </td>
     </tr>
 		<tr>

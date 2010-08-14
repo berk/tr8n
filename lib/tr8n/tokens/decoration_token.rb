@@ -60,8 +60,8 @@ class Tr8n::DecorationToken < Tr8n::Token
   end
 
   # return only the internal part
-  def prepare_label_for_suggestion(label)
-    label.gsub(full_name, value)
+  def prepare_label_for_suggestion(label, index)
+    label.gsub(name, "(#{index})")
   end
     
   def handle_default_decorations(lambda_token_name, lambda_token_value, token_values)

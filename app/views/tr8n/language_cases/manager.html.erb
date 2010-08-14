@@ -11,27 +11,29 @@
   <%= trl("#{tr8n_current_language.english_name} Language Cases") %>
 </div>
 
-<div id="tr8n_language_case_container" class="bd" style="padding:5px;">
+<div class="bd" style="padding:5px;">
 
   <%= render(:partial => "manager_header")%>
 
-<% form_for(:map, @map, :url => {:action => :update_value_map}, :html => {:id => 'tr8n_language_case_form', :method => :post}) do |form| %>
-  <%= hidden_field_tag :map_id, @map.id %>
-  
-	<div id="tr8n_language_cases_form">
-		  <% if @map.gender_based? %>
-         <%= render :partial => "gender_based" %>
-			<% else %>
-  	     <%= render :partial => "gender_neutral" %>
-		  <% end %>
-	</div>
-
-  <div id="tr8n_language_cases_buttons" style="text-align:center;padding:10px;">
-      <button type="submit" class="translator_btn translator_submit_btn" onClick="Tr8n.Effects.submit('tr8n_language_case_form'); return false;">
-          <span><%=tra("Save")%></span>
-      </button>
-  </div>
-<% end %>
+	<div id="tr8n_language_case_container">
+		<% form_for(:map, @map, :url => {:action => :update_value_map}, :html => {:id => 'tr8n_language_case_form', :method => :post}) do |form| %>
+		  <%= hidden_field_tag :map_id, @map.id %>
+		  
+			<div id="tr8n_language_cases_form">
+				  <% if @map.gender_based? %>
+		         <%= render :partial => "gender_based" %>
+					<% else %>
+		  	     <%= render :partial => "gender_neutral" %>
+				  <% end %>
+			</div>
+		
+		  <div id="tr8n_language_cases_buttons" style="text-align:center;padding:10px;">
+		      <button type="submit" class="translator_btn translator_submit_btn" onClick="tr8nLanguageCaseManager.submitCaseMap(); return false;">
+		          <span><%=tra("Save")%></span>
+		      </button>
+		  </div>
+		<% end %>
+	</div>  
 	
 </div>  
 

@@ -21,53 +21,17 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-####################################################################### 
-# 
-# Hidden Token Forms:
-#
-# {_he_she} 
-# {_posted__items}
-#
-#  '_' escaped as '/'
-#  '__' escaped as '__'
-# 
-# Hidden tokens cannot have rules and are there for default language
-# substitutions only
-#
-####################################################################### 
-
-
-class Tr8n::HiddenToken < Tr8n::Token
+class Tr8n::TranslationKeyComment < ActiveRecord::Base
+  set_table_name :tr8n_translation_key_comments
   
-  def self.expression
-    /(\{_[\w]+\})/
-  end
-
-  def allowed_in_translation?
-    false
-  end
-
-  def language_rule
-    nil
-  end
-
-  # return humanized form
-  def prepare_label_for_translator(label)
-    label.gsub(full_name, humanized_name)
-  end
-
-  # return humanized form
-  def prepare_label_for_suggestion(label, index)
-    label.gsub(full_name, humanized_name)
-  end
+  belongs_to :language,               :class_name => "Tr8n::Language"  
+  belongs_to :translator,             :class_name => "Tr8n::Translator"  
+  belongs_to :translation_key,        :class_name => "Tr8n::TranslationKey"
   
-  def humanized_name
-    @humanized_name ||= begin
-      hnm = name[1..-1].clone
-      hnm.gsub!('__', ' ')
-      hnm.gsub!('_', '/')
-      hnm
-    end
+  alias :key :translation_key
+
+  def toHTML
+    return "" unless message
+    message.gsub("\n", "<br>")
   end
-  
 end

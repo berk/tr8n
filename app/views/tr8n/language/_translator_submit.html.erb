@@ -18,22 +18,65 @@
 						<% end %>
             
             <% if @translation_key.translation_tokens? %>
-							  <div class="small_section_title" style="color: #999; font-size: 10px;">
-							     <strong><%=trl("Translation Tokens")%></strong>
-							  </div>
-						
-                <div style="font-size:10px;">
-		                <% @translation_key.translation_tokens.each do |token| %>
-									    <% if token.is_a?(Tr8n::DecorationToken) %>
-                        <%= link_to_function(token.sanitized_name, "tr8nTranslator.insertDecorationToken('#{token.name}');", :title => trl("Click to insert this token above") ) %>
-											<% else %>
-	                      <%= link_to_function(token.sanitized_name, "tr8nTranslator.insertToken('#{token.name}');", :title => trl("Click to insert this token above") ) %>
-											<% end %>
-		                <% end %>
+                <div id="tr8n_translator_tokens_simple_view" style="font-size:10px;">
+	                <div class="small_section_title" style="color: #999; font-size: 10px;">
+	                   <strong><%=trl("Translation Tokens")%></strong>
+	                </div>
+									
+	                <% @translation_key.translation_tokens.each do |token| %>
+								    <% if token.is_a?(Tr8n::DecorationToken) %>
+                      <%= link_to_function(token.sanitized_name, "tr8nTranslator.insertDecorationToken('#{token.name}');", :title => trl("Click to insert this token above") ) %>
+										<% else %>
+                      <%= link_to_function(token.sanitized_name, "tr8nTranslator.insertToken('#{token.name}');", :title => trl("Click to insert this token above") ) %>
+										<% end %>
+	                <% end %>
+									
+									<% if tr8n_current_language.cases.any? %>
+										<div style="font-size: 10px; padding-top:15px;">
+											<%=link_to_function(trl("Click here if the token values depend on the language cases"), "Tr8n.Effects.hide('tr8n_translator_tokens_simple_view'); Tr8n.Effects.show('tr8n_translator_tokens_extended_view');")%>
+									  </div>
+									<% end %>	
                 </div>
+								
+	              <% if tr8n_current_language.cases.any? %>
+									<div id="tr8n_translator_tokens_extended_view" style="display:none">
+	                  <div class="small_section_title" style="color: #999; font-size: 10px;">
+	                     <strong><%=trl("Data Tokens")%></strong>
+	                  </div>
+	                  <div style="height:120px; overflow:auto; padding:2px; border:1px dotted #ccc; background-color:#f9f8f7;">
+										  <table style="width:100%;">
+		                    <% @translation_key.data_tokens.each do |token| %>
+										      <% tr8n_current_language.cases.each do |lcase| %>
+										      <tr>
+										      	  <td style="width:10%; padding-right:2px; vertical-align:top;font-size:10px; border-bottom:1px dotted #ccc;">
+															  <%= link_to_function(token.sanitized_name_for_case(lcase.keyword), "tr8nTranslator.insertToken('#{token.name_for_case(lcase.keyword)}');", :title => trl("Click to insert this token above") ) %>
+										      	  </td> 
+										          <td style="width:90%; vertical-align:top; border-bottom:1px dotted #ccc;">
+															   <div><%=lcase.native_name%></div>
+										             <div style="font-size:8px; color:grey;"><%=lcase.description%></div>
+										          </td>
+													</tr>
+										      <% end %>
+		                    <% end %>
+											</table>
+										</div>
+										
+										<% if @translation_key.decoration_tokens? %>
+		                <div class="small_section_title" style="color: #999; font-size: 10px;">
+		                   <strong><%=trl("Decoration Tokens")%></strong>
+		                </div>
+										<div style="font-size:10px;">
+		                  <% @translation_key.decoration_tokens.each do |token| %>
+		                      <%= link_to_function(token.sanitized_name, "tr8nTranslator.insertDecorationToken('#{token.name}');", :title => trl("Click to insert this token above") ) %>
+		                  <% end %>
+										</div>
+										<% end %>
+									</div>
+               <% end %> 
+								
             <% end %> 
 						
-		        <% if Tr8n::Config.enable_google_suggestions? %>
+		        <% if Tr8n::Config.enable_google_suggestions? and tr8n_current_language.suggestible? %>
 		        <div id="tr8n_google_suggestion_section" style="display:none; padding-top:10px;"> 
 		            <div class="small_section_title" style="color: #999; font-size: 10px;">
 		               <strong><%=trl("Suggested Translation")%></strong>
@@ -46,9 +89,9 @@
 		                </a>
 		                <%=image_tag("/tr8n/images/right_quote.png", :style=>"text-align:bottom;padding-top:5px;") %>
 		            
-		                <% sanitized_label = @translation_key.tokenless_label.gsub('"', '\"') %> 
+		                <% sanitized_label = @translation_key.tokenless_label.gsub('"', '\"') %>
 		                <script type="text/javascript">
-		                   tr8nTranslator.suggestTranslation("<%=@translation_key.id %>", "<%=sanitized_label %>", "<%=tr8n_current_language.locale%>");
+		                   tr8nTranslator.suggestTranslation("<%=@translation_key.id %>", "<%=sanitized_label %>", "<%=@translation_key.suggestion_tokens.join(',')%>", "<%=tr8n_current_language.google_key%>");
 		                </script>
 		           </div>
 		        </div>   
