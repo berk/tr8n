@@ -315,10 +315,11 @@ class Tr8n::Config
     return [] unless site_info[:after_filters]
     @after_filters ||= site_info[:after_filters].collect{|filter| filter.to_sym}
   end
+
   #########################################################
   # site user info
   # The following methods could be overloaded in the initializer
-  
+  #########################################################
   def self.site_user_info
     site_info[:user_info]
   end
@@ -531,6 +532,32 @@ class Tr8n::Config
 
   #########################################################
   # localization
+  #########################################################
+  
+  def self.strftime_symbol_to_token(symbol)
+    {
+      "%a" => "{short_week_day_name}",
+      "%A" => "{week_day_name}",
+      "%b" => "{short_month_name}",
+      "%B" => "{month_name}",
+      "%p" => "{am_pm}",
+      "%d" => "{days}",
+      "%e" => "{day_of_month}", 
+      "%j" => "{year_days}",
+      "%m" => "{months}",
+      "%W" => "{week_num}",
+      "%w" => "{week_days}",
+      "%y" => "{short_years}",
+      "%Y" => "{years}",
+      "%l" => "{trimed_hour}", 
+      "%H" => "{full_hours}", 
+      "%I" => "{short_hours}", 
+      "%M" => "{minutes}", 
+      "%S" => "{seconds}", 
+      "%s" => "{since_epoch}"
+    }[symbol]
+  end
+  
   def self.default_day_names
     localization[:default_day_names]
   end

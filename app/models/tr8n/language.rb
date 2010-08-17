@@ -172,13 +172,17 @@ class Tr8n::Language < ActiveRecord::Base
 
   def self.translate(label, desc = "", tokens = {}, options = {})
     return Tr8n::TranslationKey.substitute_tokens(label, tokens, options) unless Tr8n::Config.enabled?
+    return Tr8n::TranslationKey.substitute_tokens(label, tokens, options) if Tr8n::Config.current_language.default?
+
     options.delete(:source) unless Tr8n::Config.enable_key_source_tracking?
     Tr8n::Config.current_language.translate(label, desc, tokens, options)
   end
 
   def translate(label, desc = "", tokens = {}, options = {})
     return "" if label.blank?
-    
+    return Tr8n::TranslationKey.substitute_tokens(label, tokens, options) unless Tr8n::Config.enabled?
+    return Tr8n::TranslationKey.substitute_tokens(label, tokens, options) if default?
+
     translation_key = Tr8n::TranslationKey.find_or_create(label, desc, options)
     translation_key.translate(self, tokens.merge(:viewing_user => Tr8n::Config.current_user), options)
   end

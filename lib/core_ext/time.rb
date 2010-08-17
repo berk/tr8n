@@ -37,48 +37,41 @@ class Time
 
   def translate(format = :default, language = Tr8n::Config.current_language, options = {})
     label = (format.is_a?(String) ? format.clone : Tr8n::Config.default_date_formats[format].clone)
-    label.gsub!("%a", "{short_week_day_name}")
-    label.gsub!("%A", "{week_day_name}")
-    label.gsub!("%b", "{short_month_name}")
-    label.gsub!("%B", "{month_name}")
-    label.gsub!("%p", "{am_pm}")
-    label.gsub!("%d", "{days}")
-    label.gsub!("%j", "{year_days}")
-    label.gsub!("%l", "{trimed_hour}")
-    label.gsub!("%m", "{months}")
-    label.gsub!("%W", "{week_num}")
-    label.gsub!("%w", "{week_days}")
-    label.gsub!("%y", "{short_years}")
-    label.gsub!("%Y", "{years}")
-    label.gsub!("%H", "{full_hours}")
-    label.gsub!("%I", "{short_hours}")
-    label.gsub!("%M", "{minutes}")
-    label.gsub!("%S", "{seconds}")
-    label.gsub!("%s", "{since_epoch}")
-    label.gsub!("%e", "{day_of_month}")
+    symbols = label.scan(/(%\w)/).flatten.uniq
 
-    tokens = {
-              :days                 => with_leading_zero(day, options),
-              :year_days            => with_leading_zero(yday, options),
-              :months               => with_leading_zero(month, options),
-              :week_num             => wday,
-              :week_days            => strftime("%w"),
-              :short_years          => strftime("%y"),
-              :years                => year,
-              :short_week_day_name  => language.tr(Tr8n::Config.default_abbr_day_names[wday], "Short name for a day of a week", {}, options),
-              :week_day_name        => language.tr(Tr8n::Config.default_day_names[wday], "Day of a week", {}, options),
-              :short_month_name     => language.tr(Tr8n::Config.default_abbr_month_names[month - 1], "Short month name", {}, options),
-              :month_name           => language.tr(Tr8n::Config.default_month_names[month - 1], "Month name", {}, options),
-              :am_pm                => language.tr(strftime("%p"), "Meridian indicator", {}, options),
-              :full_hours           => hour,
-              :short_hours          => strftime("%I"),
-              :trimed_hour          => strftime("%l"),
-              :minutes              => strftime("%M"),
-              :seconds              => strftime("%S"),
-              :since_epoch          => strftime("%s"),
-              :day_of_month         => strftime("%e"),
-    }
+    selected_tokens = []
+    symbols.each do |symbol|
+      token = Tr8n::Config.strftime_symbol_to_token(symbol)
+      next unless token
+      selected_tokens << token
+      label.gsub!(symbol, token)
+    end
 
+    tokens = {}
+    selected_tokens.each do |token|
+      case token
+        when "{days}" then tokens[:days] = with_leading_zero(day, options)
+        when "{year_days}" then tokens[:year_days] = with_leading_zero(yday, options)
+        when "{months}" then tokens[:months] = with_leading_zero(month, options)
+        when "{week_num}" then tokens[:week_num] = wday
+        when "{week_days}" then tokens[:week_days] = strftime("%w")
+        when "{short_years}" then tokens[:short_years] = strftime("%y")
+        when "{years}" then tokens[:years] = year
+        when "{short_week_day_name}" then tokens[:short_week_day_name] = language.tr(Tr8n::Config.default_abbr_day_names[wday], "Short name for a day of a week", {}, options)
+        when "{week_day_name}" then tokens[:week_day_name] = language.tr(Tr8n::Config.default_day_names[wday], "Day of a week", {}, options)
+        when "{short_month_name}" then tokens[:short_month_name] = language.tr(Tr8n::Config.default_abbr_month_names[month - 1], "Short month name", {}, options)
+        when "{month_name}" then tokens[:month_name] = language.tr(Tr8n::Config.default_month_names[month - 1], "Month name", {}, options)
+        when "{am_pm}" then tokens[:am_pm] = language.tr(strftime("%p"), "Meridian indicator", {}, options)
+        when "{full_hours}" then tokens[:full_hours] = hour
+        when "{short_hours}" then tokens[:short_hours] = strftime("%I")
+        when "{trimed_hour}" then tokens[:trimed_hour] = strftime("%l")
+        when "{minutes}" then tokens[:minutes] = strftime("%M")
+        when "{seconds}" then tokens[:seconds] = strftime("%S")
+        when "{since_epoch}" then tokens[:since_epoch] = strftime("%s")
+        when "{day_of_month}" then tokens[:day_of_month] = strftime("%e")
+      end
+    end
+  
 #    options.merge!(:skip_decorations => true) if options[:skip_decorations].blank?
     language.tr(label, nil, tokens, options)
   end
