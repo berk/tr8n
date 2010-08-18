@@ -63,4 +63,70 @@ namespace :tr8n do
     end
   end
   
+  task :rtl_languages => :environment do
+    File.open('rtllanguages.yml', 'w') do |f| 
+      Tr8n::Language.find(:all, :conditions => ["right_to_left = ?", true], :order => "english_name asc").each do |l|
+        f.puts("\"#{l.locale}\":\n")
+      end
+    end
+  end
+  
+  task :export_languages => :environment do
+    File.open('languages.yml', 'w') do |f| 
+      Tr8n::Language.find(:all, :order => "english_name asc").each do |l|
+        f.puts("\"#{l.locale}\":\n")
+        f.puts("\tenglish_name: \"#{l.english_name}\"\n")
+        f.puts("\tnative_name: \"#{l.native_name}\"\n")
+        f.puts("\tgoogle_key: \"#{l.google_key}\"\n")
+        f.puts("\tfacebook_key: \"#{l.facebook_key}\"\n")
+      end
+    end
+  end
+  
+  task :configure_fallbacks => :environment do
+    Tr8n::Language.all.each do |lang|
+      locale = lang.locale
+      next unless locale.index("-")
+      fallback_locale = locale.split("-").first
+      lang.fallback_language = Tr8n::Language.for(fallback_locale)
+      lang.save
+    end
+  end
+  
+  task :fix_languages => :environment do
+    {"ay-BO"  => "ay",
+    "en-CAN"  => "en-CA",
+    "eo-EO"   => "eo",
+    "fo-FO"   => "fo",
+    "fr-CAN"  => "fr-CA",
+    "gn-PY"   => "gn",
+    "gu-IN"   => "gu",
+    "iw"      => "he",
+    "jv-ID"   => "jw",
+    "kz"      => "kk",
+    "kl"      => "tlh",
+    "mg-MG"   => "mg",
+    "mr-IN"   => "mr",
+    "ps-AF"   => "ps",
+    "qu-PE"   => "qu",
+    "rm-CH"   => "rm",
+    "sa-IN"   => "sa",
+    "ta-IN"   => "ta",
+    "xh-ZA"   => "xh",
+    "zu-ZA"   => "zu"}.each do |old_locale, new_locale|
+      lang = Tr8n::Language.for(old_locale)
+      next unless lang
+      lang.locale = new_locale
+      lang.save
+      
+      # FOR GENI ONLY - REMOVE AFTER USE
+      lang.users.each do |luser|
+        next unless luser.user
+        next unless luser.user.language == old_locale
+        luser.user.language = new_locale 
+        luser.user.save
+      end
+    end
+  end
+  
 end

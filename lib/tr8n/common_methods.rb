@@ -29,13 +29,41 @@ module Tr8n::CommonMethods
     end
   end
 
+  ######################################################################
+  # Author: Iain Hecker
+  # reference: http://github.com/iain/http_accept_language
+  ######################################################################
+  def tr8n_browser_accepted_locales
+    @accepted_languages ||= request.env['HTTP_ACCEPT_LANGUAGE'].split(/\s*,\s*/).collect do |l|
+      l += ';q=1.0' unless l =~ /;q=\d+\.\d+$/
+      l.split(';q=')
+    end.sort do |x,y|
+      raise Tr8n::Exception.new("Not correctly formatted") unless x.first =~ /^[a-z\-]+$/i
+      y.last.to_f <=> x.last.to_f
+    end.collect do |l|
+      l.first.downcase.gsub(/-[a-z]+$/i) { |x| x.upcase }
+    end
+  rescue 
+    []
+  end
+  
+  def tr8n_user_preffered_locale
+    tr8n_browser_accepted_locales.each do |locale|
+      lang = Tr8n::Language.for(locale)
+      return locale if lang and lang.enabled?
+    end
+    Tr8n::Config.default_locale
+  end
+  
   def init_tr8n
     tr8n_current_locale = nil
+    
     begin
       tr8n_current_locale = eval(Tr8n::Config.current_locale_method)
     rescue Exception => ex
       # fallback to the default session based locale implementation
-      session[:locale] = Tr8n::Config.default_locale unless session[:locale]
+      # choose the first language from the accepted languages header
+      session[:locale] = tr8n_user_preffered_locale unless session[:locale]
       session[:locale] = params[:locale] if params[:locale]
       tr8n_current_locale = session[:locale]
     end
@@ -93,5 +121,5 @@ module Tr8n::CommonMethods
     flash[:trfe] = tr(label, desc, tokens, options)
   end
   # end translation helper methods
-  
+
 end

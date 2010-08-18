@@ -31,7 +31,7 @@
 										<% end %>
 	                <% end %>
 									
-									<% if tr8n_current_language.cases.any? %>
+									<% if tr8n_current_language.cases.any? and @translation_key.data_tokens? %>
 										<div style="font-size: 10px; padding-top:15px;">
 											<%=link_to_function(trl("Click here if the token values depend on the language cases"), "Tr8n.Effects.hide('tr8n_translator_tokens_simple_view'); Tr8n.Effects.show('tr8n_translator_tokens_extended_view');")%>
 									  </div>

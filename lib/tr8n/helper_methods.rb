@@ -101,7 +101,7 @@ module Tr8n::HelperMethods
   def tr8n_language_table_tag(opts = {})
     opts[:cols] = opts[:cols].nil? ? 4 : opts[:cols]
     opts[:col_size] = opts[:col_size].nil? ? "300px" : opts[:col_size]
-    render(:partial => '/tr8n/common/language_table', :locals => {:opts => opts})    
+    render(:partial => '/tr8n/common/language_table', :locals => {:opts => opts.merge(:name => :english)})    
   end
   
   def tr8n_scripts_tag

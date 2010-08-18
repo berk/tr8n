@@ -7,3 +7,4 @@
 bold:       "<strong>{$0}</strong>"
 italic:     "<i>{$0}</i>"
 link:       "<a href='{$1}' style='{$2}'>{$0}</a>" 
+br:         "<br>{$0}"

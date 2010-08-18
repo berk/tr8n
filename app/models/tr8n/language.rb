@@ -30,7 +30,6 @@ class Tr8n::Language < ActiveRecord::Base
   has_many :language_cases,         :class_name => 'Tr8n::LanguageCase',        :dependent => :destroy, :order => "id asc"
   has_many :language_users,         :class_name => 'Tr8n::LanguageUser',        :dependent => :destroy
   has_many :translations,           :class_name => 'Tr8n::Translation',         :dependent => :destroy
-  has_many :translation_votes,      :class_name => 'Tr8n::TranslationKey',      :dependent => :destroy
   has_many :translation_key_locks,  :class_name => 'Tr8n::TranslationKeyLock',  :dependent => :destroy
   has_many :language_metrics,       :class_name => 'Tr8n::LanguageMetric'
   
@@ -44,7 +43,6 @@ class Tr8n::Language < ActiveRecord::Base
   
   def self.for(locale)
     return nil if locale.nil?
-    
     Tr8n::Cache.fetch("language_#{locale}") do 
       find_by_locale(locale)
     end
