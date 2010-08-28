@@ -29,9 +29,10 @@ class Tr8n::LanguageCaseValueMap < ActiveRecord::Base
   
   serialize :map
   
-  def self.for(language, key)
-    Tr8n::Cache.fetch("language_case_value_map_#{language.id}_#{key}") do 
-      find(:first, :conditions => ["language_id = ? and key = ? and reported is null or reported = ?", language.id, key, false])
+  def self.for(language, keyword)
+    Tr8n::Cache.fetch("language_case_value_map_#{language.id}_#{keyword}") do 
+      find_by_language_id_and_keyword(language.id, keyword)
+      # find(:first, :conditions => ["language_id = ? and keyword = ? and reported is null or reported = ?", language.id, keyword, false])
     end
   end
   
@@ -94,11 +95,11 @@ class Tr8n::LanguageCaseValueMap < ActiveRecord::Base
   end
 
   def after_save
-    Tr8n::Cache.delete("language_case_value_map_#{language.id}_#{key}")
+    Tr8n::Cache.delete("language_case_value_map_#{language.id}_#{keyword}")
   end
 
   def after_destroy
-    Tr8n::Cache.delete("language_case_value_map_#{language.id}_#{key}")
+    Tr8n::Cache.delete("language_case_value_map_#{language.id}_#{keyword}")
   end
 
 end

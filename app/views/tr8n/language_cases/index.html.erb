@@ -31,7 +31,7 @@
 		<% @maps.each do |map| %>
 		  <tr style="border-bottom:1px dotted #ccc;">
 			  <td style="padding:2px; font-weight:bold;">
-				  <span case_key="<%=map.key%>" class="tr8n_language_case"><%=map.key%></span>
+				  <span case_key="<%=map.keyword%>" case_id="" rule_id="" class="tr8n_language_case"><%=map.keyword%></span>
 				</td>
 	      <% tr8n_current_language.cases.each do |lcase| %>
 	        <td style="padding:2px;"><%=map.implied_value_for(lcase.keyword) %></td>

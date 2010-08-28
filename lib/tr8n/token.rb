@@ -353,16 +353,6 @@ class Tr8n::Token
     true
   end
 
-  def decorate_language_case(case_map_key, case_value, options = {})
-    return case_value if options[:skip_decorations]
-    return case_value if Tr8n::Config.current_user_is_guest?
-    return case_value unless Tr8n::Config.current_user_is_translator?
-    return case_value unless Tr8n::Config.current_translator.enable_inline_translations?
-    
-    "<span class='tr8n_language_case' case_key='#{case_map_key.gsub("'", "\'")}'>#{case_value}</span>"
-  end
-
-
   ##############################################################################
   #
   # chooses the appropriate case for the token value. case is identified with ::
@@ -376,35 +366,9 @@ class Tr8n::Token
   ##############################################################################
   def apply_case(object, value, options, language)
     return value unless Tr8n::Config.enable_language_cases?
-    return value unless language.cases? and language.valid_case?(case_key)
-    
-    html_tag_expression = /<\/?[^>]*>/
-    html_tokens = value.scan(html_tag_expression).uniq
-    parts = value.gsub(html_tag_expression, "").split(" ").uniq
-    
-    # replace html tokens with temporary placeholders
-    html_tokens.each_with_index do |html_token, index|
-      value = value.gsub(html_token, "{$#{index}}")
-    end
-    
-    parts.each do |p|
-      lcvm = Tr8n::LanguageCaseValueMap.for(language, p)
-      case_value = p
-      
-      if lcvm
-        map_case_value = lcvm.value_for(object, case_key)
-        case_value = map_case_value unless map_case_value.blank?
-      end
-
-      value = value.gsub(p, decorate_language_case(p, case_value, options))
-    end
-    
-    # replace back the temporary placeholders with the html tokens  
-    html_tokens.each_with_index do |html_token, index|
-      value = value.gsub("{$#{index}}", html_token)
-    end
-
-    value
+    lcase = language.case_for(case_key)
+    return value unless lcase
+    lcase.apply(object, value, options)
   end
   
   def substitute(label, values = {}, options = {}, language = Tr8n::Config.current_language)

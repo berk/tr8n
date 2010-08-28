@@ -15,9 +15,27 @@
 
   <%= render(:partial => "manager_header")%>
 
-	<div id="tr8n_language_case_container">
+  <% if @lcase %>
+	  <div id="tr8n_language_case_container" style="border: 1px dotted #ccc; padding:5px; <%='display:none' if @map.id %>">
+	    <div style="font-size:12px; color:grey; padding-bottom:10px;"><%= @lcase.native_name %></div>
+	
+	    <div style="padding-bottom:10px;">
+		    <ol style="font-size: 10px; padding-left:10px; margin:1em; list-style-type:square; margin-top:0px;">
+		    <% @lcase.rules.each do |rule| %>
+				    <% style = "color:green" if @rule and @rule == rule %>
+		        <li style="<%=style%>"><%=rule.description %></li>
+		    <% end %> 
+		    </ol>
+			</div>
+			
+			<%=link_to_function("Click here if this word is an exceptional case", "tr8nLanguageCaseManager.switchToCaseMapMode()")%>
+	  </div>
+	<% end %>
+	
+	<div id="tr8n_language_case_exception_container" style="border: 1px dotted #ccc; padding:5px; <%='display:none' unless @map.id %>">
 		<% form_for(:map, @map, :url => {:action => :update_value_map}, :html => {:id => 'tr8n_language_case_form', :method => :post}) do |form| %>
 		  <%= hidden_field_tag :map_id, @map.id %>
+      <%= hidden_field_tag :case_key, @map.keyword %>
 		  
 			<div id="tr8n_language_cases_form">
 				  <% if @map.gender_based? %>

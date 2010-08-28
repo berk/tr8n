@@ -130,6 +130,26 @@ class Tr8n::LanguageController < Tr8n::BaseController
     render :partial => "edit_cases"      
   end
   
+  # ajax method for updating language case rules in edit mode
+  def update_case_rules
+    cases = parse_language_cases
+    case_index = params[:case_index].to_i
+    lcase = cases[case_index]
+  
+    if params[:case_action].index("add_rule_at")
+      position = params[:case_action].split("_").last.to_i
+      lcase.rules.insert(position, Tr8n::LanguageCaseRule.new(:language => tr8n_current_language, :definition => {}))
+    elsif params[:case_action].index("delete_rule_at")
+      position = params[:case_action].split("_").last.to_i
+      lcase.rules.delete_at(position)
+    elsif params[:case_action].index("clear_all")
+      lcase.rules = []
+    end
+    
+    render(:partial => "edit_case_rules", :locals => {:lcase => lcase, :case_index => case_index})
+  end
+  
+  
   # language selector window
   def select
     @inline_translations_allowed = false
@@ -269,10 +289,24 @@ private
     cases = []
     return cases unless params[:cases]
     
-    index = 0  
-    while params[:cases]["#{index}"]
-      cases << Tr8n::LanguageCase.new(params[:cases]["#{index}"])
-      index += 1
+    case_index = 0  
+    while params[:cases]["#{case_index}"]
+      case_rules = params[:cases]["#{case_index}"].delete("rules")
+      lcase = Tr8n::LanguageCase.new(params[:cases]["#{case_index}"])
+      rules = []
+      
+      if case_rules
+        rule_index = 0
+        while case_rules["#{rule_index}"]
+          rule_data = case_rules["#{rule_index}"].merge(:id => nil, :language_case => lcase, :language => tr8n_current_language, :translator => tr8n_current_translator)
+          rules << Tr8n::LanguageCaseRule.new(rule_data)
+          rule_index += 1
+        end
+      end
+      
+      lcase.language_case_rules = rules      
+      cases << lcase
+      case_index += 1
     end
     
     cases

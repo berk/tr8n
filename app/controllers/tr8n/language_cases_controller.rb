@@ -31,7 +31,7 @@ class Tr8n::LanguageCasesController < Tr8n::BaseController
     conditions = ["language_id = ? and reported is null or reported = ?", tr8n_current_language.id, false]
     
     unless params[:search].blank?
-      conditions[0] << "and key like ?" 
+      conditions[0] << " and keyword like ?" 
       conditions << "%#{params[:search]}%"
     end
     
@@ -39,22 +39,26 @@ class Tr8n::LanguageCasesController < Tr8n::BaseController
   end
   
   def manager
+    @lcase = Tr8n::LanguageCase.by_id(params[:case_id]) unless params[:case_id].blank?
+    @rule = Tr8n::LanguageCaseRule.by_id(params[:rule_id]) unless params[:rule_id].blank?
+    
     @map = Tr8n::LanguageCaseValueMap.for(tr8n_current_language, params[:case_key])
-    @map ||= Tr8n::LanguageCaseValueMap.create(:language => tr8n_current_language, :translator => tr8n_current_translator, :key => params[:case_key])
+    @map ||= Tr8n::LanguageCaseValueMap.new(:language => tr8n_current_language, :translator => tr8n_current_translator, :keyword => params[:case_key])
     
     render :layout => false
   end
   
   def switch_manager_mode
-    @map = Tr8n::LanguageCaseValueMap.for(tr8n_current_language, params[:case_key])
-    @map ||= Tr8n::LanguageCaseValueMap.create(:language => tr8n_current_language, :key => params[:case_key], :reported => false)
+    @map = Tr8n::LanguageCaseValueMap.for(tr8n_current_language, params[:map_keyword])
+    @map ||= Tr8n::LanguageCaseValueMap.new(:language => tr8n_current_language, :keyword => params[:case_key], :reported => false)
     
     render :partial => params[:mode]
   end
   
   def update_value_map
     map = Tr8n::LanguageCaseValueMap.find_by_id(params[:map_id]) unless params[:map_id].blank?
-    map ||= Tr8n::LanguageCaseValueMap.create(:language => tr8n_current_language, :reported => false)
+    map ||= Tr8n::LanguageCaseValueMap.new(:language => tr8n_current_language, :reported => false)
+    map.keyword = params[:case_key]
     map.map = params[:map][:map]
     map.save_with_log!(tr8n_current_translator)
 

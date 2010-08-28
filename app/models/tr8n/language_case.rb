@@ -26,8 +26,11 @@ class Tr8n::LanguageCase < ActiveRecord::Base
 
   belongs_to :language, :class_name => "Tr8n::Language"   
   belongs_to :translator, :class_name => "Tr8n::Translator"   
+  has_many   :language_case_rules, :class_name => "Tr8n::LanguageCaseRule",  :dependent => :destroy
   
-  def self.for_id(case_id)
+  alias :rules :language_case_rules
+
+  def self.by_id(case_id)
     Tr8n::Cache.fetch("language_case_#{case_id}") do 
       find_by_id(case_id)
     end
@@ -55,6 +58,59 @@ class Tr8n::LanguageCase < ActiveRecord::Base
     new_translator.deleted_language_case!(self)
     
     destroy
+  end
+
+  def apply(object, value, options)
+    html_tag_expression = /<\/?[^>]*>/
+    html_tokens = value.scan(html_tag_expression).uniq
+    words = value.gsub(html_tag_expression, "").split(" ").uniq
+    
+    # replace html tokens with temporary placeholders
+    html_tokens.each_with_index do |html_token, index|
+      value = value.gsub(html_token, "{$#{index}}")
+    end
+    
+    pp value
+    pp words
+    
+    words.each do |word|
+      lcvm = Tr8n::LanguageCaseValueMap.for(language, word)
+      pp word
+      
+      if lcvm
+        # first see if there is an exception for the value
+        map_case_value = lcvm.value_for(object, keyword)
+        case_value = map_case_value unless map_case_value.blank?
+      else
+        # try evaluating the rules
+        case_rule = evaluate_rules(object, word)
+        pp case_rule, word
+        
+        
+        case_value = case_rule.apply(word) if case_rule  
+      end
+
+      value = value.gsub(word, decorate_language_case(word, case_value || word, case_rule, options))
+    end
+    
+    # add missing html substitution
+    value
+  end
+
+  def evaluate_rules(object, value)
+    rules.each do |rule|
+      return rule if rule.evaluate(object, value)
+    end
+    nil
+  end
+
+  def decorate_language_case(case_map_key, case_value, case_rule, options = {})
+    return case_value if options[:skip_decorations]
+    return case_value if Tr8n::Config.current_user_is_guest?
+    return case_value unless Tr8n::Config.current_user_is_translator?
+    return case_value unless Tr8n::Config.current_translator.enable_inline_translations?
+    
+    "<span class='tr8n_language_case' case_id='#{id}' rule_id='#{case_rule ? case_rule.id : ''}' case_key='#{case_map_key.gsub("'", "\'")}'>#{case_value}</span>"
   end
 
   def after_save

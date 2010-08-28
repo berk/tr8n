@@ -29,7 +29,7 @@ class Tr8n::LanguageRule < ActiveRecord::Base
   
   serialize :definition
   
-  def self.for_id(rule_id)
+  def self.by_id(rule_id)
     Tr8n::Cache.fetch("language_rule_#{rule_id}") do 
       find_by_id(rule_id)
     end

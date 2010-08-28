@@ -36,26 +36,24 @@
 					    <%=tra("There are no language cases defined for this language.")%>
 					  </div>
 				<% else %>
-						<table style="width:100%">
-						  <tr style="border-bottom:1px solid #ccc;">
-						    <th style="width:10%; font-weight:bold;"><%= tra("Case Key", "Language case key") %></th>
-						    <th style="width:20%; font-weight:bold;"><%= tra("Latin Name", "Language case latin name") %></th>
-						    <th style="width:20%; font-weight:bold;"><%= tra("Native Name", "Language case native name") %></th>
-						    <th style="width:50%; font-weight:bold;"><%= tra("Description", "Language case description") %></th>
-						  </tr>
-						  
-						  <% @cases.each_with_index do |lcase, index| %>
-						      <tr>
-						        <td style="padding:1px;"><%= lcase.keyword %></td>
-						        <td style="padding:1px;"><%= lcase.latin_name %></td>
-						        <td style="padding:1px;"><%= lcase.native_name %></td>
-						        <td style="padding:1px;"><%= lcase.description %></td>
-						      </tr>
-						  <% end %>
-						</table>
+					  <% @cases.each_with_index do |lcase, index| %>
+						    <div>
+							    <div style="padding-bottom:5px; font-size:12px;">
+					          <strong><%= lcase.native_name %></strong> 
+										<br>
+                    <span style="color:grey; font-size:10px;">(::<%= lcase.keyword %>) <%= lcase.description %> </span>
+									</div>
+									
+	                <ol style="font-size: 12px; padding-left:10px; margin:1em; list-style-type:square; margin-top:0px;">
+	                <% lcase.rules.each do |rule| %>
+	                    <li style=""><%=rule.description %></li>
+	                <% end %> 
+	                </ol>
+								</div>	
+					  <% end %>
 						
 			      <div style="padding-top:15px;">
-			          <%=link_to(tra("Click here to view the current case values submitted by translators"), :controller => "/tr8n/language_cases", :action => :index) %>
+			          <%=link_to(tra("Click here to view the exceptional case values submitted by translators"), :controller => "/tr8n/language_cases", :action => :index) %>
 			      </div>
 												    
 					<% end %>
@@ -76,7 +74,7 @@
     form_hash['case_action'] = "add_at_" + position;
     performLanguageCasesOperation(form_hash);
   }
-  
+
   function deleteLanguageCase(position) {
     var form_hash = Tr8n.Utils.serializeForm('language_cases_form');
     form_hash['case_action'] = "delete_at_" + position;
@@ -91,6 +89,27 @@
   
   function performLanguageCasesOperation(params){
     Tr8n.Utils.update('language_cases', '/tr8n/language/update_cases', {
+      parameters: params,
+      method: 'post'
+    });
+  }
+	
+  function addLanguageCaseRule(case_index, position) {
+    var form_hash = Tr8n.Utils.serializeForm('language_cases_form');
+    form_hash['case_index'] = case_index;
+    form_hash['case_action'] = "add_rule_at_" + position;
+    performLanguageCaseRuleOperation(case_index, form_hash);
+  }
+
+  function deleteLanguageCaseRule(case_index, position) {
+    var form_hash = Tr8n.Utils.serializeForm('language_cases_form');
+    form_hash['case_index'] = case_index;
+    form_hash['case_action'] = "delete_rule_at_" + position;
+    performLanguageCaseRuleOperation(case_index, form_hash);
+  }
+
+  function performLanguageCaseRuleOperation(case_index, params){
+    Tr8n.Utils.update('language_case_rules_' + case_index, '/tr8n/language/update_case_rules', {
       parameters: params,
       method: 'post'
     });

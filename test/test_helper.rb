@@ -8,7 +8,6 @@ ENV["RAILS_ENV"] = "test"
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 require 'test_help'
 
-
 # create database tables
 Dir[File.expand_path("#{File.dirname(__FILE__)}/../db/migrate/*.rb")].each do |file|
   require file

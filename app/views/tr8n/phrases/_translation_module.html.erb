@@ -32,9 +32,9 @@
 				    
             <% sanitized_label = @translation_key.tokenless_label.gsub('"', '\"') %>
 				    <script type="text/javascript">
-					    window.setTimeout(function() {
-                  tr8nTranslator.suggestTranslation("<%=@translation_key.id %>", "<%=sanitized_label %>", "<%=@translation_key.suggestion_tokens.join(',')%>", "<%=tr8n_current_language.google_key%>");
-					    }, 500);				    	
+					    addEvent(window, "load", function(event) {
+                 suggestTranslation("<%=@translation_key.id %>", "<%=sanitized_label %>", "<%=@translation_key.suggestion_tokens.join(',')%>", "<%=tr8n_current_language.google_key%>");
+					    });
 				    </script>
 				  
 				    <div style="color:grey; font-size:12px; padding-top:10px;">

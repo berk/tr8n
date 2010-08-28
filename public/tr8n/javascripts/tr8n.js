@@ -40,6 +40,12 @@ var Tr8n = Tr8n || {
 ****************************************************************************/
 
 Tr8n.Effects = {
+  toggle: function(element_id) {
+    if (Tr8n.element(element_id).style.display == "none")
+		  Tr8n.element(element_id).show();
+		else
+			Tr8n.element(element_id).hide();
+  },
   hide: function(element_id) {
     Tr8n.element(element_id).style.display = "none";
   },
@@ -384,12 +390,16 @@ Tr8n.LanguageCaseManager.prototype = {
     window.scrollTo(target_position[0], scroll_height);
     this.container.style.left     = container_position.left;
     this.container.style.top      = container_position.top;
+    this.case_id                  = case_node.getAttribute('case_id');
+    this.rule_id                  = case_node.getAttribute('rule_id');
     this.case_key                 = case_node.getAttribute('case_key');
 
     window.setTimeout(function() {
       Tr8n.Utils.update('tr8n_language_case_manager', '/tr8n/language_cases/manager', {
         evalScripts: true,
         parameters: {
+            case_id: self.case_id,
+            rule_id: self.rule_id,
             case_key: self.case_key,
             stem_type: stem.v + "_" + stem.h,
             stem_offset: stem_offset
@@ -398,6 +408,11 @@ Tr8n.LanguageCaseManager.prototype = {
     }, 500);
   },
 
+  switchToCaseMapMode: function() {
+		Tr8n.Effects.hide('tr8n_language_case_container');
+    Tr8n.Effects.show('tr8n_language_case_exception_container');
+	},
+	
   switchCaseMapMode: function(mode) {
     var self = this;
     Tr8n.Utils.update('tr8n_language_cases_form', '/tr8n/language_cases/switch_manager_mode', {
@@ -411,13 +426,13 @@ Tr8n.LanguageCaseManager.prototype = {
     if (!confirm(msg)) return;
 		
 		Tr8n.element("tr8n_language_case_form").action = "/tr8n/language_cases/report_value_map";
-    Tr8n.Effects.hide('tr8n_language_case_container');
+    Tr8n.Effects.hide('tr8n_language_case_exception_container');
     Tr8n.Effects.show('tr8n_language_case_report_spinner');
     Tr8n.Effects.submit('tr8n_language_case_form');
   },
 	
   submitCaseMap: function() {
-		Tr8n.Effects.hide('tr8n_language_case_container');
+		Tr8n.Effects.hide('tr8n_language_case_exception_container');
     Tr8n.Effects.show('tr8n_language_case_submit_spinner');
     Tr8n.Effects.submit('tr8n_language_case_form');
   }
