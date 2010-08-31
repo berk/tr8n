@@ -1,2 +1,0 @@
-To install Firefox Plugin create file named "tr8n@tr8n.org" in the Extensions folder under your Firefox profile 
-and provide the path to the location of the extension.

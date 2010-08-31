@@ -1,1 +1,0 @@
-/Users/mberkovich/projects/rails/geni/vendor/plugins/tr8n/ext/firefox
