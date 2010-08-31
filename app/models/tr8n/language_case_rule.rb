@@ -77,25 +77,37 @@ class Tr8n::LanguageCaseRule < ActiveRecord::Base
     return result1
   end
   
-  def evaluate_part(value, index)
+  def evaluate_part(token_value, index)
     values = sanitize_values(definition["value#{index}"])
-    regex = values.join('|')
+    
     case definition["part#{index}"]
       when "starts_with" 
-        return false if value.scan(/\b(#{regex})/).empty?
+        values.each do |value|
+          return true if token_value.to_s =~ /^#{value.to_s}/  
+        end
+        return false
       when "does_not_start_with"         
-        return false unless value.scan(/\b(#{regex})/).empty?
+        values.each do |value|
+          return false if token_value.to_s =~ /^#{value.to_s}/  
+        end
+        return true
       when "ends_in"
-        return false if value.scan(/(#{regex})\b/).empty?
+        values.each do |value|
+          return true if token_value.to_s =~ /#{value.to_s}$/  
+        end
+        return false
       when "does_not_end_in"         
-        return false unless value.scan(/(#{regex})\b/).empty?
+        values.each do |value|
+          return false if token_value.to_s =~ /#{value.to_s}$/  
+        end
+        return true
       when "is"         
-        return false unless values.include?(value)
+        return values.include?(token_value)
       when "is_not"        
-        return false if values.include?(value)
+        return !values.include?(token_value)
     end
     
-    true
+    false
   end
   
   def apply(value)

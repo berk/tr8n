@@ -42,14 +42,14 @@ class Tr8n::LanguageCasesController < Tr8n::BaseController
     @lcase = Tr8n::LanguageCase.by_id(params[:case_id]) unless params[:case_id].blank?
     @rule = Tr8n::LanguageCaseRule.by_id(params[:rule_id]) unless params[:rule_id].blank?
     
-    @map = Tr8n::LanguageCaseValueMap.for(tr8n_current_language, params[:case_key])
+    @map = Tr8n::LanguageCaseValueMap.by_language_and_keyword(tr8n_current_language, params[:case_key])
     @map ||= Tr8n::LanguageCaseValueMap.new(:language => tr8n_current_language, :translator => tr8n_current_translator, :keyword => params[:case_key])
     
     render :layout => false
   end
   
   def switch_manager_mode
-    @map = Tr8n::LanguageCaseValueMap.for(tr8n_current_language, params[:map_keyword])
+    @map = Tr8n::LanguageCaseValueMap.by_language_and_keyword(tr8n_current_language, params[:map_keyword])
     @map ||= Tr8n::LanguageCaseValueMap.new(:language => tr8n_current_language, :keyword => params[:case_key], :reported => false)
     
     render :partial => params[:mode]

@@ -97,9 +97,11 @@ class Tr8n::TranslationKey < ActiveRecord::Base
       next unless token.dependant?
       next if included_token_hash[token.name]
       
-      if language.rule_classes.include?(token.language_rule)
-        toks << token
-        included_token_hash[token.name] = token
+      token.language_rules.each do |rule_class|
+        if language.rule_classes.include?(rule_class)
+          toks << token
+          included_token_hash[token.name] = token
+        end
       end
     end
 
@@ -180,17 +182,24 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     false
   end
   
+  # {"actor"=>{"gender"=>"true"}, "target"=>{"gender"=>"true", "value"=>"true"}}
   def generate_rule_permutations(language, translator, dependencies)
     return if dependencies.blank?
     
     token_rules = {}
     
-    dependencies.each do |token, rule_types|
-      rule_types.keys.each do |rule_type|
+    dependency_mapping = {}
+    
+    # make into {"actor"=>[1], "target"=>[1], "target_@1"=>[2]}
+    dependencies.each do |dependency, rule_types|
+      rule_types.keys.each_with_index do |rule_type, index|
+        token_key = dependency + "_@#{index}"
+        dependency_mapping[token_key] = dependency
+        
         rules = language.default_rules_for(rule_type)
-        token_rules[token] = [] unless token_rules[token]
-        token_rules[token] << rules
-        token_rules[token].flatten!
+        token_rules[token_key] = [] unless token_rules[token_key]
+        token_rules[token_key] << rules
+        token_rules[token_key].flatten!
       end
     end
     
@@ -200,14 +209,17 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     token_rules.combinations.each do |combination|
       rules = []
       rules_hash = {}
+      
       combination.each do |token, language_rule|
-        rules_hash[token] = language_rule.id.to_s
-        rules << {:token => token, :rule_id => language_rule.id.to_s}
+        token_key = dependency_mapping[token]
+        rules_hash[token_key] ||= [] 
+        rules_hash[token_key] << language_rule.id.to_s
       end
       
+      rules = rules_hash.collect{|token_key, rule_ids| {:token => token_key, :rule_id => rule_ids}}
+
       # if the user has previously create this particular combination, move on...
       next if translation_with_such_rules_exist?(language_translations, translator, rules_hash)
-
       new_translations << Tr8n::Translation.create(:translation_key => self, :language => language, :translator => translator, :label => sanitized_label, :rules => rules)
     end
     

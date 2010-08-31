@@ -75,7 +75,16 @@
     performLanguageCasesOperation(form_hash);
   }
 
+  function editLanguageCase(position) {
+		Tr8n.Effects.hide("language_case_labels_" + position);
+		Tr8n.Effects.hide("language_case_edit_link_" + position);
+    Tr8n.Effects.show("language_case_fields_" + position);
+  }
+
   function deleteLanguageCase(position) {
+		if (!confirm("<%=tra('Are you sure you want to delete this language case?')%>")) 
+		  return;
+			
     var form_hash = Tr8n.Utils.serializeForm('language_cases_form');
     form_hash['case_action'] = "delete_at_" + position;
     performLanguageCasesOperation(form_hash);

@@ -6,50 +6,43 @@
 	
 <% else %>
 
-	<table style="width:100%" cellpadding="0" cellspacing="0">
-	  <tr style="border-bottom:1px solid #ccc;">
-	    <th style="width:90px !important;">&nbsp;</th>
-	    <th style="width:150px !important; font-weight:bold;"><%= tra("Case Key", "Language case key") %></th>
-	    <th style="width:150px; font-weight:bold;"><%= tra("Latin Name", "Language case latin name") %></th>
-	    <th style="width:200px; font-weight:bold;"><%= tra("Native Name", "Language case native name") %></th>
-	    <th style="width:45%; font-weight:bold;"><%= tra("Description", "Language case description") %></th>
-			<th style="width:20px;">&nbsp;</th>
-	  </tr>
-	  
-	  <% @cases.each_with_index do |lcase, index| %>
-	      <tr>
-	        <td style="width:70px !important;">
-            <%=hidden_field_tag("cases[#{index}][id]", lcase.id)%>
-	          <input type="button" value=" + " onClick="addLanguageCase('<%=index+1%>')" style="cursor:pointer; width: 30px;">
-	          <input type="button" value=" - " onClick="deleteLanguageCase('<%=index%>')" style="cursor:pointer; width: 30px;">
-	        </td>
-	        <td>
-	           <%= text_field_tag("cases[#{index}][keyword]", lcase.keyword, :style => "width:90%; border: 1px solid red;")%>
-	        </td>
-	        <td>
-	           <%= text_field_tag("cases[#{index}][latin_name]", lcase.latin_name, :style => "width:95%;")%>
-	        </td>
-	        <td>
-	           <%= text_field_tag("cases[#{index}][native_name]", lcase.native_name, :style => "width:95%;")%>
-	        </td>
-	        <td>
-	           <%= text_field_tag("cases[#{index}][description]", lcase.description, :style => "width:95%")%>
-	        </td>
-					<td style="text-align:right; white-space: nowrap;">
-						<span style="color:grey; font-size:10px; padding-bottom:10px;"><%= lcase.rules.size %></span>
-						<%=link_to_function(image_tag("/tr8n/images/script_edit.png"), "Tr8n.element('lc_rules_#{index}').toggle()")%>
-					</td>
-	      </tr>
-        <tr>
-          <td colspan="6" id="lc_rules_<%=index%>" style="display:none">
-             <div id="language_case_rules_<%=index%>" style="padding:5px; border: 1px dotted #ccc; margin-top:5px; margin-bottom:5px; background-color:#F1F4F9;">
-                <%= render(:partial => "edit_case_rules", :locals => {:lcase => lcase, :case_index => index}) %>
-						 </div>		 
-          </td>
-        </tr>
+  <% @cases.each_with_index do |lcase, index| %>
+      <div style="padding:5px; border: 1px dotted #ccc; margin-top:5px; margin-bottom:0px; background-color:#F1F4F9;">
+				<div style="float:right">				
+				  <% unless lcase.native_name.blank? %>  
+            <%=link_to_function(image_tag("/tr8n/images/pencil.png"), "editLanguageCase('#{index}')", :id => "language_case_edit_link_#{index}")%>
+					<% end %>
+          <%=link_to_function(image_tag("/tr8n/images/delete.png"), "deleteLanguageCase('#{index}')")%>
+			  </div>
+			
+        <%=hidden_field_tag("cases[#{index}][id]", lcase.id)%>
+
+        <div id="language_case_labels_<%=index%>" style="<%='display:none' if lcase.native_name.blank? %>">
+	        <strong><%= lcase.native_name %></strong> 
+	        <br>
+	        <span style="color:grey; font-size:10px;">(::<%= lcase.keyword %>) 
+	          <%= lcase.description %> 
+	        </span>
+        </div>
 				
-	  <% end %>
-	</table>
+        <div id="language_case_fields_<%=index%>" style="<%='display:none' unless lcase.native_name.blank? %>">
+					<span style="font-weight:bold;padding-left:5px;"><%=tra("Key:", "Language case key")%></span>
+	        <%= text_field_tag("cases[#{index}][keyword]", lcase.keyword, :style => "width:50px;")%>
+	        <span style="font-weight:bold;padding-left:5px;"><%=tra("Name:", "Language case name")%></span>
+	        <%= text_field_tag("cases[#{index}][native_name]", lcase.native_name, :style => "width:200px;")%>
+					<span style="font-weight:bold;padding-left:5px;"><%=tra("Description:", "Language case description")%></span>
+	        <%= text_field_tag("cases[#{index}][description]", lcase.description, :style => "width:400px;")%>
+				</div>
+      </div>              
+	     <div id="language_case_rules_<%=index%>" style="padding:5px; border: 1px dotted #ccc; margin-top:0px; margin-bottom:5px; border-top: 0px;">
+	        <%= render(:partial => "edit_case_rules", :locals => {:lcase => lcase, :case_index => index}) %>
+			 </div>		 
+				
+  <% end %>
+	
+  <div style="color:grey; font-size:12px; padding-top:15px;">
+	 <%=link_to_function("+ Add Language Case", "addLanguageCase('#{@cases.size}')")%>
+	</div>
 	
 	<div style="color:grey; font-size:10px; padding-top:15px; padding-bottom:5px;">
 	  <%=tra("Modifying the case keyword value will invalidate all translated values provided for the case.")%>

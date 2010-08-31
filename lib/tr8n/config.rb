@@ -444,22 +444,36 @@ class Tr8n::Config
     end
   end
 
+  def self.universal_language_rules
+    @universal_language_rules ||= begin
+      urs = []
+      language_rule_classes.each do |cls|
+        next unless cls.suffixes.is_a?(String)
+        urs << cls if cls.suffixes == "*"
+      end
+      urs
+    end
+  end
+
   def self.language_rule_suffixes
     @language_rule_suffixes ||= begin
       sfx = {}
       language_rule_classes.each do |cls|
+        next unless cls.suffixes.is_a?(Array)
         cls.suffixes.each do |suffix|
-          if sfx[suffix]
-            raise Tr8n::Exception.new("The same suffix #{suffix} has been registered for multiple rules. This is not allowed.")
-          end
-          if sfx.index("_")
+          if suffix.index("_")
             raise Tr8n::Exception.new("Incorrect rule suffix: #{suffix}. Suffix may not have '_' in it.")
           end
-          sfx[suffix] = cls
+          sfx[suffix] ||= []
+          sfx[suffix] << cls
         end
       end
       sfx
     end
+  end
+
+  def self.language_rules_for_suffix(suffix)
+    language_rule_suffixes[suffix] + universal_language_rules
   end
 
   def self.allow_nil_token_values?

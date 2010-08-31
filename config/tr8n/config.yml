@@ -117,7 +117,7 @@ defaults: &defaults
   # Rules Engine Settings
   #############################################################################
   rules_engine:  
-    language_rule_classes:    [Tr8n::NumericRule, Tr8n::GenderRule, Tr8n::GenderListRule, Tr8n::DateRule]
+    language_rule_classes:    [Tr8n::NumericRule, Tr8n::GenderRule, Tr8n::GenderListRule, Tr8n::DateRule, Tr8n::ValueRule]
     data_token_classes:       [Tr8n::DataToken, Tr8n::HiddenToken, Tr8n::MethodToken, Tr8n::TransformToken]
     decoration_token_classes: [Tr8n::DecorationToken]
     allow_nil_token_values:   true
@@ -138,9 +138,12 @@ defaults: &defaults
     gender_list_rule:         # similiar to list rule, but works together with gender rule 
       object_method:          size
       token_suffixes:         [list]
-    date_rule:                # date rule
+    date_rule:                
       object_method:          to_date
       token_suffixes:         [date]
+    value_rule:               
+      object_method:          to_s
+      token_suffixes:         *
     
     # minimal rank makes the translation acceptable for subsitution and counts towards the translator rank
     translation_threshold:    1

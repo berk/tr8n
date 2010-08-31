@@ -17,6 +17,7 @@
 
   <% if @lcase %>
 	  <div id="tr8n_language_case_container" style="border: 1px dotted #ccc; padding:5px; <%='display:none' if @map.id %>">
+		  <div style="float:right; color:grey; font-size:10px;">::<%= @lcase.keyword %></div>
 	    <div style="font-size:12px; color:grey; padding-bottom:10px;"><%= @lcase.native_name %></div>
 	
 	    <div style="padding-bottom:10px;">

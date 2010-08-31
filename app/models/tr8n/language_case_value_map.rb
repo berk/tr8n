@@ -29,10 +29,9 @@ class Tr8n::LanguageCaseValueMap < ActiveRecord::Base
   
   serialize :map
   
-  def self.for(language, keyword)
+  def self.by_language_and_keyword(language, keyword)
     Tr8n::Cache.fetch("language_case_value_map_#{language.id}_#{keyword}") do 
-      find_by_language_id_and_keyword(language.id, keyword)
-      # find(:first, :conditions => ["language_id = ? and keyword = ? and reported is null or reported = ?", language.id, keyword, false])
+      find_by_language_id_and_keyword_and_reported(language.id, keyword, false)
     end
   end
   
@@ -51,12 +50,10 @@ class Tr8n::LanguageCaseValueMap < ActiveRecord::Base
     # male female definition
     if map[case_key].is_a?(Hash)
       object_gender = Tr8n::GenderRule.gender_token_value(object)
-      if object_gender == Tr8n::GenderRule.gender_object_value_for("male")
-        return map[case_key]['male']
-      elsif object_gender == Tr8n::GenderRule.gender_object_value_for("female")
+      if object_gender == Tr8n::GenderRule.gender_object_value_for("female")
         return map[case_key]['female']
       end
-      return map[case_key]['unknown']
+      return map[case_key]['male']
     end
     
     map[case_key] 

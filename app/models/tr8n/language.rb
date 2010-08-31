@@ -33,10 +33,6 @@ class Tr8n::Language < ActiveRecord::Base
   has_many :translation_key_locks,  :class_name => 'Tr8n::TranslationKeyLock',  :dependent => :destroy
   has_many :language_metrics,       :class_name => 'Tr8n::LanguageMetric'
   
-  alias :rules :language_rules
-  alias :cases :language_cases
-  alias :users :language_users
-
   def self.find_or_create(lcl, english_name)
     find_by_locale(lcl) || create(:locale => lcl, :english_name => english_name) 
   end
@@ -45,6 +41,18 @@ class Tr8n::Language < ActiveRecord::Base
     return nil if locale.nil?
     Tr8n::Cache.fetch("language_#{locale}") do 
       find_by_locale(locale)
+    end
+  end
+
+  def rules
+    Tr8n::Cache.fetch("language_rules_#{id}") do 
+      language_rules
+    end
+  end
+
+  def cases
+    Tr8n::Cache.fetch("language_cases_#{id}") do 
+      language_cases
     end
   end
 

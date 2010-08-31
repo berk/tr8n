@@ -83,8 +83,10 @@ class Tr8n::Translation < ActiveRecord::Base
     @loaded_rules ||= begin
       rulz = []
       super.each do |rule|
-        language_rule = Tr8n::LanguageRule.by_id(rule[:rule_id])
-        rulz << rule.merge({:rule => language_rule}) if language_rule  
+        [rule[:rule_id]].flatten.each do |rule_id|
+          language_rule = Tr8n::LanguageRule.by_id(rule_id)
+          rulz << rule.merge({:rule => language_rule}) if language_rule
+        end
       end
       rulz
     end

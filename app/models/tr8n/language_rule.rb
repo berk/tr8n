@@ -59,6 +59,15 @@ class Tr8n::LanguageRule < ActiveRecord::Base
     dependency
   end
 
+  def self.sanitize_values(values)
+    return [] unless values
+    values.split(",").collect{|val| val.strip} 
+  end
+  
+  def self.humanize_values(values)
+    sanitize_values(values).join(", ")
+  end
+
   def evaluate(token_value)
     raise Tr8n::Exception.new("This method must be implemented in the extending rule") 
   end
@@ -69,6 +78,10 @@ class Tr8n::LanguageRule < ActiveRecord::Base
   
   def token_description
     raise Tr8n::Exception.new("This method must be implemented in the extending rule") 
+  end
+  
+  def self.transformable?
+    true
   end
   
   def save_with_log!(new_translator)

@@ -64,6 +64,8 @@ class Tr8n::LanguageController < Tr8n::BaseController
         rule = Tr8n::LanguageRule.find(id)
         rule.destroy_with_log!(tr8n_current_translator)
       end
+      
+      Tr8n::Cache.delete("language_rules_#{tr8n_current_language.id}") 
     end
     
     if params[:section] == 'language_cases'
@@ -77,6 +79,8 @@ class Tr8n::LanguageController < Tr8n::BaseController
         lcase.language = tr8n_current_language
         lcase.save_with_log!(tr8n_current_translator)
       end
+
+      Tr8n::Cache.delete("language_cases_#{tr8n_current_language.id}") 
     end
     
     tr8n_current_language.reload

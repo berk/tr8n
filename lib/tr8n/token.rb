@@ -146,27 +146,37 @@ class Tr8n::Token
     not type.blank?
   end
   
-  def language_rule
-    @language_rule ||= begin
-      if has_type?
+  def language_rules
+    @language_rules ||= begin
+      if has_type? # if token has a type - force that type and nothing else
         rule = Tr8n::Config.language_rule_dependencies[type]
         unless rule
           raise Tr8n::TokenException.new("Unknown dependency type for #{full_name} token")
         end
-        rule
-      else
-        Tr8n::Config.language_rule_suffixes[suffix]
+        [rule]
+      else # find all language rules for the suffix
+        Tr8n::Config.language_rules_for_suffix(suffix)
       end
     end
   end
 
+  def dependencies
+    return nil unless dependant?
+    @dependencies ||= language_rules.collect{|rule| rule.dependency}
+  end
+  
+  # used for transform tokens - be aware that if you have multiple rules on a token - the first one will be selected
+  def language_rule
+    @language_rule ||= language_rules.select{|rule| rule.transformable?}.first
+  end
+
   def dependency
     return nil unless dependant?
-    language_rule.dependency
+    @dependency ||= language_rule.dependency
   end
 
   def dependant?
-    language_rule != nil
+    not language_rules.empty?
   end
 
   def sanitize_token_value(object, value, options, language)

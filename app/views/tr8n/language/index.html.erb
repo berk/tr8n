@@ -2,13 +2,10 @@
 
 <%=render(:partial => "basic_info", :locals => {:mode => :view}) %>
 <%=render(:partial => "prohibited_words", :locals => {:mode => :view}) %>
-<% unless tr8n_current_language.default? %>
-  <%=render(:partial => "grammar", :locals => {:mode => :view}) %>
-	
-	<% if Tr8n::Config.enable_language_cases? %>
-    <%=render(:partial => "language_cases", :locals => {:mode => :view}) %>
-	<% end %>	
-<% end %>
+<%=render(:partial => "grammar", :locals => {:mode => :view}) %>
+<% if Tr8n::Config.enable_language_cases? %>
+  <%=render(:partial => "language_cases", :locals => {:mode => :view}) %>
+<% end %>	
 
 <script>
   function switchSectionMode(section, mode) {

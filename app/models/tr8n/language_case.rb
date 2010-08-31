@@ -28,16 +28,20 @@ class Tr8n::LanguageCase < ActiveRecord::Base
   belongs_to :translator, :class_name => "Tr8n::Translator"   
   has_many   :language_case_rules, :class_name => "Tr8n::LanguageCaseRule",  :dependent => :destroy
   
-  alias :rules :language_case_rules
-
   def self.by_id(case_id)
     Tr8n::Cache.fetch("language_case_#{case_id}") do 
       find_by_id(case_id)
     end
   end
   
-  def self.for(language)
+  def self.by_language(language)
     find(:all, :conditions => ["language_id = ?", language.id])
+  end
+
+  def rules
+    Tr8n::Cache.fetch("language_case_rules_#{id}") do 
+      language_case_rules
+    end
   end
 
   def save_with_log!(new_translator)
@@ -70,12 +74,9 @@ class Tr8n::LanguageCase < ActiveRecord::Base
       value = value.gsub(html_token, "{$#{index}}")
     end
     
-    pp value
-    pp words
-    
+#    pp words
     words.each do |word|
-      lcvm = Tr8n::LanguageCaseValueMap.for(language, word)
-      pp word
+      lcvm = Tr8n::LanguageCaseValueMap.by_language_and_keyword(language, word)
       
       if lcvm
         # first see if there is an exception for the value
@@ -84,16 +85,18 @@ class Tr8n::LanguageCase < ActiveRecord::Base
       else
         # try evaluating the rules
         case_rule = evaluate_rules(object, word)
-        pp case_rule, word
-        
-        
+#        pp case_rule, word
         case_value = case_rule.apply(word) if case_rule  
       end
 
       value = value.gsub(word, decorate_language_case(word, case_value || word, case_rule, options))
     end
     
-    # add missing html substitution
+    # replace back the temporary placeholders with the html tokens  
+    html_tokens.each_with_index do |html_token, index|
+      value = value.gsub("{$#{index}}", html_token)
+    end
+     
     value
   end
 
@@ -106,6 +109,7 @@ class Tr8n::LanguageCase < ActiveRecord::Base
 
   def decorate_language_case(case_map_key, case_value, case_rule, options = {})
     return case_value if options[:skip_decorations]
+    return case_value if language.default?
     return case_value if Tr8n::Config.current_user_is_guest?
     return case_value unless Tr8n::Config.current_user_is_translator?
     return case_value unless Tr8n::Config.current_translator.enable_inline_translations?
@@ -115,10 +119,12 @@ class Tr8n::LanguageCase < ActiveRecord::Base
 
   def after_save
     Tr8n::Cache.delete("language_case_#{id}")
+    Tr8n::Cache.delete("language_case_rules_#{id}") 
   end
 
   def after_destroy
     Tr8n::Cache.delete("language_case_#{id}")
+    Tr8n::Cache.delete("language_case_rules_#{id}") 
   end
 
 end
