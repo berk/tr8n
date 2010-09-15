@@ -24,21 +24,30 @@
 class Tr8n::TotalLanguageMetric < Tr8n::LanguageMetric
 
   def update_metrics!
-    attribs = default_attributes
-    attribs.each do |key, value|
-      attribs[key] = Tr8n::DailyLanguageMetric.sum(key, :conditions => ["language_id = ?", language_id])
-    end
-    update_attributes(attribs)
+    self.user_count = Tr8n::LanguageUser.count(:conditions => ["language_id = ?", language_id])
+    self.translator_count = Tr8n::LanguageUser.count(:conditions => ["language_id = ? and translator_id is not null", language_id])
+    self.translation_count = Tr8n::Translation.count(:conditions => ["language_id = ?", language_id])
+    self.key_count = Tr8n::TranslationKey.count
+    
+    self.locked_key_count = Tr8n::TranslationKey.count("distinct tr8n_translation_keys.id",
+        :conditions => ["tr8n_translation_key_locks.language_id = ? and tr8n_translation_key_locks.locked = ?", language_id, true],
+        :joins => "join tr8n_translation_key_locks on tr8n_translation_keys.id = tr8n_translation_key_locks.translation_key_id") 
+    self.translated_key_count = Tr8n::TranslationKey.count("distinct tr8n_translation_keys.id", 
+        :conditions => ["tr8n_translations.language_id = ?", language_id], 
+        :joins => "join tr8n_translations on tr8n_translation_keys.id = tr8n_translations.translation_key_id") 
+    save
 
-    language.update_attributes(:completeness => language_completeness)
+    language.update_attributes(:completeness => calculate_language_completeness)
+    
+    self
   end
   
-  def language_completeness
+  def calculate_language_completeness
     keys_with_approved_translations_count = Tr8n::TranslationKey.count("distinct tr8n_translation_keys.id", 
         :conditions => ["tr8n_translations.language_id = ? and tr8n_translations.rank >= ?", language_id, Tr8n::Config.translation_threshold], 
         :joins => "join tr8n_translations on tr8n_translation_keys.id = tr8n_translations.translation_key_id") 
     
-    return 0 if keys_with_approved_translations_count == 0
+    return 0 if keys_with_approved_translations_count == 0 or key_count == 0
     
     (keys_with_approved_translations_count * 100 / key_count)
   end

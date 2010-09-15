@@ -49,7 +49,7 @@ class Tr8n::LanguageMetric < ActiveRecord::Base
     last_daily_metric = Tr8n::DailyLanguageMetric.find(:first, :conditions => "metric_date is not null", :order => "metric_date desc")
     metric_date = last_daily_metric.nil? ? Date.new(2010, 5, 1) : last_daily_metric.metric_date
 
-    Tr8n::Language.all.each do |lang|
+    Tr8n::Language.enabled_languages.each do |lang|
       Tr8n::Logger.debug("Processing #{lang.english_name} language...")
       
       start_date = metric_date
@@ -71,6 +71,13 @@ class Tr8n::LanguageMetric < ActiveRecord::Base
       lang.update_total_metrics
     end    
   end
+  
+  def self.calculate_total_metrics
+    Tr8n::Language.enabled_languages.each do |lang|
+      Tr8n::Logger.debug("Generating total data for #{lang.english_name} language...")
+      lang.update_total_metrics
+    end    
+  end  
   
   def not_translated_count
     return key_count unless translated_key_count

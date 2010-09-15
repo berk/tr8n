@@ -4,7 +4,7 @@
 
 <%=link_to_function("+ Add new language", "tr8nLightbox.show('/tr8n/admin/language/lb_update', {height:350})") %>
 |
-<%=link_to("Calculate recent metrics", {:action => :calculate_metrics}, :confirm => "Are you sure you want to run this opperation?")%>
+<%=link_to("Calculate completeness", {:action => :calculate_total_metrics}, :confirm => "Are you sure you want to run this opperation?")%>
 
 <%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @languages} %>
 
@@ -26,10 +26,19 @@
       Right to Left
     </th>
     <th style="text-align:right">
-      Completeness
+      Featured Index
     </th>
     <th style="text-align:right">
-      Featured Index
+      Users
+    </th>
+    <th style="text-align:right">
+      Translators
+    </th>
+    <th style="text-align:right">
+      Translations
+    </th>
+    <th style="text-align:right">
+      Completeness
     </th>
     <th></th>
   </tr>  
@@ -56,6 +65,16 @@
            <%=lang.right_to_left? %>
         </span>
       </td>
+      <td style="text-align:right"><%=lang.featured_index %></td>
+      <td style="text-align:right">
+      	<%=lang.total_metric.user_count%>
+      </td>
+      <td style="text-align:right">
+        <%=lang.total_metric.translator_count%>
+      </td>
+      <td style="text-align:right">
+        <%=lang.total_metric.translation_count%>
+      </td>
       <td style="text-align:right">
         <% if lang.completeness == 100 %>
           <span style="color:green">
@@ -65,7 +84,6 @@
           <%=lang.completeness ? lang.completeness : '0' %>%
         </span>
       </td>
-      <td style="text-align:right"><%=lang.featured_index %></td>
       <td style="text-align:right">
         <%=link_to("View", :action => :view, :lang_id => lang.id) %>
 				|

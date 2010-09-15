@@ -27,12 +27,18 @@ class Tr8n::LanguageMetricFilter < Tr8n::BaseFilter
     defs = super  
     defs[:language_id][:is] = :list
     defs[:language_id][:is_not] = :list
+    defs[:type][:is] = :list
+    defs[:type][:is_not] = :list
     defs
   end
   
   def value_options_for(criteria_key)
     if criteria_key == :language_id
       return Tr8n::Language.filter_options 
+    end
+
+    if criteria_key == :type
+      return ["DailyLanguageMetric", "MonthlyLanguageMetric", "TotalLanguageMetric"]
     end
 
     return []
@@ -48,14 +54,10 @@ class Tr8n::LanguageMetricFilter < Tr8n::BaseFilter
     super_conditions = super(key)
     return super_conditions if super_conditions
  
-    case filter_name
+    case key
       when "totals"
-        return [:metric_date, :is_not_provided]
+        return [:type, :is, "TotalLanguageMetric"]
     end   
-  end
-
-  def default_filter_if_empty
-    "updated_today"
   end
 
 end

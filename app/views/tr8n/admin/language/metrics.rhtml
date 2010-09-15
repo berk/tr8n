@@ -1,7 +1,9 @@
 <%= render :partial => "/tr8n/admin/common/header" %>
 <%= render :partial => "tabs" %>
 <%= tr8n_will_filter(@metrics) %>
-<%=link_to("Calculate recent metrics", {:action => :calculate_metrics}, :confirm => "Are you sure you want to run this opperation?")%>
+<%=link_to("Calculate daily metrics", {:action => :calculate_metrics}, :confirm => "Are you sure you want to run this opperation?")%>
+ | 
+<%=link_to("Calculate total metrics", {:action => :calculate_total_metrics}, :confirm => "Are you sure you want to run this opperation?")%>
 <br>
 
 <%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @metrics} %>
@@ -11,6 +13,9 @@
   <tr>
     <th style="width:10%">
       Language
+    </th>
+    <th style="width:10%">
+      Type
     </th>
     <th style="width:15%">
       Metric Date
@@ -34,6 +39,7 @@
   <% @metrics.each_with_index do |metric, index| %>
     <tr>
       <td><%=metric.language.english_name%></td>
+      <td><%=metric.type%></td>
       <td><%=metric.metric_date%></td>
       <td class="numeric"><%=metric.user_count%></td>
       <td class="numeric"><%=metric.translator_count%></td>

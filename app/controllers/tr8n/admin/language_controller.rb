@@ -63,6 +63,13 @@ class Tr8n::Admin::LanguageController < Tr8n::Admin::BaseController
     trfn("Languages metrics have been recalculated")
     redirect_to_source
   end
+
+  def calculate_total_metrics
+    Tr8n::LanguageMetric.calculate_total_metrics
+    
+    trfn("Languages metrics have been recalculated")
+    redirect_to_source
+  end
   
   def rules
     @rules = Tr8n::LanguageRule.filter(:params => params, :filter => Tr8n::LanguageRuleFilter)

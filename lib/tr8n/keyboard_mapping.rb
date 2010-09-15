@@ -1,3 +1,4 @@
+# encoding: utf-8
 #--
 # Copyright (c) 2010 Michael Berkovich, Geni Inc
 #
