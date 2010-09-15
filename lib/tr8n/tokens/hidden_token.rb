@@ -47,6 +47,18 @@ class Tr8n::HiddenToken < Tr8n::Token
     false
   end
 
+  def supports_cases?
+    false
+  end
+
+  def dependant?
+    false
+  end
+
+  def dependency_rules
+    []
+  end
+
   def language_rule
     nil
   end

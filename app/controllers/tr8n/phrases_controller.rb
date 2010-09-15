@@ -50,6 +50,12 @@ class Tr8n::PhrasesController < Tr8n::BaseController
   def view
     @translation_key = Tr8n::TranslationKey.find_by_id(params[:translation_key_id])
     @translation_key = Tr8n::TranslationKey.random if params[:dir] == "random"
+
+    unless @translation_key
+      trfe("This phrase could not be found")
+      return redirect_to_site_default_url
+    end
+    
     @show_add_dialog = (params[:mode] == "add" or @translation_key.translations_for(tr8n_current_language).empty?)
 
     # for new translation

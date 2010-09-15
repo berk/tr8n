@@ -104,6 +104,10 @@ class Tr8n::Token
       end
     end
   end
+
+  def supports_cases?
+    true
+  end
   
   def has_case_key?
     not case_key.blank?
