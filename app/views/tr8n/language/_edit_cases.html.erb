@@ -15,8 +15,6 @@
           <%=link_to_function(image_tag("/tr8n/images/delete.png"), "deleteLanguageCase('#{index}')")%>
 			  </div>
 			
-        <%=hidden_field_tag("cases[#{index}][id]", lcase.id)%>
-
         <div id="language_case_labels_<%=index%>" style="<%='display:none' if lcase.native_name.blank? %>">
 	        <strong><%= lcase.native_name %></strong> 
 	        <br>

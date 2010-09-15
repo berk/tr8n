@@ -23,4 +23,20 @@
 
 class Tr8n::TranslationKeyFilter < Tr8n::BaseFilter
   
+  def default_filters
+    super + [
+      ["Deprecated Keys", "deprecated"]
+    ]
+  end
+
+  def default_filter_conditions(key)
+    super_conditions = super(key)
+    return super_conditions if super_conditions
+
+    case key
+      when "deprecated"
+        return [:deprecated_at, :is_provided]
+    end
+  end
+  
 end

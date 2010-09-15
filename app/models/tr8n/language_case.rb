@@ -39,6 +39,8 @@ class Tr8n::LanguageCase < ActiveRecord::Base
   end
 
   def rules
+    return language_case_rules if id.blank?
+    
     Tr8n::Cache.fetch("language_case_rules_#{id}") do 
       language_case_rules
     end

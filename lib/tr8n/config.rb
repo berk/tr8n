@@ -69,11 +69,14 @@ class Tr8n::Config
 
   def self.models
     [ 
-       Tr8n::LanguageRule, Tr8n::LanguageCase, Tr8n::LanguageUser, Tr8n::Language, Tr8n::LanguageMetric,
-       Tr8n::TranslationKey, Tr8n::TranslationKeySource, Tr8n::TranslationSource, Tr8n::TranslationKeyLock,
-       Tr8n::Translation, Tr8n::TranslationVote, Tr8n::Glossary,
+       Tr8n::LanguageRule, Tr8n::LanguageUser, Tr8n::Language, Tr8n::LanguageMetric,
+       Tr8n::LanguageCase, Tr8n::LanguageCaseValueMap, Tr8n::LanguageCaseRule,
+       Tr8n::TranslationKey, Tr8n::TranslationKeySource, Tr8n::TranslationSource,
+       Tr8n::TranslationKeyComment,  Tr8n::TranslationKeyLock,
+       Tr8n::Translation, Tr8n::TranslationVote,
        Tr8n::Translator, Tr8n::TranslatorLog, Tr8n::TranslatorMetric,
-       Tr8n::LanguageForumTopic, Tr8n::LanguageForumMessage, Tr8n::LanguageForumAbuseReport    
+       Tr8n::LanguageForumTopic, Tr8n::LanguageForumMessage, Tr8n::LanguageForumAbuseReport,
+       Tr8n::Glossary
     ]    
   end
 
@@ -229,6 +232,10 @@ class Tr8n::Config
 
   def self.enable_translator_language?
     config[:enable_translator_language]
+  end
+
+  def self.enable_key_logger?
+    config[:enable_key_logger]
   end
 
   #########################################################
@@ -473,7 +480,8 @@ class Tr8n::Config
   end
 
   def self.language_rules_for_suffix(suffix)
-    language_rule_suffixes[suffix] + universal_language_rules
+    suffix_rules = language_rule_suffixes[suffix] || []
+    suffix_rules + universal_language_rules
   end
 
   def self.allow_nil_token_values?
@@ -536,6 +544,10 @@ class Tr8n::Config
 
   def self.default_date_rules(locale = default_locale)
     load_default_rules("date", locale)
+  end
+
+  def self.default_value_rules(locale = default_locale)
+    load_default_rules("value", locale)
   end
 
   def self.default_cases_for(locale = default_locale)

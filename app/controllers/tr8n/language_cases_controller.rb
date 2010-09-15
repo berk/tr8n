@@ -28,7 +28,7 @@ class Tr8n::LanguageCasesController < Tr8n::BaseController
     
   # used by a client app
   def index
-    conditions = ["language_id = ? and reported is null or reported = ?", tr8n_current_language.id, false]
+    conditions = ["language_id = ? and (reported is null or reported = ?)", tr8n_current_language.id, false]
     
     unless params[:search].blank?
       conditions[0] << " and keyword like ?" 

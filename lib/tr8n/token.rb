@@ -70,6 +70,10 @@ class Tr8n::Token
   def name
     @name ||= declared_name.split(':').first.strip
   end
+
+  def permutable_name
+    @permutable_name ||= name.split(".").first
+  end
   
   def suffix
     @suffix ||= name.split('_').last
@@ -155,19 +159,18 @@ class Tr8n::Token
         end
         [rule]
       else # find all language rules for the suffix
-        Tr8n::Config.language_rules_for_suffix(suffix)
+        [] + Tr8n::Config.language_rules_for_suffix(suffix)
       end
     end
+  end
+  
+  def dependency_rules
+    @dependency_rules ||= language_rules.select{|rule| rule.transformable?}
   end
 
   def dependencies
     return nil unless dependant?
     @dependencies ||= language_rules.collect{|rule| rule.dependency}
-  end
-  
-  # used for transform tokens - be aware that if you have multiple rules on a token - the first one will be selected
-  def language_rule
-    @language_rule ||= language_rules.select{|rule| rule.transformable?}.first
   end
 
   def dependency
@@ -175,8 +178,13 @@ class Tr8n::Token
     @dependency ||= language_rule.dependency
   end
 
+  # used for transform tokens - be aware that if you have multiple rules on a token - the first one will be selected
+  def language_rule
+    @language_rule ||= dependency_rules.first
+  end
+
   def dependant?
-    not language_rules.empty?
+    not dependency_rules.empty?
   end
 
   def sanitize_token_value(object, value, options, language)

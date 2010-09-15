@@ -7,18 +7,19 @@ namespace :tr8n do
   
   desc "Initializes all of the tables with default data"
   task :init => :environment do
+    raise "This action is prohibited in this environment" if ['production', 'stage', 'staging'].include?(Rails.env)
     Tr8n::Config.reset_all!
   end
   
   desc "Adds missing languages from the yml file"
-  task :update_languages => :environment do
+  task :import_languages => :environment do
     Tr8n::Config.default_languages.each do |locale, info|
       lang = Tr8n::Language.for(locale)
       next if lang
       
       info[:right_to_left] = false if info[:right_to_left].nil?
       info[:locale] = locale
-      info[:enabled] = true
+      info[:enabled] = false
       lang = Tr8n::Language.create(info)
       
       lang.reset!
@@ -93,6 +94,7 @@ namespace :tr8n do
     end
   end
   
+  # for old Geni languages only
   task :fix_languages => :environment do
     {"ay-BO"  => "ay",
     "en-CAN"  => "en-CA",
@@ -120,13 +122,86 @@ namespace :tr8n do
       lang.save
       
       # FOR GENI ONLY - REMOVE AFTER USE
-      lang.users.each do |luser|
+      lang.language_users.each do |luser|
         next unless luser.user
         next unless luser.user.language == old_locale
         luser.user.language = new_locale 
         luser.user.save
       end
     end
+  end
+  
+  task :deprecate_keys => :environment do
+    used_keys = {}
+    
+    puts "Running deprecation process..."
+    t0 = Time.now
+
+    puts "Scanning log file..."
+    counter = 1
+    file = File.new(Tr8n::KeyLogger.logfile_path, "r")
+    while (key_line = file.gets)
+      key_id = key_line.strip
+      used_keys[key_id] ||= 0
+      used_keys[key_id] += 1
+      counter += 1
+      
+      puts "Scanned #{counter} lines..." if counter % 100 == 0
+    end
+    file.close
+    t1 = Time.now
+    puts "Scanned #{used_keys.keys.size} unique keys"
+    puts "Scanning process took #{t1-t0} mls"
+    
+    puts "Deprecating keys..."
+    puts "There are #{Tr8n::TranslationKey.count} keys in the system"
+    
+    deprecate_count = 0
+    undeprecate_count = 0
+    Tr8n::TranslationKey.all.each do |tkey|
+      key_id = tkey.id.to_s
+      if used_keys[key_id]
+        if tkey.deprecated?
+          tkey.undeprecate!
+          undeprecate_count += 1
+        end
+      else
+        unless tkey.deprecated?
+          tkey.deprecate!
+          deprecate_count += 1
+        end
+      end
+    end
+    
+    t2 = Time.now
+    puts "Deprecated #{deprecate_count} keys and undeprecated #{undeprecate_count} keys"
+    puts "Deprecation process took #{t2-t1} mls"
+  end  
+  
+  # will delete all keys deprecated prior to the date passed as a parameter
+  task :delete_deprecated_keys => :environment do
+    date = env('before') || Date.today
+    
+    puts "Running deprecation destruction process..."
+    t0 = Time.now
+    
+    puts "All keys deprecated before #{date} will be destroyed!"
+    deprecated_keys = Tr8n::TranslationKey.find(:all, :conditions => ["deprecated_at is not null and deprecated_at < ?", date])
+    
+    puts "There are #{deprecated_keys.size} keys to be destroyed."
+    puts "Destroying deprecated keys..." if deprecated_keys.size > 0
+
+    destroy_count = 0
+    deprecated_keys.each do |tkey|
+      tkey.destroy
+      destroy_count += 1
+      puts "Destroyed #{destroy_count} keys..." if destroy_count % 100 == 0
+    end
+    
+    t1 = Time.now
+  
+    puts "Destroyed #{destroy_count} keys"
+    puts "Destruction process took #{t1-t0} mls"
   end
   
 end

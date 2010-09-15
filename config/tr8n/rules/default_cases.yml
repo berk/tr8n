@@ -82,12 +82,12 @@ en-US:
 ru:
   case1:                
     keyword:          "nom"
-    latin_name:       "Nominative"
+    latin_name:       "Nominativus"
     native_name:      "Именительный падеж" 
     description:      "Есть - Кто? Что?"
   case2:               
     keyword:          "gen"
-    latin_name:       "Genitive"
+    latin_name:       "Genitivus"
     native_name:      "Родительный падеж" 
     description:      "Нет - Кого? Чего?"
     rules:            
@@ -121,21 +121,21 @@ ru:
         value:        "и"
   case3:               
     keyword:          "dat"
-    latin_name:       "Dative"
+    latin_name:       "Dativus"
     native_name:      "Дательный падеж" 
     description:      "Рад - Кому? Чему?"
   case4:               
     keyword:          "acc"
-    latin_name:       "Accusative"
+    latin_name:       "Accusativus"
     native_name:      "Винительный падеж" 
     description:      "Вижу - Кого? Что?"
   case5:               
     keyword:          "ins"
-    latin_name:       "Instrumentative"
+    latin_name:       "Instrumentalis"
     native_name:      "Творительный падеж" 
     description:      "Доволен - Кем? Чем?"
   case6:               
     keyword:          "pre"
-    latin_name:       "Preposition"
+    latin_name:       "Prepositivus"
     native_name:      "Предложный падеж" 
     description:      "Думаю - О ком? О чём?"

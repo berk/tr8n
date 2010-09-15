@@ -4,17 +4,16 @@
 	  <%=link_to_function(tra("Click here to add new rule."), "addLanguageCaseRule('#{case_index}', '0')")%>
 	</div>
 <% else %>
-  <% lcase.rules.each_with_index do |rule, rule_index| %>
+  <% lcase.language_case_rules.each_with_index do |rule, rule_index| %>
 	    <div style="padding-bottom:3px;">
 	      <input type="button" value=" + " onClick="addLanguageCaseRule('<%=case_index%>','<%=rule_index+1%>')" style="cursor:pointer; width: 30px; background-color:#eee;">
 	      <input type="button" value=" - " onClick="deleteLanguageCaseRule('<%=case_index%>','<%=rule_index%>')" style="cursor:pointer; width: 30px; background-color:#eee;">
 	      
 				<% rule_prefix = "cases[#{case_index}][rules][#{rule_index}]" %>
-	      <%=hidden_field_tag("#{rule_prefix}[id]", rule.id)%>
 
 				<%=select_tag("#{rule_prefix}[definition][gender]", options_for_select(rule.class.gender_options, rule.definition[:gender]))%>
         <%=select_tag("#{rule_prefix}[definition][part1]", options_for_select(rule.class.condition_options(true), rule.definition[:part1]))%>
-				<%=text_field_tag("#{rule_prefix}[definition][value1]", rule.humanize_values(rule.definition[:value1]), :style => "width:100px")%>
+				<%=text_field_tag("#{rule_prefix}[definition][value1]", rule.humanize_values(rule.definition[:value1]), :style => "width:80px")%>
 				
 				<% multipart = (rule.definition[:multipart].to_s == "true") %>
 				<% rule_key = "case_#{case_index}_rule_#{rule_index}" %>
@@ -26,7 +25,7 @@
 				  <%=select_tag("#{rule_prefix}[definition][operator]", options_for_select(rule.class.operator_options, rule.definition[:operator]))%>
 				  
 				  <%=select_tag("#{rule_prefix}[definition][part2]", options_for_select(rule.class.condition_options, rule.definition[:part2]), :style => "width:120px")%>
-				  <%=text_field_tag("#{rule_prefix}[definition][value2]", rule.humanize_values(rule.definition[:value2]), :style => "width:100px")%>
+				  <%=text_field_tag("#{rule_prefix}[definition][value2]", rule.humanize_values(rule.definition[:value2]), :style => "width:80px")%>
 				</span>
 
         <%=select_tag("#{rule_prefix}[definition][operation]", options_for_select(rule.class.operation_options, rule.definition[:operation]))%>

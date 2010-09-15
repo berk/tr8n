@@ -94,6 +94,10 @@ class Tr8n::Admin::LanguageController < Tr8n::Admin::BaseController
     
     redirect_to_source
   end
+
+  def case_rules
+    @case_rules = Tr8n::LanguageCaseRule.filter(:params => params, :filter => Tr8n::LanguageCaseRuleFilter)
+  end
   
   def case_values
     @case_values = Tr8n::LanguageCaseValueMap.filter(:params => params, :filter => Tr8n::LanguageCaseValueMapFilter)

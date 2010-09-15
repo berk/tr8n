@@ -19,10 +19,8 @@
   <% @case_values.each do |case_value| -%>
     <tr>
       <td><%= case_value.language ? link_to(case_value.language.english_name, :action => :view,  :lang_id => case_value.language.id) : "Unknown" %></td>
-      <td><%= case_value.key %></td>
-      <td>
-      	
-      </td>
+      <td><%= case_value.keyword %></td>
+      <td><%= tr8n_pretty_print_hash(case_value.map)%></td>
       <td><%= case_value.reported? %></td>
       <td><%= case_value.translator ? case_value.translator.name : "System generated" %></td>
       <td><%= case_value.created_at %></td>

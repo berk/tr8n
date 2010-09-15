@@ -51,11 +51,21 @@ class Tr8n::TranslationKey < ActiveRecord::Base
       existing_key || create(:key => key, :label => label, :description => desc)
     end
     
+    track_key(tkey, options)
     track_source(tkey, options)  
     
     tkey  
   end
-  
+
+  # logs access to keys - used to delete all keys that have not been accessed 
+  def self.track_key(tkey, options)
+    return unless Tr8n::Config.enable_key_logger?
+    Tr8n::KeyLogger.log(tkey)
+  end
+
+  # used to create associations between the translation keys and source
+  # primarely used for the site map and only needs to be enabled 
+  # for a short period of time on a single machine
   def self.track_source(tkey, options)
     return unless Tr8n::Config.enable_key_source_tracking?
     return if options[:source].blank?
@@ -380,6 +390,18 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     html << translated_label
     html << "</span>"
     html
+  end
+      
+  def deprecated?
+    not deprecated_at.nil?
+  end
+  
+  def deprecate!
+    update_attributes(:deprecated_at => Time.now)
+  end
+
+  def undeprecate!
+    update_attributes(:deprecated_at => nil)
   end
       
   def after_save

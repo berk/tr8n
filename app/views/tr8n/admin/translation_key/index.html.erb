@@ -14,6 +14,9 @@
     <th style="text-align:right">
       Created At
     </th>
+    <th style="text-align:right">
+      Deprecated At
+    </th>
     <th style="width:80px"></th>
   </tr>  
   <% @keys.each_with_index do |key, index| %>
@@ -29,6 +32,9 @@
       </td>  
       <td style="text-align:right">
         <%=key.created_at.trl(:date_time) %>
+      </td>      
+      <td style="text-align:right">
+        <%=key.deprecated_at.trl(:date_time) if key.deprecated_at %>
       </td>      
       <td style="text-align:right">
         <%=link_to("View", :action => :view, :key_id => key.id) %>

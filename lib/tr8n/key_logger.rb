@@ -21,38 +21,33 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-####################################################################### 
-# 
-# Method Token Forms
-#
-# {user.name}  
-# {user.name:gender}
-# 
-####################################################################### 
+require 'logger'
 
-class Tr8n::MethodToken < Tr8n::Token
+class Tr8n::KeyLogger < Logger
   
-  def self.expression
-    /(\{[^_][\w]+(\.[\w]+)(:[\w]+)?(::[\w]+)?\})/
-  end
-
-  def object_name
-    @object_name ||= name.split(".").first
-  end
-
-  def object_method_name
-    @object_method_name ||= name.split(".").last
-  end
-
-  def suffix
-    @suffix ||= object_name.split('_').last
-  end
-
-  def substitute(label, values = {}, options = {}, language = Tr8n::Config.current_language)
-    object = values[object_name.to_sym]
-    raise Tr8n::TokenException.new("Missing value for a token: #{full_name}") unless object
-    object_value = sanitize_token_value(object, object.send(object_method_name), options.merge(:sanitize_values => true), language)
-    label.gsub(full_name, object_value)
+  def self.logger
+    return nil unless Tr8n::Config.enable_key_logger?
+    @logger ||= begin
+      logfile = File.open(logfile_path, 'a')
+      logfile.sync = true
+      Tr8n::KeyLogger.new(logfile)
+    end
   end
   
-end
+  def self.logfile_path
+    path = Tr8n::Config.config[:key_log_path] if Tr8n::Config.config[:key_log_path].first == '/' 
+    path = "#{RAILS_ROOT}/#{Tr8n::Config.config[:key_log_path]}" unless path
+    logfile_dir = path.split("/")[0..-2].join("/")
+    FileUtils.mkdir_p(logfile_dir) unless File.exist?(logfile_dir)
+    path
+  end
+  
+  def format_message(severity, timestamp, progname, msg)
+    "#{msg}\n" 
+  end 
+  
+  def self.log(tkey)
+    return unless logger
+    logger.info(tkey.id.to_s)
+  end
+end 

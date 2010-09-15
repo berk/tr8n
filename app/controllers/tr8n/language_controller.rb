@@ -142,12 +142,12 @@ class Tr8n::LanguageController < Tr8n::BaseController
   
     if params[:case_action].index("add_rule_at")
       position = params[:case_action].split("_").last.to_i
-      lcase.rules.insert(position, Tr8n::LanguageCaseRule.new(:language => tr8n_current_language, :definition => {}))
+      lcase.language_case_rules.insert(position, Tr8n::LanguageCaseRule.new(:language => tr8n_current_language, :definition => {}))
     elsif params[:case_action].index("delete_rule_at")
       position = params[:case_action].split("_").last.to_i
-      lcase.rules.delete_at(position)
+      lcase.language_case_rules.delete_at(position)
     elsif params[:case_action].index("clear_all")
-      lcase.rules = []
+      lcase.language_case_rules = []
     end
     
     render(:partial => "edit_case_rules", :locals => {:lcase => lcase, :case_index => case_index})

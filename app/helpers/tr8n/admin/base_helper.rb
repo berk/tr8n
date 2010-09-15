@@ -34,5 +34,23 @@ module Tr8n::Admin::BaseHelper
   def tr8n_page_entries_info(collection, options = {})
     super(collection, options.merge(:skip_decorations => true))
   end
+
+  def tr8n_pretty_print_hash(hash)
+    return "" unless hash
+    html = ""
+    hash.each do |key, value|
+       html << "<strong>" 
+       html << key << ": </strong>"
+       if value.is_a?(Hash)
+         html << "{"
+         html << tr8n_pretty_print_hash(value)
+         html << "} "
+       else
+         html << value.strip if value
+         html << "; "
+       end
+   end
+   html
+  end
   
 end

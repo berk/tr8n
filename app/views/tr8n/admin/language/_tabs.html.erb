@@ -3,9 +3,10 @@
   current_tab ||= ""
   [ ["Languages", {:action => :index}],
     ["Users", {:action => :users}],
-    ["Rules", {:action => :rules}],
+    ["Context Rules", {:action => :rules}],
     ["Cases", {:action => :cases}],
-    ["Case Values", {:action => :case_values}],
+    ["Case Rules", {:action => :case_rules}],
+    ["Case Exceptions", {:action => :case_values}],
     ["Metrics", {:action => :metrics}],
     ["Charts", {:action => :charts}]].each do |link|
       if controller.action_name == link.last[:action].to_s

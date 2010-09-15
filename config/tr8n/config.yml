@@ -28,7 +28,7 @@ defaults: &defaults
   
   enable_language_cases:      true      # experimental - not 100% complete
   enable_client_sdk:          false     # allows javascript to use tr8nProxy object 
-  
+
   #############################################################################
   # Featured languages can be added as a bottom strip bar on all pages using
   #
@@ -79,8 +79,16 @@ defaults: &defaults
   # it will use default Rails logger.
   #############################################################################
   use_tr8n_logger:            true
-  tr8n_log_path:              log/tr8n.log      # location of the log file
-  enable_paranoia_mode:       true              # logs every translator action
+  tr8n_log_path:              log/tr8n.log          # location of the log file
+  enable_paranoia_mode:       true                  # logs every translator action
+
+  #############################################################################
+  # Key logging is used to determine which keys are actually being used in the
+  # system. Key logging can be enabled for certain period of time and then 
+  # a job can be run to remove all keys that have not been logged.
+  #############################################################################
+  enable_key_logger:          true
+  key_log_path:               log/tr8n_keys.log     # location of the log file
 
   #############################################################################
   # Site Integration Settings
