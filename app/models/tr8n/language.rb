@@ -181,20 +181,25 @@ class Tr8n::Language < ActiveRecord::Base
   end
 
   def self.translate(label, desc = "", tokens = {}, options = {})
-    return Tr8n::TranslationKey.substitute_tokens(label, tokens, options) unless Tr8n::Config.enabled?
-    return Tr8n::TranslationKey.substitute_tokens(label, tokens, options) if Tr8n::Config.current_language.default?
+    # raise Tr8n::Exception.new("The label is blank") if label.blank?
+    raise Tr8n::Exception.new("The label is being translated twice") if label.tr8n_translated?
+
+    return Tr8n::TranslationKey.substitute_tokens(label, tokens, options).tr8n_translated unless Tr8n::Config.enabled?
+    return Tr8n::TranslationKey.substitute_tokens(label, tokens, options).tr8n_translated if Tr8n::Config.current_language.default?
 
     options.delete(:source) unless Tr8n::Config.enable_key_source_tracking?
-    Tr8n::Config.current_language.translate(label, desc, tokens, options)
+    Tr8n::Config.current_language.translate(label, desc, tokens, options).tr8n_translated
   end
 
   def translate(label, desc = "", tokens = {}, options = {})
-    return "" if label.blank?
-    return Tr8n::TranslationKey.substitute_tokens(label, tokens, options) unless Tr8n::Config.enabled?
-    return Tr8n::TranslationKey.substitute_tokens(label, tokens, options) if default?
+    # raise Tr8n::Exception.new("The label is blank") if label.blank?
+    raise Tr8n::Exception.new("The label is being translated twice") if label.tr8n_translated?
+
+    return Tr8n::TranslationKey.substitute_tokens(label, tokens, options, self).tr8n_translated unless Tr8n::Config.enabled?
+    return Tr8n::TranslationKey.substitute_tokens(label, tokens, options, self).tr8n_translated if default?
 
     translation_key = Tr8n::TranslationKey.find_or_create(label, desc, options)
-    translation_key.translate(self, tokens.merge(:viewing_user => Tr8n::Config.current_user), options)
+    translation_key.translate(self, tokens.merge(:viewing_user => Tr8n::Config.current_user), options).tr8n_translated
   end
   alias :tr :translate
 

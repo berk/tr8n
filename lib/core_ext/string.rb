@@ -36,6 +36,15 @@ class String
     translate(desc, tokens, options.merge!(:skip_decorations => true), language)
   end
 
+  def tr8n_translated
+    @tr8n_translated = true
+    self
+  end
+
+  def tr8n_translated?
+    @tr8n_translated
+  end
+  
   def html_safe
     @html_safe = true
     self

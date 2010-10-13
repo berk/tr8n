@@ -48,4 +48,13 @@ class Array
     result << self.last
   end
 
+  def tr8n_translated
+    @tr8n_translated = true
+    self
+  end
+
+  def tr8n_translated?
+    @tr8n_translated
+  end
+
 end

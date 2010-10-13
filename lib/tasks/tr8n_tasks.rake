@@ -131,19 +131,36 @@ namespace :tr8n do
     end
   end
   
-  task :deprecate_keys => :environment do
+  task :verify_keys => :environment do
     used_keys = {}
     
-    puts "Running deprecation process..."
+    # verification timestamp
+    v_time = Time.now
+    
+    puts "Running verification process..."
     t0 = Time.now
 
+    log_path = Tr8n::KeyLogger.logfile_path
+    
+    puts "Looking up log file at location..."
+    puts "File path: #{log_path}"
+   
+    unless File.exists?(log_path)
+      puts "Log file not found. Key logging process is not running."
+      return 
+    end
+
+    puts "Log file found. Renaming log file..."
+    new_log_path = Tr8n::KeyLogger.switch_log(v_time)
+    puts "Renamed file path: #{new_log_path}"
+    
     puts "Scanning log file..."
+    
     counter = 1
-    file = File.new(Tr8n::KeyLogger.logfile_path, "r")
+    file = File.new(new_log_path, "r")
     while (key_line = file.gets)
       key_id = key_line.strip
-      used_keys[key_id] ||= 0
-      used_keys[key_id] += 1
+      used_keys[key_id] = true
       counter += 1
       
       puts "Scanned #{counter} lines..." if counter % 100 == 0
@@ -153,46 +170,37 @@ namespace :tr8n do
     puts "Scanned #{used_keys.keys.size} unique keys"
     puts "Scanning process took #{t1-t0} mls"
     
-    puts "Deprecating keys..."
+    puts "Marking keys as verified..."
     puts "There are #{Tr8n::TranslationKey.count} keys in the system"
     
-    deprecate_count = 0
-    undeprecate_count = 0
-    Tr8n::TranslationKey.all.each do |tkey|
-      key_id = tkey.id.to_s
-      if used_keys[key_id]
-        if tkey.deprecated?
-          tkey.undeprecate!
-          undeprecate_count += 1
-        end
-      else
-        unless tkey.deprecated?
-          tkey.deprecate!
-          deprecate_count += 1
-        end
-      end
+    verify_count = 0 
+    used_keys.keys.each do |key|
+      tkey = Tr8n::TranslationKey.find_by_id(key)
+      next unless tkey
+      tkey.verify!(v_time)
+      verify_count += 1
     end
     
     t2 = Time.now
-    puts "Deprecated #{deprecate_count} keys and undeprecated #{undeprecate_count} keys"
-    puts "Deprecation process took #{t2-t1} mls"
+    puts "Verified #{verify_count} keys"
+    puts "Verification process took #{t2-t1} mls"
   end  
   
-  # will delete all keys deprecated prior to the date passed as a parameter
-  task :delete_deprecated_keys => :environment do
-    date = env('before') || Date.today
+  # will delete all keys that have not been verified in the last 2 weeks
+  task :delete_unverified_keys => :environment do
+    date = env('before') || (Date.today - 2.weeks)
     
-    puts "Running deprecation destruction process..."
+    puts "Running key destruction process..."
     t0 = Time.now
     
-    puts "All keys deprecated before #{date} will be destroyed!"
-    deprecated_keys = Tr8n::TranslationKey.find(:all, :conditions => ["deprecated_at is not null and deprecated_at < ?", date])
+    puts "All keys not verified after #{date} will be destroyed!"
+    unverified_keys = Tr8n::TranslationKey.find(:all, :conditions => ["verified_at is null or verified_at < ?", date])
     
-    puts "There are #{deprecated_keys.size} keys to be destroyed."
-    puts "Destroying deprecated keys..." if deprecated_keys.size > 0
+    puts "There are #{unverified_keys.size} keys to be destroyed."
+    puts "Destroying unverified keys..." if unverified_keys.size > 0
 
     destroy_count = 0
-    deprecated_keys.each do |tkey|
+    unverified_keys.each do |tkey|
       tkey.destroy
       destroy_count += 1
       puts "Destroyed #{destroy_count} keys..." if destroy_count % 100 == 0

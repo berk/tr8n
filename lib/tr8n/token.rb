@@ -27,6 +27,7 @@ class Tr8n::Token
     Tr8n::Config.data_token_classes.each do |token_class|
       tokens << token_class.parse(label)
     end
+
     tokens.flatten
   end
 

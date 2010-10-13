@@ -47,20 +47,14 @@ class Tr8n::TranslationKey < ActiveRecord::Base
           raise Tr8n::KeyRegistrationException.new("Key registration through API is disabled!")  
         end
       end
-
-      existing_key || create(:key => key, :label => label, :description => desc)
+      
+      existing_key ||= create(:key => key, :label => label, :description => desc)
+      existing_key.update_attributes(:verified_at => Time.now)
+      existing_key
     end
     
-    track_key(tkey, options)
     track_source(tkey, options)  
-    
     tkey  
-  end
-
-  # logs access to keys - used to delete all keys that have not been accessed 
-  def self.track_key(tkey, options)
-    return unless Tr8n::Config.enable_key_logger?
-    Tr8n::KeyLogger.log(tkey)
   end
 
   # used to create associations between the translation keys and source
@@ -345,9 +339,9 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   ###############################################################
 
   # this is done when the translations engine is disabled
-  def self.substitute_tokens(label, tokens, options = {})
+  def self.substitute_tokens(label, tokens, options = {}, language = Tr8n::Config.default_language)
     return label if options[:skip_substitution] 
-    Tr8n::TranslationKey.new(:label => label).substitute_tokens(label, tokens, options)
+    Tr8n::TranslationKey.new(:label => label).substitute_tokens(label, tokens, options, language)
   end
 
   def substitute_tokens(translated_label, token_values, options = {}, language = Tr8n::Config.current_language)
@@ -392,16 +386,8 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     html
   end
       
-  def deprecated?
-    not deprecated_at.nil?
-  end
-  
-  def deprecate!
-    update_attributes(:deprecated_at => Time.now)
-  end
-
-  def undeprecate!
-    update_attributes(:deprecated_at => nil)
+  def verify!(time = Time.now)
+    update_attributes(:verified_at => time)
   end
       
   def after_save
