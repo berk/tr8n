@@ -48,6 +48,7 @@ class Hash
   end
 
   def tr8n_translated
+    return self if frozen?
     @tr8n_translated = true
     self
   end

@@ -134,8 +134,12 @@ class Tr8n::Config
     @default_languages ||= load_yml("/config/tr8n/site/default_languages.yml", nil)
   end
 
-  def self.default_decorations
-    @default_decorations ||= load_yml("/config/tr8n/tokens/decorations.yml", nil)
+  def self.default_decoration_tokens
+    @default_decoration_tokens ||= load_yml("/config/tr8n/tokens/decorations.yml", nil)
+  end
+
+  def self.default_data_tokens
+    @default_data_tokens ||= load_yml("/config/tr8n/tokens/data.yml", nil)
   end
 
   def self.default_glossary

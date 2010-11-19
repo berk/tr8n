@@ -340,8 +340,8 @@ class Tr8n::TranslationKey < ActiveRecord::Base
 
   # this is done when the translations engine is disabled
   def self.substitute_tokens(label, tokens, options = {}, language = Tr8n::Config.default_language)
-    return label if options[:skip_substitution] 
-    Tr8n::TranslationKey.new(:label => label).substitute_tokens(label, tokens, options, language)
+    return label.to_s if options[:skip_substitution] 
+    Tr8n::TranslationKey.new(:label => label.to_s).substitute_tokens(label.to_s, tokens, options, language)
   end
 
   def substitute_tokens(translated_label, token_values, options = {}, language = Tr8n::Config.current_language)

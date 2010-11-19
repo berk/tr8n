@@ -395,11 +395,16 @@ class Tr8n::Token
   end
   
   def substitute(label, values = {}, options = {}, language = Tr8n::Config.current_language)
-    unless values.key?(name_key)
+    
+    # get the object from the values
+    object = values[name_key]
+
+    # see if the token is a default html token  
+    object = Tr8n::Config.default_data_tokens[name_key] if object.nil?
+
+    if object.nil? and not values.key?(name_key) 
       raise Tr8n::TokenException.new("Missing value for a token: #{full_name}")
     end
-    
-    object = values[name_key]
     
     if object.nil? and not Tr8n::Config.allow_nil_token_values?
       raise Tr8n::TokenException.new("Token value is nil for a token: #{full_name}")

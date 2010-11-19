@@ -24,6 +24,8 @@ defaults: &defaults
   enable_translator_language: false     # translator can translate from non-default language
 
   enable_language_flags:      true      # shows flag icons next to the languages
+  
+  enable_admin_translations:  true      # registers tr8n admin keys in the system
   enable_admin_inline_mode:   true      # allows tr8n engine sections to be inline translated
   
   enable_language_cases:      true      # experimental - not 100% complete
