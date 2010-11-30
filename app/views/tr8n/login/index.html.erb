@@ -1,0 +1,33 @@
+<h2 class="underscore content_hd">
+  <%=tr('Login to Tr8n Translation Engine') %>
+</h2>
+<div class="content_bd">
+
+  <div class="page_form">
+    <% form_tag(:controller=>:login, :action=>:index) do %>
+      <div class="field">
+        <div class="strong field_hd txt_r h4"><%=tr('Email:') %></div>
+        <div class="field_bd">
+          <%=text_field_tag :email, params[:email], :class => "xlong_input h4" %>
+        </div>
+      </div>
+      <div class="field">
+        <div class="strong field_hd txt_r h4"><%=tr('Password:') %></div>
+        <div class="field_bd">
+          <%=password_field_tag :password, "", :class => "xlong_input h4" %>
+        </div>
+      </div>
+      <br>
+      <div class="field">
+        <div class="field_bd">
+          <button class="button super blue xlarge"><span><%=tr('Login') %></span></button>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+</div>
+<div class="content_ft txt_r">
+  <%=tr("Don't have an account? [link: Register here].", "", :link => ["/tr8n/login/register", ""])%>
+</div>
+

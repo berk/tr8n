@@ -4,7 +4,7 @@
 # test suite. You never need to work with it otherwise. Remember that
 # your test database is "scratch space" for the test suite and is wiped
 # and recreated between test runs. Don't rely on the data there!
-config.cache_classes = true
+config.cache_classes = false
 
 # Log error messages when you accidentally call methods on nil.
 config.whiny_nils = true
@@ -32,11 +32,6 @@ config.action_mailer.delivery_method = :test
     Dir[File.expand_path("#{File.dirname(__FILE__)}/../../#{dir}/*.rb")].each do |file|
       require file
     end
-end
-
-# used for testing only
-class ApplicationController < ActionController::Base
-
 end
 
 # used for testing only

@@ -34,8 +34,8 @@ class Tr8n::LanguageUser < ActiveRecord::Base
   # when users get promoted, they are automatically get associated with a language and marked as translators
   
   def self.find_or_create(user, language)
-    pl = find(:first, :conditions => ["user_id = ? and language_id = ?", user.id, language.id])
-    pl || create(:user => user, :language => language)
+    lu = find(:first, :conditions => ["user_id = ? and language_id = ?", user.id, language.id])
+    lu || create(:user => user, :language => language)
   end
 
   def self.check_default_language_for(user)

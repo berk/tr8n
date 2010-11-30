@@ -73,4 +73,17 @@ class Tr8n::Admin::TranslationKeyController < Tr8n::Admin::BaseController
      render :layout => false
    end
    
+   def reset_verification_flags
+     Tr8n::TranslationKey.connection.execute("update tr8n_translation_keys set verified_at = null")
+     redirect_to_source
+   end
+   
+   def delete_unverified_keys
+     Tr8n::TranslationKey.find(:all, :conditions => "verified_at is null").each do |key|
+       next if key.translations.any?
+       key.destroy
+     end
+     redirect_to_source
+   end
+   
 end

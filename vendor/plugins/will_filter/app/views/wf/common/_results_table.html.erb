@@ -1,0 +1,87 @@
+<table class='wf_paginator' style="margin-top:10px; margin-bottom:10px;">
+    <tr>
+        <td align='left'>
+            <%= will_paginate(results) %>
+        </td>
+        <td align='right'>
+            <%= page_entries_info(results) %>
+        </td>
+    </tr>
+</table>
+
+<table class='wf_results_table'>
+	<thead>
+		<tr>
+			<% opts[:columns].each_with_index do |column, index| %>
+		    <%
+				  key = column.is_a?(Array) ? column.first : column
+          
+		      sort_direction       = filter.column_sorted?(key) ? filter.order_type : "asc"
+		      sort_direction_click = filter.column_sorted?(key) ? (sort_direction == "asc" ? "desc" : "asc") : "asc"
+          column_title   = filter.condition_title_for(key)  
+		      the_class_name =  key.to_s
+		      the_class_name << " sortable"                 if filter.contains_column?(key)              
+		      the_class_name << " current_sort"             if filter.column_sorted?(key)
+		      the_class_name << " #{sort_direction}"
+		    %>
+		    <th class="<%= the_class_name %>">
+		      <div class="table_head_container">
+		      	<% if filter.contains_column?(key) %>
+		          <div class="sort_control">
+		            <%= link_to "", filter.serialize_to_params(:wf_order => key, :wf_order_type => 'asc'), :title => "sort by #{key} ascending", :class => 'up' %>
+		            <%= link_to "", filter.serialize_to_params(:wf_order => key, :wf_order_type => 'desc'), :title => "sort by #{key} descending", :class => 'down' %>
+		          </div>
+		
+		          <%= link_to column_title, filter.serialize_to_params(:wf_order => key, :wf_order_type => sort_direction_click), :class => "sort_link" %>
+						<% else %>
+						  <%= column_title %>	
+						<% end %>	
+		      </div>
+		    </th>
+		  <% end %>
+		</tr>
+	</thead>	
+		
+  <tbody>
+    <% results.each_with_index do |obj, index| %>
+      <tr class='data_row <%=(index % 2 == 0) ? "wf_row_even" : "wf_row_odd"%>'>
+				<% opts[:columns].each do |column| %>
+				  <% 
+            style = ''
+            if column.is_a?(Array)
+              key = column.first
+              if column.second.is_a?(Proc)
+                value = column.second.call(obj)
+              else
+                value = column.second.to_s
+              end
+              style = column.size > 2 ? column.last : ''
+            else
+              key = column
+              value = obj.send(key)
+            end
+          %>
+	        <td style='<%=style%>' <%= " class='current_sort'" if filter.column_sorted?(key) %>>
+							 <% if value.is_a?(Hash) %>
+	                <% value.each do |key, value| %>
+	                  <strong><%=key%>:</strong> <%= value %>;
+	                <% end %>
+									
+								<% elsif value.is_a?(Time) %>	
+									<%= value.strftime("%m/%d/%Y %l:%M:%S") %>
+
+                <% elsif value.is_a?(Date) %>  
+                  <%= value.strftime("%m/%d/%Y") %>
+									
+							 <% else %>
+							    <%= value.to_s %> 
+							 <% end %>	
+					</td>
+	      <% end %>
+      </tr>
+    <% end  %>
+	</tbody>
+</table>		
+
+
+    

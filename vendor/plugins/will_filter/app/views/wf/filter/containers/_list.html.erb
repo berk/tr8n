@@ -1,0 +1,7 @@
+<select style='width:100%' class='wf_input' name='wf_v<%=index%>_0' id='wf_v<%=index%>_0' onChange='wfFilter.fieldChanged(this)'>
+	 <% container.options.each do |option| %>
+      <option <%= "selected" if option.last == container.value %> value="<%=option.last%>">
+        <%=option.first%>
+      </option>
+	 <% end %>
+</select>

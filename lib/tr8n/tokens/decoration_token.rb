@@ -36,10 +36,14 @@
 #
 ####################################################################### 
 
-class Tr8n::DecorationToken < Tr8n::Token
+class Tr8n::Tokens::DecorationToken < Tr8n::Token
   
   def self.expression
     /(\[\w+:[^\]]+\])/
+  end
+  
+  def decoration?
+    true
   end
   
   def language_rule

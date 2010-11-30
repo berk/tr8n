@@ -21,7 +21,7 @@ defaults: &defaults
   enable_dictionary_lookup:   true      # shows dictionary words definitions
   
   enable_fallback_languages:  true      # for example: Catalan can fallback onto Spanish
-  enable_translator_language: false     # translator can translate from non-default language
+  enable_translator_language: true      # translator can translate from non-default language
 
   enable_language_flags:      true      # shows flag icons next to the languages
   
@@ -96,11 +96,10 @@ defaults: &defaults
   # Site Integration Settings
   #############################################################################
   site_info:  
-    current_user_method:      current_user          # provides current user object
-    current_locale_method:    current_locale        # provides current locale
     title:                    Tr8n                  # site title, for customization
     contact_email:            admin@tr8n.org 
-    default_url:              /home         
+    current_locale_method:    current_locale        # provides current locale
+    default_url:              /tr8n/home         
     default_locale:           en-US
     sitemap_path:             /config/tr8n/site/sitemap.json
     splash_screen:            /tr8n/common/splash_screen
@@ -111,12 +110,14 @@ defaults: &defaults
     before_filters:           []                    # filters from application controller
     skip_before_filters:      []                    # filters from application controller
     after_filters:            []                    # filters from application controller
-    user_info:  
-      enabled:                true    # if disabled, will fallback onto translators
+    user_info:
+      enabled:                false                 # if disabled, will fallback onto translators
       class_name:             User
+      current_user_method:    current_user          # provides current user object
       methods:  
         id:                   id
         name:                 name
+        gender:               gender
         admin:                admin?
         guest:                guest?
         mugshot:              mugshot
@@ -128,8 +129,8 @@ defaults: &defaults
   #############################################################################
   rules_engine:  
     language_rule_classes:    [Tr8n::NumericRule, Tr8n::GenderRule, Tr8n::GenderListRule, Tr8n::DateRule, Tr8n::ValueRule]
-    data_token_classes:       [Tr8n::DataToken, Tr8n::HiddenToken, Tr8n::MethodToken, Tr8n::TransformToken]
-    decoration_token_classes: [Tr8n::DecorationToken]
+    data_token_classes:       [Tr8n::Tokens::DataToken, Tr8n::Tokens::HiddenToken, Tr8n::Tokens::MethodToken, Tr8n::Tokens::TransformToken]
+    decoration_token_classes: [Tr8n::Tokens::DecorationToken]
     allow_nil_token_values:   true
     numeric_rule:             
       token_suffixes:         [count, num, age, hours, minutes, years, seconds]

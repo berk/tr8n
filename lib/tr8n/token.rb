@@ -206,6 +206,10 @@ class Tr8n::Token
     value
   end
 
+  def decoration?
+    false
+  end
+
   ##############################################################################
   #
   # gets the value based on various evaluation methods

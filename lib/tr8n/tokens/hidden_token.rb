@@ -37,7 +37,7 @@
 ####################################################################### 
 
 
-class Tr8n::HiddenToken < Tr8n::Token
+class Tr8n::Tokens::HiddenToken < Tr8n::Token
   
   def self.expression
     /(\{_[\w]+\})/

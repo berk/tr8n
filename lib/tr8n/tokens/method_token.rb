@@ -30,7 +30,7 @@
 # 
 ####################################################################### 
 
-class Tr8n::MethodToken < Tr8n::Token
+class Tr8n::Tokens::MethodToken < Tr8n::Token
   
   def self.expression
     /(\{[^_][\w]+(\.[\w]+)(:[\w]+)?(::[\w]+)?\})/

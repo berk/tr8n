@@ -42,6 +42,7 @@ class Tr8n::Translator < ActiveRecord::Base
   def self.for(user)
     return nil unless user and user.id 
     return nil if Tr8n::Config.guest_user?(user)
+    return user if user.is_a?(Tr8n::Translator)
     
     Tr8n::Cache.fetch("translator_for_#{user.id}") do 
       find_by_user_id(user.id)
@@ -125,7 +126,7 @@ class Tr8n::Translator < ActiveRecord::Base
   end
 
   def switched_language!(language)
-    lu = Tr8n::LanguageUser.create_or_touch(user, language)
+    lu = Tr8n::LanguageUser.create_or_touch(user || self, language)
     lu.update_attributes(:translator => self) unless lu.translator
     Tr8n::TranslatorLog.log(self, :switched_language, language.id)
   end
@@ -192,6 +193,8 @@ class Tr8n::Translator < ActiveRecord::Base
   
   # all admins are always manager for all languages
   def manager?(language = Tr8n::Config.current_language)
+    return true unless Tr8n::Config.site_user_info_enabled?
+    
     return true if Tr8n::Config.admin_user?(user)
     lu = Tr8n::LanguageUser.find_or_create(user, language)
     lu.manager?
@@ -208,7 +211,11 @@ class Tr8n::Translator < ActiveRecord::Base
   end
   
   def name
-    return super unless Tr8n::Config.site_user_info_enabled?
+    unless Tr8n::Config.site_user_info_enabled?
+      translator_name = super
+      return translator_name unless translator_name.blank?
+      return "No Name"
+    end  
     
     return "Deleted User" unless user
     user_name = Tr8n::Config.user_name(user)
@@ -217,9 +224,18 @@ class Tr8n::Translator < ActiveRecord::Base
     user_name
   end
 
+  def gender
+    unless Tr8n::Config.site_user_info_enabled?
+      translator_gender = super
+      return translator_gender unless translator_gender.blank?
+      return "unknown"
+    end  
+
+    Tr8n::Config.user_gender(user)
+  end
+
   def mugshot
     return super unless Tr8n::Config.site_user_info_enabled?
-
     return Tr8n::Config.silhouette_image unless user
     img_url = Tr8n::Config.user_mugshot(user)
     return Tr8n::Config.silhouette_image if img_url.blank?
@@ -228,13 +244,13 @@ class Tr8n::Translator < ActiveRecord::Base
 
   def link
     return super unless Tr8n::Config.site_user_info_enabled?
-
     return Tr8n::Config.default_url unless user
     Tr8n::Config.user_link(user)
   end
 
   def admin?
-    return super unless Tr8n::Config.site_user_info_enabled?
+    # stand alone translators are always admins
+    return true unless Tr8n::Config.site_user_info_enabled?
     
     return false unless user
     Tr8n::Config.admin_user?(user)

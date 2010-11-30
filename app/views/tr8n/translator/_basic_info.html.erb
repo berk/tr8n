@@ -18,6 +18,19 @@
               <% end %>
             </td>
           </tr>
+
+          <tr>
+            <th style="width:120px;padding:3px;vertical-align:middle;font-weight:bold;"><%=trl("Gender:", "Translator gender")%></th>
+            <td style="padding:3px;">
+              <% if Tr8n::Config.site_user_info_disabled? and mode == :edit %>
+                <%=f.radio_button(:gender, "male")%> <%=tr('Male', 'Gender') %>
+                &nbsp; <%=f.radio_button(:gender, "female")%> <%=tr('Female', 'Gender') %>
+                &nbsp; <%=f.radio_button(:gender, "unknown")%> <%=tr('Unknown', 'Gender') %>
+              <% else %>
+                <%=tr8n_current_translator.gender%>
+              <% end %>
+            </td>
+          </tr>
 					
 					<% if Tr8n::Config.site_user_info_disabled? %>
 	          <tr>

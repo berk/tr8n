@@ -184,7 +184,7 @@ module Tr8n::HelperMethods
   end
 
   def tr8n_user_mugshot_tag(translator, options = {})
-    if translator
+    if translator and !translator.mugshot.blank?
       img_url = translator.mugshot
     else
       img_url = Tr8n::Config.silhouette_image

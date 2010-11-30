@@ -1,0 +1,24 @@
+<style>
+	.wf_calendar_title {
+		text-align:center;
+		border-top:1px solid #ccc;
+		border-bottom:1px solid #ccc; 
+		background: #eee;
+	}
+</style>
+<table class="wf_calendar_table" cellpadding="0" cellspacing="0">
+  <tr>
+	<% 0.upto(3) do |m| %>
+	   
+		 <% if m % 2 == 0 %> 
+  		  </tr><tr>
+		 <% end %>
+		 
+     <td valign="top">
+     	  <% next_cal = calendar.move(m.months) %>
+     	  <div class="wf_calendar_title"><%=next_cal.title %></div>
+        <%= render :partial => "month", :locals => {:calendar => next_cal} %>
+     </td>
+	 <% end %>	 
+  </tr>
+</table>

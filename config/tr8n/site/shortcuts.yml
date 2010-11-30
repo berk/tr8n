@@ -20,7 +20,7 @@ Ctrl+Shift+K:
 
 Ctrl+Shift+C:       
   description:  Displays Tr8n credits
-  script:       "Tr8n.Utils.displayCredits();"
+  script:       "window.location = '/tr8n/home/credits';"
 
 Alt+Shift+D: 
   description:  Opens dashboard

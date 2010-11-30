@@ -69,11 +69,16 @@ module Tr8n::CommonMethods
     end
     
     tr8n_current_user = nil
-    begin
-      tr8n_current_user = eval(Tr8n::Config.current_user_method)
-      tr8n_current_user = nil if tr8n_current_user.class.name != Tr8n::Config.user_class_name
-    rescue Exception => ex
-      raise Tr8n::Exception.new("Tr8n cannot be initialized because #{Tr8n::Config.current_user_method} failed with: #{ex.message}")
+    if Tr8n::Config.site_user_info_enabled?
+      begin
+        tr8n_current_user = eval(Tr8n::Config.current_user_method)
+        tr8n_current_user = nil if tr8n_current_user.class.name != Tr8n::Config.user_class_name
+      rescue Exception => ex
+        raise Tr8n::Exception.new("Tr8n cannot be initialized because #{Tr8n::Config.current_user_method} failed with: #{ex.message}")
+      end
+    else
+      tr8n_current_user = Tr8n::Translator.find_by_id(session[:tr8n_translator_id]) if session[:tr8n_translator_id]
+      tr8n_current_user = Tr8n::Translator.new unless tr8n_current_user
     end
     
     Tr8n::Config.init(tr8n_current_locale, tr8n_current_user)

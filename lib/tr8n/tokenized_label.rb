@@ -100,7 +100,7 @@ class Tr8n::TokenizedLabel
     @suggestion_tokens ||= begin
       toks = []
       tokens.each do |token|
-        if token.is_a?(Tr8n::DecorationToken)
+        if token.decoration?
           toks << token.name
         else  
           toks << token.sanitized_name          

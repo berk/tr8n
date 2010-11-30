@@ -36,7 +36,7 @@
 # 
 ####################################################################### 
 
-class Tr8n::TransformToken < Tr8n::Token
+class Tr8n::Tokens::TransformToken < Tr8n::Token
     
   def self.expression
     /(\{[^_][\w]+(:[\w]+)?(::[\w]+)?\s*\|\|?[^{^}]+\})/

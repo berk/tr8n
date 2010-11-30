@@ -1,7 +1,8 @@
-RAILS_GEM_VERSION = '2.3.5' unless defined? RAILS_GEM_VERSION
+RAILS_GEM_VERSION = '2.3.10' unless defined? RAILS_GEM_VERSION
 
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
+require 'pp'
 
 Rails::Initializer.run do |config|
   config.time_zone = 'UTC'
@@ -13,3 +14,5 @@ Rails::Initializer.run do |config|
 end
 
 $KCODE = 'UTF8'
+
+

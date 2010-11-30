@@ -1,0 +1,56 @@
+<%= hidden_field_tag(:wf_id, wf_filter.id) %>
+<%= hidden_field_tag(:wf_type, wf_filter.class.name) %>
+<%= hidden_field_tag(:wf_dirty, "false") %>
+<%= hidden_field_tag(:wf_submitted, "false") %>
+<%= hidden_field_tag(:wf_name, wf_filter.name) %>
+<%= hidden_field_tag(:wf_model, wf_filter.model_class_name) %>
+<%= hidden_field_tag(:wf_export_format, "") %>
+<%= hidden_field_tag(:wf_export_fields, "") %>
+	
+<div class="wf_header">
+  <% if wf_filter.show_save_options? %>
+		<div style="float:right;">
+	    <%=link_to_function("<span>Save As New...</span>", "wfFilter.saveFilter()", :class => "wf_grey_button wf_pcb") %>
+	    <%=link_to_function("<span>Update</span>", "wfFilter.updateFilter()", :class => "wf_grey_button wf_pcb") %>
+	    <%=link_to_function("<span>Delete</span>", "wfFilter.deleteFilter()", :class => "wf_grey_button wf_pcb") %>
+      <% if wf_filter.show_export_options? %>
+        <%=link_to_function("<span>Export Data...</span>", "wfExporter.show(this)", :class => "wf_grey_button wf_pcb") %>
+      <% end %>
+		</div>
+  <% end %>
+	<div style="font-weight:bold; font-size:18px;">
+    <% unless wf_filter.saved_filters.empty? %>
+       <%= select_tag(:wf_key, options_for_select(wf_filter.saved_filters, wf_filter.key), {:onChange=>"wfFilter.loadSavedFilter()"}) %>
+    <% end %>
+	</div>
+</div>
+
+<div class="wf_container_panel">
+  <% if wf_filter.errors[:filter] %>
+    <div class="wf_filter_error">
+      <%= wf_filter.errors[:filter] %>
+    </div>
+  <% end %>
+
+	<div style="padding:5px">
+		Match <%= select_tag(:wf_match, options_for_select(wf_filter.match_options, wf_filter.match), {:onChange=>"wfFilter.markDirty()"}) %>
+		of the following conditions:
+	</div>
+	
+	<% if wf_filter.size == 0 %> 
+	  <div style="font-style:italic; padding:5px; color: black">
+	    You haven't added any filter conditions, so all of the results were returned. 
+	    Use the "Add" button in the bottom left corner to add a new condition or select 
+	    a predefined filter from a drop-down list above.
+		</div> 
+	<% else %>
+		<table class="wf_conditions_table" cellpadding="0" cellspacing="0">
+			<% 
+					0.upto(wf_filter.size-1) do |index| 
+			  	 	condition = wf_filter.condition_at(index) 
+			%>
+		   <%= render :partial => "/wf/filter/condition", :locals => {:wf_filter => wf_filter, :condition => condition, :index => index}%> 
+			<% end %>
+	  </table>  
+	<% end %>	
+</div>

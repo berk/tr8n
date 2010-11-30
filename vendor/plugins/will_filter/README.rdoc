@@ -1,0 +1,65 @@
+= WillFilter
+
+will_filter is a Rails engine plugin that extends the functionality of will_paginate by adding filters to your pages.
+
+== Preamble
+ 
+If you ever had to build an admin tool for your web site that displayed a list of objects that can be filtered using 
+various criteria, this plugin will make your life easier. Adding a filtered page can now be 
+a matter of adding two lines of code - one to your controller and one to your view. See examples below.
+
+For advanced samples of how to use the filters, please download and install the following project: 
+
+http://github.com/berk/will_filter_examples
+
+== Installation Instructions
+
+Install the latest version of the will_paginate plugin or gem created by Mislav Marohnić. 
+
+  $ script/plugin install git://github.com/mislav/will_paginate.git
+
+To install, configure and initialize will_filter engine, run the following commands: 
+
+  $ script/plugin install git://github.com/berk/will_filter.git
+  $ rake will_filter:sync  
+  $ rake db:migrate 
+
+  $ cd public; ln -s ../vendor/plugins/will_filter/public/wf wf
+
+== Examples
+
+To add a filtered resultset to your controller use the following method call:
+
+  class ProfileController < ApplicationController
+  
+    def index
+      @profiles = Profile.filter(:params => params)    
+    end
+    
+  end  
+
+Note: 'Profile' is a Rails ActiveRecord model 
+
+Now all you have to do is create a view for this action and add the following tag where you want the filter to be rendered:
+
+  <%= will_filter(@profiles) %>
+
+That's it. This will render a filter box with various conditions, operators and values for the model object you selected.
+
+Below are a couple of screenshot of what the filter looks like when it is rendered on a page:
+
+http://www.theiceberk.com/projects/rails/will_filter/will_filter1.png
+
+http://www.theiceberk.com/projects/rails/will_filter/will_filter3.png
+
+will_filter_examples project contains some samples that show you how to customize filters and much more
+
+  git://github.com/berk/will_filter_examples.git
+
+If you have any questions, comments or suggestions, email me at michael@geni.com
+
+
+== Authors and credits
+
+Authors::                Michael Berkovich
+

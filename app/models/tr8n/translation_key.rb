@@ -415,9 +415,10 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   end
   
   def self.search_conditions_for(params)
-    conditions = [""]
+    conditions = ["verified_at is not null"]
     
     unless params[:search].blank?
+      conditions[0] << " and " unless conditions[0].blank?
       conditions[0] << "(tr8n_translation_keys.label like ? or tr8n_translation_keys.description like ?)" 
       conditions << "%#{params[:search]}%"
       conditions << "%#{params[:search]}%"  

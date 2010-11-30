@@ -24,7 +24,7 @@
 	                </div>
 									
 	                <% @translation_key.translation_tokens.each do |token| %>
-								    <% if token.is_a?(Tr8n::DecorationToken) %>
+								    <% if token.decoration? %>
                       <%= link_to_function(token.sanitized_name, "tr8nTranslator.insertDecorationToken('#{token.name}');", :title => trl("Click to insert this token above") ) %>
 										<% else %>
                       <%= link_to_function(token.sanitized_name, "tr8nTranslator.insertToken('#{token.name}');", :title => trl("Click to insert this token above") ) %>

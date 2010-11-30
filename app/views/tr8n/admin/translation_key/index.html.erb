@@ -1,48 +1,27 @@
 <%= render :partial => "/tr8n/admin/common/header" %>
 <%= render :partial => "tabs" %>
 <%= tr8n_will_filter(@keys) %>
-<%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @keys} %>
 
-<table class="admin_table">
-  <tr>
-    <th>
-      Label
-    </th>
-    <th style="text-align:right">
-      Translations
-    </th>
-    <th style="text-align:right">
-      Created At
-    </th>
-    <th style="text-align:right">
-      Verified At
-    </th>
-    <th style="width:80px"></th>
-  </tr>  
-  <% @keys.each_with_index do |key, index| %>
-    <tr>
-      <td>
-        <%=link_to(key.label, :action => :view, :key_id => key.id)%>
-         <div style="color:grey; font-size:10px;">
-            <%=key.description %>
-         </div>
-			</td>      
-      <td style="text-align:right">
-        <%=link_to(key.translations.size, "/tr8n/admin/translation/index?wf_c0=translation_key_id&wf_o0=is&wf_v0_0=#{key.id}") %>
-      </td>  
-      <td style="text-align:right">
-        <%=key.created_at.trl(:date_time) %>
-      </td>      
-      <td style="text-align:right">
-        <%=key.verified_at.trl(:date_time) if key.verified_at %>
-      </td>      
-      <td style="text-align:right">
-        <%=link_to("View", :action => :view, :key_id => key.id) %>
-        | <%=link_to("Delete", {:action => :delete, :key_id => key.id}, {:confirm => "Are you sure you want to delete this key?"}) %>
-      </td>
-    </tr>
-  <% end %>
-</table>
+<%=link_to("Reset verification flags", {:action => :reset_verification_flags}, :confirm => "Are you sure you want to reset translation keys?")%>
+|
+<%=link_to("Delete unverified keys without translations", {:action => :delete_unverified_keys}, :confirm => "Are you sure you want to delete unverified keys?")%>
 
-<%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @keys} %>
+<%= will_filter_table_tag(@keys, :columns => [
+  [:label, lambda{|key|
+    html = link_to(key.label, :action => :view, :key_id => key.id) 
+    html << '<div style="color:grey; font-size:10px;">'
+    html << key.description.to_s  
+    html << '</div>'  
+  }, 'padding:5px;'],
+  [:translations, lambda{|key| link_to(key.translations.size, "/tr8n/admin/translation/index?wf_c0=translation_key_id&wf_o0=is&wf_v0_0=#{key.id}")}, 'padding:5px;text-align:right;'],
+  [:created_at, lambda{|key| key.created_at}, 'padding:5px;text-align:right;'],
+  [:verified_at, lambda{|key| key.verified_at}, 'padding:5px;text-align:right;'],
+  [:actions, lambda{|key|
+    html = []
+    html << link_to("View", :action => :view, :key_id => key.id)
+    html << link_to("Delete", {:action => :delete, :key_id => key.id}, {:confirm => "Are you sure you want to delete this key?"})
+    html.join(' | ')
+  }, 'padding:5px;text-align:right;']
+]) %>
+
 <%= render :partial => "/tr8n/admin/common/footer" %>

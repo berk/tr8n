@@ -1,0 +1,39 @@
+<style>
+.flash_error {
+  background-color: #ffeded;
+  border: 1px #f58a8a solid;
+  border-left:none;
+  border-right:none;
+  color:#b60e0e;
+  padding: 7px 10px;
+  margin:10px auto 20px auto;
+  font-weight:bold;
+}
+
+.flash_notice {
+  background-color: #f1ffed;
+  border: 1px #a3f58a solid;
+  border-left:none;
+  border-right:none;
+  color:#1e7b21;
+  padding: 7px 10px;
+  margin:10px auto 20px auto;
+  font-weight:bold;
+}  
+</style>
+
+<% if flash[:trfn] %>
+  <div class="flash_notice"><%= flash[:trfn] %></div>
+	<% flash[:trfn] = nil %>
+<% end %>
+
+<% if flash[:trfe] %>
+  <div class="flash_error"><%= flash[:trfe] %></div>
+	<% flash[:trfe] = nil %>
+<% end %>
+
+<noscript>
+  <div class="flash_error">
+    <%=tr("This site requires JavaScript! Please enable JavaScript in your browser's settings to use this part of the site.")%>
+  </div>
+</noscript>

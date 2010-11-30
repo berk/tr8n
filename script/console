@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+$lazy_load_rails = true
+require File.dirname(__FILE__) + '/../config/boot'
+require 'commands/console'

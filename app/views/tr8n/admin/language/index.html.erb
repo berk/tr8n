@@ -6,100 +6,63 @@
 |
 <%=link_to("Calculate completeness", {:action => :calculate_total_metrics}, :confirm => "Are you sure you want to run this opperation?")%>
 
-<%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @languages} %>
+<%= will_filter_table_tag(@languages, :columns => [
+  [:flag, lambda{|lang| image_tag("/tr8n/images/flags/#{lang.flag}.png")}, 'padding:5px;'],
+  [:locale, lambda{|lang|
+    html = []
+    if lang.enabled?
+      html << '<span style="color:green">'
+    else  
+      html << '<span style="color:red">'
+    end
+    html << lang.locale
+    html << '</span>'
+    html.join(' ')
+  }, 'padding:5px;'],
+  [:english_name, lambda{|lang| link_to(lang.english_name, :action => :view, :lang_id => lang.id)}, 'padding:5px;'],
+  [:native_name, lambda{|lang| lang.native_name}, 'padding:5px;'],
+  [:right_to_left, lambda{|lang|
+    html = []
+    if lang.right_to_left?
+      html << '<span style="color:red">'
+    else  
+      html << '<span style="color:green">'
+    end
+    html << lang.right_to_left?
+    html << '</span>'
+    html.join(' ')
+  }, 'padding:5px;'],
+  [:featured_index, lambda{|lang| lang.featured_index}, 'padding:5px;text-align:right;'],
+  [:users, lambda{|lang| lang.total_metric.user_count}, 'padding:5px;text-align:right;'], 
+  [:translators, lambda{|lang| lang.total_metric.translator_count}, 'padding:5px;text-align:right;'], 
+  [:translations, lambda{|lang| lang.total_metric.translation_count}, 'padding:5px;text-align:right;'], 
+  [:completeness, lambda{|lang|
+    html = []
+    completeness = lang.completeness ? lang.completeness : 0
+    if completeness > 90
+      html << '<span style="color:green">'
+    elsif completeness > 60 
+      html << '<span style="color:yellow">'
+    else  
+      html << '<span style="color:red">'
+    end
+    html << "#{completeness}%"
+    html << '</span>'
+    html.join(' ')
+  }, 'padding:5px;text-align:right;'],
+  [:actions, lambda{|lang|
+     html = [] 
+     html << link_to("View", :action => :view, :lang_id => lang.id)
+     html << link_to_function("Update", "tr8nLightbox.show('/tr8n/admin/language/lb_update?lang_id=#{lang.id}', {height:350})")
+     unless lang.default?
+      if lang.enabled?
+        html << link_to("Disable", :action => :disable, :lang_id => lang.id)
+      else
+        html << link_to("Enable", :action => :enable, :lang_id => lang.id) 
+      end
+     end 
+     html.join(' | ') 
+  }, 'padding:5px;text-align:right;']
+]) %>
 
-<table class="admin_table">
-  <tr>
-    <th>
-      Flag
-    </th>
-    <th>
-      Locale
-    </th>
-    <th>
-      English Name
-    </th>
-    <th>
-      Native Name
-    </th>
-    <th>
-      Right to Left
-    </th>
-    <th style="text-align:right">
-      Featured Index
-    </th>
-    <th style="text-align:right">
-      Users
-    </th>
-    <th style="text-align:right">
-      Translators
-    </th>
-    <th style="text-align:right">
-      Translations
-    </th>
-    <th style="text-align:right">
-      Completeness
-    </th>
-    <th></th>
-  </tr>  
-  <% @languages.each_with_index do |lang, index| %>
-    <tr>
-      <td><%=image_tag("/tr8n/images/flags/#{lang.flag}.png")%></td>
-      <td>  
-        <% if lang.enabled? %>
-          <span style="color:green">
-        <% else %>    
-          <span style="color:red">
-        <% end %>
-            <%=lang.locale%>
-          </span>
-      </td>
-      <td><%=link_to(lang.english_name, :action => :view, :lang_id => lang.id) %></td>
-      <td><%=lang.native_name%></td>
-      <td>
-        <% if lang.right_to_left? %>
-          <span style="color:red">
-        <% else %>    
-          <span style="color:green">
-        <% end %>
-           <%=lang.right_to_left? %>
-        </span>
-      </td>
-      <td style="text-align:right"><%=lang.featured_index %></td>
-      <td style="text-align:right">
-      	<%=lang.total_metric.user_count%>
-      </td>
-      <td style="text-align:right">
-        <%=lang.total_metric.translator_count%>
-      </td>
-      <td style="text-align:right">
-        <%=lang.total_metric.translation_count%>
-      </td>
-      <td style="text-align:right">
-        <% if lang.completeness == 100 %>
-          <span style="color:green">
-        <% else %>    
-          <span style="color:red">
-        <% end %>
-          <%=lang.completeness ? lang.completeness : '0' %>%
-        </span>
-      </td>
-      <td style="text-align:right">
-        <%=link_to("View", :action => :view, :lang_id => lang.id) %>
-				|
-        <%=link_to_function("Update", "tr8nLightbox.show('/tr8n/admin/language/lb_update?lang_id=#{lang.id}', {height:350})") %>
-        <% unless lang.default? %>
-           |  
-          <% if lang.enabled? %>
-            <%=link_to("Disable", :action => :disable, :lang_id => lang.id) %>
-          <% else %>
-            <%=link_to("Enable", :action => :enable, :lang_id => lang.id) %>
-          <% end %>
-        <% end %> 
-      </td>
-    </tr>
-  <% end %>
-</table>
-
-<%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @languages} %>
 <%= render :partial => "/tr8n/admin/common/footer" %>

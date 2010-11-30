@@ -277,10 +277,6 @@ class Tr8n::Config
   def self.default_url
     site_info[:default_url]
   end
-  
-  def self.current_user_method
-    site_info[:current_user_method]
-  end
 
   def self.current_locale_method
     site_info[:current_locale_method]
@@ -335,6 +331,10 @@ class Tr8n::Config
     site_info[:user_info]
   end
 
+  def self.current_user_method
+    site_user_info[:current_user_method]
+  end
+
   def self.site_user_info_enabled?
     site_user_info[:enabled].nil? ? true : site_user_info[:enabled]
   end
@@ -344,17 +344,15 @@ class Tr8n::Config
   end
   
   def self.user_class_name
-    raise Tr8n::Exception.new("Site user integration is disabled") unless site_user_info_enabled?
-    site_user_info[:class_name]
+    return site_user_info[:class_name] if site_user_info_enabled?
+    "Tr8n::Translator"  
   end
 
   def self.user_class
-    raise Tr8n::Exception.new("Site user integration is disabled") unless site_user_info_enabled?
     user_class_name.constantize
   end
 
   def self.user_id(user)
-    raise Tr8n::Exception.new("Site user integration is disabled") unless site_user_info_enabled?
     begin
       user.send(site_user_info[:methods][:id])
     rescue Exception => ex
@@ -364,7 +362,6 @@ class Tr8n::Config
   end
 
   def self.user_name(user)
-    raise Tr8n::Exception.new("Site user integration is disabled") unless site_user_info_enabled?
     begin
       user.send(site_user_info[:methods][:name])
     rescue Exception => ex
@@ -373,8 +370,16 @@ class Tr8n::Config
     end  
   end
 
+  def self.user_gender(user)
+    begin
+      user.send(site_user_info[:methods][:gender])
+    rescue Exception => ex
+      Tr8n::Logger.error("Failed to fetch #{user_class_name} name: #{ex.to_s}")
+      return "unknown"
+    end  
+  end
+
   def self.user_mugshot(user)
-    raise Tr8n::Exception.new("Site user integration is disabled") unless site_user_info_enabled?
     begin
       user.send(site_user_info[:methods][:mugshot])
     rescue Exception => ex
@@ -384,7 +389,6 @@ class Tr8n::Config
   end
 
   def self.user_link(user)
-    raise Tr8n::Exception.new("Site user integration is disabled") unless site_user_info_enabled?
     begin
       user.send(site_user_info[:methods][:link])
     rescue Exception => ex
@@ -394,7 +398,6 @@ class Tr8n::Config
   end
 
   def self.user_locale(user)
-    raise Tr8n::Exception.new("Site user integration is disabled") unless site_user_info_enabled?
     begin
       user.send(site_user_info[:methods][:locale])
     rescue Exception => ex
@@ -404,7 +407,6 @@ class Tr8n::Config
   end
 
   def self.admin_user?(user = current_user)
-    raise Tr8n::Exception.new("Site user integration is disabled") unless site_user_info_enabled?
     begin
       user.send(site_user_info[:methods][:admin])
     rescue Exception => ex
@@ -501,7 +503,7 @@ class Tr8n::Config
   end
   
   def self.viewing_user_token_for(label)
-    Tr8n::DataToken.new(label, "{#{rules_engine[:viewing_user_token]}:gender}")
+    Tr8n::Tokens::DataToken.new(label, "{#{rules_engine[:viewing_user_token]}:gender}")
   end
 
   def self.translation_threshold

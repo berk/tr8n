@@ -41,7 +41,7 @@
 #
 ####################################################################### 
 
-class Tr8n::DataToken < Tr8n::Token
+class Tr8n::Tokens::DataToken < Tr8n::Token
   
   def self.expression
     /(\{[^_][\w]+(:[\w]+)?(::[\w]+)?\})/
