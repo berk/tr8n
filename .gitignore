@@ -9,3 +9,5 @@ log/*
 .dotest*
 Thumbs.db
 .tmp*
+db/development.sqlite3
+db/test.sqlite3
