@@ -29,7 +29,7 @@ class Tr8n::Admin::BaseController < Tr8n::BaseController
 
   before_filter :validate_admin
   
-  layout Tr8n::Config.site_info[:tr8n_admin_layout]
+  layout Tr8n::Config.site_info[:admin_layout]
   
 private
 
