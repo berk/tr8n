@@ -14,6 +14,7 @@ can be configured or extended for any application deployment.
 Tr8n translation engine has been successfully deployed by the following companies:
 
 Geni Inc, http://www.geni.com
+
 Yammer Inc, http://www.yammer.com 
 
 You can visit their web sites and see how it is being used. If your company is using Tr8n, please let me know and i will add you to the list.
@@ -42,10 +43,10 @@ To install, configure and initialize Tr8n engine, run the following commands:
 
 = Integration Instructions
 
-The best way to get going with Tr8n is to run it in a stand alone mode first, try out some translations 
+The best way to get going with Tr8n is to run it in a stand-alone mode first, try out some translations 
 and then read the specification document, which will guide you on how to integrate Tr8n into your application.
 
-To run Tr8n in a stand alone mode, run the following commandsa:
+To run Tr8n in a stand-alone mode, run the following commands:
 
   $ cd vendor/plugins/tr8n
   $ rake db:migrate
