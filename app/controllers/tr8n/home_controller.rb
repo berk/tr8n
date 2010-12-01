@@ -23,6 +23,8 @@
 
 class Tr8n::HomeController < ApplicationController
   
+  layout Tr8n::Config.site_info[:tr8n_layout]
+  
   def index
     
   end

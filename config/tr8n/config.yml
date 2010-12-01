@@ -28,7 +28,7 @@ defaults: &defaults
   enable_admin_translations:  true      # registers tr8n admin keys in the system
   enable_admin_inline_mode:   true      # allows tr8n engine sections to be inline translated
   
-  enable_language_cases:      true      # experimental - not 100% complete
+  enable_language_cases:      true      # enables support for language cases
   enable_client_sdk:          false     # allows javascript to use tr8nProxy object 
 
   #############################################################################
@@ -71,52 +71,46 @@ defaults: &defaults
   # cache_adapter:  YOUR_CACHE_ADAPTER_CLASS
   #
   #############################################################################
-  enable_caching:             false
-  cache_adapter:              ActiveSupport::Cache
-  cache_store:                [mem_cache_store, 'localhost:11211']
-  cache_version:              1 # you can change the version to invalidate the cache
+  caching:
+    enabled:                  false
+    adapter:                  ActiveSupport::Cache
+    store:                    [mem_cache_store, 'localhost:11211']
+    version:                  1 # you can change the version to invalidate the cache
 
   #############################################################################
   # By default, Tr8n will use its own logger. If you set it to false,  
   # it will use default Rails logger.
   #############################################################################
-  use_tr8n_logger:            true
-  tr8n_log_path:              log/tr8n.log          # location of the log file
-  enable_paranoia_mode:       true                  # logs every translator action
-
-  #############################################################################
-  # Key logging is used to determine which keys are actually being used in the
-  # system. Key logging can be enabled for certain period of time and then 
-  # a job can be run to remove all keys that have not been logged.
-  #############################################################################
-  enable_key_logger:          true
-  key_log_path:               log/tr8n_keys.log     # location of the log file
+  logger:
+    enabled:                  true
+    log_path:                 log/tr8n.log          # location of the log file
+    enable_paranoia_mode:     true                  # logs every translator action
 
   #############################################################################
   # Site Integration Settings
   #############################################################################
   site_info:  
-    title:                    Tr8n                  # site title, for customization
-    contact_email:            admin@tr8n.org 
-    current_locale_method:    current_locale        # provides current locale
-    default_url:              /tr8n/home         
-    default_locale:           en-US
-    sitemap_path:             /config/tr8n/site/sitemap.json
-    splash_screen:            /tr8n/common/splash_screen
-    admin_layout:             admin
-    admin_helpers:            []                    # if you need to add extra helpers
-    tr8n_layout:              application
-    tr8n_helpers:             []                    # if you need to add extra helpers
-    before_filters:           []                    # filters from application controller
-    skip_before_filters:      []                    # filters from application controller
-    after_filters:            []                    # filters from application controller
+    title:                    Tr8n                            # site title - provide your site title here
+    contact_email:            admin@tr8n.org                  # contact email for questions about translations
+    current_locale_method:    current_locale                  # application controller method that sets and returns current locale
+    default_url:              /tr8n/home                      # default site url where to redirect the user if Tr8n is disabled            
+    default_locale:           en-US                           # locale of the site default language  
+    sitemap_path:             /config/tr8n/site/sitemap.json  # location of the sitemap definition file
+    splash_screen:            /tr8n/common/splash_screen      # location of the Tr8n splash screen  
+    tr8n_layout:              tr8n                            # layout for the tr8n pages
+    tr8n_helpers:             []                              # if you need to add extra helpers
+    admin_layout:             tr8n_admin                      # layout to be used for the admin user interface
+    admin_helpers:            []                              # if you need to add extra helpers
+    before_filters:           []                              # filters from application controller
+    skip_before_filters:      []                              # filters from application controller
+    after_filters:            []                              # filters from application controller
     user_info:
-      enabled:                false                 # if disabled, will fallback onto translators
-      class_name:             User
-      current_user_method:    current_user          # provides current user object
-      methods:  
+      enabled:                false                           # if disabled, will fallback onto translators
+      class_name:             User                            # class name for the User object type
+      current_user_method:    current_user                    # returns current user object
+      methods:                                                # User object methods mapping
         id:                   id
-        name:                 name
+        name:                 name                            
         gender:               gender
         admin:                admin?
         guest:                guest?

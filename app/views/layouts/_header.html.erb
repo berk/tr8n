@@ -1,20 +1,10 @@
 <div class="page_head">
   <div class="page_fixed">
     <div class="mrgn_h">
-      <ul class="flt_r horiz_list top_nav">
-        <% if !Tr8n::Config.current_user or Tr8n::Config.current_user.guest? %>
-          <li><%=link_to(tr("Login"), "/tr8n/login")%></li>
-        <% else %>
-          <li><%=tr("Welcome {user}!", "", :user => [Tr8n::Config.current_user, :name]) %></li>
-          <li><%=link_to(tr("Logout"), "/tr8n/login/out")%></li>
-        <% end %>
-        <% if Tr8n::Config.enabled? and (Tr8n::Config.open_registration_mode? or Tr8n::Config.current_user_is_translator?) %>
-          <li><%= tr8n_language_selector_tag %></li>
-        <% end %>
-      </ul>
+    	<%= tr8n_translator_login_tag(:class => "flt_r horiz_list top_nav") %>
       <h1 class="logo"><%=link_to(tr("Tr8n Engine Plugin", "Application title"), {:controller => "/tr8n/home"}, :style=>"text-decorations:none;")%></h1>
     </div>
   </div>
 </div>
 
-<%=render :partial => "/layouts/flashes" %>
+<%= tr8n_flashes_tag %>

@@ -194,10 +194,6 @@ class Tr8n::Config
     config[:enable_key_caller_tracking]
   end
 
-  def self.enable_paranoia_mode?
-    config[:enable_paranoia_mode]
-  end
-
   def self.enable_google_suggestions?
     config[:enable_google_suggestions]
   end
@@ -214,18 +210,6 @@ class Tr8n::Config
     config[:enable_language_flags]
   end
 
-  def self.enable_caching?
-    config[:enable_caching]
-  end
-
-  def self.cache_adapter
-    config[:cache_adapter]
-  end
-
-  def self.cache_version
-    config[:cache_version]
-  end
-
   def self.open_registration_mode?
     config[:open_registration_mode]
   end
@@ -238,12 +222,16 @@ class Tr8n::Config
     config[:enable_translator_language]
   end
 
-  def self.enable_key_logger?
-    config[:enable_key_logger]
-  end
-
   #########################################################
   # Config Sections
+  def self.caching
+    config[:caching]
+  end
+
+  def self.logger
+    config[:logger]
+  end
+  
   def self.site_info
     config[:site_info]
   end
@@ -259,6 +247,40 @@ class Tr8n::Config
   def self.api
     config[:api]
   end
+
+  #########################################################
+  # Caching
+  def self.enable_caching?
+    caching[:enabled]
+  end
+
+  def self.cache_adapter
+    caching[:adapter]
+  end
+
+  def self.cache_store
+    caching[:store]
+  end
+
+  def self.cache_version
+    caching[:version]
+  end
+  #########################################################
+
+  #########################################################
+  # Logger
+  def self.enable_logger?
+    logger[:enabled]
+  end
+
+  def self.log_path
+    logger[:log_path]
+  end
+
+  def self.enable_paranoia_mode?
+    logger[:enable_paranoia_mode]
+  end
+  #########################################################
   
   #########################################################
   # Site Info

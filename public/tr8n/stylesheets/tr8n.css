@@ -38,6 +38,9 @@
 .topic_header                                   {color: grey; padding-bottom:5px;}
 .topic_value                                    {padding-top:5px; padding-bottom:5px;}
 
+.tr8n_right_horiz_list                          {float:right;overflow:hidden;text-align:left;list-style-type:none;font-family:arial;font-size:12px;margin-top:0px;}
+.tr8n_right_horiz_list li                       {margin-right:-11px;border-right:solid 1px #ccc;padding:0px 10px;margin-left:10px;float:left;}
+
 .tr8n_translator                               {position: absolute;top: 0;left: 0;font-family: verdana; font-size:11px; width: 400px;background: #f4f4f4;border:solid 1px #e8e8e8;border-color:#e8e8e8 #bababa #bababa #e8e8e8;padding: 0;margin: 0;z-index: 10000;-webkit-box-shadow:2px 2px 3px rgba(0,0,0,0.6);-moz-box-shadow:2px 2px 3px rgba(0,0,0,0.6);box-shadow:2px 2px 3px rgba(0,0,0,0.6);}
 .tr8n_translator img                           {vertical-align:text-top !important;}
 .tr8n_translator a                             {text-decoration:none; color:#16b; outline:none; border:0px;}
@@ -156,7 +159,6 @@ button::-moz-focus-inner                        {border:none;}
 .translations_tabs li.first_current       {margin:0}
 .translations_tabs li.first_current a     {background-position:0 -395px;color: #000;}
 
-
 /****************************************/
 /*** Classes for the admin user page
 /****************************************/
@@ -170,7 +172,6 @@ button::-moz-focus-inner                        {border:none;}
 .tr8n .admin_table tr:hover                {background-color: #eee; }
 .tr8n .admin_table td.numeric              {text-align: right; }
 .tr8n .admin_table th.numeric              {text-align: right; }
-
 
 /****************************************/
 /***  Pure CSS Buttons.

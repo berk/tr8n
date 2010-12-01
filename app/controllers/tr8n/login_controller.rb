@@ -1,5 +1,7 @@
 class Tr8n::LoginController < ApplicationController
 
+  layout Tr8n::Config.site_info[:tr8n_layout]
+
   def index
     if request.post?
       translator = Tr8n::Translator.find_by_email_and_password(params[:email], params[:password])
@@ -15,8 +17,6 @@ class Tr8n::LoginController < ApplicationController
 
   def register
     if request.post?
-      pp params
-      
       unless validate_registration
         translator = Tr8n::Translator.create(:user_id => 0, :email => params[:email], 
                   :password => params[:password], :name => params[:name], :gender => params[:gender], 
