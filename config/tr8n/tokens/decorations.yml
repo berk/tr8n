@@ -4,7 +4,13 @@
 #
 #############################################################################
 
+strong:     "<strong>{$0}</strong>"
 bold:       "<strong>{$0}</strong>"
+b:          "<strong>{$0}</strong>"
+em:         "<em>{$0}</em>"
 italic:     "<i>{$0}</i>"
+i:          "<i>{$0}</i>"
 link:       "<a href='{$1}' style='{$2}'>{$0}</a>" 
+link1:      "<a href='{$1}' style='{$2}'>{$0}</a>"
+link2:      "<a href='{$1}' style='{$2}'>{$0}</a>"
 br:         "<br>{$0}"

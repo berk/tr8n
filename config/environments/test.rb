@@ -33,15 +33,3 @@ config.action_mailer.delivery_method = :test
       require file
     end
 end
-
-# used for testing only
-class User < ActiveRecord::Base 
-  
-  def method_with_param(param)
-    param
-  end
-  
-  def to_s
-    name
-  end
-end

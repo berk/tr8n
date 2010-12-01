@@ -271,4 +271,7 @@ class Tr8n::Translator < ActiveRecord::Base
     Tr8n::Cache.delete("translator_for_#{user_id}")
   end
 
+  def to_s
+    name
+  end
 end

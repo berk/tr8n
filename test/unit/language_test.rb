@@ -5,7 +5,7 @@ class Tr8n::LanguageTest < Tr8n::BaseTest
 
   def setup
     super
-    @user = User.create!(:id => 2, :name => "Mike")
+    @user = Tr8n::Translator.create!(:id => 2, :user_id => 2, :name => "Mike")
     @russian = Tr8n::Language.for("ru")
     @spanish = Tr8n::Language.create!(:id => 1, :locale => "es", :english_name => "Spanish")
   end
