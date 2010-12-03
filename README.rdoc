@@ -48,7 +48,8 @@ and then read the specification document, which will guide you on how to integra
 
 To run Tr8n in a stand-alone mode, run the following commands:
 
-  $ cd vendor/plugins/tr8n
+  $ git clone git://github.com/berk/tr8n.git
+	$ cd tr8n
   $ rake db:migrate
   $ rake tr8n:init
   $ script/server

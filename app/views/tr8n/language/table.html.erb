@@ -21,9 +21,10 @@
   }
 </style>
 
-
-<div class="tr8n_languages_table">
-  <%=tr8n_language_table_tag(:source_url => @source_url)%>
+<div style="padding:15px;">
+	<div class="tr8n_languages_table">
+	  <%=tr8n_language_table_tag(:source_url => @source_url)%>
+	</div>
+	
+	<%= tr("Don't see the language you're interested in? Let us know at {email}.", nil, :email=>link_to(Tr8n::Config.site_info[:contact_email], "mailto:#{Tr8n::Config.site_info[:contact_email]}")) %>
 </div>
-
-<%= tr("Don't see the language you're interested in? Let us know at {email}.", nil, :email=>link_to(Tr8n::Config.site_info[:contact_email], "mailto:#{Tr8n::Config.site_info[:contact_email]}")) %>

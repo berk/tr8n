@@ -43,56 +43,56 @@
 <h2 class="underscore content_hd">
   <%=tr("Tr8n Translation Engine Integration Guide")%>
 	<div style="padding-top:10px; color:grey; font-size: 14px;">
-		Version: 1.0<br>
-		Author: Michael Berkovich<br>
-    Last Modified: November 29, 2010<br>
+		<%=tr("Version:")%> 1.0<br>
+		<%=tr("Author:")%> Michael Berkovich<br>
+    <%=tr("Last Modified:")%> November 29, 2010<br>
 	</div>
 </h2>
 
 <div class="content_bd">
-  <h2>Table of Content</h2>
+  <h2><%=tr("Table of Content") %></h2>
 	<p>
 		<ul class='toc'>
-			<li><div><a href="#introduction">Introduction</a></div>
+			<li><div><a href="#introduction"><%=tr("Introduction") %></a></div>
 			 <ul class='toc1'>
-			 	 <li><div><a href="#features">Features</a></li>
+			 	 <li><div><a href="#features"><%=tr("Features") %></a></li>
 			 </ul>	
 			</li>
-      <li><div><a href="#installation">Installation Instructions</a></div>
+      <li><div><a href="#installation"><%=tr("Installation Instructions") %></a></div>
        <ul class='toc1'>
-         <li><div><a href="#stand_alone">Running Tr8n as a Stand Alone Application</a></li>
+         <li><div><a href="#stand_alone"><%=tr("Running Tr8n as a Stand Alone Application") %></a></li>
        </ul>  
 			</li>
-      <li><div><a href="#configuration">Configuration Instructions</a></div>
+      <li><div><a href="#configuration"><%=tr("Configuration Instructions") %></a></div>
        <ul class='toc1'>
-         <li><div><a href="#enabling_features">Enabling Tr8n Features</a></li>
-         <li><div><a href="#site_users">Configuring Site and Site Users</a></li>
-         <li><div><a href="#caching">Enabling Caching</a></li>
-         <li><div><a href="#logger">Enabling Logger</a></li>
+         <li><div><a href="#enabling_features"><%=tr("Enabling Tr8n Features") %></a></li>
+         <li><div><a href="#site_users"><%=tr("Configuring Site and Site Users") %></a></li>
+         <li><div><a href="#caching"><%=tr("Enabling Caching") %></a></li>
+         <li><div><a href="#logger"><%=tr("Enabling Logger") %></a></li>
        </ul>  
 			</li>
-      <li><div><a href="#integration">Integration Instructions</a></div>
+      <li><div><a href="#integration"><%=tr("Integration Instructions") %></a></div>
        <ul class='toc1'>
-         <li><div><a href="#controllers">Controller And Helper Methods</a></li>
-         <li><div><a href="#tags">Tr8n Helper Tags</a></li>
+         <li><div><a href="#controllers"><%=tr("Controller And Helper Methods") %></a></li>
+         <li><div><a href="#tags"><%=tr("Tr8n Helper Tags") %></a></li>
        </ul>  
 			</li>
-      <li><div><a href="#methods">Label Internationalization</a></div>
+      <li><div><a href="#methods"><%=tr("Label Internationalization") %></a></div>
        <ul class='toc1'>
-         <li><div><a href="#methods_introduction">Introduction</a></li>
-         <li><div><a href="#token_defintion">Definition of Tr8n Tokens</a></li>
-         <li><div><a href="#data_tokens">Data Tokens</a></li>
-         <li><div><a href="#method_tokens">Method Tokens</a></li>
-         <li><div><a href="#hidden_tokens">Hidden Tokens</a></li>
-         <li><div><a href="#transform_tokens">Transform Tokens</a></li>
-         <li><div><a href="#decoration_tokens">Decoration Tokens</a></li>
+         <li><div><a href="#methods_introduction"><%=tr("Introduction") %></a></li>
+         <li><div><a href="#token_defintion"><%=tr("Definition of Tr8n Tokens") %></a></li>
+         <li><div><a href="#data_tokens"><%=tr("Data Tokens") %></a></li>
+         <li><div><a href="#method_tokens"><%=tr("Method Tokens") %></a></li>
+         <li><div><a href="#hidden_tokens"><%=tr("Hidden Tokens") %></a></li>
+         <li><div><a href="#transform_tokens"><%=tr("Transform Tokens") %></a></li>
+         <li><div><a href="#decoration_tokens"><%=tr("Decoration Tokens") %></a></li>
        </ul>  
       </li>
 		</ul>
 	</p>
 
   <a name="introduction">&nbsp;</a>
-  <h2>Introduction</h2>
+  <h2><%=tr("Introduction") %></h2>
   <p>
     Tr8n translation engine is a rails engine plugin that provides a framework 
 		for crowd-source translations and management of any internationalized text 

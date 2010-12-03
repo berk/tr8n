@@ -194,22 +194,20 @@ defaults: &defaults
 #############################################################################
 development:
   <<: *defaults
-  enable_key_source_tracking: true
+#  enable_key_source_tracking: false
   
 test:
   <<: *defaults
-  enable_key_source_tracking: false
+#  enable_key_source_tracking: false
       
 qa:
   <<: *defaults
-  enable_key_source_tracking: true
+#  enable_key_source_tracking: false
 
 stage:
   <<: *defaults
-  
-  enable_key_source_tracking: true
+#   enable_key_source_tracking: false
 
 production:
   <<: *defaults
-
-  enable_key_source_tracking: false
+#  enable_key_source_tracking: false

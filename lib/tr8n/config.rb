@@ -90,7 +90,8 @@ class Tr8n::Config
     default_languages.each do |locale, info|
       lang = Tr8n::Language.find_or_create(locale, info[:english_name])
       info[:right_to_left] = false if info[:right_to_left].nil?
-      lang.update_attributes(info.merge(:enabled => true))
+      fallback_key = info.delete(:fallback_key)
+      lang.update_attributes(info)
       lang.reset!
     end
     

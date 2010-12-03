@@ -46,11 +46,10 @@
     <div class="field">
       <div class="field_bd">
         <button class="button super blue xlarge"><span><%= tr('Register') %></span></button>
+        <%= tr("or") %>
+        <%=link_to(tr("Login to Tr8n Translation Engine"), "/tr8n/login/index")%>
       </div>
     </div>
   <% end %>
   </div>
-</div>
-<div class="content_ft txt_r">
-  <%=tr("Already have an account? [link: Login here].", "", :link => ["/tr8n/login", ""]) %>
 </div>

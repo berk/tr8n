@@ -49,7 +49,9 @@ class Tr8n::TranslationKey < ActiveRecord::Base
       end
       
       existing_key ||= create(:key => key, :label => label, :description => desc)
-      existing_key.update_attributes(:verified_at => Time.now)
+      
+      # mark each key as verified - but only if caching is enabled
+      existing_key.update_attributes(:verified_at => Time.now) if Tr8n::Config.enable_caching?
       existing_key
     end
     
