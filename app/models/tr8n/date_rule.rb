@@ -114,7 +114,7 @@ class Tr8n::DateRule < Tr8n::LanguageRule
 
   # used to describe a context of a given translation
   def description
-    if self.class.date_options.collect{|o| o.last}.include?(definition[:value])
+    if definition and self.class.date_options.collect{|o| o.last}.include?(definition[:value])
       return "is in the #{definition[:value]}"
     end
     
