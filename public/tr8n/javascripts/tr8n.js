@@ -128,6 +128,7 @@ Tr8n.Translator = function(options) {
 Tr8n.Translator.prototype = {
   hide: function() {
     this.container.style.display = "none";
+    Tr8n.Utils.showFlash();
   },
 
   show: function(translatable_node) {
@@ -135,6 +136,7 @@ Tr8n.Translator.prototype = {
     if (tr8nLanguageSelector) tr8nLanguageSelector.hide();
     if (tr8nLightbox) tr8nLightbox.hide();
     if (tr8nLanguageCaseManager) tr8nLanguageCaseManager.hide();
+    Tr8n.Utils.hideFlash();
 
     var html          = "";
     var splash_screen = Tr8n.element('tr8n_splash_screen');
@@ -347,6 +349,7 @@ Tr8n.LanguageCaseManager = function(options) {
 Tr8n.LanguageCaseManager.prototype = {
   hide: function() {
     this.container.style.display = "none";
+    Tr8n.Utils.showFlash();
   },
 
   show: function(case_node) {
@@ -354,6 +357,7 @@ Tr8n.LanguageCaseManager.prototype = {
     if (tr8nLanguageSelector) tr8nLanguageSelector.hide();
     if (tr8nLightbox) tr8nLightbox.hide();
     if (tr8nTranslator) tr8nTranslator.hide();
+    Tr8n.Utils.hideFlash();
 
     var html          = "";
     var splash_screen = Tr8n.element('tr8n_splash_screen');
@@ -469,6 +473,7 @@ Tr8n.LanguageSelector.prototype = {
 
   hide: function() {
     this.container.style.display = "none";
+    Tr8n.Utils.showFlash();
   },
 
   show: function() {
@@ -476,6 +481,7 @@ Tr8n.LanguageSelector.prototype = {
     if (tr8nTranslator) tr8nTranslator.hide();
     if (tr8nLightbox) tr8nLightbox.hide();
     if (tr8nLanguageCaseManager) tr8nLanguageCaseManager.hide();
+    Tr8n.Utils.hideFlash();
 
     var splash_screen = Tr8n.element('tr8n_splash_screen');
 
@@ -573,13 +579,15 @@ Tr8n.Lightbox.prototype = {
   hide: function() {
     this.container.style.display = "none";
     this.overlay.style.display = "none";
+    Tr8n.Utils.showFlash();
   },
 
   show: function(url, opts) {
     var self = this;
     if(tr8nTranslator) tr8nTranslator.hide();
     if(tr8nLanguageSelector) tr8nLanguageSelector.hide();
-    if (tr8nLanguageCaseManager) tr8nLanguageCaseManager.hide();
+    if(tr8nLanguageCaseManager) tr8nLanguageCaseManager.hide();
+    Tr8n.Utils.hideFlash();
 
     this.container.innerHTML = "<div style='font-size:18px;text-align:left;padding:10px;'><img src='/tr8n/images/spinner.gif' style='vertical-align:middle'> Loading...</div>";
 
@@ -618,6 +626,22 @@ Tr8n.Lightbox.prototype = {
 ****************************************************************************/
 
 Tr8n.Utils = {
+
+  hideFlash: function() {
+		// alert("Hiding");
+    var embeds = document.getElementsByTagName('embed');
+    for(i = 0; i < embeds.length; i++) {
+        embeds[i].style.visibility = 'hidden';
+    } 
+	},
+
+  showFlash: function() {
+    // alert("Showing");
+    var embeds = document.getElementsByTagName('embed');
+    for(i = 0; i < embeds.length; i++) {
+        embeds[i].style.visibility = 'visible';
+    } 
+  },
 
   isOpera: function() {
     return /Opera/.test(navigator.userAgent);
