@@ -44,7 +44,7 @@ To install, configure and initialize Tr8n engine, run the following commands:
 = Integration Instructions
 
 The best way to get going with Tr8n is to run it in a stand-alone mode first, try out some translations 
-and then read the specification document, which will guide you on how to integrate Tr8n into your application.
+and then read the specification document, which will guide through the process of integrating Tr8n into your application.
 
 To run Tr8n in a stand-alone mode, run the following commands:
 
@@ -60,4 +60,28 @@ The above commands will create a development sqlite3 database in the db folder o
 
 Congratulations! You are now running Tr8n in the stand-alone mode!
 
+= External Links
 
+Yammer in Translation
+
+  http://blog.yammer.com/blog/2010/11/yammer-in-translation.html
+
+
+Geni Goes Global With 20 New Languages And A Crowdsourced Translation Tool 
+
+  http://techcrunch.com/2010/06/23/geni-goes-global-with-20-new-languages-and-a-crowdsourced-translation-tool/
+
+
+Quora Discussion - What is the best way to deal with internationlization of text on a large social site?
+
+  http://www.quora.com/What-is-the-best-way-to-deal-with-internationlization-of-text-on-a-large-social-site
+
+
+RailsCasts - If you would like to see a RailsCasts episode on how to get tr8n configured and running, please visit the RailsCasts suggestion page and vote it up. Thank you!
+  
+  http://feedback.railscasts.com/forums/77-episode-suggestions/suggestions/1268705-internationalizing-rails-application-using-tr8n-cr
+
+
+Tr8n Discussion on Hacker News
+
+  http://news.ycombinator.com/item?id=1977011
