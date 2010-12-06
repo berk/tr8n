@@ -64,24 +64,24 @@ Congratulations! You are now running Tr8n in the stand-alone mode!
 
 Yammer in Translation
 
-  http://blog.yammer.com/blog/2010/11/yammer-in-translation.html
+http://bit.ly/g5GQDt 
 
 
 Geni Goes Global With 20 New Languages And A Crowdsourced Translation Tool 
 
-  http://techcrunch.com/2010/06/23/geni-goes-global-with-20-new-languages-and-a-crowdsourced-translation-tool/
+http://tcrn.ch/f1VLnj 
 
 
 Quora Discussion - What is the best way to deal with internationlization of text on a large social site?
 
-  http://www.quora.com/What-is-the-best-way-to-deal-with-internationlization-of-text-on-a-large-social-site
+http://bit.ly/hUU6R9 
 
 
 RailsCasts - If you would like to see a RailsCasts episode on how to get tr8n configured and running, please visit the RailsCasts suggestion page and vote it up. Thank you!
   
-  http://feedback.railscasts.com/forums/77-episode-suggestions/suggestions/1268705-internationalizing-rails-application-using-tr8n-cr
+http://bit.ly/gz7lFw 
 
 
 Tr8n Discussion on Hacker News
 
-  http://news.ycombinator.com/item?id=1977011
+http://bit.ly/hB2qmU 
