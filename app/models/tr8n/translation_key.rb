@@ -417,7 +417,11 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   end
   
   def self.search_conditions_for(params)
-    conditions = ["verified_at is not null"]
+    conditions = [""]
+    
+    if Tr8n::Config.enable_caching?
+      conditions[0] << ["verified_at is not null"]
+    end  
     
     unless params[:search].blank?
       conditions[0] << " and " unless conditions[0].blank?
