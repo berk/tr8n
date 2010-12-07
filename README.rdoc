@@ -60,6 +60,22 @@ The above commands will create a development sqlite3 database in the db folder o
 
 Congratulations! You are now running Tr8n in the stand-alone mode!
 
+
+= Sample Application
+
+You can now get the source code for a sample application that runs Tr8n in the integrated mode and start from there:
+
+  $ git clone git://github.com/berk/tr8n_examples.git
+  $ cd tr8n_examples
+  $ rake db:migrate
+  $ rake tr8n:init
+  $ script/server
+
+Live Tr8n sample application runs here:
+
+http://bit.ly/e9QhFY 
+
+
 = External Links
 
 Yammer in Translation
@@ -90,3 +106,4 @@ http://bit.ly/hB2qmU
 IRC Channel for Discussing Tr8n
 
 irc://irc.freenode.net/#tr8n
+
