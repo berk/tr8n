@@ -77,7 +77,7 @@ Quora Discussion - What is the best way to deal with internationlization of text
 http://bit.ly/hUU6R9 
 
 
-RailsCasts - If you would like to see a RailsCasts episode on how to get tr8n configured and running, please visit the RailsCasts suggestion page and vote it up. Thank you!
+RailsCasts - If you would like to see a RailsCasts episode on how to get Tr8n configured and running, please visit the RailsCasts suggestion page and vote it up. Thank you!
   
 http://bit.ly/gz7lFw 
 
@@ -85,3 +85,8 @@ http://bit.ly/gz7lFw
 Tr8n Discussion on Hacker News
 
 http://bit.ly/hB2qmU 
+
+
+IRC Channel for Discussing Tr8n
+
+irc://irc.freenode.net/#tr8n
