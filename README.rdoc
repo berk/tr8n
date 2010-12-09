@@ -19,6 +19,19 @@ Yammer Inc, http://www.yammer.com
 
 You can visit their web sites and see how it is being used. If your company is using Tr8n, please let me know and i will add you to the list.
 
+Live Tr8n sample application is running here:
+
+http://bit.ly/e9QhFY 
+
+Part 1: Tr8n Translation Engine Integration Guide
+
+http://www.tr8n.org/tr8n/home
+
+Part 2: Tr8n Rules Engine Specifications
+
+http://www.tr8n.org/tr8n/home/rules
+
+
 = Installation Instructions
 
 Tr8n is mostly self-contained. The only two plugins it depends on are will_paginate created by Mislav Marohnić for results pagination 
@@ -70,10 +83,6 @@ You can now get the source code for a sample application that runs Tr8n in the i
   $ rake db:migrate
   $ rake tr8n:init
   $ script/server
-
-Live Tr8n sample application runs here:
-
-http://bit.ly/e9QhFY 
 
 
 = External Links
