@@ -19,18 +19,19 @@ Yammer Inc, http://www.yammer.com
 
 You can visit their web sites and see how it is being used. If your company is using Tr8n, please let me know and i will add you to the list.
 
+= Documentation
+
 Live Tr8n sample application is running here:
 
 http://bit.ly/e9QhFY 
 
 Part 1: Tr8n Translation Engine Integration Guide
 
-http://www.tr8n.org/tr8n/home
+http://bit.ly/fuWdLL 
 
 Part 2: Tr8n Rules Engine Specifications
 
-http://www.tr8n.org/tr8n/home/rules
-
+http://bit.ly/eDIuDH
 
 = Installation Instructions
 
