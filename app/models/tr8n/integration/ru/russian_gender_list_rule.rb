@@ -23,8 +23,8 @@
 
 class Tr8n::RussianGenderListRule < Tr8n::GenderListRule
 
-  # params: [object, one element male, one lement female, one element uknown, at least two elements]
-  # {user_list | one element male, one lement female, one element uknown, at least two elements}
+  # params: [object, one element male, one element female, one element unknown, at least two elements]
+  # {user_list | one element male, one element female, one element unknown, at least two elements}
 
   # TODO: finish implementation
   def self.transform(*args)

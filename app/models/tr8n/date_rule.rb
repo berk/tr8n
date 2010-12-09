@@ -72,9 +72,9 @@ class Tr8n::DateRule < Tr8n::LanguageRule
 
     current_date = Date.today
     
-    if token_date < current_date
+    if object_date < current_date
       return args[1]
-    elsif token_date > current_date
+    elsif object_date > current_date
       return args[3]
     end
     

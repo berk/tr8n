@@ -29,6 +29,10 @@ class Tr8n::HomeController < ApplicationController
     
   end
     
+  def rules
+        
+  end
+  
   def license
     
   end

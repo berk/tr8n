@@ -273,7 +273,7 @@ class Tr8n::Token
   #                         [:name],      # this can be any of the value methods
   #                         { :expandable => true, 
   #                           :to_sentence => true, 
-  #                           :limit => 3, 
+  #                           :limit => 4, 
   #                           :separator => ',',
   #                           :translate_items => false,
   #                           :minimizable => true

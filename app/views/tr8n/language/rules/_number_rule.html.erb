@@ -6,7 +6,7 @@
 
 <% link_style = 'display:none' if multipart %>
 <span id="extension_link_<%=rule_key%>" style="vertical-align:bottom;<%= link_style %>">
-  <%=link_to_function("#{trl("more")} &raquo;", "Tr8n.element('rule_#{rule_key}_second_part').show(); Tr8n.element('extension_link_#{rule_key}').hide(); Tr8n.element('rule_#{rule_key}_multipart').value='true';")%>
+  <%=link_to_function("#{trl("more")} &raquo;", "Tr8n.Effects.show('rule_#{rule_key}_second_part'); Tr8n.Effects.hide('extension_link_#{rule_key}'); Tr8n.element('rule_#{rule_key}_multipart').value='true';")%>
 </span>
 
 <% second_part_style = 'display:none' unless multipart %>
@@ -19,6 +19,6 @@
   <%=text_field_tag("rules[#{rule.class.dependency}][#{index}][definition][value2]", rule.humanize_values(rule.definition[:value2]), :style => "width:200px")%>
   
   <span style="vertical-align:bottom;">
-    <%=link_to_function("&laquo; #{trl("less")}", "Tr8n.element('rule_#{rule_key}_second_part').hide(); Tr8n.element('extension_link_#{rule_key}').show(); Tr8n.element('rule_#{rule_key}_multipart').value='false';")%>
+    <%=link_to_function("&laquo; #{trl("less")}", "Tr8n.Effects.hide('rule_#{rule_key}_second_part'); Tr8n.Effects.show('extension_link_#{rule_key}'); Tr8n.element('rule_#{rule_key}_multipart').value='false';")%>
   </span>
 </span>

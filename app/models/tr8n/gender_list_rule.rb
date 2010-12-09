@@ -92,10 +92,13 @@ class Tr8n::GenderListRule < Tr8n::LanguageRule
     self.class.male_female_occupants(arr)
   end
   
-  # params: [object, one element, at least two elements]
+  # params: [object, one element male, one element female, at least two elements]
+  # or: [object, one element, at least two elements]
+
+  # {user_list | one element male, one element female, at least two elements}
   # {user_list | one element, at least two elements}
   def self.transform(*args)
-    unless args.size == 3
+    unless [3, 4].include?(args.size)
       raise Tr8n::Exception.new("Invalid transform arguments")
     end
     
@@ -108,20 +111,31 @@ class Tr8n::GenderListRule < Tr8n::LanguageRule
     
     list_size = list_size.to_i
     
-    return args[1] if list_size == 1
-    return args[2] if list_size >= 2
+    if args.size == 3
+      return args[1] if list_size == 1
+      return args[2]
+    end
     
-    # should we raise an exception here if the list is empty?
-    ""  
+    if list_size == 1
+      list_object = object.first
+      list_object_gender = Tr8n::GenderRule.gender_token_value(list_object)
+      if list_object_gender == Tr8n::GenderRule.gender_object_value_for("male")
+        return args[1]
+      elsif list_object_gender == Tr8n::GenderRule.gender_object_value_for("female")
+        return args[2]
+      end
+    end
+    
+    args[3]
   end  
   
   # params: [one element, at least two elements]
   def self.default_transform(*args)
-    unless args.size == 2
+    unless [2, 3].include?(args.size)
       raise Tr8n::Exception.new("Invalid transform arguments for list token")
     end
     
-    args[1]
+    args.last
   end  
   
   def evaluate(token)

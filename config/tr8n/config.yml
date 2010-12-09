@@ -144,11 +144,11 @@ defaults: &defaults
       object_method:          size
       token_suffixes:         [list]
     date_rule:                
-      object_method:          to_date
       token_suffixes:         [date]
+      object_method:          to_date
     value_rule:               
-      object_method:          to_s
       token_suffixes:         *
+      object_method:          to_s
     
     # minimal rank makes the translation acceptable for subsitution and counts towards the translator rank
     translation_threshold:    1
