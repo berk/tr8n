@@ -1,0 +1,562 @@
+<style>
+	h2 {
+		font-weight: bold;
+	}
+	h3 {
+		padding-top: 10px;
+	}
+	.snippet {
+		border: 1px solid #ccc;
+		margin-top:10px;
+    margin-bottom:10px;
+		padding:10px;
+		background-color: #f8f8ff;
+	}
+  .snippet2 {
+    border: 1px solid #ccc;
+    margin-top:10px;
+    margin-bottom:10px;
+    padding:10px;
+    background-color: #fff8f8;
+  }
+	.try_it {
+		font-style:italic;
+	}
+	.toc {
+		margin-left:20px;
+		margin-bottom:20px;
+		list-style-type:upper-roman;
+	}
+	.toc li div {
+		border-bottom:1px dotted #ccc; 
+		font-size:16px;
+	}
+  .toc1 {
+    margin-left:20px;
+		list-style-type:lower-roman;
+  }
+</style>
+<div style="text-align:center; margin:15px;">
+ <%=image_tag("/tr8n/images/tr8n_logo.png", :style => "height:120px;")%>
+</div>
+
+<h2 class="underscore content_hd">
+  <%=tr("Tr8n Translation Engine Integration Guide")%>
+</h2>
+
+<div class="content_bd">
+  <h2><%=tr("Table of Content") %></h2>
+	<p>
+		<ul class='toc'>
+			<li><div><a href="#introduction"><%=tr("Introduction") %></a></div>
+			 <ul class='toc1'>
+			 	 <li><div><a href="#features"><%=tr("Features") %></a></li>
+			 </ul>	
+			</li>
+      <li><div><a href="#installation"><%=tr("Installation Instructions") %></a></div>
+       <ul class='toc1'>
+         <li><div><a href="#stand_alone"><%=tr("Running Tr8n as a Stand Alone Application") %></a></li>
+       </ul>  
+			</li>
+      <li><div><a href="#configuration"><%=tr("Configuration Instructions") %></a></div>
+       <ul class='toc1'>
+         <li><div><a href="#enabling_features"><%=tr("Enabling Tr8n Features") %></a></li>
+         <li><div><a href="#site_users"><%=tr("Configuring Site and Site Users") %></a></li>
+         <li><div><a href="#caching"><%=tr("Enabling Caching") %></a></li>
+         <li><div><a href="#logger"><%=tr("Enabling Logger") %></a></li>
+       </ul>  
+			</li>
+      <li><div><a href="#integration"><%=tr("Integration Instructions") %></a></div>
+       <ul class='toc1'>
+         <li><div><a href="#controllers"><%=tr("Controller And Helper Methods") %></a></li>
+         <li><div><a href="#tags"><%=tr("Tr8n Helper Tags") %></a></li>
+       </ul>  
+			</li>
+      <li><div><a href="#next"><%=tr("What's next?") %></a></div></li>
+		</ul>
+	</p>
+
+  <a name="introduction">&nbsp;</a>
+  <h2><%=tr("Introduction") %></h2>
+  <p>
+    Tr8n translation engine is a rails engine plugin that provides a framework 
+		for crowd-source translations and management of any internationalized text 
+		throughout any rails based application. The power of the engine comes from 
+		its simple and friendly user interface that allows site users to rapidly 
+		translate the site into hundreds of languages. The flexible and robust rules 
+		engine that powers Tr8n allows for any combinations of language specific 
+		rules in any translatable sentence. Users themselves can provide information 
+		on what sentences depend on gender rules, number rules or other types of rules 
+		supported by the engine. The language specific rules can be registered and 
+		managed for any language in the advanced user interface. The engine also 
+		provides a set of powerful admin tools that allow admins to manage any 
+		aspect of the engine; enabling and disabling its features and monitoring 
+		translation process.  
+  </p>
+  
+	<p>
+    The Tr8n engine is based on a very robust and flexible pluggable architecture where 
+    rule types and even syntax of the "tr" tokens can be configured or extended for any application deployment.
+  </p>  
+	
+	<a name="features">&nbsp;</a>
+  <h3>Features</h3>
+	<p>Tr8n translation engine comes packed with features, most of which can be enabled and disabled using the configuration file. The features include:</p>
+	<div style="padding-left:20px; padding-bottom:10px;">
+	  <ul style="list-style-type:square">
+	    <li>Support for over 250 languages</li>
+	    <li>Support for left to right and right to left languages (requires css integration)</li>
+	    <li>Inline and bulk mode translations</li>
+	    <li>Translations based on gender and numeric rules</li>
+	    <li>Translations voting system</li> 
+	    <li>Translations reporting system</li>
+	    <li>Software keyboard for over 50 languages</li>
+	    <li>Google suggestions for over 50 languages</li>
+	    <li>Keyword glossary</li>
+	    <li>Translator awards</li>
+	    <li>Translations site map</li>
+	    <li>Language discussion boards</li>
+	    <li>Regional translator management</li>
+	    <li>Translator monitoring system</li>
+	    <li>Language rule management tools</li>
+	    <li>Glossary management tools</li> 
+	    <li>Help section</li>
+	    <li>Administration tools for configuring all aspects of the translations engine</li>
+			<li>And much more...</li>
+	  </ul>	
+	</div>
+	
+  <a name="installation">&nbsp;</a>
+  <h2>Installation Instructions</h2>
+  <p>
+    Tr8n is mostly self-contained. The only two plugins it depends on are will_paginate created by Mislav Marohnić 
+    for results pagination and will_filter created by Michael Berkovich for filtering results in the admin interface.
+  </p>
+	<p>
+		To install the required plugins, run the following commands:
+
+    <div class="snippet">  		
+		  $ script/plugin install git://github.com/mislav/will_paginate.git<br><br>
+		
+		  $ script/plugin install git://github.com/berk/will_filter.git<br>
+		  $ rake will_filter:sync<br>
+		  $ rake db:migrate<br>
+		  $ cd public; ln -s ../vendor/plugins/will_filter/public/wf wf; cd ..;<br>
+		</div>		
+	</p>
+	
+	<p>
+  	To install, configure and initialize Tr8n engine, run the following commands:
+	
+	  <div class="snippet">     
+		  $ script/plugin install git://github.com/berk/tr8n.git<br>
+		  $ rake tr8n:sync<br>
+		  $ rake db:migrate<br>
+		  $ rake tr8n:init<br>
+		  $ cd public; ln -s ../vendor/plugins/tr8n/public/tr8n tr8n; cd ..;<br>
+		</div>			
+	</p>
+	
+  <a name="stand_alone">&nbsp;</a>
+	<h3>Running Tr8n as a Stand Alone Application</h3>
+	<p>
+		Tr8n can be run as an embedded Rails engine plugin or as a stand-alone application. 
+		The stand-alone mode allows you to test various features of the engine before you integrate it into your application.
+		To run Tr8n as a standalone application, execute the following commands:
+
+    <div class="snippet">     
+      $ cd vendor/plugins/tr8n<br>
+      $ rake db:migrate<br>
+      $ rake tr8n:init<br>
+			$ script/server
+    </div>      
+	</p>
+	<p>	
+		The above commands will create a development sqlite3 database in the db folder of tr8n, init the database and run the local web server. Now you can open your browser and 
+		point to: 
+		
+		<div class="snippet">
+		  http://localhost:3000/tr8n
+		</div>
+	</p>
+  <p>
+  	Congratulations! You are now running Tr8n in the stand-alone mode!<br><br>
+		 
+		The next section will describe how to configure and run Tr8n in the site-user integrated mode as a Rails plugin engine.
+  </p>  
+	
+  <a name="configuration">&nbsp;</a>
+  <h2>Configuration Instructions</h2>
+  <p>
+		Now you are ready to configure and integrate Tr8n engine plugin into your application.
+		When you run the "rake tr8n:sync" command in one of the steps above, the configuration files were copied into your application config 
+		folder under the tr8n folder. Those files contain config.yml, which controls the behavior of the engine, enables and disables
+		various engine features and provides date/time localization features. The tr8n folder also contains subfolders with default languages, 
+		language rules, language cases, glossaries, shortcuts, etc... Most of the files are self explanatory and contain comments that describe their use.
+		When you run the "rake tr8n:init" command, the contents from the "defaults" files were imported into the database. If you ever want to clean the tr8n database (while developing), you   
+  </p>
+	<p>  
+    The main Tr8n configuration file is located here:
+    <div class="snippet">
+      config/tr8n/config.yml
+		</div>
+			
+    The content of the file is mostly self-explanatory. You can keep most of the defaults. The sections bellow will describe how to change certain aspects of the integration.
+		<br><br> 
+  </p>	
+
+  <a name="enabling_features">&nbsp;</a>
+  <h3>Enabling Tr8n Features</h3>
+	<p>
+		The following are the basic features of Tr8n.
+		
+    <div class="snippet" style="font-size:11px;">
+      <pre>
+  enable_tr8n:                true      # enables the engine
+  enable_key_source_tracking: false     # builds the site map sources
+  enable_key_caller_tracking: false     # tracks all calls to labels with their traces - for debugging only
+  
+  enable_glossary_hints:      true      # shows glossary in the translator    
+  enable_software_keyboard:   true      # shows the soft keyboard icon  
+  enable_google_suggestions:  true      # uses google for suggestions
+  enable_keyboard_shortcuts:  true      # adds some keyboard shortcuts like ctrl+shift+s
+  enable_dictionary_lookup:   true      # shows dictionary words definitions
+  
+  enable_fallback_languages:  true      # for example: Catalan can fallback onto Spanish
+  enable_translator_language: true      # translator can translate from non-default language
+
+  enable_language_flags:      true      # shows flag icons next to the languages
+  
+  enable_admin_translations:  true      # registers tr8n admin keys in the system
+  enable_admin_inline_mode:   true      # allows tr8n engine sections to be inline translated
+  
+  enable_language_cases:      true      # enables support for language cases
+  enable_client_sdk:          false     # allows javascript to use tr8nProxy object 
+      </pre>
+    </div>
+		
+		<strong>enable_key_source_tracking</strong> needs to be periodically enabled, especially when new features are added to the site map. If enabled, Tr8n will log the sources for every translation key on the site.
+		<br>
+	</p>
+
+  <a name="site_users">&nbsp;</a>
+  <h3>Configuring Site and Site Users</h3>
+	<p>
+		Below are the default values from Tr8n config.yml, which are configured for the Tr8n stand alone mode. You will need to modify some of those values to make Tr8n work with your application. 
+		
+    <div class="snippet" style="font-size:11px;">
+    	<pre>
+site_info:  
+  title:                    Tr8n                            # site title - provide your site title here
+  contact_email:            admin@tr8n.org                  # contact email for questions about translations
+  current_locale_method:    current_locale                  # application controller method that sets and returns current locale
+  default_url:              /tr8n/home                      # default site url where to redirect the user if Tr8n is disabled            
+  default_locale:           en-US                           # locale of the site default language  
+  sitemap_path:             /config/tr8n/site/sitemap.json  # location of the sitemap definition file
+  splash_screen:            /tr8n/common/splash_screen      # location of the Tr8n splash screen  
+  tr8n_layout:              tr8n                            # layout for the tr8n pages
+  tr8n_helpers:             []                              # if you need to add extra helpers
+  admin_layout:             tr8n_admin                      # layout to be used for the admin user interface
+  admin_helpers:            []                              # if you need to add extra helpers
+  before_filters:           []                              # filters from application controller
+  skip_before_filters:      []                              # filters from application controller
+  after_filters:            []                              # filters from application controller
+  user_info:
+    enabled:                false                           # if disabled, will fallback onto translators
+    class_name:             User                            # class name for the User object type
+    current_user_method:    current_user                    # provides current user object
+    methods:                                                # User object methods mapping
+      id:                   id
+      name:                 name                            
+      gender:               gender
+      admin:                admin?
+      guest:                guest?
+      mugshot:              mugshot
+      link:                 link
+      locale:               locale
+    	</pre>
+    </div>
+		
+		
+		Here is the modified version that could fit your application. The modified items are marked in bold.
+
+    <div class="snippet2" style="font-size:11px;">
+      <pre>
+site_info:  
+  <strong>title:                    My Site Title</strong>                            
+  <strong>contact_email:            translations@mysitedomain.com</strong>
+  current_locale_method:    current_locale                  
+  <strong>default_url:              /</strong>                                  
+  default_locale:           en-US        
+  sitemap_path:             /config/tr8n/site/sitemap.json  
+  splash_screen:            /tr8n/common/splash_screen        
+  <strong>tr8n_layout:              application</strong>                            
+  tr8n_helpers:             []                              
+  <strong>admin_layout:             admin</strong>
+  admin_helpers:            []             
+  before_filters:           []             
+  skip_before_filters:      []             
+  after_filters:            []             
+  user_info:
+    <strong>enabled:                true</strong> 
+    class_name:             User
+    current_user_method:    current_user  
+    <strong><i>methods:  
+      id:                   id
+      name:                 name
+      gender:               gender
+      admin:                admin?
+      guest:                guest?
+      mugshot:              mugshot
+      link:                 link
+      locale:               locale
+			</i></strong>
+      </pre>
+    </div>
+		
+		
+    You need to map your User object methods to the methods defined in the config file under the user_info section. 
+		Alternatively, you could overload any of the config properties in the Tr8n::Config class. You can do this by creating a new
+	
+	  <div class="snippet">
+      config/initializers/tr8n.rb	  	
+		</div>
+		
+		And overloading any of the Tr8n::Config methods, as follows:
+		
+    <div class="snippet">
+      <pre>
+Rails.configuration.after_initialize do 
+  
+  class Tr8n::Config
+    def self.enabled?
+      true  
+    end
+		
+    def self.user_name(user)
+      user.name
+    end
+		
+    def self.user_gender(user)
+      user.gender
+    end
+		
+    ...
+  end
+
+end
+      </pre>
+    </div>
+	</p>
+  
+	<p>
+		The <strong>current_locale</strong> method should not only return back the locale, but should also be able to store and preserve the locale. 
+		If the method is not defined, then Tr8n will fallback onto the default implementation which stores the selected locale in the session.
+		
+		You can implement your own method of determining and returning the locale of the site. For example, the locale can be configured as a subdomain or a site extension.
+		Below is an example of the current_locale method that sets the locale from a parameter, uses user's locale or uses browser's preffered locale: 
+		
+    <div class="snippet">
+      <pre>
+  def current_locale
+    if params[:locale]
+      session[:locale] = params[:locale]
+      session[:save_locale] = true
+    elsif !current_user.guest? and current_user.locale != nil
+      session[:locale] = current_user.locale
+    elsif session[:locale] == nil
+      session[:locale] = tr8n_user_preffered_locale
+      session[:save_locale] = (session[:locale] != Tr8n::Config.default_locale)
+    end
+
+    if session[:save_locale] and not current_user.user.guest?
+      current_user.changed_language!(session[:locale])
+      session[:save_locale] = nil
+    end
+
+    session[:locale]
+  end
+      </pre>
+    </div>
+		 
+		 <strong>tr8n_user_preffered_locale</strong> returns back the first available locale supported by Tr8n that the browser has requested in the order of the browser's language preferences.
+		 
+		 <br><br>
+		 There are a few other settings in config.yml that you may want to review. Those settings will be covered in the later sections. 
+	</p>
+
+  <a name="caching">&nbsp;</a>
+  <h3>Enabling Caching</h3>
+	<p>
+		It is best to run Tr8n with some kind of caching support. One of the best solutions is to use Memcached for caching. 
+		Tr8n comes with support for any Rails caching methods as well as a mechanism to integrate a custom caching adapter to address your specific needs.
+		
+    <div class="snippet">
+      <pre>
+caching:
+  enabled:                  true
+  adapter:                  ActiveSupport::Cache
+  store:                    [mem_cache_store, 'localhost:11211']
+  version:                  1 # you can change the version to invalidate the cache
+      </pre>
+    </div>
+		
+		If you choose to use the Rails caching support, then use the ActiveSupport::Cache as the adapter. You can choose any one of the following cache stores:
+		memory_store, file_store, drb_store, [mem_cache_store, 'localhost:11211']
+		<br><br>
+		
+		If you have a custom cache solution, you can implement a custom adapter class and provide your custom implementation. The class must implement the following methods:
+    <div class="snippet">
+      <pre>
+class CustomCacheAdapter
+  
+  def self.fetch(key, options = {})
+    CACHE.get_or_add(key) do 
+      yield
+    end
+  end
+
+  def self.delete(key, options = nil)
+    CACHE.delete(key)
+  end
+
+end		
+      </pre>
+    </div>
+
+    Then you can set the caching adapter to your custom class name.
+		<br><br>
+		The Tr8n version parameter is used to expire and rotate cached values. For example, if you have removed a lot of old keys from your system, you may want to increment the cache version. 
+		This will remove the old values from the cache and replace them with the new values. When a translation key is loaded into cache, Tr8n will aslo update the verified_at timestamp of the key.
+		This way you can keep track of which keys have been accessed and when. So you can periodically delete the old, unused keys.
+	</p>
+
+  <a name="logger">&nbsp;</a>
+  <h3>Enabling Logger</h3>
+	<p>
+    By default, Tr8n will use its own logger. If you set it to false, it will use default Rails logger.
+    <div class="snippet">
+      <pre>
+logger:
+  enabled:                  true
+  log_path:                 log/tr8n.log          # location of the log file
+  enable_paranoia_mode:     true                  # logs every translator action
+      </pre>
+    </div>
+	</p>
+
+  <a name="integration">&nbsp;</a>
+  <h2>Integration Instructions</h2>
+  <p>The following sections will give a quick overview for how to integrate and customize tr8n into your rails application.</p>
+
+  <a name="controllers">&nbsp;</a>
+  <h3>Controller And Helper Methods</h3>
+	<p>
+    Add the following include directive to the ApplicationController class:
+		<div class="snippet">		
+			class ApplicationController < ActionController::Base<br>
+			&nbsp;&nbsp;&nbsp;<strong>include Tr8n::CommonMethods</strong><br>
+			&nbsp;&nbsp;&nbsp;...<br>
+			end
+		</div>
+	</p>
+  <p>
+    Add the following include directive to the ApplicationHelper module:
+    <div class="snippet">   
+      module ApplicationHelper<br>
+      &nbsp;&nbsp;&nbsp;<strong>include Tr8n::HelperMethods</strong><br>
+      &nbsp;&nbsp;&nbsp;<strong>include Wf::HelperMethods</strong><br>
+      &nbsp;&nbsp;&nbsp;...<br>
+      end
+    </div>
+		
+		The above instructions will include all of the necessary helper methods so that Tr8n can be used in all of the controllers and views of your application. 
+  </p>
+
+  <a name="tags">&nbsp;</a>
+  <h3>Tr8n Helper Tags</h3>
+	<p>
+    For the purpose of this excercise we will assume that you have a global layout file defined in <strong>app/views/layouts/application.html.erb</strong> that, in its simplistic form,  looks something like this:
+		
+   <div class="snippet">
+			&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"&gt;<br>
+			&lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;<br>
+			&nbsp;&nbsp;&nbsp;&lt;head&gt;<br>
+			&nbsp;&nbsp;&nbsp;&lt;/head&gt;<br>
+			&nbsp;&nbsp;&nbsp;&lt;body&gt;<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;%= @content_for_layout %&gt;<br>
+			&nbsp;&nbsp;&nbsp;&lt;/body&gt;<br>
+			&lt;/html&gt;<br>
+   </div> 		
+	
+	 There are many different ways you could integrate the language selector and tools into your application. Tr8n comes with a number of tags that can help you integrate the various scripts.
+  </p>
+	<p>
+		Note: All of the Tr8n JavaScripts are framework independent and it shouldn't matter what framework you use for your application.
+	</p>
+	
+  <p>
+   <strong>tr8n_scripts_tag</strong> - embeds tr8n javascripts and stylesheets necessary for the inline translator to work. It also contains translation suggestions, virtual keyboard 
+	 and shortucts scripts. This is the only required tag that must be included on all of the traslatable pages.
+	 <br><br>
+	  	 
+	 <strong>tr8n_language_selector_tag</strong> - embeds the standard Tr8n language selector with links to enable/disable inline translations, translators tools, adminstrations tools and help. 
+	 This tag is usually used in the top right corner of the application. 
+	 <br><br>
+
+   <strong>tr8n_translator_login_tag</strong> - embeds translator login and language selector. This tag is only useful when the site does not have its own user registration mechanism. 
+   <br><br>
+	 
+	 <strong>tr8n_language_strip_tag</strong> - embeds language strip with the featured languages. Featured languages can be configured using the admin tool. This tag is usually used at the bottom 
+	 of the application.
+		 		
+	 <br><br>
+	 
+	 Once you add the above tags, your layout file will look something like this:
+	 
+   <div class="snippet">
+      &lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"&gt;<br>
+      &lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;<br>
+      &nbsp;&nbsp;&nbsp;&lt;head&gt;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;%= tr8n_scripts_tag %&gt;<br>
+      &nbsp;&nbsp;&nbsp;&lt;/head&gt;<br>
+      &nbsp;&nbsp;&nbsp;&lt;body&gt;<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div style="float:right"&gt;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;%= tr8n_language_selector_tag %&gt;<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;%= @content_for_layout %&gt;<br><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;%= tr8n_language_strip_tag %&gt;<br>
+      &nbsp;&nbsp;&nbsp;&lt;/body&gt;<br>
+      &lt;/html&gt;<br>
+   </div>     
+	 
+	 Now you are ready to add and translate your first label. Open up any view from any controller (make sure that the view's layout has the tags from the examples above) and add the following line:
+	 
+   <div class="snippet">
+      &lt;%=tr("Hello World", "My first translatable greeting to the world!")%&gt;   	
+   </div>     
+	 
+	 If your site supports users and you would like to use Tr8n in the site user integrated mode, then you must implement your own login/registration mechanism as well as follow the steps described in the 
+	 "Configuring Site User" section of this document. Tr8n will automatically determine if your user has logged in and will give the appropriate options for enabling/disabling inline translations.
+	 <br><br>
+	 
+	 On the other hand, if you want to keep Tr8n translators separate from your site users, you can use the tr8n_translator_login_tag or the following URLs for registering translators and logging into Tr8n. 
+	    
+   <div class="snippet">
+	 http://localhost:3000/tr8n/login<br>
+   http://localhost:3000/tr8n/login/register<br>
+	 http://localhost:3000/tr8n/login/out<br>
+	 </div>
+	 The Tr8n login mechanism is very simplistic and it is there to just get you started. So it is best that you implement a better, more secure user authentication mechanism and integrate the site users with Tr8n.
+	 Try registering a new user, changing a language and translating the label.
+
+	 <br><br>
+	 Now you are ready to try more advanced translation options.
+  </p>
+
+  <a name="next">&nbsp;</a>
+  <h2>What's next?</h2>
+	
+	Cnogratulations! You have completed the first part of the integration guide. Now read on about <%=link_to("Tr8n Label Internationalization", "/tr8n/home/tokens")%>.
+	
+</div>

@@ -28,7 +28,11 @@ class Tr8n::HomeController < ApplicationController
   def index
     
   end
-    
+
+  def tokens
+        
+  end
+
   def rules
         
   end

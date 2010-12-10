@@ -1,0 +1,321 @@
+<style>
+  h2 {
+    font-weight: bold;
+  }
+  h3 {
+    padding-top: 10px;
+  }
+  .snippet {
+    border: 1px solid #ccc;
+    margin-top:10px;
+    margin-bottom:10px;
+    padding:10px;
+    background-color: #f8f8ff;
+  }
+  .snippet2 {
+    border: 1px solid #ccc;
+    margin-top:10px;
+    margin-bottom:10px;
+    padding:10px;
+    background-color: #fff8f8;
+  }
+  .try_it {
+    font-style:italic;
+  }
+  .toc {
+    margin-left:20px;
+    margin-bottom:20px;
+    list-style-type:upper-roman;
+  }
+  .toc li div {
+    border-bottom:1px dotted #ccc; 
+    font-size:16px;
+  }
+  .toc1 {
+    margin-left:20px;
+    list-style-type:lower-roman;
+  }
+</style>
+<div style="text-align:center; margin:15px;">
+ <%=image_tag("/tr8n/images/tr8n_logo.png", :style => "height:120px;")%>
+</div>
+
+<h2 class="underscore content_hd">
+  <%=tr("Tr8n Label Internationalization")%>
+</h2>
+
+<div class="content_bd">
+  <h2><%=tr("Table of Content") %></h2>
+  <p>
+    <ul class='toc'>
+       <li><div><a href="#methods_introduction"><%=tr("Introduction") %></a></li>
+       <li><div><a href="#token_defintion"><%=tr("Definition of Tr8n Tokens") %></a></li>
+       <li><div><a href="#data_tokens"><%=tr("Data Tokens") %></a></li>
+       <li><div><a href="#method_tokens"><%=tr("Method Tokens") %></a></li>
+       <li><div><a href="#hidden_tokens"><%=tr("Hidden Tokens") %></a></li>
+       <li><div><a href="#transform_tokens"><%=tr("Transform Tokens") %></a></li>
+       <li><div><a href="#decoration_tokens"><%=tr("Decoration Tokens") %></a></li>
+      <li><div><a href="#next"><%=tr("What's next?") %></a></div></li>
+    </ul>
+  </p>
+
+  <a name="methods_introduction">&nbsp;</a>
+  <h3>Introduction</h3>
+
+  <p>
+    The function for internationalizing labels has the following signature:
+
+    <div class="snippet">
+      &lt;%= tr(LABEL, DESCRIPTION = "", TOKENS = {}, OPTIONS = {}) %&gt;<br><br>
+      * LABEL is a required string<br>
+      * DESCRIPTION is an optional, but highly recommended string<br>
+      * TOKENS is an optional hash of token values - it is required if tokens are used in the label<br>
+      * OPTIONS is an optional hash of options<br>
+    </div>
+  </p>
+  
+  <p>
+    The following is the first simplest example of an internationalized phrase:
+
+    <div class="snippet">
+      &lt;%= tr("Hello World") %&gt;
+    </div>
+    
+    or alternatively: 
+
+    <div class="snippet">
+      &lt;%= "Hello World".translate %&gt;
+    </div>
+  </p>
+
+  <p class="try_it">Try it yourself:</p>
+  <div class="snippet2">
+    <%= tr("Hello World") %>
+  </div>
+  
+  <p>As you might have noticed, the DESCRIPTION is not mandatory, but it should be used in cases when the label alone is not sufficient enough to determine the meaning of the sentence being translated. For example, when the translators use the bulk translation mode and look at the list of strings, they won’t be able to tell what the "Invite" by itself means. In that case DESCRIPTION will be very helpful.
+  </p>
+  
+  <p>Tr8n translation engine uses label and description to create a unique key for each phrase. So the description serves two purposes: it creates a unique key for each label and it also gives a hint to the translators for the context in which the label is used. For example, the following two phrases will be registered as two independent entries in a database even though the have the same label, but a different description. The user will have to translate each one of them separately as they will have different translated labels in other languages.
+  </p>
+  
+  <div class="snippet">
+    &lt;%= tr("Invite", "Link to invite your friends to join the site") %&gt;<br>
+    &lt;%= tr("Invite", "An invitation you recieved from your friend") %&gt;
+  </div>  
+      
+  <p>It is important to provide the best possible description for each phrase from the start. Keep in mind that changing a description in the future, after it has already been translated, will register a new phrase in the database and invalidate all of its translations. On the other hand, labels that are complete sentences may not need a description as they are fully self-contained.
+  </p>
+
+  <p class="try_it">Try it yourself:</p>
+  <div class="snippet2">
+    <%= tr("Invite", "Link to invite your friends to join the site") %><br>
+    <%= tr("Invite", "An invitation you recieved from your friend") %>
+  </div>
+  
+  <p>There are a number of other flavors of the "tr" function like trl, trfe, trfn that set default options for various reasons. You can read more about them in the Tr8n Integration Guide.
+  </p>
+  
+  <p>The following is a short summary of the tr8n’s internationalization notations.</p>
+  
+  <a name="token_defintion">&nbsp;</a>
+  <h3>Definition of Tr8n Tokens</h3>
+  
+  <p>It would have been boring if all of the labels in a site were just simple sentences without any dynamic data or decorations. Tr8n tokens are there to support the dynamic information in a label.
+  </p>
+  
+  <p>Currently there are two major types of tokens defined in the extensible Tr8n syntax: data tokens and decoration tokens. Data tokens are defined as any strings surrounded by curly brackets inside of a label. So anything of this form {TOKEN_NAME} is considered a data token.
+  </p>
+  
+  <p>Decoration tokens are defined as any string surrounded by squared brackets inside of a label. So anything of this form &#91;TOKEN_NAME: decorated value&#92; is considered a decoration token.
+  </p>
+  
+  <p>There are a number of different flavors of data tokens. Below are some of the flavors with some examples.
+  </p>
+  
+  <a name="data_tokens">&nbsp;</a>
+  <h3>Data Tokens</h3>
+  
+  <p>There is a number of ways to substitute a data token with a value. Below are some of the main examples.
+  </p>
+  
+  <strong>Simple string substitution:</strong>
+  
+  <div class="snippet">
+    &lt;%= tr("Dear {user}", "Fragment sample", :user => current_user) %&gt;
+  </div>
+  
+  <p>The to_s function will be applied on the value of the current_user variable and substituted into the {user} token.
+  </p>
+  
+  <strong>Value substitution:</strong>
+  
+  <div class="snippet">
+  &lt;%= tr("Dear {user}", "Fragment sample", :user => [current_user, display_user(current_user)]) %&gt;
+  </div>
+  
+  <p>Notice one important thing that current_user is passed as a first element in the array. This is done for gender rules evaluation - i will describe this in the later sections. The second value is the actual value we want to subsitute into the {user} token.
+  </p>
+  
+  <strong>Value substitution using symbol method call:</strong>
+  <div class="snippet">
+    &lt;%= tr("Dear {user}", "Fragment sample", :user => [current_user, :first_name])  %&gt;
+  </div>
+  
+  <p>As in the previous example, first object for rules engine, second is a symbol that represents a method that will be called on the object and the result will be placed into the {user} token.
+  </p>
+  
+  <strong>Value substitution using symbol method call with parameters:</strong>
+  <div class="snippet">
+      &lt;%= tr("Dear {user}", "Fragment sample", :user => [current_user, :some_method, "value"])  %&gt;
+  </div>
+      
+  <p>Same as the above example, but the method can be called with some parameters.</p>
+  
+  <strong>Value substitution using lambda method call:</strong>
+  
+  <div class="snippet">
+    &lt;%= tr("Dear {user}", "Fragment sample", :user => [current_user, lambda{|val| html_for(val)}])  %&gt;
+  </div>
+  <p>The second parameter can also be a lambda. In that case current_user will be passed as a val into the lambda and the result of the lambda evaluation will be placed into the {user} token.
+  </p>
+  
+  <strong>Value substitution using lambda method call with parameters:</strong>
+  <div class="snippet">
+    &lt;%= tr("Dear {user}", "Fragment sample", :user => [current_user, lambda{|val, test| html_for(val, test)}], "test"])  %&gt;
+  </div>
+    
+  <p>Same as the above, but lambda has some additional parameters.</p>
+  
+  <p>You may be wondering why we need so many variations. Well, they are all useful, as you will see later.
+  </p>
+  
+  <p class="try_it">Try it yourself:</p>
+  <div class="snippet2">
+    <%= tr("Dear {user}", "Fragment sample", :user => [Tr8n::Config.current_user, :name])  %>
+  </div>
+  
+  <a name="method_tokens">&nbsp;</a>
+  <h3>Method Tokens</h3>
+  
+  <p>Method token allows you to call a method on a token itself. It is useful if you have multiple method calls on the same token in one sentence. Consider the following example:
+  </p>
+   
+  <div class="snippet">
+    &lt;%= tr("Dear {user.first_name} {user.last_name}", "Fragment sample", :user => current_user) %&gt;
+  </div>  
+  
+  <p>Since the substitution is implied in the token definition itself, you don’t have to use any of the basic data token substitution forms.
+  </p>
+  
+  <a name="hidden_tokens">&nbsp;</a>
+  <h3>Hidden Tokens</h3>
+  
+  <p>Hidden tokens are used primarely for the default language dynamic data substitution that would not make sense in the translated label. Hidden tokens will not appear as tokens when translator opens the translation dialog. Consider the following examples:
+  </p>
+  
+  <div class="snippet">
+    &lt;%= tr("{user} changed {_his_her} name", "Fragment sample", :user => current_user, :_his_her => current_user.his_her)  %&gt;<br>
+    &lt;%= tr("you have {count} {_messages}", "Fragment sample", :count => NUM, :_messages => "message".pluralize_for(NUM))  %&gt;
+  </div>
+  
+  <p>In the first cases _his_her will be subsituted in English to the appropriate phrase based on the current_user gender. And in the second case the correct form of message will be used based on whether the number is 1 or other.
+  </p>
+  
+  <p>There is a better approach for the above examples, using the Transform tokens. But there may still be situations when hidden token can be useful.
+  </p>
+  
+  <a name="transform_tokens">&nbsp;</a>
+  <h3>Transform tokens</h3>
+  
+  <p>Transform tokens are used together with rules defined in the rules engine. Their primary job is to provide shortcuts for rule based tokens in the site native language. Consider the following example:
+  </p>
+  
+  <div class="snippet">
+    &lt;%= tr("{user} changed {user| his, her} name", "Fragment sample", :user => current_user)  %&gt;
+  </div>
+    
+  <p>Notice that the hidden token has been replaced by the transform token. Keep in mind that {user} token must be registered as a gender based token. Consider another example:
+  </p>
+  
+  <div class="snippet">
+    &lt;%= tr("You have {count|| message, messages}", "Fragment sample", :count => messages.size)  %&gt;
+  </div>
+    
+  <p>Notice that, in this case, {count} must be registered as a number based token. When the native language rule is evaluated it will use the singular or plural form of the word "message" based on the value of count. A single pipe indicates that the comma delimited word(s) that follow it are dependent on the token value, but the token itself should not be displayed. A double pipe indicates that the value of the token should be displayd as well. You don’t have to provide the plural form of the word if it can be derived from a singular form. So {count|| message} will be good enough and it will be pluralized by the engine automatically. Every rule has support for a transform token. For example:
+  </p>
+  
+  <div class="snippet">
+    &lt;%= tr("Michael {date| turned, turns, will turn} 33 on {date}", "Fragment sample", :date => some_date)  %&gt;
+  </div>
+  
+  <p>This is the case when piped token is used for a date token object. And one more example for a list:
+  </p>
+  
+  <div class="snippet">
+    &lt;%= tr("{users|| likes, like} this link", "Fragment sample", :users => [users_list, lambda{|user| user.first_name}])  %&gt;
+  </div>
+    
+  <p>In this case if the users array contains a single element it will use the first form, otherwise it will use the plural form.
+  </p>
+
+  <a name="decoration_tokens">&nbsp;</a>
+  <h3>Decoration tokens</h3>
+
+  <p>Decoration tokens are used to decorate some text in a label. Consider the following example:
+  </p>
+  
+  <div class="snippet">
+    &lt;%= tr("[link: Click here] to visit our site", "Fragment sample", :link => lambda{|text| link_to(text, 'http://www.google.com')})  %&gt;
+  </div>
+  <p>When this label is rendered "Click here" will be turned into a link. </p>
+
+  <p class="try_it">Try it yourself:</p>
+  <div class="snippet2">
+    <%= tr("[link: Click here] to visit our site", "Fragment sample", :link => lambda{|text| link_to(text, 'http://www.google.com')})  %>
+  </div>
+  
+  <p>Similarly you can do any kind of HTML decorations inside of the label. Alternative ways for using decorations are:</p>
+  <div class="snippet">
+    &lt;%= tr("[link: Click here] to visit Google", "Fragment sample", :link => "&lt;a href='http://www.google.com'&gt;{$0}&lt;/a&gt;")  %&gt;
+  </div>
+    
+  <p>{$0} is the translated value of the link. And another way, using a default decoration:
+  </p>
+  
+  <div class="snippet">
+    &lt;%= tr("[link: Click here] to visit Google", "Fragment sample", :link => ['http://www.google.com'])  %&gt;
+  </div>
+
+  <p class="try_it">Try it yourself:</p>
+  <div class="snippet2">
+    <%= tr("[link: Click here] to visit Google", "Fragment sample", :link => ['http://www.google.com'])  %>
+  </div>
+    
+  <p>The default decorations are defined in the config/tr8n/tokens/decorations.yml file. The are presented in the following form:
+  </p>
+  
+  <div class="snippet">
+    bold:       "&lt;strong>{$0}&lt;/strong>"<br>
+    italic:     "&lt;i>{$0}&lt;/i>"<br>
+    link:       "&lt;a href='{$1}' style='{$2}'>{$0}&lt;/a>"<br>
+  </div>
+  
+  <p>You can edit the file and add as many of the default decorations as you need. Notice that you do not need to provide token parameters for decorations that only use {$0} token. So this would work just fine:
+  </p>
+  
+  <div class="snippet">
+    &lt;%= tr("This is some [bold: very cool] stuff!")  %&gt;
+  </div>   
+  
+  <p class="try_it">Try it yourself:</p>
+  <div class="snippet2">
+    <%= tr("This is some [bold: very cool] stuff!")  %>
+  </div>   
+  
+  <a name="next">&nbsp;</a>
+  <h2>What's next?</h2>
+  
+  Cnogratulations! You have completed the second part of the integration guide. Now read on about <%=link_to("Tr8n Rules Engine Configuration", "/tr8n/home/rules")%>.
+  
+</div>
