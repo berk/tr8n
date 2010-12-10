@@ -236,6 +236,13 @@ module Tr8n::HelperMethods
     end
   end
 
+  def tr8n_select_month(date, options = {}, html_options = {})
+    month_names = options[:use_short_month] ? Tr8n::Config.default_abbr_month_names : Tr8n::Config.default_month_names
+    select_month(date, options.merge(
+      :use_month_names => month_names.collect{|month_name| Tr8n::Language.translate(month_name, options[:description] || "Month name")} 
+    ), html_options)
+  end
+
 private
 
   def generate_sitemap(sections, options = {})

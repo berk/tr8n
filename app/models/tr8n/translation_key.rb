@@ -420,7 +420,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     conditions = [""]
     
     if Tr8n::Config.enable_caching?
-      conditions[0] << ["verified_at is not null"]
+      conditions[0] << "verified_at is not null"
     end  
     
     unless params[:search].blank?
