@@ -30,10 +30,10 @@ To install, configure and initialize will_filter engine, run the following comma
 
 To add a filtered resultset to your controller use the following method call:
 
-  class ProfileController < ApplicationController
+  class OrderController < ApplicationController
   
     def index
-      @profiles = Profile.filter(:params => params)    
+      @orders = Order.filter(:params => params)    
     end
     
   end  
@@ -42,19 +42,31 @@ Note: 'Profile' is a Rails ActiveRecord model
 
 Now all you have to do is create a view for this action and add the following tag where you want the filter to be rendered:
 
-  <%= will_filter(@profiles) %>
+  <%= will_filter(@orders) %>
+	
+And optionally you can do (for results table):
+	
+  <%= will_filter_table_tag(@orders) %>
+
 
 That's it. This will render a filter box with various conditions, operators and values for the model object you selected.
 
+
 Below are a couple of screenshot of what the filter looks like when it is rendered on a page:
 
-http://www.theiceberk.com/projects/rails/will_filter/will_filter1.png
+http://wiki.tr8n.org/images/d/da/Will_filter_1.png
 
-http://www.theiceberk.com/projects/rails/will_filter/will_filter3.png
+http://wiki.tr8n.org/images/e/ec/Will_filter_2.png
+
 
 will_filter_examples project contains some samples that show you how to customize filters and much more
 
   git://github.com/berk/will_filter_examples.git
+
+Live will_filter_examples application is running here:
+
+http://wf.tr8n.org 
+
 
 If you have any questions, comments or suggestions, email me at michael@geni.com
 

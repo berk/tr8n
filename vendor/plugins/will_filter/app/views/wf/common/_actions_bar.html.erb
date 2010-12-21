@@ -1,0 +1,5 @@
+<div style="border-left:1px solid #eee; border-top:1px solid #eee; border-right:1px solid #ccc; border-bottom:1px solid #ccc; margin-top:10px; margin-bottom:10px; padding:10px; background-color: #f1f4fa;">
+  <% actions.each do |action| %>
+      <%=link_to_function("<span>#{action.first}</span>", "#{action.last}", :class => "wf_grey_button wf_pcb") %>
+	<% end %>  
+</div>    

@@ -36,5 +36,10 @@ module Wf::HelperMethods
     opts[:columns] ||= filter.model_column_keys
     render(:partial => "/wf/common/results_table", :locals => {:results => results, :filter => filter, :opts => opts})
   end
+
+  def will_filter_actions_bar_tag(results, actions, opts = {})
+    filter = results.wf_filter
+    render(:partial => "/wf/common/actions_bar", :locals => {:results => results, :filter => filter, :actions => actions})
+  end
   
 end

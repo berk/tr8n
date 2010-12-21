@@ -1,4 +1,4 @@
-.wf_container                           {padding:0px; background:#f1f4f9; margin:0px; margin-bottom:10px; font-size: 12px; font-family: Arial; width: auto !important; border:solid 1px #e8e8e8;border-color:#e8e8e8 #bababa #bababa #e8e8e8;}
+.wf_container                           {padding:0px; background:#f1f4f9; margin:0px; margin-bottom:10px; font-size: 12px; font-family: Arial; width: 100%; border:solid 1px #e8e8e8;border-color:#e8e8e8 #bababa #bababa #e8e8e8;}
 .wf_container input                     {border: 1px solid #ccc; font-size: 12px; font-family: Arial; margin:0px; padding: 2px !important; }
 .wf_container select                    {border: 1px solid #ccc; font-size: 12px; font-family: Arial; margin:0px; padding: 1px !important; }
 .wf_container .spinner                  {font-size: 10px;}

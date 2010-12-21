@@ -278,7 +278,16 @@ class Wf::Filter < ActiveRecord::Base
   def add_condition(condition_key, operator_key, values = [])
     add_condition_at(size, condition_key, operator_key, values)
   end
-  
+
+  def add_condition!(condition_key, operator_key, values = [])
+    add_condition(condition_key, operator_key, values)
+    self
+  end
+
+  def clone_with_condition(condition_key, operator_key, values = [])
+    dup.add_condition!(condition_key, operator_key, values)
+  end
+
   def valid_operator?(condition_key, operator_key)
     condition_key = condition_key.to_sym if condition_key.is_a?(String)
     opers = definition[condition_key]
@@ -368,6 +377,18 @@ class Wf::Filter < ActiveRecord::Base
     end
     
     params.merge(merge_params)
+  end
+  
+  def to_url_params
+    params = []
+    serialize_to_params.each do |name, value|
+      params << "#{name.to_s}=#{ERB::Util.url_encode(value)}"
+    end
+    params.join("&")
+  end
+  
+  def to_s
+    to_url_params
   end
   
   #############################################################################
