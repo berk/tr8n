@@ -32,16 +32,34 @@ class Tr8n::Admin::LanguageController < Tr8n::Admin::BaseController
   end
 
   def enable
-    @language = Tr8n::Language.find(params[:lang_id])
-    @language.enable!
-    trfn("#{@language.english_name} language has been enabled")
+    if params[:lang_id]
+      @language = Tr8n::Language.find(params[:lang_id])
+      @language.enable!
+      trfn("#{@language.english_name} language has been enabled")
+    elsif params[:languages]
+      params[:languages].each do |lang_id|
+        language = Tr8n::Language.find(lang_id)
+        language.enable!
+      end  
+      trfn("Languages have been enabled")
+    end
+    
     redirect_to_source
   end
   
   def disable
-    @language = Tr8n::Language.find(params[:lang_id])
-    @language.disable!
-    trfn("#{@language.english_name} language has been disabled")
+    if params[:lang_id]
+      @language = Tr8n::Language.find(params[:lang_id])
+      @language.disable!
+      trfn("#{@language.english_name} language has been disabled")
+    elsif params[:languages]
+      params[:languages].each do |lang_id|
+        language = Tr8n::Language.find(lang_id)
+        language.disable!
+      end  
+      trfn("Languages have been disabled")
+    end
+
     redirect_to_source
   end
     
