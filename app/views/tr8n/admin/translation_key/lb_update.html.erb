@@ -1,0 +1,44 @@
+<% form_for(:translation_key, @key, :url => {:action => :update}, :html => {:id => 'tr8n_form', :method => :post, :class => "tr8n"}) do |form| %>
+  <%= form.hidden_field :id %>
+  <%= hidden_field_tag :source_url, request.env['HTTP_REFERER'] %>
+  
+  <h2><%=tra("Translation Key Details")%></h2>
+  <table class="admin_table">
+      <tr>
+          <th>
+              <%=tra("Access Key:")%>
+          </th>
+          <td>
+              <%=@key.key%>
+          </td>
+      </tr>
+      <tr>
+          <th>
+              <%=tra("Translations:")%>
+          </th>
+          <td>
+              <%=@key.translations.size%>
+          </td>
+      </tr>
+      <tr>
+          <th>
+              <%=tra("Label:")%>
+          </th>
+          <td>
+              <%= form.text_field :label, :style=>"width:99%;" %>
+          </td>
+      </tr>
+      <tr>
+          <th>
+              <%=tra("Description:")%>
+          </th>
+          <td>
+              <%= form.text_field :description, :style=>"width:99%;" %>
+          </td>
+      </tr>
+  </table>
+  
+	<div><i>Note: changing translation key may invalidate the translations. Don't forget to change the code to reflect the new label and description. Otherwise the lookup will fail and a new key will be registered.</i></div>
+
+  <%= render :partial => "/tr8n/admin/common/lightbox_buttons" %>
+<% end %>

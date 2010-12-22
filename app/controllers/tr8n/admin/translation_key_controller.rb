@@ -22,38 +22,62 @@
 #++
 
 class Tr8n::Admin::TranslationKeyController < Tr8n::Admin::BaseController
-
+  
   def index
     @keys = Tr8n::TranslationKey.filter(:params => params, :filter => Tr8n::TranslationKeyFilter)
   end
-
+  
   def view
-    @key = Tr8n::TranslationKey.find(params[:key_id])
+    @key = Tr8n::TranslationKey.find_by_id(params[:key_id])
+    redirect_to(:action => :index) unless @key
   end
-
+  
   def delete
-    key = Tr8n::TranslationKey.find_by_id(params[:key_id]) if params[:key_id]
-    key.destroy if key
-    
-    if params[:source] == "key"
-      redirect_to(:action => :index)
-    else
-      redirect_to_source 
+    params[:keys] = [params[:key_id]] if params[:key_id]
+    if params[:keys]
+      params[:keys].each do |key_id|
+        key = Tr8n::TranslationKey.find_by_id(key_id)
+        key.destroy if key
+      end  
     end
+    redirect_to_source
+  end
+  
+  def lb_update
+    @key = Tr8n::TranslationKey.find_by_id(params[:key_id]) unless params[:key_id].blank?
+    @key = Tr8n::TranslationKey.new unless @key
+    
+    render :layout => false
   end
 
+  def update
+    key = Tr8n::TranslationKey.find_by_id(params[:translation_key][:id]) unless params[:translation_key][:id].blank?
+    
+    if key
+      trfn("The translation key has been updated")
+      key.update_attributes(params[:translation_key])
+    else
+      trfn("The new translation key has been addeded")
+      key = Tr8n::TranslationKey.create(params[:translation_key])
+    end
+
+    key.reset_key!
+
+    redirect_to_source
+  end
+  
   def key_sources
     @key_sources = Tr8n::TranslationKeySource.filter(:params => params, :filter => Tr8n::TranslationKeySourceFilter)
   end
-
+  
   def sources
     @sources = Tr8n::TranslationSource.filter(:params => params, :filter => Tr8n::TranslationSourceFilter)
   end
-
+  
   def comments
     @comments = Tr8n::TranslationKeyComment.filter(:params => params, :filter => Tr8n::TranslationKeyCommentFilter)
   end
-
+  
   def delete_comment
     comment = Tr8n::TranslationKeyComment.find_by_id(params[:comment_id])
     comment.destroy if comment
@@ -62,28 +86,34 @@ class Tr8n::Admin::TranslationKeyController < Tr8n::Admin::BaseController
     
     redirect_to_source
   end
-
+  
   def locks
     @locks = Tr8n::TranslationKeyLock.filter(:params => params, :filter => Tr8n::TranslationKeyLockFilter)
   end
-   
-   def lb_caller
-     @key_source = Tr8n::TranslationKeySource.find(params[:key_source_id])
-     @caller = @key_source.details[params[:caller_key]]
-     render :layout => false
-   end
-   
-   def reset_verification_flags
-     Tr8n::TranslationKey.connection.execute("update tr8n_translation_keys set verified_at = null")
-     redirect_to_source
-   end
-   
-   def delete_unverified_keys
-     Tr8n::TranslationKey.find(:all, :conditions => "verified_at is null").each do |key|
-       next if key.translations.any?
-       key.destroy
-     end
-     redirect_to_source
-   end
-   
+  
+  def lb_caller
+    @key_source = Tr8n::TranslationKeySource.find(params[:key_source_id])
+    @caller = @key_source.details[params[:caller_key]]
+    render :layout => false
+  end
+  
+  def reset_verification_flags
+    Tr8n::TranslationKey.connection.execute("update tr8n_translation_keys set verified_at = null")
+    redirect_to_source
+  end
+  
+  def delete_unverified_keys
+    Tr8n::TranslationKey.find(:all, :conditions => "verified_at is null").each do |key|
+      next if key.translations.any?
+      key.destroy
+    end
+    redirect_to_source
+  end
+
+  def update_translation_counts
+    Tr8n::TranslationKey.connection.execute("update tr8n_translation_keys set translation_count = (select count(id) from tr8n_translations where tr8n_translations.translation_key_id = tr8n_translation_keys.id)")
+    trfn("Translation counts have been updated")
+    redirect_to_source
+  end
+  
 end

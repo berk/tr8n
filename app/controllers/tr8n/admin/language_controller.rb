@@ -96,7 +96,6 @@ class Tr8n::Admin::LanguageController < Tr8n::Admin::BaseController
   def cases
     @cases = Tr8n::LanguageCase.filter(:params => params, :filter => Tr8n::LanguageCaseFilter)
   end
-
   
   def lb_update
     @language = Tr8n::Language.find_by_id(params[:lang_id]) unless params[:lang_id].blank?

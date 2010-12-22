@@ -3,8 +3,6 @@
 
 <%= tr8n_will_filter(@languages) %>
 
-<%= will_filter_actions_bar_tag(@languages, [['+ Add new language', "tr8nLightbox.show('/tr8n/admin/language/lb_update', {height:350})"], ['Calculate completeness', 'calculateCompleteness()']]) %>
-
 <% form_tag("", :id => "languages_form") do %>
 	<%= will_filter_table_tag(@languages, :columns => [[:checkbox, 'languages'],
 	  [:flag, lambda{|lang| image_tag("/tr8n/images/flags/#{lang.flag}.png")}],
@@ -52,7 +50,6 @@
 	  }, 'text-align:right;'],
 	  [:actions, lambda{|lang|
 	     html = [] 
-	     html << link_to("View", :action => :view, :lang_id => lang.id)
 	     html << link_to_function("Update", "tr8nLightbox.show('/tr8n/admin/language/lb_update?lang_id=#{lang.id}', {height:350})")
 	     unless lang.default?
 	      if lang.enabled?
@@ -66,7 +63,11 @@
 	]) %>
 <% end %>
 
-<%= will_filter_actions_bar_tag(@languages, [['Enable Selected Languages', 'enableSelectedLanguages()'], ['Disable Selected Languages', 'disableSelectedLanguages()']]) %>
+<%= will_filter_actions_bar_tag(@languages, [
+['Add New Language', "tr8nLightbox.show('/tr8n/admin/language/lb_update', {height:350})"], 
+['Calculate Completeness', 'calculateCompleteness()'], 
+['Enable Selected Languages', 'enableSelectedLanguages()'], 
+['Disable Selected Languages', 'disableSelectedLanguages()']]) %>
 
 <script>
 	function calculateCompleteness() {

@@ -29,13 +29,18 @@ class Tr8n::Admin::TranslatorController < Tr8n::Admin::BaseController
 
   def view
     @translator = Tr8n::Translator.find(params[:translator_id])
+    redirect_to(:action => :index) unless @translator
   end
 
   def delete
-    @translator = Tr8n::Translator.find(params[:translator_id])
-    @translator.destroy
-    trfn("Translator has been deleted")
-    redirect_to :action => :index
+    params[:translators] = [params[:translator_id]] if params[:translator_id]
+    if params[:translators]
+      params[:translators].each do |translator_id|
+        translator = Tr8n::Translator.find_by_id(translator_id)
+        translator.destroy if translator
+      end  
+    end
+    redirect_to_source
   end
 
   def block

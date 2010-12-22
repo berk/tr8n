@@ -6,9 +6,62 @@
  | 
 <%= link_to("Update translators stats", {:action => :update_stats}, :confirm => "Are you sure you want to run this opperation?")%>
 
-<%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @translators} %>
+<% form_tag("", :id => "translators_form") do %>
+  <%= will_filter_table_tag(@translators, :columns => [
+    [:checkbox, :translators],
+    [:name, lambda{|translator|
+       link_to(translator.name, :action => :view, :translator_id => translator.id) 
+    }],
+    [:site_administrator, lambda{|translator|
+      translator.admin?  
+    }, 'text-align:right'],
+    [:language_manager, lambda{|translator|
+      translator.manager_for_any_language?
+    }, 'text-align:right'],
+    [:blocked, lambda{|translator|
+      html = []
+      if translator.blocked?
+        html << "<span style='color:red'>"
+      else
+        html << "<span style='color:green'>"
+      end     
+      html << translator.blocked?
+      html << "</span>"
+      html.join("")
+    }, 'text-align:right'],
+    [:translation_count, lambda{|translator|
+      link_to(translator.total_metric.total_translations || 0, "/tr8n/admin/translation?wf_c0=translator_id&wf_o0=is&wf_v0_0=#{translator.id}")
+    }, 'text-align:right'],
+    [:vote_count, lambda{|translator|
+      html = []
+      html << (translator.total_metric.total_votes || 0)
+      html << " (<span style='color:green'>"
+      html << (translator.total_metric.positive_votes || 0) 
+      html << "</span>/<span style='color:red'>"
+      html << (translator.total_metric.negative_votes || 0)
+      html << "</span>)"
+      html.join("")			
+    }, 'text-align:right'],
+    [:actions, lambda{|translator|
+      html = []
+      html << link_to("View", :action => :view, :translator_id => translator.id)
+      html << link_to("Delete", {:action => :delete, :translator_id => translator.id}, :confirm => "Are you sure you want to do that?")
+      html.join(' | ')
+    }, 'text-align:right;white-space:nowrap;']
+  ]) %>
+<% end %>
 
-<%= render :partial => "list", :locals => {:translators => @translators}%>
-    
-<%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @translators} %>
+<%= will_filter_actions_bar_tag(@translators, [
+['Delete Selected Translators', 'deleteSelectedTranslators()'] 
+]) %>
+
 <%= render :partial => "/tr8n/admin/common/footer" %>
+
+<script>
+  function deleteSelectedTranslators() {
+    if (!confirm('Are you sure you want to run this opperation?'))
+       return;
+    Tr8n.element('translators_form').action = "/tr8n/admin/translator/delete";
+    Tr8n.element('translators_form').submit();
+  }
+</script>

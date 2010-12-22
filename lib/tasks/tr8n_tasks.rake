@@ -1,7 +1,12 @@
 namespace :tr8n do
-  desc "Sync extra files from tr8n plugin."
+  desc "Sync config and db migrations for tr8n plugin."
   task :sync do
     system "rsync -ruv vendor/plugins/tr8n/config/tr8n ./config"
+    system "rsync -ruv vendor/plugins/tr8n/db/migrate ./db"
+  end
+
+  desc "Sync db migrations for tr8n plugin."
+  task :sync_db do
     system "rsync -ruv vendor/plugins/tr8n/db/migrate ./db"
   end
   

@@ -78,6 +78,14 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   def self.generate_key(label, desc = "")
     Digest::MD5.hexdigest("#{label};;;#{desc}")
   end
+
+  def reset_key!
+    # remove old key from cache
+    Tr8n::Cache.delete("translation_key_#{key}")
+    
+    self.key = self.class.generate_key(label, description)
+    save
+  end
   
   def tokenized_label
     @tokenized_label ||= Tr8n::TokenizedLabel.new(label)
@@ -390,6 +398,10 @@ class Tr8n::TranslationKey < ActiveRecord::Base
       
   def verify!(time = Time.now)
     update_attributes(:verified_at => time)
+  end
+      
+  def update_translation_count!
+    update_attributes(:translation_count => Tr8n::Translation.count(:conditions => ["translation_key_id = ?", self.id]))
   end
       
   def after_save
