@@ -39,7 +39,9 @@ module Wf::HelperMethods
 
   def will_filter_actions_bar_tag(results, actions, opts = {})
     filter = results.wf_filter
-    render(:partial => "/wf/common/actions_bar", :locals => {:results => results, :filter => filter, :actions => actions})
+    opts[:class] ||= "wf_actions_bar_blue"
+    opts[:style] ||= ""
+    render(:partial => "/wf/common/actions_bar", :locals => {:results => results, :filter => filter, :actions => actions, :opts => opts})
   end
   
 end

@@ -21,7 +21,8 @@
           else
             key = column
           end
-
+          
+          style = ""
 		      sort_direction       = filter.column_sorted?(key) ? filter.order_type : "asc"
 		      sort_direction_click = filter.column_sorted?(key) ? (sort_direction == "asc" ? "desc" : "asc") : "asc"
           column_title   = filter.condition_title_for(key)  
@@ -29,8 +30,10 @@
 		      the_class_name << " sortable"                 if filter.contains_column?(key)              
 		      the_class_name << " current_sort"             if filter.column_sorted?(key)
 		      the_class_name << " #{sort_direction}"
+
+          style << "width:15px" if key == :checkbox          
 		    %>
-		    <th class="<%= the_class_name %>">
+		    <th class="<%= the_class_name %>" style="<%=style%>">
 		      <div class="table_head_container">
 		      	<% if filter.contains_column?(key) %>
 		          <div class="sort_control">
@@ -55,7 +58,7 @@
       <tr class='data_row <%=(index % 2 == 0) ? "wf_row_even" : "wf_row_odd"%>'>
 				<% opts[:columns].each_with_index do |column, column_index| %>
 				  <% 
-            style = ''
+            style = 'padding:3px;'
             if column.is_a?(Array)
               key = column.first
               if column.second.is_a?(Proc)
@@ -63,7 +66,7 @@
               else
                 value = column.second.to_s
               end
-              style = column.size > 2 ? column.last : ''
+              style << column.last if column.size > 2  
 
             elsif column.is_a?(Hash)
               key = column[:key] || "key_#{column_index}"
@@ -73,12 +76,14 @@
               else
                 value = obj.send(key) 
               end
-              style = column[:style] || ''
+              style << column[:style] if column[:style]
 
             else
               key = column
               value = obj.send(key)
             end
+
+            style << "padding-left:10px;" if key == :checkbox
           %>
 	        <td style='<%=style%>' <%= " class='current_sort'" if filter.column_sorted?(key) %>>
                <% if key == :checkbox %>

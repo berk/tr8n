@@ -149,3 +149,22 @@ body.wf_grey_disabled_button span             {background-position: right -626px
 .wf_results_table th.active {background:url(/wf/images/results_table_th_active.gif) repeat-x;color:#fff;border-left:solid 1px #ccc;border-right:solid 1px #ccc}
 .wf_results_table th.active a {color:#fff;}
 	
+.wf_actions_bar_yellow {
+	margin-top:10px; 
+	margin-bottom:10px; 
+	padding:10px; 
+	background-color: #f9f8f7;
+	border-color: #E8E8E8 #BABABA #BABABA #E8E8E8;
+	border-style: solid;
+	border-width: 1px;
+}	
+
+.wf_actions_bar_blue {
+  margin-top:10px; 
+  margin-bottom:10px; 
+  padding:10px; 
+  background-color: #f1f4fa;
+  border-color: #E8E8E8 #BABABA #BABABA #E8E8E8;
+  border-style: solid;
+  border-width: 1px;
+}
