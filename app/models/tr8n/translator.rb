@@ -30,7 +30,7 @@ class Tr8n::Translator < ActiveRecord::Base
   has_many  :translator_metrics,            :class_name => "Tr8n::TranslatorMetric",          :dependent => :destroy
   has_many  :translations,                  :class_name => "Tr8n::Translation",               :dependent => :destroy
   has_many  :translation_votes,             :class_name => "Tr8n::TranslationVote",           :dependent => :destroy
-  has_many  :translation_key_locks,         :class_name => "Tr8n::TranslationVote",           :dependent => :destroy
+  has_many  :translation_key_locks,         :class_name => "Tr8n::TranslationKeyLock",        :dependent => :destroy
   has_many  :language_users,                :class_name => "Tr8n::LanguageUser",              :dependent => :destroy
   has_many  :language_forum_topics,         :class_name => "Tr8n::LanguageForumTopic",        :dependent => :destroy
   has_many  :language_forum_messages,       :class_name => "Tr8n::LanguageForumMessage",      :dependent => :destroy

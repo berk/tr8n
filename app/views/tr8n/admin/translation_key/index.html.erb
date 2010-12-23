@@ -2,6 +2,11 @@
 <%= render :partial => "tabs" %>
 <%= tr8n_will_filter(@keys) %>
 
+<%=link_to_function("Reset Verification Flags", "resetVerificationFlags()")%>
+ | 
+<%=link_to_function("Update Translation Counts", 'updateTranslationCounts()')%>
+<br>
+
 <% form_tag("", :id => "keys_form") do %>
 	<%= will_filter_table_tag(@keys, :columns => [
 	  [:checkbox, :keys],
@@ -10,7 +15,7 @@
 	    html << '<div style="color:grey; font-size:10px;">'
 	    html << key.description.to_s  
 	    html << '</div>'  
-	  }, 'padding:5px;'],
+	  }],
 	  [:translation_count, lambda{|key| link_to(key.translation_count || 0, "/tr8n/admin/translation/index?wf_c0=translation_key_id&wf_o0=is&wf_v0_0=#{key.id}")}, 'padding:5px;text-align:right;'],
 	  [:created_at, lambda{|key| key.created_at}, 'padding:5px;text-align:right;'],
 	  [:verified_at, lambda{|key| key.verified_at}, 'padding:5px;text-align:right;'],
@@ -24,9 +29,7 @@
 <% end %>
 
 <%= will_filter_actions_bar_tag(@keys, [
-['Delete Selected Keys', 'deleteSelectedKeys()'],
-['Reset Verification Flags', "resetVerificationFlags()"], 
-['Update Translation Counts', "updateTranslationCounts()"] 
+  ['Delete Selected Keys', 'deleteSelectedKeys()']
 ]) %>
 
 <%= render :partial => "/tr8n/admin/common/footer" %>

@@ -2,32 +2,26 @@
 <%= render :partial => "tabs" %>
 <%= tr8n_will_filter(@logs) %>
 
-<%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @logs} %>
+<% form_tag("", :id => "sources_form") do %>
+  <%= will_filter_table_tag(@logs, :columns => [
+    :created_at, 
+    [:translator_id, lambda{|log|
+      if log.translator
+        link_to(log.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :translator_id => log.translator.id)
+      else
+        "Unknown" 
+      end  
+    }],
+    :action, 
+    :reference,
+    [:description, lambda{|log|
+      html = []
+      html << "<div style='#{log.decoration}'>"
+      html << log.describe
+      html << "</div>"
+      html.join("")
+    }]
+  ]) %>
+<% end %>
 
-<table class="admin_table">
-<thead>
-  <tr>
-    <th style="width:150px">Created At</th>
-    <th style="width:150px">Actor</th>
-    <th style="">Action</th>
-  </tr>
-</thead>
-<tbody>
-  <% @logs.each do |log| -%>
-    <tr>
-      <td><%= log.created_at.strftime("%m/%d/%Y %H:%M:%S") %></td>
-      <td>
-      	<% if log.translator %>
-				  <%= link_to(log.translator.name, "/tr8n/admin/translator/view?translator_id=#{log.translator.id}") %>
-				<% else %>
-				  Deleted translator
-				<% end %>	
-			</td>	
-      <td style="<%=log.decoration%>"><%= log.describe %></td>
-    </tr>
-  <% end -%>
-</tbody>
-</table>
-
-<%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @logs} %>
 <%= render :partial => "/tr8n/admin/common/footer" %>

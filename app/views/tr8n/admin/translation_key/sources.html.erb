@@ -1,34 +1,16 @@
 <%= render :partial => "/tr8n/admin/common/header" %>
 <%= render :partial => "tabs" %>
 <%= tr8n_will_filter(@sources) %>
-<%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @sources} %>
 
-<table class="admin_table">
-  <tr>
-    <th align="left">
-      Source Id
-    </th>
-    <th align="left">
-      Source
-    </th>
-    <th align="left">
-      Created At
-    </th>
-    <th align="right">
-      Translation Key Count
-    </th>
-  </tr>  
-  <% @sources.each_with_index do |source, index| %>
-    <tr>
-      <td><%=link_to(source.id, "/tr8n/admin/translation_key/key_sources?wf_c0=translation_source_id&wf_o0=is&wf_v0_0=#{source.id}") %></td>
-      <td><%=source.source%></td>
-      <td><%=source.created_at%></td>
-      <td align="right">
-        <%=link_to(source.translation_keys.size, "/tr8n/admin/translation_key/key_sources?wf_c0=translation_source_id&wf_o0=is&wf_v0_0=#{source.id}") %>
-      </td>
-    </tr>
-  <% end %>
-</table>
+<% form_tag("", :id => "sources_form") do %>
+  <%= will_filter_table_tag(@sources, :columns => [
+    [:id, lambda{|source|
+      link_to(source.id, "/tr8n/admin/translation_key/key_sources?wf_c0=translation_source_id&wf_o0=is&wf_v0_0=#{source.id}")
+    }], :source, :created_at,
+    [:translation_key_count, lambda{|source|
+      link_to(source.translation_keys.size, "/tr8n/admin/translation_key/key_sources?wf_c0=translation_source_id&wf_o0=is&wf_v0_0=#{source.id}")
+    }]
+  ]) %>
+<% end %>
 
-<%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @sources} %>
 <%= render :partial => "/tr8n/admin/common/footer" %>

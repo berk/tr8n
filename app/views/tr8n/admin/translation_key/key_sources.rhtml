@@ -1,39 +1,31 @@
 <%= render :partial => "/tr8n/admin/common/header" %>
 <%= render :partial => "tabs" %>
 <%= tr8n_will_filter(@key_sources) %>
-<%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @key_sources} %>
 
-<table class="admin_table">
-  <tr>
-    <th align="right">
-      Translation Key
-    </th>
-    <th align="left">
-      Source 
-    </th>
-  </tr>  
-  <% @key_sources.each_with_index do |key_source, index| %>
-    <tr>
-      <td>
-      	 <%=link_to(key_source.key.label, :action => :view, :key_id => key_source.key.id) %><br>
-				 <div style="color:grey; font-size:10px;">
-				    <%=key_source.key.description %>
-			   </div>
-			</td>
-      <td>
-      	<%=link_to(key_source.source.source, "/tr8n/admin/translation_key/key_sources?wf_c0=translation_source_id&wf_o0=is&wf_v0_0=#{key_source.source.id}") %>
-        <div style="color:grey; font-size:10px;">
-        <% if key_source.details %>
-            <% key_source.details.each do |key, value| %>
-              <%=link_to_function(value.first, "tr8nLightbox.show('/tr8n/admin/translation_key/lb_caller?key_source_id=#{key_source.id}&caller_key=#{key}', {height:550, width:1000})") %>
-              <br>
-            <% end %>
-        <% end %>
-        </div>
-      </td>
-    </tr>
-  <% end %>
-</table>
+<% form_tag("", :id => "sources_form") do %>
+  <%= will_filter_table_tag(@key_sources, :columns => [
+    [:translation_key_id, lambda{|key_source|
+      html = []
+      html << link_to(key_source.key.label, :action => :view, :key_id => key_source.key.id)
+      html << "<div style='color:grey; font-size:10px;'>"
+      html << key_source.key.description
+      html << "</div>"
+      html.join("")
+    }], 
+    [:translation_source_id, lambda{|key_source|
+      html = []
+      html << link_to(key_source.source.source, "/tr8n/admin/translation_key/key_sources?wf_c0=translation_source_id&wf_o0=is&wf_v0_0=#{key_source.source.id}")
+      html << "<div style='color:grey; font-size:10px;'>"
+      if key_source.details
+        key_source.details.each do |key, value|
+          html << link_to_function(value.first, "tr8nLightbox.show('/tr8n/admin/translation_key/lb_caller?key_source_id=#{key_source.id}&caller_key=#{key}', {height:550, width:1000})")
+          html << "<br>"
+        end
+      end
+      html << "</div>"
+      html.join("")
+    }] 
+  ]) %>
+<% end %>
 
-<%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @key_sources} %>
 <%= render :partial => "/tr8n/admin/common/footer" %>

@@ -2,28 +2,23 @@
 <%= render :partial => "tabs" %>
 <%= tr8n_will_filter(@case_rules) %>
 
-<%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @case_rules} %>
+<% form_tag("", :id => "rules_form") do %>
+  <%= will_filter_table_tag(@case_rules, :columns => [
+    [:language_id, lambda{|lcase|
+      if lcase.language
+        link_to(lcase.language.english_name, :controller => "/tr8n/admin/language", :action => :view, :lang_id => lcase.language.id)
+      else
+         "Deleted Language"    
+      end  
+    }], :description, 
+    [:translator_id, lambda{|lcase|
+      if lcase.translator
+        link_to(lcase.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :translator_id => lcase.translator.id)
+      else
+        "System Generated" 
+      end  
+    }], :created_at
+   ]) %>
+<% end %>
 
-<table class="admin_table">
-<thead>
-  <tr>
-    <th style="">Language</th>
-    <th style="">Rule</th>
-    <th style="">Translator</th>
-    <th style="">Created At</th>
-  </tr>
-</thead>
-<tbody>
-  <% @case_rules.each do |case_rule| -%>
-    <tr>
-      <td><%= case_rule.language ? link_to(case_rule.language.english_name, :action => :view,  :lang_id => case_rule.language.id) : "Unknown" %></td>
-      <td><%= case_rule.description %></td>
-      <td><%= case_rule.translator ? case_rule.translator.name : "System generated" %></td>
-      <td><%= case_rule.created_at %></td>
-    </tr>
-  <% end -%>
-</tbody>
-</table>
-
-<%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @case_rules} %>
 <%= render :partial => "/tr8n/admin/common/footer" %>

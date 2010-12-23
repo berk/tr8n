@@ -23,6 +23,26 @@
 
 class Tr8n::BaseFilter < Wf::Filter
 
+  def definition
+    meta = super
+    meta.keys.each do |key|
+      parts = key.to_s.split(".")
+      next unless parts.last.index("language_id")
+      meta[key][:is] = :list
+      meta[key][:is_not] = :list
+    end
+    meta
+  end
+
+  def value_options_for(criteria_key)
+    parts = criteria_key.to_s.split(".")
+    if parts.last.index("language_id")
+      return Tr8n::Language.filter_options
+    end
+
+    return []
+  end
+
   def default_filters
     [
       ["Created Today", "created_today"],

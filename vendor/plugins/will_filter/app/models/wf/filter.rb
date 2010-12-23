@@ -196,8 +196,26 @@ class Wf::Filter < ActiveRecord::Base
     @order_type ||= default_order_type
   end
 
+  def order_model
+    @order_model ||= begin
+      order_parts = order.split('.')
+      if order_parts.size > 1
+        order_parts.first.camelcase
+      else
+        model_class_name
+      end
+    end  
+  end
+
   def order_clause
-    "#{order} #{order_type}"
+    @order_clause ||= begin
+      order_parts = order.split('.')
+      if order_parts.size > 1
+        "#{order_parts.first.camelcase.constantize.table_name}.#{order_parts.last} #{order_type}"
+      else
+        "#{model_class_name.constantize.table_name}.#{order_parts.first} #{order_type}"
+      end
+    end  
   end
 
   def column_sorted?(key)
@@ -236,8 +254,15 @@ class Wf::Filter < ActiveRecord::Base
   # Can be overloaded for custom titles
   #############################################################################
   def condition_title_for(key)
+    title_parts = key.to_s.split('.')
     title = key.to_s.gsub(".", ": ").gsub("_", " ")
-    title.split(" ").collect{|part| part.capitalize}.join(" ")
+    title = title.split(" ").collect{|part| part.split("/").last.capitalize}.join(" ")
+    
+    if title_parts.size > 1
+      "» #{title}"
+    else
+      title  
+    end
   end
   
   def condition_options
@@ -246,7 +271,22 @@ class Wf::Filter < ActiveRecord::Base
       definition.keys.each do |cond|
         opts << [condition_title_for(cond), cond.to_s]
       end
-      opts.sort_by{ |i| i[0] }
+      opts = opts.sort_by{|opt| opt.first.gsub('»', 'zzz') }
+      
+      separated = []
+      opts.each_with_index do |opt, index|
+        if index > 0
+          prev_opt_parts = opts[index-1].first.split(":")
+          curr_opt_parts = opt.first.split(":")
+          
+          if (prev_opt_parts.size != curr_opt_parts.size) or (curr_opt_parts.size > 1 and (prev_opt_parts.first != curr_opt_parts.first))
+            key_parts = opt.last.split('.')
+            separated << ["-------------- #{curr_opt_parts.first.gsub('» ', '')} --------------", "#{key_parts.first}.id"]
+          end
+        end
+        separated << opt
+      end
+      separated
     end
   end
   
@@ -521,6 +561,22 @@ class Wf::Filter < ActiveRecord::Base
     end
   end
   
+  def condition_models
+    @condition_models ||= begin 
+      models = [] 
+      conditions.each do |condition|
+        key_parts = condition.key.to_s.split('.')
+        if key_parts.size > 1
+          models << key_parts.first.camelcase
+        else
+          models << model_class_name
+        end
+      end
+      models << order_model
+      models.uniq
+    end  
+  end
+  
   def debug_conditions(conds)
     all_conditions = []
     conds.each_with_index do |c, i|
@@ -683,18 +739,24 @@ class Wf::Filter < ActiveRecord::Base
   end
   
   def joins
-    return nil if inner_joins.empty?
-    inner_joins.collect do |inner_join|
-      join_table_name = inner_join.first.to_s.camelcase.constantize.table_name
-      join_on_field = inner_join.last.to_s
-      "INNER JOIN #{join_table_name} ON #{join_table_name}.id = #{table_name}.#{join_on_field}"
-    end
+    @joins ||= begin
+      required_joins = []
+      return nil if inner_joins.empty?
+      inner_joins.each do |inner_join|
+        join_model_name = inner_join.first.to_s.camelcase
+        next unless condition_models.include?(join_model_name)
+        
+        join_table_name = join_model_name.constantize.table_name
+        join_on_field = inner_join.last.to_s
+        required_joins << "INNER JOIN #{join_table_name} ON #{join_table_name}.id = #{table_name}.#{join_on_field}"
+      end
+      required_joins
+    end 
   end
   
   def results
     @results ||= begin
       handle_empty_filter! 
-      
       recs = model_class.paginate(:order => order_clause, :page => page, :per_page => per_page, :conditions => sql_conditions, :joins => joins)
       recs.wf_filter = self
       recs

@@ -49,12 +49,16 @@ class Tr8n::Admin::TranslationController < Tr8n::Admin::BaseController
   end
 
   def delete_vote
-    vote = Tr8n::TranslationVote.find(params[:vote_id])
-    translation = vote.translation
-    vote.destroy
-    
-    translation.reload
-    translation.update_rank!
+    params[:votes] = [params[:vote_id]] if params[:vote_id]
+    if params[:votes]
+      params[:votes].each do |vote_id|
+        vote = Tr8n::TranslationVote.find_by_id(vote_id)
+        translation = vote.translation
+        vote.destroy if vote
+        translation.reload
+        translation.update_rank!
+      end  
+    end
     redirect_to_source
   end
 end

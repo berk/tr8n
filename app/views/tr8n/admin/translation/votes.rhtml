@@ -2,67 +2,80 @@
 <%= render :partial => "tabs" %>
 <%= tr8n_will_filter(@votes) %>
 
-<%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @votes} %>
+<% form_tag("", :id => "votes_form") do %>
+  <%= will_filter_table_tag(@votes, :columns => [
+    [:checkbox, :votes],
+    [:translation_key, lambda{|vote|
+      if vote.translation
+	      html = []
+	      html << link_to(vote.translation.translation_key.label, :controller => "/tr8n/admin/translation_key", :action => :view, :key_id => vote.translation.translation_key.id)
+	      html << "<div style='font-size:10px;color:grey'>"
+	      html << vote.translation.translation_key.description
+	      html << "</div>"
+	      html.join("")
+      else
+        "Deleted Translation"  
+      end  
+    }],
+    [:language, lambda{|vote|
+      if vote.translation and vote.translation.language
+        link_to(vote.translation.language.english_name, :controller => "/tr8n/admin/language", :action => :view, :lang_id => vote.translation.language.id)
+      else
+         "Deleted Language"    
+      end  
+    }],
+    [:translation_id, lambda{|vote|
+      if vote.translation
+	      html = []
+	      html << link_to(vote.translation.label, :action => :view, :translation_id => vote.translation.id)
+	      if vote.translation.context
+	        html << "<div style='font-size:10px;color:grey'>"
+	        html << "Context: #{vote.translation.context}"
+	        html << "</div>"
+	      end
+	      html.join("") 
+      else
+        "Deleted Translation"  
+      end  
+    }],
+    [:translator_id, lambda{|vote|
+      if vote.translator
+        link_to(vote.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :translator_id => vote.translator.id)
+      else
+        "Unknown" 
+      end  
+    }],
+    [:vote, lambda{|vote| 
+      html = []
+      if vote.vote == 1
+        html << "<span style='color:green'>"
+      else
+        html << "<span style='color:red'>"
+      end     
+      html << vote.vote
+      html << "</span>"
+      html.join("")
+    }, 'text-align:right;'],
+    [:actions, lambda{|vote|
+      html = []
+      html << link_to("Delete", {:action => :delete_vote, :vote_id => vote.id}, {:confirm => "Are you sure you want to delete this vote?"})
+      html.join(' | ')
+    }, 'text-align:right;white-space:nowrap;']
+  ]) %>
+<% end %>
 
-<table class="admin_table">
-  <tr>
-    <th>
-      Original Key
-    </th>
-    <th>
-      Language
-    </th>
-    <th>
-      Translated Label
-    </th>
-    <th>
-      Voter
-    </th> 
-    <th class="numeric">
-      Vote
-    </th>
-    <th></th>
-  </tr>  
-  <% @votes.each_with_index do |vote, index| %>
-	  <% translation = vote.translation %> 
-    <tr>
-      <td>
-        <%=link_to(translation.translation_key.label, :controller => "/tr8n/admin/translation_key", :action => :view, :key_id => translation.translation_key.id) %>
-        <div style="font-size:10px;color:grey">
-          <%=translation.translation_key.description%>
-        </div>
-      </td>      
-      <td>
-        <% if translation.language %>
-          <%=link_to(translation.language.english_name, :controller => "/tr8n/admin/language", :action => :view, :lang_id => translation.language.id) %>
-        <% else %>
-           Deleted Language    
-        <% end %>  
-      </td>      
-      <td>
-        <%=link_to(translation.label, :action => :view, :translation_id => translation.id) %>
-        <% if translation.context %>
-        <div style="font-size:10px;color:grey">
-          Context: <%=translation.context%>
-        </div>
-        <% end %>
-      </td>      
-      <td>
-        <% if vote.translator %>
-          <%=link_to(vote.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :translator_id => vote.translator.id)%>
-        <% else %>
-          Unknown  
-        <% end %>  
-      </td>  
-			<td class="numeric">
-				<%= vote.vote %>
-			</td>	
-      <td style="text-align:right">
-        <%=link_to("Delete", {:action => :delete_vote, :vote_id => vote.id}, {:confirm => "Are you sure you want to delete this vote?"}) %>
-      </td>
-    </tr>
-  <% end %>
-</table>
+<%= will_filter_actions_bar_tag(@votes, [
+  ['Delete Selected Votes', 'deleteSelectedVotes()'] 
+]) %>
 
-<%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @votes} %>
 <%= render :partial => "/tr8n/admin/common/footer" %>
+
+<script>
+  function deleteSelectedVotes() {
+    if (!confirm('Are you sure you want to run this opperation?'))
+       return;
+    Tr8n.element('votes_form').action = "/tr8n/admin/translation/delete_vote";
+    Tr8n.element('votes_form').submit();
+  }
+</script>
+

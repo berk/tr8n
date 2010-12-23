@@ -2,34 +2,23 @@
 <%= render :partial => "tabs" %>
 <%= tr8n_will_filter(@cases) %>
 
-<%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @cases} %>
+<% form_tag("", :id => "cases_form") do %>
+  <%= will_filter_table_tag(@cases, :columns => [
+    [:language_id, lambda{|lcase|
+      if lcase.language
+        link_to(lcase.language.english_name, :controller => "/tr8n/admin/language", :action => :view, :lang_id => lcase.language.id)
+      else
+         "Deleted Language"    
+      end  
+    }], :keyword, :latin_name, :native_name, :description, 
+    [:translator_id, lambda{|lcase|
+      if lcase.translator
+        link_to(lcase.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :translator_id => lcase.translator.id)
+      else
+        "System Generated" 
+      end  
+    }], :created_at
+   ]) %>
+<% end %>
 
-<table class="admin_table">
-<thead>
-  <tr>
-    <th style="">Language</th>
-    <th style="">Keyword</th>
-    <th style="">Latin Name</th>
-    <th style="">Native Name</th>
-    <th style="">Description</th>
-    <th style="">Translator</th>
-    <th style="">Created At</th>
-  </tr>
-</thead>
-<tbody>
-  <% @cases.each do |lcase| -%>
-    <tr>
-      <td><%= link_to(lcase.language.english_name, :action => :view,  :lang_id => lcase.language.id) %></td>
-      <td><%= lcase.keyword %></td>
-      <td><%= lcase.latin_name %></td>
-      <td><%= lcase.native_name %></td>
-      <td><%= lcase.description %></td>
-      <td><%= lcase.translator ? lcase.translator.name : "System generated" %></td>
-      <td><%= lcase.created_at %></td>
-    </tr>
-  <% end -%>
-</tbody>
-</table>
-
-<%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @cases} %>
 <%= render :partial => "/tr8n/admin/common/footer" %>

@@ -1,32 +1,33 @@
 <%= render :partial => "/tr8n/admin/common/header" %>
 <%= render :partial => "tabs" %>
 <%= tr8n_will_filter(@messages) %>
-<%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @messages} %>
 
-<table class="admin_table">
-  <tr>
-    <th style="width:10%">
-      Author
-    </th>
-    <th style="width:15%">
-      Created At
-    </th>
-    <th>
-      Message
-    </th>
-    <th></th>
-  </tr>  
-  <% @messages.each_with_index do |msg, index| %>
-    <tr>
-      <td><%=link_to(msg.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :translator_id => msg.translator.id) if msg.translator %></td>
-      <td><%=msg.created_at%></td>
-      <td><%=msg.toHTML%></td>
-      <td style="text-align:right; width:50px">
-        <%=link_to("Delete", {:action => :delete, :msg_id => msg.id}, {:confirm => "Are you sure you want to delete this message?"}) %>
-      </td>
-    </tr>
-  <% end %>
-</table>
+<% form_tag("", :id => "topics_form") do %>
+  <%= will_filter_table_tag(@messages, :columns => [:created_at,
+    [:language_id, lambda{|message|
+      if message.language
+        link_to(message.language.english_name, :controller => "/tr8n/admin/language", :action => :view, :lang_id => message.language.id)
+      else
+         "Deleted Language"    
+      end  
+    }], 
 
-<%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @messages} %>
+    [:translator_id, lambda{|message|
+      if message.translator
+        link_to(message.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :translator_id => message.translator.id) 
+      else
+         "Deleted Translator"    
+      end  
+    }], 
+    
+    :message,
+
+    [:actions, lambda{|message|
+        actions = []
+        actions << link_to("Delete", {:action => :delete, :msg_id => message.id}, {:confirm => "Are you sure you want to delete this message?"})
+        actions.join(" | ")
+    }, 'white-space: nowrap'] 
+  ]) %>
+<% end %>
+
 <%= render :partial => "/tr8n/admin/common/footer" %>

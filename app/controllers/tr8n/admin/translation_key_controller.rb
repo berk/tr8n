@@ -79,16 +79,29 @@ class Tr8n::Admin::TranslationKeyController < Tr8n::Admin::BaseController
   end
   
   def delete_comment
-    comment = Tr8n::TranslationKeyComment.find_by_id(params[:comment_id])
-    comment.destroy if comment
-    
-    trfn("Comment has been deleted")
-    
+    params[:comments] = [params[:comment_id]] if params[:comment_id]
+    if params[:comments]
+      params[:comments].each do |comment_id|
+        comment = Tr8n::TranslationKeyComment.find_by_id(comment_id)
+        comment.destroy if comment
+      end  
+    end
     redirect_to_source
   end
   
   def locks
     @locks = Tr8n::TranslationKeyLock.filter(:params => params, :filter => Tr8n::TranslationKeyLockFilter)
+  end
+  
+  def delete_lock
+    params[:locks] = [params[:lock_id]] if params[:lock_id]
+    if params[:locks]
+      params[:locks].each do |lock_id|
+        lock = Tr8n::TranslationKeyLock.find_by_id(lock_id)
+        lock.destroy if lock
+      end  
+    end
+    redirect_to_source
   end
   
   def lb_caller

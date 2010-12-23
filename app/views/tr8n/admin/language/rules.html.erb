@@ -2,7 +2,23 @@
 <%= render :partial => "tabs" %>
 <%= tr8n_will_filter(@rules) %>
 
-<%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @rules} %>
-<%= render :partial => "rules", :locals => {:rules => @rules}%>
-<%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @rules} %>
+<% form_tag("", :id => "rules_form") do %>
+  <%= will_filter_table_tag(@rules, :columns => [
+    [:language_id, lambda{|rule|
+      if rule.language
+        link_to(rule.language.english_name, :controller => "/tr8n/admin/language", :action => :view, :lang_id => rule.language.id)
+      else
+         "Deleted Language"    
+      end  
+    }], :type, :description, 
+    [:translator_id, lambda{|rule|
+      if rule.translator
+        link_to(rule.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :translator_id => rule.translator.id)
+      else
+        "System Generated" 
+      end  
+    }], :created_at
+   ]) %>
+<% end %>
+
 <%= render :partial => "/tr8n/admin/common/footer" %>

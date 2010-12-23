@@ -23,21 +23,6 @@
 
 class Tr8n::TranslatorFilter < Tr8n::BaseFilter
 
-  def definition
-    defs = super  
-    defs[:fallback_language_id][:is] = :list
-    defs[:fallback_language_id][:is_not] = :list
-    defs
-  end
-  
-  def value_options_for(criteria_key)
-    if criteria_key == :fallback_language_id
-      return Tr8n::Language.filter_options 
-    end
-
-    return []
-  end
-
   def default_filters
     super + [
       ["Watchlist", "watchlist"]

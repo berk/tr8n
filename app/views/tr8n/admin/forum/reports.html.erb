@@ -1,40 +1,50 @@
 <%= render :partial => "/tr8n/admin/common/header" %>
 <%= render :partial => "tabs" %>
 <%= tr8n_will_filter(@reports) %>
-<%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @reports} %>
 
-<table class="admin_table">
-  <tr>
-    <th style="width:10%">
-      Reporter
-    </th>
-    <th style="width:10%">
-      Author
-    </th>
-    <th style="width:15%">
-      Created At
-    </th>
-    <th>
-      Message
-    </th>
-    <th></th>
-  </tr>  
-  <% @reports.each_with_index do |report, index| %>
-	  <% next unless report.message %>
-		<% msg = report.message %>
-    <tr>
-      <td><%=link_to(report.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :translator_id => report.translator.id) if report.translator %></td>
-      <td><%=link_to(msg.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :translator_id => msg.translator.id) if msg.translator %></td>
-      <td><%=msg.created_at%></td>
-      <td><%=msg.toHTML %></td>
-      <td style="text-align:right; width:200px">
-        <%=link_to("Delete Message", {:action => :delete_message, :msg_id => msg.id}, {:confirm => "Are you sure you want to delete this message?"}) %>
-				| 
-        <%=link_to("Delete Report", {:action => :delete_report, :report_id => report.id}, {:confirm => "Are you sure you want to delete this report?"}) %>
-      </td>
-    </tr>
-  <% end %>
-</table>
+<% form_tag("", :id => "reports_form") do %>
+  <%= will_filter_table_tag(@reports, :columns => [:created_at,
+    [:language_id, lambda{|report|
+      if report.language
+        link_to(report.language.english_name, :controller => "/tr8n/admin/language", :action => :view, :lang_id => report.language.id)
+      else
+         "Deleted Language"    
+      end  
+    }], 
 
-<%= render :partial => "/tr8n/admin/common/paginator", :locals => {:objects => @reports} %>
+    [:translator_id, lambda{|report|
+      if report.translator
+        link_to(report.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :translator_id => report.translator.id) 
+      else
+         "Deleted Translator"    
+      end  
+    }], 
+
+    :reason,
+    
+    [:author, lambda{|report|
+      if report.message and report.message.translator
+        link_to(report.message.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :translator_id => report.message.translator.id) 
+      else
+         "Deleted Message"    
+      end  
+    }], 
+
+    [:language_forum_message_id, lambda{|report|
+      if report.message
+        report.message.toHTML 
+      else
+         "Deleted Message"    
+      end  
+    }], 
+    
+    [:actions, lambda{|report|
+        actions = []
+        actions << link_to("Delete Message", {:action => :delete_message, :msg_id => report.message.id}, {:confirm => "Are you sure you want to delete this message?"}) if report.message
+        actions << link_to("Delete Report", {:action => :delete_report, :report_id => report.id}, {:confirm => "Are you sure you want to delete this report?"})
+        actions.join(" | ")
+    }, 'white-space: nowrap'] 
+  ]) %>
+<% end %>
+
 <%= render :partial => "/tr8n/admin/common/footer" %>
