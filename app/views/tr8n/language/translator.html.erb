@@ -5,10 +5,10 @@
 
 <div class="hd">
   <div class="supplemental">
-    <%=link_to_function(image_tag("/tr8n/images/close.gif", :title=>trl("Close")), "tr8nTranslator.hide()")%>
+    <%=link_to_function(image_tag("/tr8n/images/close.gif", :title=>trla("Close")), "tr8nTranslator.hide()")%>
   </div>
 	<%= tr8n_language_flag_tag(tr8n_current_language) %>
-  <%= trl("#{tr8n_current_language.english_name} Translation") %>
+  <%= trla("{language} Translation", nil, :language => tr8n_current_language.native_name) %>
 </div>
 
 <div id="tr8n_translator_container" class="bd">

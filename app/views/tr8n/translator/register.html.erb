@@ -1,10 +1,10 @@
 <center>
-    <h1><%=tr("#{Tr8n::Config.site_title} Translator Registration Form") %></h1>
+    <h1><%=tra("#{Tr8n::Config.site_title} Translator Registration Form") %></h1>
     <% form_tag(:controller=>"/tr8n/translator", :action => :register) do %>
     <table style="border:1px solid #ccc; padding:10px;">
         <tr>
             <td>
-                <%=tr('Email:') %>
+                <%=tra('Email:') %>
             </td>
             <td>
                 <%=text_field_tag :email, params[:email], :style => "width:250px" %>*
@@ -12,7 +12,7 @@
         </tr>
         <tr>
             <td>
-                <%=tr('Password:') %>
+                <%=tra('Password:') %>
             </td>
             <td>
                 <%=password_field_tag :password, "", :style => "width:250px" %>*
@@ -20,7 +20,7 @@
         </tr>
         <tr>
             <td>
-                <%=tr('Confirm Password:') %>
+                <%=tra('Confirm Password:') %>
             </td>
             <td>
                 <%=password_field_tag :password_verify, "", :style => "width:250px" %>*
@@ -28,7 +28,7 @@
         </tr>
         <tr>
             <td>
-                <%=tr('Name:') %>
+                <%=tra('Name:') %>
             </td>
             <td>
                 <%=text_field_tag :name, params[:name], :style => "width:250px" %>
@@ -36,7 +36,7 @@
         </tr>
         <tr>
             <td>
-                <%=tr('Photo Url:') %>
+                <%=tra('Photo Url:') %>
             </td>
             <td>
                 <%=text_field_tag :mugshot, params[:mugshot], :style => "width:250px" %>
@@ -57,12 +57,12 @@
         </tr>
         <tr>
             <td colspan="2" style="text-align:right;padding-top:10px;vertical-align:middle;">
-                <%=submit_tag trl('Register') %> 
+                <%=submit_tag trla('Register') %> 
             </td>
         </tr>
     </table>
     <br>
-    <%=tr("Already have an account? [link: Login here].", "", :link => ["/tr8n/translator/login"]) %>
+    <%=tra("Already have an account? [link: Login here].", "", :link => ["/tr8n/translator/login"]) %>
     <br>
     <br>
     <% end %>

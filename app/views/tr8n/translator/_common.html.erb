@@ -1,11 +1,11 @@
 <center>
     <br>
-    <h1><%=tr("#{Tr8n::Config.site_title} Translator Login") %></h1>
+    <h1><%=tra("#{Tr8n::Config.site_title} Translator Login") %></h1>
     <% form_tag(:controller=>"/tr8n/translator", :action => :login) do %>
     <table style="border:1px solid #ccc; padding:10px;">
         <tr>
             <td>
-                <%=tr('Login:') %>
+                <%=tra('Login:') %>
             </td>
             <td>
                 <%=text_field_tag :login, params[:login], :style => "width:250px" %>
@@ -13,7 +13,7 @@
         </tr>
         <tr>
             <td>
-                <%=tr('Password:') %>
+                <%=tra('Password:') %>
             </td>
             <td>
                 <%=password_field_tag :password, "", :style => "width:250px" %>
@@ -21,13 +21,13 @@
         </tr>
         <tr>
             <td colspan="2" style="text-align:right;padding-top:10px;vertical-align:middle;">
-                <%=submit_tag trl('Login') %> 
+                <%=submit_tag trla('Login') %> 
             </td>
         </tr>
     </table>
     <br>
     
-    <%=tr("Don't have an account? [link: Register here].", "", :link => ["/tr8n/translator/register", ""])%>
+    <%=tra("Don't have an account? [link: Register here].", "", :link => ["/tr8n/translator/register", ""])%>
     <br>
     <br>
     

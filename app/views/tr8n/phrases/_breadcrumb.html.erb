@@ -1,6 +1,6 @@
 <% if @section_key %>
   <div style="padding-top:5px;padding-bottom:15px;text-align:left;font-size:12px;">
-      <%=link_to(tr("Site Map"), :action => :map)%> 
+      <%=link_to(tra("Site Map"), :action => :map)%> 
 			<% label = @section[:description] == 'Reserved section' ? @section[:label] : tr(@section[:label], @section[:description])  %>
       >> <%=link_to(label, :action => :index, :section_key => @section[:key]) %>
       <% if @translation_key %>

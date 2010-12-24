@@ -38,9 +38,4 @@ class Tr8n::LanguageForumTopic < ActiveRecord::Base
   def last_post
     @last_post ||= Tr8n::LanguageForumMessage.find(:first, :conditions => ["language_forum_topic_id = ?", self.id], :order => "created_at desc")
   end
-  
-  def describe
-    return "#{language.english_name} Language Forum" if language
-    "General Forum"
-  end
 end

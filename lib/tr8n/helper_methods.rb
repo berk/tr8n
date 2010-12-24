@@ -51,7 +51,7 @@ module Tr8n::HelperMethods
 
   def tr8n_language_flag_tag(lang = Tr8n::Config.current_language, opts = {})
     return "" unless Tr8n::Config.enable_language_flags?
-    html = image_tag("/tr8n/images/flags/#{lang.flag}.png", :style => "vertical-align:middle;", :title => trl("#{lang.english_name} flag"))
+    html = image_tag("/tr8n/images/flags/#{lang.flag}.png", :style => "vertical-align:middle;", :title => lang.native_name)
     html << "&nbsp;" 
   end
 

@@ -103,16 +103,14 @@ class Tr8n::Translator < ActiveRecord::Base
     Tr8n::TranslatorLog.log_admin(self, :got_unblocked, actor, reason)
   end
   
-  def promote!(actor, language, reason = "No reason given")
-    lu = Tr8n::LanguageUser.find_or_create(user, language)
-    lu.update_attributes(:manager => true, :translator => self)
-    Tr8n::TranslatorLog.log_admin(self, :got_promoted, actor, reason, language.id)
+  def promote!(actor, reason = "No reason given")
+    update_attributes(:manager => true)
+    Tr8n::TranslatorLog.log_admin(self, :got_promoted, actor, reason)
   end
   
-  def demote!(actor, language, reason = "No reason given")
-    lu = Tr8n::LanguageUser.find_or_create(user, language)
-    lu.update_attributes(:manager => false, :translator => self)
-    Tr8n::TranslatorLog.log_admin(self, :got_demoted, actor, reason, language.id)
+  def demote!(actor, reason = "No reason given")
+    update_attributes(:manager => false)
+    Tr8n::TranslatorLog.log_admin(self, :got_demoted, actor, reason)
   end
   
   def enable_inline_translations!
@@ -192,18 +190,10 @@ class Tr8n::Translator < ActiveRecord::Base
   end
   
   # all admins are always manager for all languages
-  def manager?(language = Tr8n::Config.current_language)
+  def manager?
     return true unless Tr8n::Config.site_user_info_enabled?
-    
     return true if Tr8n::Config.admin_user?(user)
-    lu = Tr8n::LanguageUser.find_or_create(user, language)
-    lu.manager?
-  end
-
-  def manager_for_any_language?
-    return false unless user
-    return true if Tr8n::Config.admin_user?(user)
-    Tr8n::LanguageUser.find_all_by_user_id_and_manager(user.id, true).any?
+    super
   end
 
   def last_logs

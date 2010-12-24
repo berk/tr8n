@@ -5,11 +5,11 @@
 	<table style="width:100%;">
 	  <tr>
 	    <td style="padding-left:5px; width:100px; font-size:10px; text-align:left; color:#ccc; font-weight:bold;">
-			  <%=trl("tokens")%>
+			  <%=trla("tokens", "Rules table header")%>
 			</td>
 	    <% tr8n_current_language.rule_classes.each do |rule_class| %>
 	      <td style="font-size:10px; text-align:center; color:#ccc; font-weight:bold; width:<%=td_width%>%">
-	         <%=trl(rule_class.dependency_label) %>
+	         <%=trla(rule_class.dependency_label, "Rules table header") %>
 	      </td>    
 	    <% end %>
 	  </tr>
@@ -33,5 +33,5 @@
 		 
 	</table>
 <% else %>
-  <%=tr("The language does not have any rules defined and no rules permutations can be generated. Please contact the language manager to define language rules.")%>
+  <%=trla("The language does not have any rules defined and no rules permutations can be generated. Please contact the language manager to define language rules.")%>
 <% end %>	

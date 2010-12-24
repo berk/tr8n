@@ -26,5 +26,5 @@
 	  <%=tr8n_language_table_tag(:source_url => @source_url)%>
 	</div>
 	
-	<%= tr("Don't see the language you're interested in? Let us know at {email}.", nil, :email=>link_to(Tr8n::Config.site_info[:contact_email], "mailto:#{Tr8n::Config.site_info[:contact_email]}")) %>
+	<%= tra("Don't see the language you're interested in? Let us know at {email}.", nil, :email=>link_to(Tr8n::Config.site_info[:contact_email], "mailto:#{Tr8n::Config.site_info[:contact_email]}")) %>
 </div>

@@ -126,7 +126,7 @@ private
   def sanitize_label(label)
 #  do not double escape    
 #  CGI::escapeHTML(label.strip)
-    label.strip
+   ERB::Util.html_escape(label.strip)
   end
 
   # handle disabled state for tr8n

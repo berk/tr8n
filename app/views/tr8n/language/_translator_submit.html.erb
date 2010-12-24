@@ -8,32 +8,32 @@
         <%= render(:partial => "translator_header")%>
       
         <div id="tr8n_translator_translation_container"> 
-            <div class="strong small" style="padding-top:10px;"><%=trl("Enter #{tr8n_current_language.english_name} Translation:")%></div>
+            <div class="strong small" style="padding-top:10px;"><%=trla("Enter {language} Translation:", nil, :language => tr8n_current_language.native_name)%></div>
             <%= f.text_area(:label, :id => "tr8n_translator_translation_label", :class => "keyboardInput", :style=>"padding: 5px 0px; width:100%;") %>
 		
             <% if @translation_key.permutatable? %>
 	            <div style="float:right; font-size:10px;">
-	               <%=link_to_function(trl("generate context rules for this phrase"), "tr8nTranslator.switchTranslatorMode('#{@translation_key.id}', 'dependencies', '#{@source_url}')", :class=>"translation_action") %>
+	               <%=link_to_function(trla("generate context rules for this phrase"), "tr8nTranslator.switchTranslatorMode('#{@translation_key.id}', 'dependencies', '#{@source_url}')", :class=>"translation_action") %>
 							</div>
 						<% end %>
             
             <% if @translation_key.translation_tokens? %>
                 <div id="tr8n_translator_tokens_simple_view" style="font-size:10px;">
 	                <div class="small_section_title" style="color: #999; font-size: 10px;">
-	                   <strong><%=trl("Translation Tokens")%></strong>
+	                   <strong><%=trla("Translation Tokens")%></strong>
 	                </div>
 									
 	                <% @translation_key.translation_tokens.each do |token| %>
 								    <% if token.decoration? %>
-                      <%= link_to_function(token.sanitized_name, "tr8nTranslator.insertDecorationToken('#{token.name}');", :title => trl("Click to insert this token above") ) %>
+                      <%= link_to_function(token.sanitized_name, "tr8nTranslator.insertDecorationToken('#{token.name}');", :title => trla("Click to insert this token above") ) %>
 										<% else %>
-                      <%= link_to_function(token.sanitized_name, "tr8nTranslator.insertToken('#{token.name}');", :title => trl("Click to insert this token above") ) %>
+                      <%= link_to_function(token.sanitized_name, "tr8nTranslator.insertToken('#{token.name}');", :title => trla("Click to insert this token above") ) %>
 										<% end %>
 	                <% end %>
 									
 									<% if tr8n_current_language.cases.any? and @translation_key.data_tokens? %>
 										<div style="font-size: 10px; padding-top:15px;">
-											<%=link_to_function(trl("Click here if the token values depend on the language cases"), "Tr8n.Effects.hide('tr8n_translator_tokens_simple_view'); Tr8n.Effects.show('tr8n_translator_tokens_extended_view');")%>
+											<%=link_to_function(trla("Click here if the token values depend on the language cases"), "Tr8n.Effects.hide('tr8n_translator_tokens_simple_view'); Tr8n.Effects.show('tr8n_translator_tokens_extended_view');")%>
 									  </div>
 									<% end %>	
                 </div>
@@ -41,7 +41,7 @@
 	              <% if tr8n_current_language.cases.any? %>
 									<div id="tr8n_translator_tokens_extended_view" style="display:none">
 	                  <div class="small_section_title" style="color: #999; font-size: 10px;">
-	                     <strong><%=trl("Data Tokens")%></strong>
+	                     <strong><%=trla("Data Tokens")%></strong>
 	                  </div>
 	                  <div style="height:120px; overflow:auto; padding:2px; border:1px dotted #ccc; background-color:#f9f8f7;">
 										  <table style="width:100%;">
@@ -50,7 +50,7 @@
 										      <% tr8n_current_language.cases.each do |lcase| %>
 										      <tr>
 										      	  <td style="width:10%; padding-right:2px; vertical-align:top;font-size:10px; border-bottom:1px dotted #ccc;">
-															  <%= link_to_function(token.sanitized_name_for_case(lcase.keyword), "tr8nTranslator.insertToken('#{token.name_for_case(lcase.keyword)}');", :title => trl("Click to insert this token above") ) %>
+															  <%= link_to_function(token.sanitized_name_for_case(lcase.keyword), "tr8nTranslator.insertToken('#{token.name_for_case(lcase.keyword)}');", :title => trla("Click to insert this token above") ) %>
 										      	  </td> 
 										          <td style="width:90%; vertical-align:top; border-bottom:1px dotted #ccc;">
 															   <div><%=lcase.native_name%></div>
@@ -64,11 +64,11 @@
 										
 										<% if @translation_key.decoration_tokens? %>
 		                <div class="small_section_title" style="color: #999; font-size: 10px;">
-		                   <strong><%=trl("Decoration Tokens")%></strong>
+		                   <strong><%=trla("Decoration Tokens")%></strong>
 		                </div>
 										<div style="font-size:10px;">
 		                  <% @translation_key.decoration_tokens.each do |token| %>
-		                      <%= link_to_function(token.sanitized_name, "tr8nTranslator.insertDecorationToken('#{token.name}');", :title => trl("Click to insert this token above") ) %>
+		                      <%= link_to_function(token.sanitized_name, "tr8nTranslator.insertDecorationToken('#{token.name}');", :title => trla("Click to insert this token above") ) %>
 		                  <% end %>
 										</div>
 										<% end %>
@@ -80,13 +80,13 @@
 		        <% if Tr8n::Config.enable_google_suggestions? and tr8n_current_language.suggestible? %>
 		        <div id="tr8n_google_suggestion_section" style="display:none; padding-top:10px;"> 
 		            <div class="small_section_title" style="color: #999; font-size: 10px;">
-		               <strong><%=trl("Suggested Translation")%></strong>
+		               <strong><%=trla("Suggested Translation")%></strong>
 		            </div>
 		        
 		            <div id="tr8n_google_suggestion_container_<%=@translation_key.id%>" style="" class="small_section">  
 		                <%=image_tag("/tr8n/images/left_quote.png", :style=>"text-align:bottom;padding-bottom:5px;") %>
 		                <a onclick="Tr8n.element('tr8n_translator_translation_label').value=Tr8n.element('tr8n_translation_suggestion_<%=@translation_key.id%>').innerHTML; return false;" href="#">
-		                   <span class="small" id="tr8n_translation_suggestion_<%=@translation_key.id%>" title="<%=trl("Click to insert this suggested translation above")%>"></span>
+		                   <span class="small" id="tr8n_translation_suggestion_<%=@translation_key.id%>" title="<%=trla("Click to insert this suggested translation above")%>"></span>
 		                </a>
 		                <%=image_tag("/tr8n/images/right_quote.png", :style=>"text-align:bottom;padding-top:5px;") %>
 		            
@@ -100,7 +100,7 @@
 		        
 		        <% if Tr8n::Config.enable_glossary_hints? and @translation_key.glossary? %>  
 		          <div class="small_section_title" style="color: #999; font-size: 10px; padding-top:10px;">
-		             <strong><%=trl("Glossary")%></strong>
+		             <strong><%=trla("Glossary")%></strong>
 		          </div>
 		          
 		          <div id="tr8n_glossary_<%=@translation_key.id%>" class="small_section">
@@ -126,7 +126,7 @@
 
 <div id="tr8n_translator_buttons_container" class="buttons_container">
     <button type="submit" class="translator_btn translator_submit_btn" onClick="tr8nTranslator.submitTranslation(); return false;">
-        <span><%=trl("Translate")%></span>
+        <span><%=trla("Translate")%></span>
     </button>
 </div>
 

@@ -10,7 +10,12 @@
     </div>
 
     <div style="color:grey;font-size:16px;font-weight:bold">
-      <%=link_to(tra(@topic.describe), :action => :index)%> &raquo; <%=link_to(@topic.topic, :topic_id => @topic.id)%>
+		  <% if @topic.language %>
+        <%=link_to(tra("{language} Language Forum", nil, :language => @topic.language.native_name), :action => :index)%>
+			<% else %>
+        <%=link_to(tra("General Forum"), :action => :index)%>
+			<% end %>	 
+			 &raquo; <%=link_to(@topic.topic, :topic_id => @topic.id)%>
     </div>
 		
     <div style="color:grey;font-size:12px;font-style:italic;padding-top:3px;padding-bottom:3px;">

@@ -8,7 +8,7 @@
     <%=text_field_tag(:search, params[:search], {:style => "width:400px;height:20px;font-size:14px;"})%>
     
     <button type="submit" class="translator_btn translator_small_btn" onClick="Tr8n.Effects.submit('glossary_search_form'); return false;">
-        <span><%=tra("Search")%></span>
+        <span><%=tra("Search", "Glossary search section")%></span>
     </button>
   <% end %>
 </div>
@@ -19,10 +19,10 @@
   <table style="width:100%">
     <tr style="border-bottom:1px solid #ccc;">
        <td style="width:20%;padding:5px;background: #f9f8f7; font-size:16px; color:grey; font-weight:bold; ">
-          <%=tra("Term")%>
+          <%=tra("Term", "Glossary terminology")%>
        </td>
        <td style="width:80%;padding:5px; font-size:16px; color:grey; font-weight:bold; " colspan="2">
-        <%=tra("Description") %>
+        <%=tra("Description", "Glossary terminology description") %>
        </td>
     </tr>  
     <% @terms.each_with_index do |term, index| %>

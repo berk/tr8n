@@ -54,10 +54,8 @@ class Tr8n::Admin::TranslationKeyController < Tr8n::Admin::BaseController
     key = Tr8n::TranslationKey.find_by_id(params[:translation_key][:id]) unless params[:translation_key][:id].blank?
     
     if key
-      trfn("The translation key has been updated")
       key.update_attributes(params[:translation_key])
     else
-      trfn("The new translation key has been addeded")
       key = Tr8n::TranslationKey.create(params[:translation_key])
     end
 
@@ -125,7 +123,6 @@ class Tr8n::Admin::TranslationKeyController < Tr8n::Admin::BaseController
 
   def update_translation_counts
     Tr8n::TranslationKey.connection.execute("update tr8n_translation_keys set translation_count = (select count(id) from tr8n_translations where tr8n_translations.translation_key_id = tr8n_translation_keys.id)")
-    trfn("Translation counts have been updated")
     redirect_to_source
   end
   

@@ -23,6 +23,7 @@
 
 module Tr8n::BaseHelper
 
+  # for admin translations
   def tra(label, desc = "", tokens = {}, options = {})
     if Tr8n::Config.config[:enable_admin_translations]
       if Tr8n::Config.config[:enable_admin_inline_mode]
@@ -35,4 +36,9 @@ module Tr8n::BaseHelper
     end
   end
   
+  # for admin translations
+  def trla(label, desc = "", tokens = {}, options = {})
+    tra(label, desc, tokens, options.merge(:skip_decorations => true))
+  end
+
 end

@@ -102,13 +102,5 @@
 </h1>
 <%= render :partial => "rules", :locals => {:rules => @lang.rules}%>
 
-<h1>
-  <span style="font-size:12px; float:right; padding-top:10px;">
-    <%=link_to("view all", "/tr8n/admin/language/users?wf_c0=manager&wf_o0=is&wf_v0_0=1") %>
-  </span> 
-	
-	Language Managers
-</h1>
-<%= render :partial => "users", :locals => {:users => @lang.managers} %>
 
 <%= render :partial => "/tr8n/admin/common/footer" %>

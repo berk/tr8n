@@ -3,24 +3,24 @@
   <div style="float:right; font-size:12px; padding-right:3px;">
     <% if tr8n_current_user_is_translator? and tr8n_current_translator.manager? %>
       <% if @translation_key.locked? %>
-			  <%=image_tag("/tr8n/images/lock.png", :style=>"vertical-align:bottom;", :title => trl("This phrase is locked.")) %>
-        <%=link_to(trl("Unlock This Phrase"),{:action => :unlock, :translation_key_id => @translation_key.id},
-                            :confirm => trl("Once the key is unlocked, users will be able to submit or vote on translations for this key. \n\nAre you sure you want to unlock it?") ) %>
+			  <%=image_tag("/tr8n/images/lock.png", :style=>"vertical-align:bottom;", :title => trla("This phrase is locked.")) %>
+        <%=link_to(trla("Unlock This Phrase"),{:action => :unlock, :translation_key_id => @translation_key.id},
+                            :confirm => trla("Once the key is unlocked, users will be able to submit or vote on translations for this key. \n\nAre you sure you want to unlock it?") ) %>
 
       <% else %>  
-        <%=image_tag("/tr8n/images/lock_open.png", :style=>"vertical-align:bottom;", :title => trl("This phrase is unlocked.")) %>
-        <%=link_to(trl("Lock This Phrase"), {:action => :lock, :translation_key_id => @translation_key.id}, 
-                            :confirm => trl("Once the key is locked, users will no longer be able to submit or vote on translations for this key. \n\nAre you sure you want to lock it?") ) %>
+        <%=image_tag("/tr8n/images/lock_open.png", :style=>"vertical-align:bottom;", :title => trla("This phrase is unlocked.")) %>
+        <%=link_to(trla("Lock This Phrase"), {:action => :lock, :translation_key_id => @translation_key.id}, 
+                            :confirm => trla("Once the key is locked, users will no longer be able to submit or vote on translations for this key. \n\nAre you sure you want to lock it?") ) %>
       <% end %>
       |
     <% end %>    
-      <%=image_tag("/tr8n/images/random2.png", :style=>"vertical-align:bottom;", :title => trl("Fetch random phrase")) %>
-      <%=link_to(trl("Find Random Phrase"), :action => :view, :translation_key_id => @translation_key.id, :dir => :random) %>
+      <%=image_tag("/tr8n/images/random2.png", :style=>"vertical-align:bottom;", :title => trla("Fetch random phrase")) %>
+      <%=link_to(trla("Find Random Phrase"), :action => :view, :translation_key_id => @translation_key.id, :dir => :random) %>
     | 
 		  <%=image_tag("/tr8n/images/help.png", :style=>"vertical-align:bottom;", :title => trl("Help"))%>
-		  <%=link_to(trl("View Help"), :target => "_new", :action => :help) %>
+		  <%=link_to(trla("View Help"), :target => "_new", :action => :help) %>
   </div>
-  <div style="color:grey;font-size:20px;padding-bottom:10px;"><%=trl("Original Phrase in English")%></div>
+  <div style="color:grey;font-size:20px;padding-bottom:10px;"><%=trla("Original Phrase in English")%></div>
   
   <div style="padding-top:5px;padding-bottom:10px;font-size:14px">
       <%=image_tag("/tr8n/images/left_quote.png", :style=>"text-align:bottom;padding-bottom:5px;") %>

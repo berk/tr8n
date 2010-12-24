@@ -2,7 +2,7 @@
   <% if tr8n_current_language.default? %>
     <%=tra("Start a New Discussion Topic For All Translators")%>
 	<% else %>
-	   <%=tra("Start a New Discussion Topic For #{tr8n_current_language.english_name} Language")%>
+	   <%=tra("Start a New Discussion Topic For {language} Language", nil, :language => tr8n_current_language.native_name)%>
 	<% end %>
 </div>
 

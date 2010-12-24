@@ -16,12 +16,12 @@
   
   function submitSection(section) {
     if (section == "grammar") {
-      if (!confirm("<%=trl('Updating language rules may affect all existing translations for this language. Are you sure you want to do this?')%>"))
+      if (!confirm("<%=trla('Updating language rules may affect all existing translations for this language. Are you sure you want to do this?')%>"))
         return;
     }
 
     if (section == "cases") {
-      if (!confirm("<%=trl('Updating language cases may affect all existing translations for this language. Are you sure you want to do this?')%>"))
+      if (!confirm("<%=trla('Updating language cases may affect all existing translations for this language. Are you sure you want to do this?')%>"))
         return;
     }
     

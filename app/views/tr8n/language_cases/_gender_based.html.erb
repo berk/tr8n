@@ -1,8 +1,8 @@
 <table cellpadding="0" celspacing="0" style="width:100%">
 	  <tr>
 	  	  <td></td>
-				<td style="font-weight:bold;color:grey;text-align:left;font-size:10px;"><%=trl("Male", "Gender")%></td>
-        <td style="font-weight:bold;color:grey;text-align:left;font-size:10px;"><%=trl("Female", "Gender")%></td>
+				<td style="font-weight:bold;color:grey;text-align:left;font-size:10px;"><%=trla("Male", "Gender")%></td>
+        <td style="font-weight:bold;color:grey;text-align:left;font-size:10px;"><%=trla("Female", "Gender")%></td>
 	  </tr>
     <% tr8n_current_language.cases.each do |lcase| %>
     <tr>
@@ -28,5 +28,5 @@
 </table>
 
 <div style="padding:5px;">
-  <%=link_to_function(trl("Click here if the cases do not depend on the token gender or the gender is implied in the word itself."), "tr8nLanguageCaseManager.switchCaseMapMode('gender_neutral')")%>
+  <%=link_to_function(trla("Click here if the cases do not depend on the token gender or the gender is implied in the word itself."), "tr8nLanguageCaseManager.switchCaseMapMode('gender_neutral')")%>
 </div>

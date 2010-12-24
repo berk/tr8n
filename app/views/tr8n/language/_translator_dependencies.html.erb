@@ -8,20 +8,20 @@
 
       <div id="tr8n_translator_dependencies_container">
          <div class="small_section_title">
-            <%=trl("Context Rules")%>
+            <%=trla("Context Rules")%>
          </div>
         
 	      <div style="padding-bottom:15px;">
 	        <%=render :partial => "/tr8n/common/permutations" %>
 	      </div>
 
-        <%=link_to_function(trl("Click here if there are no context rules for this phrase"), "tr8nTranslator.switchTranslatorMode('#{@translation_key.id}', 'submit', '#{@source_url}')", :style => "font-size:10px;") %>
+        <%=link_to_function(trla("Click here if there are no context rules for this phrase"), "tr8nTranslator.switchTranslatorMode('#{@translation_key.id}', 'submit', '#{@source_url}')", :style => "font-size:10px;") %>
      </div>      
     </div>
 <% end %>
 
 <div id="tr8n_translator_buttons_container" class="buttons_container">
     <button type="submit" class="translator_btn translator_submit_btn" onClick="tr8nTranslator.submitDependencies(); return false;">
-        <span><%=trl("Continue...")%></span>
+        <span><%=trla("Continue...")%></span>
     </button>
 </div>

@@ -92,7 +92,7 @@
       | <%=link_to(tra("translations", "Language action link"), "/tr8n/translations?locale=#{lang.locale}")%>
       | <%=link_to(tra("awards", "Language action link"), "/tr8n/awards?locale=#{lang.locale}")%>
       | <%=link_to(tra("discussions", "Language action link"), "/tr8n/forum?locale=#{lang.locale}")%>
-      <% if tr8n_current_translator.manager?(lang) %>
+      <% if tr8n_current_translator.manager? %>
          | <%=link_to(tra("manage", "Language action link"), "/tr8n/language/index?locale=#{lang.locale}")%>
       <% end %>
       | <%=link_to(tra("remove", "Language action link"), "/tr8n/language/remove?language_id=#{lang.id}")%>
@@ -100,10 +100,10 @@
 
     <%=tr8n_toggler_tag("lang_content_#{lang.id}")%>
 		
-    <%=image_tag("/tr8n/images/flags/#{lang.flag}.png", :title=>trl("#{lang.english_name} flag"))%>&nbsp;
+    <%=image_tag("/tr8n/images/flags/#{lang.flag}.png", :title=>lang.native_name)%>&nbsp;
     <a name="<%=lang.locale%>" style="text-decoration:none;color:black;"><%=lang.english_name%></a>
 		
-		<% if tr8n_current_translator.manager?(lang) %> 
+		<% if tr8n_current_translator.manager? %> 
 		  <span style="color:#ccc; font-size:12px;">(<%=tra("You are managing this language") %>)</span>
 		<% end %>
 	</div>

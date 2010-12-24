@@ -6,7 +6,7 @@
     <%=image_tag('/tr8n/images/plus.png')%> <%= link_to(tra("Start a new discussion topic"), :action => :topic, :mode => :create) %>
   </div>
   
-  <%=tra("#{tr8n_current_language.english_name} Language Discussion Topics") %>  
+  <%=tra("{language} Language Discussion Topics", nil, :language => tr8n_current_language.native_name) %>  
 </div>
 <div class="section_box">
     <table style="width:100%;">

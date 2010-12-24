@@ -202,10 +202,6 @@ class Tr8n::Translation < ActiveRecord::Base
     destroy
   end
   
-  def before_save
-    self.label = ERB::Util.html_escape(label)
-  end
-
   def after_save
     Tr8n::Cache.delete("translations_#{language.locale}_#{translation_key.key}")
     translation_key.update_translation_count!

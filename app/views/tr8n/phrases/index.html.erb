@@ -31,7 +31,7 @@
 			   <%=tra("English Phrase")%>
 			 </td>
        <td style="width:70%;padding:5px; font-size:16px; color:grey; " colspan="2">
-			   <%=tra("Top #{tr8n_current_language.english_name} Translations") %>
+			   <%=tra("Top {language} Translations", nil, :language => tr8n_current_language.native_name) %>
 			 </td>
     </tr>  
     <% @translation_keys.each do |tk| %>
@@ -39,7 +39,7 @@
         <% color = tk.locked? ? "#ECFFEF" : "#FDFDDF" %>
         <td style="padding:5px; background: <%=color%>; ">
           <% if tk.locked? %>
-            <div style="float:right"><%=image_tag("/tr8n/images/lock.png", :style=>"width:12px", :title => trl("This phrase is locked"))%></div>
+            <div style="float:right"><%=image_tag("/tr8n/images/lock.png", :style=>"width:12px", :title => trla("This phrase is locked"))%></div>
           <% end %>
           <%=link_to(tr8n_current_language.translate(tk.label, tk.description, {}, {:default_language => true}), :action => :view, :translation_key_id => tk.id, :section_key => @section_key)%>
           <div style="color:grey;font-size:10px;padding-top:3px;"><%=tk.description%></div>

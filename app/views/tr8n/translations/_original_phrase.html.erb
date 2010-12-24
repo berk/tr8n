@@ -1,7 +1,7 @@
 <% color = translation.key.locked? ? "#ECFFEF" : "#FDFDDF" %>
 <div style="font-size: 11px; color: grey; margin-top:5px; margin-bottom:5px; padding:3px; background:<%=color%>; border:1px dotted #ccc;">
   <% if translation.key.locked? %>
-    <div style="float:right"><%=image_tag("/tr8n/images/lock.png", :style=>"width:12px", :title => trl("This phrase is locked"))%></div>
+    <div style="float:right"><%=image_tag("/tr8n/images/lock.png", :style=>"width:12px", :title => trla("This phrase is locked"))%></div>
   <% end %>
 
   <%=tra("Original Phrase:", "Translation section header")%> <%=link_to(translation.key.sanitized_label, :controller => "/tr8n/phrases", :action => :view, :locale => translation.language.locale, :translation_key_id => translation.key.id) %>

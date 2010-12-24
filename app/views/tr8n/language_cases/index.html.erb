@@ -37,7 +37,7 @@
 	        <td style="padding:2px;"><%=map.implied_value_for(lcase.keyword) %></td>
 	      <% end %>
 				<td style="text-align:right; vertical-align:top; width:60px; padding:2px;">
-					<%=link_to(image_tag("/tr8n/images/cross.png"), "/tr8n/language_cases/delete_value_map?map_id=#{map.id}", :confirm => tra("Are you sure you want to delete this case map?"))%>
+					<%=link_to(image_tag("/tr8n/images/cross.png"), "/tr8n/language_cases/delete_value_map?map_id=#{map.id}", :confirm => trla("Are you sure you want to delete this case map?"))%>
 				</td>
 			</tr>
 		<% end %>

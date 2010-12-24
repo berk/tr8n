@@ -15,8 +15,12 @@
     [:site_administrator, lambda{|translator|
       translator.admin?  
     }, 'text-align:right'],
-    [:language_manager, lambda{|translator|
-      translator.manager_for_any_language?
+    [:manager, lambda{|translator|
+      if translator.manager?
+        "<span style='color:red'>#{translator.manager?}</span>"
+      else
+        translator.manager?
+      end     
     }, 'text-align:right'],
     [:blocked, lambda{|translator|
       html = []

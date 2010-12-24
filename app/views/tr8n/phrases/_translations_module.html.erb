@@ -19,13 +19,13 @@
          <%=hidden_field_tag(:section_key, @section_key) %>
          <%=hidden_field_tag(:translation_key_id, @translation_key.id) %>
          <div style="padding-top:5px;">
-              <%=trl("Show")%>
+              <%=trla("Show")%>
               <%=select_tag(:with_status, options_for_select(Tr8n::Translation.filter_status_options, params[:with_status]), :onChange => "Tr8n.Effects.submit('translations_search_form')")%>
-              <%=trl("submitted by")%>
+              <%=trla("submitted by")%>
               <%=select_tag(:submitted_by, options_for_select(Tr8n::Translation.filter_submitter_options, params[:submitted_by]), :onChange => "Tr8n.Effects.submit('translations_search_form')")%>
-              <%=trl("created on")%>
+              <%=trla("created on")%>
               <%=select_tag(:submitted_on, options_for_select(Tr8n::Translation.filter_date_options, params[:submitted_on]), :onChange => "Tr8n.Effects.submit('translations_search_form')")%>
-              <%=trl("grouped by")%>
+              <%=trla("grouped by")%>
               <%=select_tag(:grouped_by, options_for_select(Tr8n::Translation.filter_group_by_options, params[:grouped_by]), :onChange => "Tr8n.Effects.submit('translations_search_form')")%>
          </div>
       <% end %>
@@ -38,7 +38,7 @@
         <div class="section_title">
           <% if params[:grouped_by] == "context" %>
             <div style="float:right; font-size: 12px; font-weight:normal; padding-top:5px;">
-              <%= link_to_function(trl("+ add translation"), "addTranslation()") %>
+              <%= link_to_function(trla("+ add translation"), "addTranslation()") %>
             </div> 
           <% end %>
           
@@ -55,13 +55,13 @@
   
   <% unless @translation_key.locked? %>
     <div style="font-size: 12px; color: grey; padding-top:15px; padding-bottom:15px;">
-    <%= trl("You can only edit or delete translations submitted by you.") %>
+    <%= trla("You can only edit or delete translations submitted by you.") %>
      
-    <%= trl("If you don't like any of the translations for this phrase, [link: add your own translation].", "",
+    <%= trla("If you don't like any of the translations for this phrase, [link: add your own translation].", "",
           :link => lambda{|str| link_to_function(str, "addTranslation()")}) %>
 
     <% if @translation_key.permutatable? %>
-        <%=trl("If this translation depends on a {token} or a gender of the viewing user, then [link: generate context rules for this phrase].", "",
+        <%=trla("If this translation depends on a {token} or a gender of the viewing user, then [link: generate context rules for this phrase].", "",
               :token => "{token}",
               :link => lambda{|str| link_to_function(str, "addContextRules()")}) %>
     <% end %>        

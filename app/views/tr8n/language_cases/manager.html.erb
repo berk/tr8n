@@ -8,7 +8,7 @@
     <%=link_to_function(image_tag("/tr8n/images/close.gif", :title=>trl("Close")), "tr8nLanguageCaseManager.hide()")%>
   </div>
   <%= tr8n_language_flag_tag(tr8n_current_language) %>
-  <%= trl("#{tr8n_current_language.english_name} Language Cases") %>
+  <%= trla("{language} Language Cases", nil, :language => tr8n_current_language.native_name) %>
 </div>
 
 <div class="bd" style="padding:5px;">
@@ -29,7 +29,7 @@
 		    </ol>
 			</div>
 			
-			<%=link_to_function("Click here if this word is an exceptional case", "tr8nLanguageCaseManager.switchToCaseMapMode()")%>
+			<%=link_to_function(trla("Click here if this word is an exceptional case"), "tr8nLanguageCaseManager.switchToCaseMapMode()")%>
 	  </div>
 	<% end %>
 	
@@ -48,7 +48,7 @@
 		
 		  <div id="tr8n_language_cases_buttons" style="text-align:center;padding:10px;">
 		      <button type="submit" class="translator_btn translator_submit_btn" onClick="tr8nLanguageCaseManager.submitCaseMap(); return false;">
-		          <span><%=tra("Save")%></span>
+		          <span><%=trla("Save")%></span>
 		      </button>
 		  </div>
 		<% end %>
