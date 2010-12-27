@@ -22,8 +22,10 @@
 #++
 
 class Wf::Filter < ActiveRecord::Base
-  set_table_name :wf_filters
+  
+  JOIN_NAME_INDICATOR = '>'
 
+  set_table_name :wf_filters
   serialize   :data
   
   #############################################################################
@@ -259,7 +261,7 @@ class Wf::Filter < ActiveRecord::Base
     title = title.split(" ").collect{|part| part.split("/").last.capitalize}.join(" ")
     
     if title_parts.size > 1
-      "» #{title}"
+      "#{JOIN_NAME_INDICATOR} #{title}"
     else
       title  
     end
@@ -271,7 +273,7 @@ class Wf::Filter < ActiveRecord::Base
       definition.keys.each do |cond|
         opts << [condition_title_for(cond), cond.to_s]
       end
-      opts = opts.sort_by{|opt| opt.first.gsub('»', 'zzz') }
+      opts = opts.sort_by{|opt| opt.first.gsub(JOIN_NAME_INDICATOR, 'zzz') }
       
       separated = []
       opts.each_with_index do |opt, index|
@@ -281,7 +283,7 @@ class Wf::Filter < ActiveRecord::Base
           
           if (prev_opt_parts.size != curr_opt_parts.size) or (curr_opt_parts.size > 1 and (prev_opt_parts.first != curr_opt_parts.first))
             key_parts = opt.last.split('.')
-            separated << ["-------------- #{curr_opt_parts.first.gsub('» ', '')} --------------", "#{key_parts.first}.id"]
+            separated << ["-------------- #{curr_opt_parts.first.gsub("#{JOIN_NAME_INDICATOR} ", '')} --------------", "#{key_parts.first}.id"]
           end
         end
         separated << opt
