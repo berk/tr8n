@@ -589,7 +589,7 @@ class Wf::Filter < ActiveRecord::Base
         cond << "<br>&nbsp;&nbsp;&nbsp;<b>#{i})</b>&nbsp;"
         if c.is_a?(Array)
           cond << "["
-          cond << (c.collect{|v| "\"#{v.strip}\""}.join(", "))
+          cond << (c.collect{|v| "\"#{v.to_s.strip}\""}.join(", "))
           cond << "]"
         elsif c.is_a?(Date)  
           cond << "\"#{c.strftime("%Y-%m-%d")}\""
