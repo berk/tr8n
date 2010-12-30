@@ -1,0 +1,45 @@
+<% form_for(:translation_key, @key, :url => {:action => :merge}, :html => {:id => 'tr8n_form', :method => :post, :class => "tr8n"}) do |form| %>
+  <%= form.hidden_field :id %>
+  <%= hidden_field_tag :keys, @keys.collect{|key| key.id}.join(',') %>
+  <%= hidden_field_tag :source_url, request.env['HTTP_REFERER'] %>
+  
+  <h2>Merging Translation Keys</h2>
+	<div style="background-color:#f1f4fa; padding:5px; max-height:120px; overflow:auto; margin-bottom: 10px; border: 1px solid #ccc;">
+		<table style="width:100%">
+			<% @keys.each_with_index do |key, index| %> 
+			<tr style="border-bottom:1px solid #eee;">
+				<td style="cursor:pointer;" onClick="Tr8n.element('master_key_label').value=Tr8n.element('key_label_<%=index%>').innerHTML;Tr8n.element('master_key_description').value=Tr8n.element('key_description_<%=index%>').innerHTML;">
+					<div id="key_label_<%=index%>"><%=key.label%></div>
+					<div id="key_description_<%=index%>" style="color:#888; font-size:9px;">
+					 <%=key.description%>
+					</div>
+				</td>
+				<td style="text-align:right"><%=key.translations.count%></td>
+			</tr>
+			<% end %>
+		</table>
+	</div>
+	
+  <table class="admin_table">
+      <tr>
+          <th>
+              Label:
+          </th>
+          <td>
+              <%= form.text_field :label, :style=>"width:99%;", :id => :master_key_label %>
+          </td>
+      </tr>
+      <tr>
+          <th>
+              Description:
+          </th>
+          <td>
+              <%= form.text_field :description, :style=>"width:99%;", :id => :master_key_description %>
+          </td>
+      </tr>
+  </table>
+  
+  <div><i>Note: merging translation keys will join all of the translations for each language and unlock the merged key.</i></div>
+
+  <%= render :partial => "/tr8n/admin/common/lightbox_buttons" %>
+<% end %>

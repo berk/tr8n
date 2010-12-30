@@ -147,6 +147,12 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   def unlock!(language = Tr8n::Config.current_language, translator = Tr8n::Config.current_translator)
     lock_for(language).unlock!(translator)
   end
+
+  def unlock_all!
+    locks.each do |lock|
+      lock.unlock!
+    end
+  end
   
   def locked?(language = Tr8n::Config.current_language)
     lock_for(language).locked?
