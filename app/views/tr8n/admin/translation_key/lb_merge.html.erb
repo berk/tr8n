@@ -10,9 +10,7 @@
 			<tr style="border-bottom:1px solid #eee;">
 				<td style="cursor:pointer;" onClick="Tr8n.element('master_key_label').value=Tr8n.element('key_label_<%=index%>').innerHTML;Tr8n.element('master_key_description').value=Tr8n.element('key_description_<%=index%>').innerHTML;">
 					<div id="key_label_<%=index%>"><%=key.label%></div>
-					<div id="key_description_<%=index%>" style="color:#888; font-size:9px;">
-					 <%=key.description%>
-					</div>
+					<div id="key_description_<%=index%>" style="color:#888; font-size:9px;"><%=key.description%></div>
 				</td>
 				<td style="text-align:right"><%=key.translations.count%></td>
 			</tr>
