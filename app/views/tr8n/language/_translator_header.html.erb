@@ -3,7 +3,7 @@
     <%= tr8n_help_icon_tag %>
   </div>
   
-  <div class="quiet small"><%=trla("Original Phrase in English")%></div>
+  <div class="quiet small"><%=trla("Original Phrase in {language}", nil, :language => @translation_key.language.native_name)%></div>
   <div class="quote">
     <%=image_tag("/tr8n/images/left_quote.png") %>
     <%=@translation_key.sanitized_label %>

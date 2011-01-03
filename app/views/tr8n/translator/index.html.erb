@@ -1,22 +1,26 @@
-<%= render :partial => "/tr8n/common/header" %>
+<% Tr8n::Config.with_options(:default_locale => 'en-US', :admin => true) do %>
 
-<%=render(:partial => "basic_info", :locals => {:mode => :view}) %>
+	<%= render :partial => "/tr8n/common/header" %>
+	
+	<%=render(:partial => "basic_info", :locals => {:mode => :view}) %>
+	
+	<script>
+	  function switchSectionMode(section, mode) {
+	    Tr8n.Utils.update(section + '_container', '/tr8n/translator/update_translator_section', {
+	      parameters: {section:section, mode:mode}
+	    });
+	  }
+	  
+	  function submitSection(section) {
+	    var params = Tr8n.Utils.serializeForm(section + '_form');
+	    params['section'] = section;
+	    Tr8n.Utils.update(section + '_container', '/tr8n/translator/update_translator_section', {
+	      parameters: params,
+	      method: 'post'
+	    });
+	  }
+	</script>
+	
+	<%= render :partial => "/tr8n/common/footer" %>
 
-<script>
-  function switchSectionMode(section, mode) {
-    Tr8n.Utils.update(section + '_container', '/tr8n/translator/update_translator_section', {
-      parameters: {section:section, mode:mode}
-    });
-  }
-  
-  function submitSection(section) {
-    var params = Tr8n.Utils.serializeForm(section + '_form');
-    params['section'] = section;
-    Tr8n.Utils.update(section + '_container', '/tr8n/translator/update_translator_section', {
-      parameters: params,
-      method: 'post'
-    });
-  }
-</script>
-
-<%= render :partial => "/tr8n/common/footer" %>
+<% end %>	

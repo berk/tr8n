@@ -95,7 +95,9 @@ private
   def tr8n_features_tabs
     @tabs ||= begin 
       tabs = Tr8n::Config.features.clone
-      tabs = tabs.select{|tab| tab[:default_language]} if tr8n_current_language.default?
+      unless Tr8n::Config.multiple_base_languages?
+        tabs = tabs.select{|tab| tab[:default_language]} if tr8n_current_language.default?
+      end
     
       unless tr8n_current_user_is_translator? and tr8n_current_translator.manager?
         tabs = tabs.select{|tab| !tab[:manager_only]}  
@@ -178,6 +180,7 @@ private
   end
   
   def validate_default_language
+    return if Tr8n::Config.multiple_base_languages?
     redirect_to(tr8n_features_tabs.first[:link]) if tr8n_current_language.default?
   end
   

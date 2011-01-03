@@ -1,58 +1,60 @@
-<% if params[:stem_type] %>
-  <% left_right = params[:stem_type].index("right") ? "right" : "left" %>  
-  <%=image_tag("/tr8n/images/top_left_stem.png", :class => "stem #{params[:stem_type]}", :style => "#{left_right}:#{params[:stem_offset]}px")%>
-<% end %>  
+<% Tr8n::Config.with_options(:default_locale => 'en-US', :admin => true) do %>
 
-<div class="hd">
-  <div class="supplemental">
-    <%=link_to_function(image_tag("/tr8n/images/close.gif", :title=>trl("Close")), "tr8nLanguageCaseManager.hide()")%>
-  </div>
-  <%= tr8n_language_flag_tag(tr8n_current_language) %>
-  <%= trla("{language} Language Cases", nil, :language => tr8n_current_language.native_name) %>
-</div>
-
-<div class="bd" style="padding:5px;">
-
-  <%= render(:partial => "manager_header")%>
-
-  <% if @lcase %>
-	  <div id="tr8n_language_case_container" style="border: 1px dotted #ccc; padding:5px; <%='display:none' if @map.id %>">
-		  <div style="float:right; color:grey; font-size:10px;">::<%= @lcase.keyword %></div>
-	    <div style="font-size:12px; color:grey; padding-bottom:10px;"><%= @lcase.native_name %></div>
+	<% if params[:stem_type] %>
+	  <% left_right = params[:stem_type].index("right") ? "right" : "left" %>  
+	  <%=image_tag("/tr8n/images/top_left_stem.png", :class => "stem #{params[:stem_type]}", :style => "#{left_right}:#{params[:stem_offset]}px")%>
+	<% end %>  
 	
-	    <div style="padding-bottom:10px;">
-		    <ol style="font-size: 10px; padding-left:10px; margin:1em; list-style-type:square; margin-top:0px;">
-		    <% @lcase.rules.each do |rule| %>
-				    <% style = "color:green" if @rule and @rule == rule %>
-		        <li style="<%=style%>"><%=rule.description %></li>
-		    <% end %> 
-		    </ol>
-			</div>
-			
-			<%=link_to_function(trla("Click here if this word is an exceptional case"), "tr8nLanguageCaseManager.switchToCaseMapMode()")%>
+	<div class="hd">
+	  <div class="supplemental">
+	    <%=link_to_function(image_tag("/tr8n/images/close.gif", :title=>trl("Close")), "tr8nLanguageCaseManager.hide()")%>
 	  </div>
-	<% end %>
+	  <%= tr8n_language_flag_tag(tr8n_current_language) %>
+	  <%= trla("{language} Language Cases", nil, :language => tr8n_current_language.native_name) %>
+	</div>
 	
-	<div id="tr8n_language_case_exception_container" style="border: 1px dotted #ccc; padding:5px; <%='display:none' unless @map.id %>">
-		<% form_for(:map, @map, :url => {:action => :update_value_map}, :html => {:id => 'tr8n_language_case_form', :method => :post}) do |form| %>
-		  <%= hidden_field_tag :map_id, @map.id %>
-      <%= hidden_field_tag :case_key, @map.keyword %>
-		  
-			<div id="tr8n_language_cases_form">
-				  <% if @map.gender_based? %>
-		         <%= render :partial => "gender_based" %>
-					<% else %>
-		  	     <%= render :partial => "gender_neutral" %>
-				  <% end %>
-			</div>
+	<div class="bd" style="padding:5px;">
+	
+	  <%= render(:partial => "manager_header")%>
+	
+	  <% if @lcase %>
+		  <div id="tr8n_language_case_container" style="border: 1px dotted #ccc; padding:5px; <%='display:none' if @map.id %>">
+			  <div style="float:right; color:grey; font-size:10px;">::<%= @lcase.keyword %></div>
+		    <div style="font-size:12px; color:grey; padding-bottom:10px;"><%= @lcase.native_name %></div>
 		
-		  <div id="tr8n_language_cases_buttons" style="text-align:center;padding:10px;">
-		      <button type="submit" class="translator_btn translator_submit_btn" onClick="tr8nLanguageCaseManager.submitCaseMap(); return false;">
-		          <span><%=trla("Save")%></span>
-		      </button>
+		    <div style="padding-bottom:10px;">
+			    <ol style="font-size: 10px; padding-left:10px; margin:1em; list-style-type:square; margin-top:0px;">
+			    <% @lcase.rules.each do |rule| %>
+					    <% style = "color:green" if @rule and @rule == rule %>
+			        <li style="<%=style%>"><%=rule.description %></li>
+			    <% end %> 
+			    </ol>
+				</div>
+				
+				<%=link_to_function(trla("Click here if this word is an exceptional case"), "tr8nLanguageCaseManager.switchToCaseMapMode()")%>
 		  </div>
 		<% end %>
+		
+		<div id="tr8n_language_case_exception_container" style="border: 1px dotted #ccc; padding:5px; <%='display:none' unless @map.id %>">
+			<% form_for(:map, @map, :url => {:action => :update_value_map}, :html => {:id => 'tr8n_language_case_form', :method => :post}) do |form| %>
+			  <%= hidden_field_tag :map_id, @map.id %>
+	      <%= hidden_field_tag :case_key, @map.keyword %>
+			  
+				<div id="tr8n_language_cases_form">
+					  <% if @map.gender_based? %>
+			         <%= render :partial => "gender_based" %>
+						<% else %>
+			  	     <%= render :partial => "gender_neutral" %>
+					  <% end %>
+				</div>
+			
+			  <div id="tr8n_language_cases_buttons" style="text-align:center;padding:10px;">
+			      <button type="submit" class="translator_btn translator_submit_btn" onClick="tr8nLanguageCaseManager.submitCaseMap(); return false;">
+			          <span><%=trla("Save")%></span>
+			      </button>
+			  </div>
+			<% end %>
+		</div>  
+		
 	</div>  
-	
-</div>  
-
+<% end %>

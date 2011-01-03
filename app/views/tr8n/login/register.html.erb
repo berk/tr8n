@@ -1,55 +1,57 @@
-<h2 class="underscore content_hd">
-  <%=tr('Register for Tr8n Translator Account') %>
-</h2>
-<div class="content_bd">
-  <div class="page_form">
-  <% form_tag({}, :method => :post) do %>
-    <div class="field">
-      <div class="strong field_hd txt_r h4"><%=tr('Email:') %></div>
-      <div class="field_bd">
-        <%=text_field_tag :email, params[:email], :class => "xlong_input h4" %> &nbsp; *
-      </div>
-    </div>
-    <div class="field">
-      <div class="strong field_hd txt_r h4"><%=tr('Password:') %></div>
-      <div class="field_bd">
-        <%=password_field_tag :password, "", :class => "xlong_input h4"%> &nbsp; *
-      </div>
-    </div>
-    <div class="field">
-      <div class="strong field_hd txt_r h4"><%=tr('Name:') %></div>
-      <div class="field_bd">
-        <%=text_field_tag :name, params[:name], :class => "xlong_input h4" %>
-      </div>
-    </div>
-    <div class="field">
-      <div class="strong field_hd txt_r h4"><%=tr('Gender:') %></div>
-      <div class="strong" style="padding-top:8px;">
-        &nbsp; <%=radio_button_tag(:gender, "male", params[:gender] == 'male')%> <%=tr('Male', 'Gender') %>
-        &nbsp; <%=radio_button_tag(:gender, "male", params[:gender] == 'female')%> <%=tr('Female', 'Gender') %>
-        &nbsp; <%=radio_button_tag(:gender, "unknown", params[:gender] == 'unknown')%> <%=tr('Unknown', 'Gender') %>
-      </div>
-    </div>
-    <div class="field">
-      <div class="strong field_hd txt_r h4"><%=tr('Photo Url:') %></div>
-      <div class="field_bd">
-        <%=text_field_tag :mugshot, params[:mugshot], :class => "xlong_input h4" %>
-      </div>
-    </div>
-    <div class="field">
-      <div class="strong field_hd txt_r h4"><%=tr('Link Url:') %></div>
-      <div class="field_bd">
-        <%=text_field_tag :link, params[:link], :class => "xlong_input h4" %>
-      </div>
-    </div>
-    <br>
-    <div class="field">
-      <div class="field_bd">
-        <button class="button super blue xlarge"><span><%= tr('Register') %></span></button>
-        <%= tr("or") %>
-        <%=link_to(tr("Login to Tr8n Translation Engine"), "/tr8n/login/index")%>
-      </div>
-    </div>
-  <% end %>
-  </div>
-</div>
+<% Tr8n::Config.with_options(:default_locale => 'en-US', :admin => true) do %>
+	<h2 class="underscore content_hd">
+	  <%=tr('Register for Tr8n Translator Account') %>
+	</h2>
+	<div class="content_bd">
+	  <div class="page_form">
+	  <% form_tag({}, :method => :post) do %>
+	    <div class="field">
+	      <div class="strong field_hd txt_r h4"><%=tr('Email:') %></div>
+	      <div class="field_bd">
+	        <%=text_field_tag :email, params[:email], :class => "xlong_input h4" %> &nbsp; *
+	      </div>
+	    </div>
+	    <div class="field">
+	      <div class="strong field_hd txt_r h4"><%=tr('Password:') %></div>
+	      <div class="field_bd">
+	        <%=password_field_tag :password, "", :class => "xlong_input h4"%> &nbsp; *
+	      </div>
+	    </div>
+	    <div class="field">
+	      <div class="strong field_hd txt_r h4"><%=tr('Name:') %></div>
+	      <div class="field_bd">
+	        <%=text_field_tag :name, params[:name], :class => "xlong_input h4" %>
+	      </div>
+	    </div>
+	    <div class="field">
+	      <div class="strong field_hd txt_r h4"><%=tr('Gender:') %></div>
+	      <div class="strong" style="padding-top:8px;">
+	        &nbsp; <%=radio_button_tag(:gender, "male", params[:gender] == 'male')%> <%=tr('Male', 'Gender') %>
+	        &nbsp; <%=radio_button_tag(:gender, "male", params[:gender] == 'female')%> <%=tr('Female', 'Gender') %>
+	        &nbsp; <%=radio_button_tag(:gender, "unknown", params[:gender] == 'unknown')%> <%=tr('Unknown', 'Gender') %>
+	      </div>
+	    </div>
+	    <div class="field">
+	      <div class="strong field_hd txt_r h4"><%=tr('Photo Url:') %></div>
+	      <div class="field_bd">
+	        <%=text_field_tag :mugshot, params[:mugshot], :class => "xlong_input h4" %>
+	      </div>
+	    </div>
+	    <div class="field">
+	      <div class="strong field_hd txt_r h4"><%=tr('Link Url:') %></div>
+	      <div class="field_bd">
+	        <%=text_field_tag :link, params[:link], :class => "xlong_input h4" %>
+	      </div>
+	    </div>
+	    <br>
+	    <div class="field">
+	      <div class="field_bd">
+	        <button class="button super blue xlarge"><span><%= tr('Register') %></span></button>
+	        <%= tr("or") %>
+	        <%=link_to(tr("Login to Tr8n Translation Engine"), "/tr8n/login/index")%>
+	      </div>
+	    </div>
+	  <% end %>
+	  </div>
+	</div>
+<% end %>

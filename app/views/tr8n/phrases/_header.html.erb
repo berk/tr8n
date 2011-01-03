@@ -20,7 +20,7 @@
 		  <%=image_tag("/tr8n/images/help.png", :style=>"vertical-align:bottom;", :title => trl("Help"))%>
 		  <%=link_to(trla("View Help"), :target => "_new", :action => :help) %>
   </div>
-  <div style="color:grey;font-size:20px;padding-bottom:10px;"><%=trla("Original Phrase in English")%></div>
+  <div style="color:grey;font-size:20px;padding-bottom:10px;"><%=trla("Original Phrase in {language}", nil, :language => @translation_key.language.native_name)%></div>
   
   <div style="padding-top:5px;padding-bottom:10px;font-size:14px">
       <%=image_tag("/tr8n/images/left_quote.png", :style=>"text-align:bottom;padding-bottom:5px;") %>

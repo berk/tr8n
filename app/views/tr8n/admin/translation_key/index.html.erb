@@ -16,6 +16,8 @@
 	    html << key.description.to_s  
 	    html << '</div>'  
 	  }],
+    :locale,
+    :admin,
 	  [:translation_count, lambda{|key| link_to(key.translation_count || 0, "/tr8n/admin/translation/index?wf_c0=translation_key_id&wf_o0=is&wf_v0_0=#{key.id}")}, 'padding:5px;text-align:right;'],
 	  [:created_at, lambda{|key| key.created_at}, 'padding:5px;text-align:right;'],
 	  [:verified_at, lambda{|key| key.verified_at}, 'padding:5px;text-align:right;'],

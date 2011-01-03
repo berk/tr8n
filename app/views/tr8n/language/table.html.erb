@@ -1,30 +1,32 @@
-<style>
-  .tr8n_languages_table {
-    text-align:center;
-
-    font-size:12px;
-    font-family:arial;
-    text-decoration:none;
-    color: #999;
-    border:1px dotted #ccc; padding:10px;
-    margin-bottom:10px;
-  }
-
-
-  .tr8n_languages_table a {
-     text-decoration:none;
-     color: #1166bb;
-  }
-
-  .tr8n_languages_table a:hover {
-     text-decoration:underline;
-  }
-</style>
-
-<div style="padding:15px;">
-	<div class="tr8n_languages_table">
-	  <%=tr8n_language_table_tag(:source_url => @source_url)%>
-	</div>
+<% Tr8n::Config.with_options(:default_locale => 'en-US', :admin => true) do %>
+	<style>
+	  .tr8n_languages_table {
+	    text-align:center;
 	
-	<%= tra("Don't see the language you're interested in? Let us know at {email}.", nil, :email=>link_to(Tr8n::Config.site_info[:contact_email], "mailto:#{Tr8n::Config.site_info[:contact_email]}")) %>
-</div>
+	    font-size:12px;
+	    font-family:arial;
+	    text-decoration:none;
+	    color: #999;
+	    border:1px dotted #ccc; padding:10px;
+	    margin-bottom:10px;
+	  }
+	
+	
+	  .tr8n_languages_table a {
+	     text-decoration:none;
+	     color: #1166bb;
+	  }
+	
+	  .tr8n_languages_table a:hover {
+	     text-decoration:underline;
+	  }
+	</style>
+	
+	<div style="padding:15px;">
+		<div class="tr8n_languages_table">
+		  <%=tr8n_language_table_tag(:source_url => @source_url)%>
+		</div>
+		
+		<%= tra("Don't see the language you're interested in? Let us know at {email}.", nil, :email=>link_to(Tr8n::Config.site_info[:contact_email], "mailto:#{Tr8n::Config.site_info[:contact_email]}")) %>
+	</div>
+<% end %>	

@@ -48,15 +48,49 @@ class Tr8n::TranslationKey < ActiveRecord::Base
         end
       end
       
-      existing_key ||= create(:key => key, :label => label, :description => desc)
+      existing_key ||= begin
+        new_tkey = create(:key => key, 
+                          :label => label, 
+                          :description => desc, 
+                          :locale => (Tr8n::Config.block_options[:default_locale] || Tr8n::Config.default_locale),
+                          :admin => Tr8n::Config.block_options[:admin])
+        unless options[:source].blank?
+          # at the time of creation - mark the first source of the key
+          Tr8n::TranslationKeySource.find_or_create(new_tkey, Tr8n::TranslationSource.find_or_create(options[:source]))
+        end  
+        new_tkey
+      end  
+
+      # for backwards compatibility only
+      mark_as_admin(existing_key, options)
+      update_default_locale(existing_key, options)
       
       # mark each key as verified - but only if caching is enabled
-      existing_key.update_attributes(:verified_at => Time.now) if Tr8n::Config.enable_caching?
+      if Tr8n::Config.enable_caching?
+        existing_key.update_attributes(:verified_at => Time.now)
+      end  
       existing_key
     end
     
+    # for detailed tracking of all sources and caller stack - only needed for debugging - expensive
     track_source(tkey, options)  
     tkey  
+  end
+
+  # for backwards compatibility only - new keys will be marked as such
+  def self.mark_as_admin(tkey, options)
+    return if options[:skip_block_options]
+    return unless Tr8n::Config.block_options[:admin]
+    return if tkey.admin?
+    tkey.update_attributes(:admin => true)
+  end
+  
+  # for backwards compatibility only - if locale is provided update it in the key
+  def self.update_default_locale(tkey, options)
+    return if options[:skip_block_options]
+    return unless tkey.locale.blank?
+    key_locale = Tr8n::Config.block_options[:default_locale] || Tr8n::Config.default_locale
+    tkey.update_attributes(:locale => key_locale)
   end
 
   # used to create associations between the translation keys and source
@@ -85,6 +119,10 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     
     self.key = self.class.generate_key(label, description)
     save
+  end
+  
+  def language
+    @language ||= (locale ? Tr8n::Language.for(locale) : Tr8n::Config.default_language)
   end
   
   def tokenized_label
@@ -378,13 +416,32 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     processed_label
   end
   
+  def default_decoration(language = Tr8n::Config.current_language, options = {})
+    return label if Tr8n::Config.current_user_is_guest?
+    return label unless Tr8n::Config.current_user_is_translator?
+    return label if locked?(language)
+
+    classes = ['tr8n_translatable']
+
+    if valid_translations_for(language).any?
+      classes << 'tr8n_translated'
+    else
+      classes << 'tr8n_not_translated'
+    end
+
+    html = "<span class='#{classes.join(' ')}' translation_key_id='#{id}'>"
+    html << label
+    html << "</span>"
+    html    
+  end
+  
   def decorate_translation(language, translated_label, translated = true, options = {})
     return translated_label if options[:skip_decorations]
     return translated_label if Tr8n::Config.current_user_is_guest?
     return translated_label unless Tr8n::Config.current_user_is_translator?
     return translated_label unless Tr8n::Config.current_translator.enable_inline_translations?
-      
     return translated_label if locked?(language)
+    return translated_label if self.language == language
 
     classes = ['tr8n_translatable']
     
@@ -435,7 +492,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   end
   
   def self.search_conditions_for(params)
-    conditions = [""]
+    conditions = ["tr8n_translation_keys.locale <> ?", Tr8n::Config.current_language.locale]
     
     if Tr8n::Config.enable_caching?
       conditions[0] << "verified_at is not null"

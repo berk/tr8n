@@ -288,8 +288,8 @@ Tr8n.Translator.prototype = {
     });
   },
 
-  suggestTranslation: function(translation_key_id, original, tokens, lang) {
-    google.language.translate(original, "en", lang, function(result) {
+  suggestTranslation: function(translation_key_id, original, tokens, from_lang, to_lang) {
+    google.language.translate(original, from_lang, to_lang, function(result) {
       if (!result.error) {
         var suggestion = result.translation;
         tokens = tokens.split(",");

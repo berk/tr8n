@@ -1,39 +1,43 @@
-<%= render :partial => "/tr8n/common/header" %>
+<% Tr8n::Config.with_options(:default_locale => 'en-US', :admin => true) do %>
 
-<div class="section_box colored">
-  <div style="float:right; padding-right:5px;">
-    <%=tr8n_help_icon_tag %>
-  </div>
-  <% form_tag({:action => :index}, {:method => :get, :id => "glossary_search_form"}) do %>
-    <%=text_field_tag(:search, params[:search], {:style => "width:400px;height:20px;font-size:14px;"})%>
-    
-    <button type="submit" class="translator_btn translator_small_btn" onClick="Tr8n.Effects.submit('glossary_search_form'); return false;">
-        <span><%=tra("Search", "Glossary search section")%></span>
-    </button>
-  <% end %>
-</div>
-
-<div class="section_box">
-  <%= render :partial => "/tr8n/common/paginator", :locals => {:objects => @terms, :subject => 'term'} %>
-
-  <table style="width:100%">
-    <tr style="border-bottom:1px solid #ccc;">
-       <td style="width:20%;padding:5px;background: #f9f8f7; font-size:16px; color:grey; font-weight:bold; ">
-          <%=tra("Term", "Glossary terminology")%>
-       </td>
-       <td style="width:80%;padding:5px; font-size:16px; color:grey; font-weight:bold; " colspan="2">
-        <%=tra("Description", "Glossary terminology description") %>
-       </td>
-    </tr>  
-    <% @terms.each_with_index do |term, index| %>
-      <tr style="border-bottom:1px dotted #ccc;">
-        <td style="vertical-align:top;padding:5px;background: #f9f8f7;"><strong><%=term.keyword%></strong></td>
-        <td style="vertical-align:top;padding:5px;"><%=term.description.gsub("\n", "<br>")%></td>
-      </tr>
-    <% end %>
-  </table>
+	<%= render :partial => "/tr8n/common/header" %>
 	
-  <%= render :partial => "/tr8n/common/paginator", :locals => {:objects => @terms, :subject => 'term'} %>
-</div>
-
-<%= render :partial => "/tr8n/common/footer" %>
+	<div class="section_box colored">
+	  <div style="float:right; padding-right:5px;">
+	    <%=tr8n_help_icon_tag %>
+	  </div>
+	  <% form_tag({:action => :index}, {:method => :get, :id => "glossary_search_form"}) do %>
+	    <%=text_field_tag(:search, params[:search], {:style => "width:400px;height:20px;font-size:14px;"})%>
+	    
+	    <button type="submit" class="translator_btn translator_small_btn" onClick="Tr8n.Effects.submit('glossary_search_form'); return false;">
+	        <span><%=tra("Search", "Glossary search section")%></span>
+	    </button>
+	  <% end %>
+	</div>
+	
+	<div class="section_box">
+	  <%= render :partial => "/tr8n/common/paginator", :locals => {:objects => @terms, :subject => 'term'} %>
+	
+	  <table style="width:100%">
+	    <tr style="border-bottom:1px solid #ccc;">
+	       <td style="width:20%;padding:5px;background: #f9f8f7; font-size:16px; color:grey; font-weight:bold; ">
+	          <%=tra("Term", "Glossary terminology")%>
+	       </td>
+	       <td style="width:80%;padding:5px; font-size:16px; color:grey; font-weight:bold; " colspan="2">
+	        <%=tra("Description", "Glossary terminology description") %>
+	       </td>
+	    </tr>  
+	    <% @terms.each_with_index do |term, index| %>
+	      <tr style="border-bottom:1px dotted #ccc;">
+	        <td style="vertical-align:top;padding:5px;background: #f9f8f7;"><strong><%=term.keyword%></strong></td>
+	        <td style="vertical-align:top;padding:5px;"><%=term.description.gsub("\n", "<br>")%></td>
+	      </tr>
+	    <% end %>
+	  </table>
+		
+	  <%= render :partial => "/tr8n/common/paginator", :locals => {:objects => @terms, :subject => 'term'} %>
+	</div>
+	
+	<%= render :partial => "/tr8n/common/footer" %>
+	
+<% end %>

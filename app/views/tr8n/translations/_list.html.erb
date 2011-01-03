@@ -1,4 +1,4 @@
-<% if mode == :list %>
+<% if mode == :list and translations.any? %>
   <%= render :partial => "/tr8n/common/paginator", :locals => {:objects => translations, :subject => 'translation'} %>
 <% end %>	
 
@@ -25,7 +25,7 @@
     <div style="text-align:left; padding-top:10px; font-size:12px;"><%=trla("No translations found")%></div>
 <% end %>
 
-<% if mode == :list %>
+<% if mode == :list and translations.any? %>
   <%= render :partial => "/tr8n/common/paginator", :locals => {:objects => translations, :subject => 'translation'} %>
 <% end %>	
 

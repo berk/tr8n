@@ -31,28 +31,33 @@ class Tr8n::Config
   # initializes language, user and translator
   # the variables are kept in a thread safe form throughout the request
   def self.init(locale, site_current_user)
-    Thread.current[:current_language]   = Tr8n::Language.for(locale) || default_language
-    Thread.current[:current_user]       = site_current_user
-    Thread.current[:current_translator] = Tr8n::Translator.for(site_current_user)
+    Thread.current[:tr8n_current_language]   = Tr8n::Language.for(locale) || default_language
+    Thread.current[:tr8n_current_user]       = site_current_user
+    Thread.current[:tr8n_current_translator] = Tr8n::Translator.for(site_current_user)
+    Thread.current[:tr8n_block_options]            = {}
   end
   
   def self.current_user
-    Thread.current[:current_user]
+    Thread.current[:tr8n_current_user]
   end
   
   def self.current_language
-    Thread.current[:current_language] ||= default_language
+    Thread.current[:tr8n_current_language] ||= default_language
   end
   
   def self.current_user_is_translator?
-    Thread.current[:current_translator] != nil
+    Thread.current[:tr8n_current_translator] != nil
+  end
+  
+  def self.block_options
+    Thread.current[:tr8n_block_options] ||= {}
   end
   
   # when this method is called, we create the translator record right away
   # and from this point on, will track the user
   # this can happen any time user tries to translate something or enables inline translations
   def self.current_translator
-    Thread.current[:current_translator] ||= Tr8n::Translator.register
+    Thread.current[:tr8n_current_translator] ||= Tr8n::Translator.register
   end
   
   def self.default_language
@@ -62,9 +67,10 @@ class Tr8n::Config
   
   def self.reset!
     # thread based variables
-    Thread.current[:current_language]  = nil
-    Thread.current[:current_user] = nil
-    Thread.current[:current_translator] = nil
+    Thread.current[:tr8n_current_language]  = nil
+    Thread.current[:tr8n_current_user] = nil
+    Thread.current[:tr8n_current_translator] = nil
+    Thread.current[:tr8n_block_options]  = nil
   end
 
   def self.models
@@ -294,7 +300,12 @@ class Tr8n::Config
   end
   
   def self.default_locale
+    return block_options[:default_locale] if block_options[:default_locale]
     site_info[:default_locale]
+  end
+
+  def self.multiple_base_languages?
+    'en-US' == default_locale
   end
 
   def self.default_url
@@ -640,6 +651,15 @@ class Tr8n::Config
 
   def self.enable_client_sdk?
     config[:enable_client_sdk]
+  end
+
+  #########################################################
+  def self.with_options(opts = {})
+    Thread.current[:tr8n_block_options] = opts
+    if block_given?
+      yield
+    end
+    Thread.current[:tr8n_block_options] = {}
   end
   
 end
