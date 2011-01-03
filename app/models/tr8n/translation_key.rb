@@ -495,7 +495,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     conditions = ["tr8n_translation_keys.locale <> ?", Tr8n::Config.current_language.locale]
     
     if Tr8n::Config.enable_caching?
-      conditions[0] << "verified_at is not null"
+      conditions[0] << " and verified_at is not null"
     end  
     
     unless params[:search].blank?
