@@ -21,16 +21,13 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-class Tr8n::TranslationSource < ActiveRecord::Base
-  set_table_name :tr8n_translation_sources
+class Tr8n::TranslationDomain < ActiveRecord::Base
+  set_table_name :tr8n_translation_domains
   
-  belongs_to  :translation_domain,       :class_name => "Tr8n::TranslationDomain"
+  has_many :translation_sources,  :class_name => "Tr8n::TranslationSource",  :dependent => :destroy
   
-  has_many    :translation_key_sources,  :class_name => "Tr8n::TranslationKeySource",  :dependent => :destroy
-  has_many    :translation_keys,         :class_name => "Tr8n::TranslationKey",        :through => :translation_key_sources
-  
-  def self.find_or_create(source_name)
-    find_by_source(source_name) || create(:source => source_name)
+  def self.find_or_create(url)
+    # find_by_source(source_name) || create(:source => source_name)
   end
   
 end
