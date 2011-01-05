@@ -97,7 +97,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   # primarely used for the site map and only needs to be enabled 
   # for a short period of time on a single machine
   def self.track_source(tkey, options)
-    return unless Tr8n::Config.enable_key_source_tracking?
+#    return unless Tr8n::Config.enable_key_source_tracking?
     return if options[:source].blank?
     
     key_source = Tr8n::TranslationKeySource.find_or_create(tkey, Tr8n::TranslationSource.find_or_create(options[:source]))

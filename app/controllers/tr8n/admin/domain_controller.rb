@@ -21,28 +21,18 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-class Tr8n::TranslationSource < ActiveRecord::Base
-  set_table_name :tr8n_translation_sources
-  
-  belongs_to  :translation_domain,       :class_name => "Tr8n::TranslationDomain"
-  
-  has_many    :translation_key_sources,  :class_name => "Tr8n::TranslationKeySource",  :dependent => :destroy
-  has_many    :translation_keys,         :class_name => "Tr8n::TranslationKey",        :through => :translation_key_sources
-  
-  def self.find_or_create(source_url)
-    source_name = URI.parse(source_url).path || source_url
-    source_name = source_name[1..-1] if source_name.first == "/"
-    source = find_by_source(source_name) || create(:source => source_name)
-    source.update_attributes(:translation_domain => Tr8n::TranslationDomain.find_or_create(source_url)) unless source.translation_domain
-    source
+class Tr8n::Admin::DomainController < Tr8n::Admin::BaseController
+
+  def index
+    @domains = Tr8n::TranslationDomain.filter(:params => params, :filter => Tr8n::TranslationDomainFilter)
   end
 
-  def after_save
-    Tr8n::Cache.delete("translation_source_#{id}")
+  def sources
+    @sources = Tr8n::TranslationSource.filter(:params => params, :filter => Tr8n::TranslationSourceFilter)
   end
 
-  def after_destroy
-    Tr8n::Cache.delete("translation_source_#{id}")
+  def key_sources
+    @key_sources = Tr8n::TranslationKeySource.filter(:params => params, :filter => Tr8n::TranslationKeySourceFilter)
   end
-  
+
 end

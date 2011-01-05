@@ -106,14 +106,6 @@ class Tr8n::Admin::TranslationKeyController < Tr8n::Admin::BaseController
     redirect_to_source
   end
   
-  def key_sources
-    @key_sources = Tr8n::TranslationKeySource.filter(:params => params, :filter => Tr8n::TranslationKeySourceFilter)
-  end
-  
-  def sources
-    @sources = Tr8n::TranslationSource.filter(:params => params, :filter => Tr8n::TranslationSourceFilter)
-  end
-  
   def comments
     @comments = Tr8n::TranslationKeyComment.filter(:params => params, :filter => Tr8n::TranslationKeyCommentFilter)
   end

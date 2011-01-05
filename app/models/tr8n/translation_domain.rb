@@ -26,8 +26,9 @@ class Tr8n::TranslationDomain < ActiveRecord::Base
   
   has_many :translation_sources,  :class_name => "Tr8n::TranslationSource",  :dependent => :destroy
   
-  def self.find_or_create(url)
-    # find_by_source(source_name) || create(:source => source_name)
+  def self.find_or_create(source_url)
+    source_name = URI.parse(source_url).host || 'localhost'
+    find_by_name(source_name) || create(:name => source_name)
   end
   
 end

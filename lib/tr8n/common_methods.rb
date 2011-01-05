@@ -90,19 +90,14 @@ module Tr8n::CommonMethods
       raise Tr8n::Exception.new("The second parameter of the tr function must be a description")
     end
     
-    if Tr8n::Config.enable_key_source_tracking?
-      begin
-        if self.respond_to?(:controller)
-          source = "#{controller.controller_name}/#{controller.action_name}"
-        else
-          source = "#{controller_name}/#{action_name}"
-        end
-      rescue Exception => ex
-        source = self.class.name
-      end
-      options.merge!(:source => source) unless options[:source]
-      options.merge!(:caller => caller)
+    begin
+      source = request.url
+    rescue Exception => ex
+      source = self.class.name
     end
+
+    options.merge!(:source => source) unless options[:source]
+    options.merge!(:caller => caller)
     
     unless Tr8n::Config.enabled?
       return Tr8n::TranslationKey.substitute_tokens(label, tokens, options)
