@@ -8,9 +8,9 @@ class CreateTr8nLanguageCaseRules < ActiveRecord::Migration
       t.text    :definition, :null => false
       t.timestamps
     end
-    add_index :tr8n_language_case_rules, [:language_case_id], :name => :tr8n_lcr_case_id
-    add_index :tr8n_language_case_rules, [:language_id], :name => :tr8n_lcr_lang_id
-    add_index :tr8n_language_case_rules, [:translator_id], :name => :tr8n_lcr_translator_id
+    add_index :tr8n_language_case_rules, [:language_case_id], :name => "tr8n_lcr_case_id"
+    add_index :tr8n_language_case_rules, [:language_id], :name => "tr8n_lcr_lang_id"
+    add_index :tr8n_language_case_rules, [:translator_id], :name => "tr8n_lcr_translator_id"
   end
 
   def self.down
