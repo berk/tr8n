@@ -7,9 +7,9 @@ class CreateTr8nTranslationKeyComments < ActiveRecord::Migration
       t.text    :message, :null => false
       t.timestamps
     end
-    add_index :tr8n_translation_key_comments, [:language_id], :name => :tr8n_tkey_msgs_lang_id
-    add_index :tr8n_translation_key_comments, [:translator_id], :name => :tr8n_tkey_msgs_translator_id
-    add_index :tr8n_translation_key_comments, [:language_id, :translation_key_id], :name => :tr8n_tkey_msgs_lang_id_tkey_id
+    add_index :tr8n_translation_key_comments, [:language_id], :name => "tr8n_tkey_msgs_lang_id"
+    add_index :tr8n_translation_key_comments, [:translator_id], :name => "tr8n_tkey_msgs_translator_id"
+    add_index :tr8n_translation_key_comments, [:language_id, :translation_key_id], :name => "tr8n_tkey_msgs_lang_id_tkey_id"
   end
 
   def self.down
