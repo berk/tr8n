@@ -56,7 +56,7 @@
 	}
 
   function deleteSelectedKeys() {
-    if (!confirm('Are you sure you want to run this opperation?'))
+    if (!confirm('Are you sure you want to delete all selected keys?'))
        return;
     Tr8n.element('keys_form').action = "/tr8n/admin/translation_key/delete";
     Tr8n.element('keys_form').submit();

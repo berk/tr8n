@@ -136,12 +136,6 @@ class Tr8n::Admin::TranslationKeyController < Tr8n::Admin::BaseController
     redirect_to_source
   end
   
-  def lb_caller
-    @key_source = Tr8n::TranslationKeySource.find(params[:key_source_id])
-    @caller = @key_source.details[params[:caller_key]]
-    render :layout => false
-  end
-  
   def reset_verification_flags
     Tr8n::TranslationKey.connection.execute("update tr8n_translation_keys set verified_at = null")
     redirect_to_source
