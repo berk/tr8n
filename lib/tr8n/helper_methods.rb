@@ -187,8 +187,15 @@ module Tr8n::HelperMethods
     section = Tr8n::SiteMap.section_for_source(source)
     return "" unless section
     opts[:separator] ||= " >> "
+    opts[:min_elements] ||= 1
+    opts[:skip_root] ||= opts[:skip_root].nil? ? false : opts[:skip_root]
 
-    links = section.parents.collect{|node| link_to(node.title(params), node.link(params))} 
+    links = section.parents.collect{|node| link_to(node.title(params), node.link(params))}
+    return "" if links.size <= opts[:min_elements]
+    
+    links.delete(links.first) if opts[:skip_root]
+    links.unshift(link_to(opts[:root].first, opts[:root].last)) if opts[:root]
+    
     html = "<div id='tr8n_breadcrumb' class='tr8n_breadcrumb'>"
     html << links.join(opts[:separator])
     html << '</div>'    

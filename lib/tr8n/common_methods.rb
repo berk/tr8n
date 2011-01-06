@@ -89,13 +89,9 @@ module Tr8n::CommonMethods
     unless desc.nil? or desc.is_a?(String)
       raise Tr8n::Exception.new("The second parameter of the tr function must be a description")
     end
-    
+
     begin
-      if self.respond_to?(:controller)
-        source = "#{controller.class.name.underscore.gsub("_controller", "")}/#{controller.action_name}"
-      else
-        source = "#{self.class.name.underscore.gsub("_controller", "")}/#{action_name}"
-      end
+      source = "#{controller.class.name.underscore.gsub("_controller", "")}/#{controller.action_name}"
       url = request.url
     rescue Exception => ex
       source = self.class.name
@@ -105,6 +101,8 @@ module Tr8n::CommonMethods
     options.merge!(:source => source) unless options[:source]
     options.merge!(:caller => caller)
     options.merge!(:url => url)
+
+#     pp [source, options[:source], url]
     
     unless Tr8n::Config.enabled?
       return Tr8n::TranslationKey.substitute_tokens(label, tokens, options)
