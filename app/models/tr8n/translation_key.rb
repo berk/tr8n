@@ -32,8 +32,10 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   has_many :translation_sources,      :class_name => "Tr8n::TranslationSource",     :through => :translation_key_sources
   has_many :translation_key_comments, :class_name => "Tr8n::TranslationKeyComment", :dependent => :destroy, :order => "created_at desc"
   
-  alias :locks :translation_key_locks
-  alias :sources :translation_sources
+  alias :locks        :translation_key_locks
+  alias :key_sources  :translation_key_sources
+  alias :sources      :translation_sources
+  alias :comments     :translation_key_comments
   
   def self.find_or_create(label, desc = "", options = {})
     key = generate_key(label, desc)
@@ -56,7 +58,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
                           :admin => Tr8n::Config.block_options[:admin])
         unless options[:source].blank?
           # at the time of creation - mark the first source of the key
-          Tr8n::TranslationKeySource.find_or_create(new_tkey, Tr8n::TranslationSource.find_or_create(options[:source]))
+          Tr8n::TranslationKeySource.find_or_create(new_tkey, Tr8n::TranslationSource.find_or_create(options[:source], options[:url]))
         end  
         new_tkey
       end  
@@ -97,10 +99,10 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   # primarely used for the site map and only needs to be enabled 
   # for a short period of time on a single machine
   def self.track_source(tkey, options)
-#    return unless Tr8n::Config.enable_key_source_tracking?
+#    return unless Tr8n::Config.enable_key_source_tracking? 
     return if options[:source].blank?
     
-    key_source = Tr8n::TranslationKeySource.find_or_create(tkey, Tr8n::TranslationSource.find_or_create(options[:source]))
+    key_source = Tr8n::TranslationKeySource.find_or_create(tkey, Tr8n::TranslationSource.find_or_create(options[:source], options[:url]))
     return unless Tr8n::Config.enable_key_caller_tracking?
     
     options[:caller] ||= caller

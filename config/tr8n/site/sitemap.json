@@ -1,129 +1,42 @@
 [
   {
-    "label":        "Site Sections",
+    "label":        "Tr8n Engine Sections",
     "description":  "Sitemap section title",
     "enabled":      true,
-    "splitters":    [[0, 5], [6, 15], [16, -1]],
+    "splitters":    [[0, 3], [4, 5], [6, -1]],
+    "link":         "/tr8n/home",    
+    "source":       "root",
     "sections": [
-        {"label": "Home", "description": "Home section title", "link": "/home?ref=tr", "sources": ["home/index"], "sections": [
-            {"label": "Family News", "description": "Family News section header", "sources": ["NewsfeedStory"]}
+        {"label": "Home", "description": "Tr8n section title", "link": "/tr8n/home", "sources": ["tr8n/home/index"]},
+        {"label": "Dashboard", "description": "Tr8n section title", "link": "/tr8n/dashboard", "sources": ["tr8n/dashboard/index"]},
+        {"label": "Translations", "description": "Tr8n section title", "link": "/tr8n/translations", "sources": ["tr8n/translations/index"]},
+        {"label": "Site Map", "description": "Tr8n section title", "link": "/tr8n/phrases/map", "sources": ["tr8n/phrases/map"]},
+        {"label": "Phrases", "description": "Tr8n section title", "link": "/tr8n/phrases", "sources": ["tr8n/phrases/index"], "sections": [
+           {"label": "Phrase View", "description": "Tr8n section title", "object":{"class":"Tr8n::TranslationKey", "param":"translation_key_id", "method":"label"}, "sources": ["tr8n/phrases/view"]}
         ]},
-        {"label": "Tree", "description": "Tree section title", "link": "/family-tree?ref=tr", "sources": [], "sections": [
-            {"label": "My Tree",           "description": "My tree link title", "link": "/family-tree?ref=tr", "sources": ["tree/index"]},
-            {"label": "Inlaw Trees",       "description": "Inlaw trees link title", "link": "/family-tree/forest?ref=tr", "sources": ["tree/forest"]},
-            {"label": "Share",             "description": "Share link title", "link": "/family-tree/share?ref=tr", "sources": ["tree/share"]},
-            {"label": "Print Tree Poster", "description": "", "link": "/family-tree/poster?ref=tr", "sources": ["tree/poster"]}
+        {"label": "Discussions", "description": "Tr8n section title", "link": "/tr8n/forum", "sources": ["tr8n/forum/index"], "sections": [
+           {"label": "Topic View", "description": "Tr8n section title", "object":{"class":"Tr8n::LanguageForumTopic", "param":"topic_id", "method":"topic"}, "sources": ["tr8n/forum/topic"]}
         ]},
-        {"label": "Relatives", "description": "Relatives section title", "link": "/list?ref=tr", "sources": [], "sections": [
-            {"label": "Lists",            "description": "Family lists link title", "link": "/list?ref=tr", "sources": ["list/index"]},
-            {"label": "Invite",           "description": "Invite link title", "link": "/invite/family?ref=tr", "sources": ["invite/family"]},
-            {"label": "Last Names",       "description": "Last names link title", "link": "/search/surname_index?ref=tr", "sources": ["search/surname_index"]},
-            {"label": "Search",           "description": "Search link title", "link": "/search/advanced?ref=tr", "sources": ["search/advanced"]},
-            {"label": "Tree Matches",     "description": "Tree matches link title", "link": "/search/tree_matches?ref=tr", "sources": ["search/tree_matches"]},
-            {"label": "Popular",          "description": "Popular profiles link title", "link": "/popular?ref=tr", "sources": ["popular/index"]}
-        ]},
-        {"label": "Photos",  "description": "Photos section title", "link": "/photo/recent_albums?ref=tr", "sources": [], "sections": [
-            {"label": "All Albums",       "description": "", "link": "/photo/recent_albums?ref=tr", "sources": ["photo/recent_albums"]},
-            {"label": "My Albums",        "description": "", "link": "/photo/my_albums?ref=tr", "sources": ["photo/my_albums"]},
-            {"label": "Albums I'm In",    "description": "", "link": "/photo/albums_im_in?ref=tr", "sources": ["photo/albums_im_in"]},
-            {"label": "Photos of Me",     "description": "", "link": "/photo/photos_of_me?ref=tr", "sources": ["photo/photos_of_me"]},
-            {"label": "Recent Photos",    "description": "", "link": "/photo/recent?ref=tr", "sources": ["photo/recent"]},
-            {"label": "Favorites",        "description": "", "link": "/photo/favorites?ref=tr", "sources": ["photo/favorites"]},
-            {"label": "Organizer",        "description": "", "link": "/photo/organizer?ref=tr", "sources": ["photo/organizer"]}
-        ]},
-        {"label": "Inbox", "description": "Inbox section title", "link": "/threads?ref=tr", "sources": [], "sections": [
-            {"label": "Messages",         "description": "", "link": "/threads?ref=tr", "sources": ["threads/index"]},
-            {"label": "Requests",         "description": "", "link": "/requests?ref=tr", "sources": ["requests/index"]}
-        ]},
-        {"label": "Try Geni Pro for Free", "description": "", "link": "/pro/trial_subscription?ref=tr", "sources": ["pro/trial_subscription"]},
-        {"label": "Profile", "description": "Profile section title", "link": "/profile?ref=tr#/tab/overview", "sources": [], "sections": [
-            {"label": "Overview",         "description": "Overview tab on the profile page", "link": "/profile?ref=tr#/tab/overview", "sources": ["profile/index"]},
-            {"label": "Info",             "description": "Info tab on the profile page", "link": "/profile?ref=tr#/tab/info", "sources": ["profile/index"]},
-            {"label": "Timeline",         "description": "Timeline tab on the profile page", "link": "/profile?ref=tr#/tab/timeline", "sources": ["profile/index"]},
-            {"label": "Discussions",      "description": "Discussions tab on the profile page", "link": "/profile?ref=tr#/tab/discussion", "sources": ["profile/index"]},
-            {"label": "Sources",          "description": "Sources tab on the profile page", "link": "/profile?ref=tr#/tab/source", "sources": ["profile/index"]}
-        ]},
-        {"label": "Address Book",  "description": "Address book section title", "link": "/list/address_book?ref=tr", "sources": ["list/address_book"]},
-        {"label": "Awards",  "description": "Awards section title", "link": "/statistics?tab=awards&ref=tr", "sources": ["statistics/index"], "sections": [
-            {"label": "Family Statistics", "description": "","link": "/statistics?tab=family_statistics&ref=tr", "sources": ["statistics/index"]},
-            {"label": "Family Awards",     "description": "", "link": "/statistics?tab=awards&ref=tr", "sources": ["statistics/index"]}
-        ]},
-        {"label": "Calendar", "description": "Calendar section title", "link": "/calendar/upcoming?ref=tr", "sources": ["calendar/upcoming"]},
-        {"label": "Discussions", "description": "Discussions section title", "link": "/discussions?ref=tr", "sources": ["discussions/index"], "sections": [
-            {"label": "Family Discussions", "description": "Family discussions tab", "link": "/discussions?discussion_type=family", "sources": ["discussions/index"]},
-            {"label": "Public Discussions", "description": "Public discussions tab", "link": "/discussions?discussion_type=public", "sources": ["discussions/index"]}
-        ]},
-        {"label": "Documents",    "description": "Documents section title", "link": "/documents?ref=tr", "sources": ["documents/index"]},
-        {"label": "Family Map",   "description": "Family map section title", "link": "/map?ref=tr", "sources": ["map/index"]},
-        {"label": "Timeline",     "description": "Documents section title", "link": "/timeline/family?ref=tr", "sources": [], "sections": [
-            {"label": "Family",           "description": "", "link": "/timeline/family?ref=tr", "sources": ["timeline/family"]},
-            {"label": "Friends",          "description": "", "link": "/timeline/friends?ref=tr", "sources": ["timeline/friends"]},
-            {"label": "Me",               "description": "", "link": "/timeline/view_all?ref=tr", "sources": ["timeline/view_all"]}
-        ]},
-        {"label": "Videos", "description": "Videos section title", "link": "/video/recent_videos?ref=tr", "sources": [], "sections": [
-            {"label": "All Videos",        "description": "", "link": "/video/recent_videos?ref=tr", "sources": ["video/recent_videos"]},
-            {"label": "My Videos",         "description": "", "link": "/video/my_videos?ref=tr", "sources": ["video/my_videos"]},
-            {"label": "Videos I'm In",     "description": "", "link": "/video/videos_of_me?ref=tr", "sources": ["video/videos_of_me"]},
-            {"label": "Bookmarked Videos", "description": "", "link": "/video/video_favorites?ref=tr", "sources": ["video/video_favorites"]}
-        ]},
-        {"label": "GEDCOM",  "description": "", "link": "/gedcom?ref=pf", "sources": ["gedcom/index"]},
-        {"label": "Invite",  "description": "Invite link title", "link": "/invite/family?ref=tr", "sources": ["invite/family"]},
-        {"label": "Terms",   "description": "Link to Geni Terms section", "link": "/company/terms_of_use?ref=tr", "sources": ["company/terms_of_use"]},
-        {"label": "Privacy", "description": "Link to Geni Privacy section", "link": "/company/privacy?ref=tr", "sources": ["company/privacy"]},
-        {"label": "About",   "description": "Link to Geni About section", "link": "/company/about_us?ref=tr", "sources": [], "sections": [
-            {"label": "About Geni",    "description": "", "link": "/company/about_us?ref=tr", "sources": ["company/about_us"]},
-            {"label": "Press",         "description": "", "link": "/company/press?ref=tr", "sources": ["company/press"]},
-            {"label": "Testimonials",  "description": "", "link": "/company/testimonials?ref=tr", "sources": ["company/testimonials"]},
-            {"label": "Jobs",          "description": "", "link": "/company/jobs?ref=tr", "sources": ["company/jobs"]}
-        ]},
-        {"label": "Settings",  "description": "Settings section title", "link": "/account_settings/all_account_settings?ref=tr", "sources": ["account_settings/all_account_settings"], "sections": [
-            {"label": "Privacy & Permissions", "description": "Privacy & permissions section title", "link": "/account_settings/profile_privacy?ref=tr", "sources": [], "sections": [
-                {"label": "Profile Privacy",     "description": "Profile privacy section title", "link": "/account_settings/profile_privacy?ref=tr", "sources": ["account_settings/profile_privacy"]},
-                {"label": "Permissions",         "description": "Permissions section title", "link": "/account_settings/permissions?ref=tr", "sources": ["account_settings/permissions"]},
-                {"label": "Blocked Users",       "description": "Blocked users section title", "link": "/account_settings/blocked_users?ref=tr", "sources": ["account_settings/blocked_users"]},
-                {"label": "Managed Profiles",    "description": "Managed profiles section title", "link": "/account_settings/managed_profiles?ref=tr", "sources": ["account_settings/managed_profiles"]},
-                {"label": "Collaborators",       "description": "Collaborators section title", "link": "/account_settings/collaborators?ref=tr", "sources": ["account_settings/collaborators"]}
-            ]},
-            {"label": "News & Notifications",  "description": "News & notifications section title",  "link": "/account_settings/family?ref=tr", "sources": [], "sections": [
-                {"label": "Family Group",        "description": "Family group section title",  "link": "/account_settings/family?ref=tr", "sources": ["account_settings/family"]},
-                {"label": "Recent Activity",     "description": "Recent activity section title",  "link": "/account_settings/recent_activity?ref=tr", "sources": ["account_settings/recent_activity"]},
-                {"label": "Notifications",       "description": "Notifications section title",  "link": "/account_settings/notifications?ref=tr", "sources": ["account_settings/notifications"]}
-            ]},
-            {"label": "My Account",            "description": "My account section title",  "link": "/account_settings/name_preferences?ref=tr", "sources": [], "sections": [
-                {"label": "Name Preferences",    "description": "Name preferences section title",  "link": "/account_settings/name_preferences?ref=tr", "sources": ["account_settings/name_preferences"]},
-                {"label": "Email & Password",    "description": "Email & password section title",  "link": "/account_settings/email_password?ref=tr", "sources": ["account_settings/email_password"]},
-                {"label": "Geni Pro Account",    "description": "Geni pro account section title",  "link": "/account_settings/premium_account?ref=tr", "sources": ["account_settings/premium_account"]},
-                {"label": "Billing Information", "description": "Billing information section title",  "link": "/account_settings/credit_cards?ref=tr", "sources": ["account_settings/credit_cards"]},
-                {"label": "Facebook",            "description": "",  "link": "/account_settings/facebook_settings?ref=tr", "sources": ["account_settings/facebook_settings"]},
-                {"label": "Geni Labs",           "description": "",  "link": "/account_settings/labs?ref=tr", "sources": ["account_settings/labs"]},
-                {"label": "Close Account",       "description": "Close account section title",  "link": "/account_settings/close_account?ref=tr", "sources": ["account_settings/close_account"]}
-            ]}
-        ]}
+        {"label": "Awards", "description": "Tr8n section title", "link": "/tr8n/awards", "sources": ["tr8n/awards/index"]},
+        {"label": "Glossary", "description": "Tr8n section title", "link": "/tr8n/glossary", "sources": ["tr8n/glossary/index"]},
+        {"label": "Help", "desc": "Tr8n section title", "link": "/tr8n/help", "sources": ["tr8n/help/index"]},
+        {"label": "Language Management", "desc": "Tr8n section title", "sources": ["tr8n/language/index"]}
     ]
   },
   {
     "label":        "Other Translatable Resources",
     "description":  "Sitemap section title",
     "enabled":      true,
-    "splitters":    [[0, 0], [1, 4], [5, -1]],
+    "splitters":    [[0, 0], [1, 2], [3, -1]],
     "sections": [
         {"label": "Language Translations Features", "sources": [], "sections": [
-            {"label": "Selector Window", "description": "",  "sources": ["language/select"]},
-            {"label": "Translator Window", "description": "",  "sources": ["language/translate"]},
-            {"label": "Translations", "description": "",  "sources": ["language/translations", "language/translation_key", "language/translation"]},
-            {"label": "Site Map", "description": "",  "sources": ["language/map"]},
-            {"label": "Translator Awards", "description": "",  "sources": ["language/awards"]},
-            {"label": "Discussion Forum", "description": "",  "sources": ["language/forum", "language/forum_topic"]},
-            {"label": "Glossary", "description": "",  "sources": ["language/glossary"]},
-            {"label": "Language Rules", "description": "",  "sources": ["language/manage"]},
-            {"label": "Help", "desc": "",  "sources": ["language/help"]}
+            {"label": "Selector Window", "description": "",  "sources": ["tr8n/language/select"]},
+            {"label": "Translator Window", "description": "",  "sources": ["tr8n/language/translate"]}
         ]},
-        {"label": "Start Page", "sources": ["tree/start"], "sections": []},
-        {"label": "Emails", "sources": []},
         {"label": "Flash Notices", "sources": ["FlashNotice"], "sections": []},
         {"label": "Flash Errors", "sources": ["FlashError"], "sections": []},
-        {"label": "Login Page", "sources": ["login/index"], "sections": []},
-        {"label": "Logout Page", "sources": ["login/out"], "sections": []}
+        {"label": "Login Page", "sources": ["tr8n/login/index"], "sections": []},
+        {"label": "Logout Page", "sources": ["tr8n/login/out"], "sections": []}
     ]
   }  
 ]

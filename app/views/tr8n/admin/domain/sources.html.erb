@@ -4,12 +4,13 @@
 
 <% form_tag("", :id => "sources_form") do %>
   <%= will_filter_table_tag(@sources, :columns => [
-    [:id, lambda{|source|
-      link_to(source.id, "/tr8n/admin/domain/key_sources?wf_c0=translation_source_id&wf_o0=is&wf_v0_0=#{source.id}")
+    :id, 
+    [:domain_id, lambda{|source|
+      source.domain ? source.domain.name : "unknown"
     }], :source, :created_at,
     [:translation_key_count, lambda{|source|
       link_to(source.translation_keys.size, "/tr8n/admin/domain/key_sources?wf_c0=translation_source_id&wf_o0=is&wf_v0_0=#{source.id}")
-    }]
+    }, 'text-align:right']
   ]) %>
 <% end %>
 

@@ -91,13 +91,20 @@ module Tr8n::CommonMethods
     end
     
     begin
-      source = request.url
+      if self.respond_to?(:controller)
+        source = "#{controller.class.name.underscore.gsub("_controller", "")}/#{controller.action_name}"
+      else
+        source = "#{self.class.name.underscore.gsub("_controller", "")}/#{action_name}"
+      end
+      url = request.url
     rescue Exception => ex
       source = self.class.name
+      url = nil
     end
 
     options.merge!(:source => source) unless options[:source]
     options.merge!(:caller => caller)
+    options.merge!(:url => url)
     
     unless Tr8n::Config.enabled?
       return Tr8n::TranslationKey.substitute_tokens(label, tokens, options)

@@ -182,6 +182,18 @@ module Tr8n::HelperMethods
     html << "</table>"
   end
   
+  def tr8n_breadcrumb_tag(source = nil, opts = {})
+    source ||= "#{controller.class.name.underscore.gsub("_controller", "")}/#{controller.action_name}" 
+    section = Tr8n::SiteMap.section_for_source(source)
+    return "" unless section
+    opts[:separator] ||= " >> "
+
+    links = section.parents.collect{|node| link_to(node.title(params), node.link(params))} 
+    html = "<div id='tr8n_breadcrumb' class='tr8n_breadcrumb'>"
+    html << links.join(opts[:separator])
+    html << '</div>'    
+  end
+  
   def tr8n_user_tag(translator, options = {})
     return "Deleted Translator" unless translator
     
@@ -248,14 +260,12 @@ private
   def generate_sitemap(sections, options = {})
     html = "<ul class='section_list'>"
     sections.each do |section|
-      key = Tr8n::TranslationKey.generate_key(section[:label], section[:description])
-      
       html << "<li class='section_list_item'>" 
-      html << "<a href='/tr8n/phrases/index?section_key=#{key}'>" << section[:label] << "</a>"
-      html << "<a href='" << section[:link] << "' target='_new'><img src='/tr8n/images/bullet_go.png' style='border:0px; vertical-align:middle'></a>" if section[:link]
+      html << "<a href='/tr8n/phrases/index?section_key=#{section.key}'>" << tr(section.label, section.description) << "</a>"
+      html << "<a href='" << section.data[:link] << "' target='_new'><img src='/tr8n/images/bullet_go.png' style='border:0px; vertical-align:middle'></a>" if section.data[:link]
       
-      if section[:sections] and section[:sections].size > 0
-        html << generate_sitemap(section[:sections], options)
+      if section.children.size > 0
+        html << generate_sitemap(section.children, options)
       end  
       html << "</li>"
     end

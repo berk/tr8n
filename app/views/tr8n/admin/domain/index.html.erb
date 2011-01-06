@@ -6,10 +6,10 @@
 
 <% form_tag("", :id => "sources_form") do %>
   <%= will_filter_table_tag(@domains, :columns => [
-    :id, :name, :description, :updated_at,
+    :id, :name, :description, :created_at, :updated_at,
     [:source_count, lambda{|domain|
       link_to(domain.translation_sources.size, "/tr8n/admin/domain/sources?wf_c0=translation_domain_id&wf_o0=is&wf_v0_0=#{domain.id}")
-    }]
+    }, 'text-align:right']
   ]) %>
 <% end %>
 

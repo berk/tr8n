@@ -32,6 +32,7 @@ class Tr8n::PhrasesController < Tr8n::BaseController
    
     unless params[:section_key].blank?
       source_names = sitemap_sources_for(@section_key)
+      pp source_names
       sources = Tr8n::TranslationSource.find(:all, :conditions => ["source in (?)", source_names])
       source_ids = sources.collect{|source| source.id}
       
@@ -260,46 +261,21 @@ private
 
   def init_sitemap_section
     return if params[:section_key].blank?
-    
     @section_key = params[:section_key]
-    @section = sitemap_section_for(@section_key)
-    @section[:key] = @section_key
-    @section
-  end
-
-  def sitemap_section_for(key)
-    key_hash = {}
-    Tr8n::Config.sitemap_sections.each do |section|
-      generate_sitemap_keys(section[:sections], key_hash)
-    end
-
-    # handle direct source navigation
-    key_hash[key] || {:label=>key, :description=>"Reserved section", :sources=>[key], :key=>key}
-  end
-  
-  def generate_sitemap_keys(sections, key_hash)
-    sections.each do |section|
-      key = Tr8n::TranslationKey.generate_key(section[:label], section[:description])
-      key_hash[key] = section
-      if section[:sections] and section[:sections].size > 0
-        generate_sitemap_keys(section[:sections], key_hash)
-      end  
-    end
+    @section = Tr8n::SiteMap.section_for_key(@section_key)    
   end
   
   def sitemap_sources_for(key)
-    section = sitemap_section_for(key)
+    section = Tr8n::SiteMap.section_for_key(key)
     sources = []
     section = collect_sitemap_section_sources(section, sources)
     sources.flatten.uniq
   end
   
   def collect_sitemap_section_sources(section, sources)
-    sources << section[:sources] if section[:sources]
-    if section[:sections]
-      section[:sections].each do |section|
-        collect_sitemap_section_sources(section, sources)
-      end
+    sources << section.sources if section.sources
+    section.children.each do |section|
+      collect_sitemap_section_sources(section, sources)
     end
   end  
   

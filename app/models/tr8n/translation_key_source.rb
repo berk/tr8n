@@ -33,8 +33,10 @@ class Tr8n::TranslationKeySource < ActiveRecord::Base
   serialize :details
 
   def self.find_or_create(translation_key, translation_source)
-    tks = find(:first, :conditions => ["translation_key_id = ? and translation_source_id = ?", translation_key.id, translation_source.id])
-    tks || create(:translation_key => translation_key, :translation_source => translation_source)
+    Tr8n::Cache.fetch("translation_key_source_#{translation_key.id}_#{translation_source.id}") do 
+      tks = find(:first, :conditions => ["translation_key_id = ? and translation_source_id = ?", translation_key.id, translation_source.id])
+      tks || create(:translation_key => translation_key, :translation_source => translation_source)
+    end  
   end
   
   def update_details!(options)
@@ -45,6 +47,14 @@ class Tr8n::TranslationKeySource < ActiveRecord::Base
     
     details[options[:caller_key]] = options[:caller]
     save
+  end
+  
+  def after_save
+    Tr8n::Cache.delete("translation_key_source_#{translation_key_id}_#{translation_source_id}")
+  end
+
+  def after_destroy
+    Tr8n::Cache.delete("translation_key_source_#{translation_key_id}_#{translation_source_id}")
   end
   
 end
