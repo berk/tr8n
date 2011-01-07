@@ -645,6 +645,19 @@ class Tr8n::Config
   end
 
   #########################################################
+  def self.translator_levels
+    config[:translator_levels] ||= {
+      '0'     =>  'regular',
+      '50'    =>  'trusted',
+      '100'   =>  'professional',
+      '1000'  =>  'manager'
+    } 
+  end
+
+  def self.manager_level
+    1000
+  end
+  #########################################################
   def self.enable_api?
     api[:enabled]
   end

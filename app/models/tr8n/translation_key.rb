@@ -55,6 +55,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
                           :label => label, 
                           :description => desc, 
                           :locale => (Tr8n::Config.block_options[:default_locale] || Tr8n::Config.default_locale),
+                          :level => (options[:level] || Tr8n::Config.block_options[:level] || 0),
                           :admin => Tr8n::Config.block_options[:admin])
         unless options[:source].blank?
           # at the time of creation - mark the first source of the key
@@ -125,6 +126,11 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   
   def language
     @language ||= (locale ? Tr8n::Language.for(locale) : Tr8n::Config.default_language)
+  end
+  
+  def level
+    return 0 if super.nil?
+    super
   end
   
   def tokenized_label

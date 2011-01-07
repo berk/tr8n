@@ -37,7 +37,7 @@ class Tr8n::TranslatorLog < ActiveRecord::Base
   :deleted_language_rule, :added_language_rule, :updated_language_rule, 
   :deleted_language_case, :added_language_case, :updated_language_case, 
   :used_abusive_language, :added_translation, :updated_translation, :deleted_translation, 
-  :voted_on_translation, :locked_translation_key, :unlocked_translation_key]
+  :voted_on_translation, :locked_translation_key, :unlocked_translation_key, :got_new_level]
   
   
   def self.log_admin(translator, action, user, reason = "n/a", reference = nil)
@@ -84,7 +84,11 @@ class Tr8n::TranslatorLog < ActiveRecord::Base
     act = action.to_sym
     if [:got_blocked, :got_unblocked, :got_promoted, :got_demoted].include?(act)
       html << " by " << user.name if user
-      html << " because \"" << reason << "\"" unless reason.blank?
+      html << " (" << reason << ")" unless reason.blank?
+    elsif [:got_new_level].include?(act)
+      html << " " << reference unless reference.blank?
+      html << " from " << user.name if user
+      html << " (" << reason << ")" unless reason.blank?
     elsif [:enabled_inline_translations, :disabled_inline_translations].include?(act)
       lang = Tr8n::Language.find_by_id(reference) unless reference.blank?
       html << " for " << lang.english_name if lang

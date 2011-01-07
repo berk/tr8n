@@ -25,14 +25,6 @@
     </tr>
     <tr>
         <th>
-            Language Manager
-        </th>
-        <td>
-            <%= @translator.manager? %>
-        </td>
-    </tr>
-    <tr>
-        <th>
             Site Administrator
         </th>
         <td>
@@ -41,12 +33,40 @@
     </tr>
     <tr>
         <th>
+            Translator Level
+        </th>
+        <td>
+            <span id="translator_level_container"> 
+              <span id='translator_title'><%= @translator.title %></span>
+              &nbsp;&nbsp;
+              <%= link_to_function('change', "Tr8n.Effects.hide('translator_level_container'); Tr8n.Effects.show('translator_level_options_container');") unless @translator.admin? %>
+            </span>
+            
+            <span id="translator_level_options_container" style='display:none'>
+            	<% form_tag do %>
+	              <%= select_tag('translator_level', options_for_select(Tr8n::Translator.level_options, @translator.level.to_s)) %>
+	              <%= link_to_function('save', 'updateTranslatorLevel()')%> | <%= link_to_function('cancel', "Tr8n.Effects.show('translator_level_container'); Tr8n.Effects.hide('translator_level_options_container');")%>
+							<% end %>
+            </span>
+            
+        </td>
+    </tr> 
+    <tr>
+        <th>
             Blocked
         </th>
         <td>
             <%=@translator.blocked? %>
         </td>
     </tr>
+		<tr>
+        <th>
+            Rank
+        </th>
+        <td>
+            <%= (@translator.rank ? (@translator.rank * 100).to_i / 100.0 : 0) %>
+        </td>
+		</tr>	
     <tr>
         <th>
             Inline Translations Enabled
@@ -103,16 +123,10 @@
             
         </th>
         <td>
-        	<% if @translator.manager? %> 
-            <%=link_to_function("Demote", "performTranslatorAction('demote')") %>
-					<% else %>	
-            <%=link_to_function("Promote", "performTranslatorAction('promote')") %>
-          <% end %>					
-
           <% if @translator.blocked? %>
-            | <%=link_to_function("Unblock", "performTranslatorAction('unblock')") %>
+            <%=link_to_function("Unblock", "performTranslatorAction('unblock')") %>
           <% else %>
-            | <%=link_to_function("Block", "performTranslatorAction('block')") %>
+            <%=link_to_function("Block", "performTranslatorAction('block')") %>
           <% end %>  
 
           | <%=link_to("Delete", {:action => :delete, :translator_id => @translator.id}, :confirm => "Are you sure you want to do that?")%>
@@ -188,3 +202,11 @@
 </tbody>
 </table>
 <%= render :partial => "/tr8n/admin/common/footer" %>
+
+<script>
+	function updateTranslatorLevel() {
+		var reason = prompt("Please provide the reason for promoting/demoting this translator:");
+		if (reason) reason = "";
+		location = "/tr8n/admin/translator/update_level?translator_id=<%=@translator.id%>&new_level=" + Tr8n.value('translator_level') + "&reason=" + reason;
+	}
+</script>

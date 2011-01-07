@@ -15,11 +15,13 @@
     [:site_administrator, lambda{|translator|
       translator.admin?  
     }, 'text-align:right'],
-    [:manager, lambda{|translator|
-      if translator.manager?
-        "<span style='color:red'>#{translator.manager?}</span>"
+    [:level, lambda{|translator|
+      if translator.admin?
+        "<span style='color:red'>#{translator.title}</span>"
+      elsif translator.manager?
+        "<span style='color:brown'>#{translator.title}</span>"
       else
-        translator.manager?
+        translator.title
       end     
     }, 'text-align:right'],
     [:blocked, lambda{|translator|
@@ -33,6 +35,9 @@
       html << "</span>"
       html.join("")
     }, 'text-align:right'],
+    [:rank, lambda{|translator|
+      translator.rank ? (translator.rank * 100).to_i / 100.0 : 0
+    }, 'text-align:right'], 
     [:translation_count, lambda{|translator|
       link_to(translator.total_metric.total_translations || 0, "/tr8n/admin/translation?wf_c0=translator_id&wf_o0=is&wf_v0_0=#{translator.id}")
     }, 'text-align:right'],

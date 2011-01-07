@@ -16,6 +16,11 @@ namespace :tr8n do
     Tr8n::Config.reset_all!
   end
   
+  desc "Switches from manager flag to levels approach"
+  task :upgrade_managers => :environment do
+    Tr8n::Translator.connection.execute("update tr8n_translators set level = #{Tr8n::Config.manager_level} where manager = true")
+  end
+  
   desc "Adds missing languages from the yml file"
   task :import_languages => :environment do
     Tr8n::Config.default_languages.each do |locale, info|
