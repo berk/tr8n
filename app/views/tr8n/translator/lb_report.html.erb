@@ -1,0 +1,98 @@
+<style>
+  .lightbox {
+  	background-color: white;
+  }
+  .title {
+    padding: 5px;
+    text-align: left;
+    font-size: 14px;
+    font-weight: bold;
+  }
+  .buttons {
+    text-align: center;
+  }
+	.content {
+    border: 1px dotted brown;
+		background-color: #f8f7f6;
+		padding-bottom: 10px;
+	}
+  .content td {
+    vertical-align: top;
+    padding: 5px;
+  }
+</style>
+
+<div class="lightbox">
+	  
+		<% if @reported_object.is_a?(Tr8n::TranslationKey) %>
+		   <% @translation_key = @reported_object %>
+	     <%= render :partial => '/tr8n/phrases/header' %>
+		<% elsif @reported_object.is_a?(Tr8n::Translation) %>
+			<div style="padding:10px; background-color:#eff8ff; border: 1px solid #ccc; margin-bottom: 5px;">
+			  <div style="color:grey;font-size:20px;padding-bottom:10px;">
+				    <%=trl("Translation in {language}", nil, :language => @reported_object.language.native_name)%>
+				</div>
+			  
+			  <div style="padding-bottom:5px;font-size:14px">
+			      <%=image_tag("/tr8n/images/left_quote.png", :style=>"text-align:bottom;padding-bottom:5px;") %>
+			      <%=h @reported_object.label %>
+			      <%=image_tag("/tr8n/images/right_quote.png", :style=>"text-align:bottom;padding-top:5px;") %>
+			  </div>
+			
+			  <% if @reported_object.context %>
+			    <div style="font-size: 11px; color: grey; padding:3px;">
+			      <%=trl("Context:")%> <%= @reported_object.context %>  
+			    </div>
+			  <% end %>
+				
+				<% color = @reported_object.key.locked? ? "#ECFFEF" : "#FDFDDF" %>
+				<div style="font-size: 11px; color: grey; margin-top:5px; margin-bottom:5px; padding:3px; background:<%=color%>; border:1px dotted #ccc;">
+				  <% if @reported_object.key.locked? %>
+				    <div style="float:right"><%=image_tag("/tr8n/images/lock.png", :style=>"width:12px", :title => trl("This phrase is locked"))%></div>
+				  <% end %>
+				
+				  <%=trl("Original Phrase:", "Translation section header")%> 
+					<%=link_to(@reported_object.key.sanitized_label, :controller => "/tr8n/phrases", :action => :view, :locale => @reported_object.language.locale, :translation_key_id => @reported_object.key.id) %>
+				  <% unless @reported_object.key.description.blank? %>
+				    <div style="padding-top:2px;"><%= @reported_object.key.description %></div>
+				  <% end %>  
+				</div>
+			</div>		
+		<% end %>	 
+	
+    <% form_tag({:action => :submit_report}, {:method => :post, :id => :tr8n_form}) do %>
+      <%= hidden_field_tag :source_url, request.env['HTTP_REFERER'] %>
+      <%= hidden_field_tag(:object_id, @reported_object.id) %>
+      <%= hidden_field_tag(:object_type, @reported_object.class.name) %>
+      <div class="content">
+      	<div class="title">
+      		<%= trl("Report Details")%> 
+      	</div>	
+        <table>
+          <tr>
+            <td>
+              <%= trl("Reason:")%>
+            </td>
+            <td>
+              <%= select_tag("reason", tr8n_options_for_select(Tr8n::TranslatorReport.default_reasons_for(@reported_object), '')) %>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <%= trl("Comment:")%>
+              <div style="color:#ccc;">
+              <%= trl("optional")%>
+              </div>
+            </td>
+            <td>
+              <%= text_area_tag("comment", '', :style => "width:500px; height:80px;") %>
+							<div style="font-size:10px; color:grey; padding-top:10px; font-style:italic;"><%=trl('Note: Please submit your comments in English.')%></div>
+            </td>
+          </tr>
+        </table>
+				  
+        <%= render :partial => '/tr8n/admin/common/lightbox_buttons' %>  
+      </div>
+    <% end %>
+		
+</div>

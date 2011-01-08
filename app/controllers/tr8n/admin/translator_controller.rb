@@ -99,6 +99,10 @@ class Tr8n::Admin::TranslatorController < Tr8n::Admin::BaseController
   def following
     @following = Tr8n::TranslatorFollowing.filter(:params => params, :filter => Tr8n::TranslatorFollowingFilter)
   end
+
+  def reports
+    @reports = Tr8n::TranslatorReport.filter(:params => params, :filter => Tr8n::TranslatorReportFilter)
+  end
    
   def log
     @logs = Tr8n::TranslatorLog.filter(:params => params, :filter => Tr8n::TranslatorLogFilter)

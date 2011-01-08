@@ -57,4 +57,23 @@ class Tr8n::TranslatorController < Tr8n::BaseController
     redirect_to_source
   end
   
+  def lb_report
+    if params[:translation_key_id]
+      @reported_object = Tr8n::TranslationKey.find_by_id(params[:translation_key_id])
+    elsif params[:translation_id]
+      @reported_object = Tr8n::Translation.find_by_id(params[:translation_id])
+    end
+    render :layout => false
+  end
+  
+  def submit_report
+    if request.post?
+      reported_object = params[:object_type].constantize.find(params[:object_id])
+      Tr8n::TranslatorReport.submit(Tr8n::Config.current_translator, reported_object, params[:reason], params[:comment])
+      trfn("Thank you for submitting your report.")
+    end
+    
+    redirect_to_source
+  end
+  
 end

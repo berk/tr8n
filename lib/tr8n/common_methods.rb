@@ -91,16 +91,19 @@ module Tr8n::CommonMethods
     end
 
     begin
-      source = "#{controller.class.name.underscore.gsub("_controller", "")}/#{controller.action_name}"
-      url = request.url
+      url     = request.url
+      host    = request.env['HTTP_HOST']
+      source  = "#{controller.class.name.underscore.gsub("_controller", "")}/#{controller.action_name}"
     rescue Exception => ex
       source = self.class.name
       url = nil
+      host = 'localhost'
     end
 
     options.merge!(:source => source) unless options[:source]
     options.merge!(:caller => caller)
     options.merge!(:url => url)
+    options.merge!(:host => host)
 
 #     pp [source, options[:source], url]
     

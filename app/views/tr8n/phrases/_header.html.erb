@@ -21,33 +21,4 @@
       <%=@translation_key.description %>
     </div>
   <% end %>
-	
-</div>
-
-<div id="translation_key_toolbar" style="font-size:11px; margin-top:0px; background-color:#f8f7f6; border:1px dotted #ccc; padding:5px; color:grey; ">
-  <div style="float:right;">
-     <%=link_to(image_tag("/tr8n/images/help.png", :style=>"vertical-align:bottom;", :title => trl("Help")), '/tr8n/help') %>
-  </div>
-	<%
-    actions = []
-		if tr8n_current_user_is_translator? and tr8n_current_translator.manager?
-		  if @translation_key.locked?
-		    actions << link_to("#{image_tag('/tr8n/images/lock_delete.png', :style=>'height:15px; vertical-align:bottom')} #{tra("Unlock")}",{:action => :unlock, :translation_key_id => @translation_key.id}, :confirm => trla("Once the key is unlocked, users will be able to submit or vote on translations for this key. \n\nAre you sure you want to unlock it?") )
-		  else  
-		    actions << link_to("#{image_tag('/tr8n/images/lock_add.png', :style=>'height:15px; vertical-align:bottom')} #{tra("Lock")}", {:action => :lock, :translation_key_id => @translation_key.id}, :confirm => trla("Once the key is locked, users will no longer be able to submit or vote on translations for this key. \n\nAre you sure you want to lock it?") )
-		  end
-		end    
-    unless @translation_key.locked?
-      if @translation_key.permutatable?
-        actions << link_to_function("#{image_tag('/tr8n/images/table_gear.png', :style=>'height:15px; vertical-align:bottom')} #{tra("Generate Context Rules")}", "addContextRules()")
-      end
-    end
-		if @translation_key.followed?
-      actions << link_to("#{image_tag('/tr8n/images/eye_not.png', :style=>'height:15px; vertical-align:bottom')} #{tra("Unfollow")}", :controller => '/tr8n/translator', :action => :unfollow, :translation_key_id => @translation_key.id)
-		else
-      actions << link_to("#{image_tag('/tr8n/images/eye.png', :style=>'height:15px; vertical-align:bottom')} #{tra("Follow")}", :controller => '/tr8n/translator', :action => :follow, :translation_key_id => @translation_key.id)
-		end	
-    actions << link_to("#{image_tag('/tr8n/images/random.png', :style=>'height:15px; vertical-align:bottom')} #{tra("Find Random")}", :action => :view, :translation_key_id => @translation_key.id, :dir => :random)
-  %>
-	<%= actions.join(' &nbsp;|&nbsp; ') %>	
 </div>

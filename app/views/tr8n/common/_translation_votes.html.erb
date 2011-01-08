@@ -11,17 +11,20 @@
           <td style="text-align:right;vertical-align:top; padding-top:3px;">
 					  <%=tr8n_spinner_tag("tr8n_spinner_for_#{trn.id}", "", "")%>
 					 
-            <div id="tr8n_votes_for_<%=trn.id%>" style="font-size:12px;">
+            <div id="tr8n_votes_for_<%=trn.id%>" style="font-size:12px;white-space:nowrap;">
               <%= trn.rank_label %> 
             </div>  
           </td>  
           <td style="text-align:center;vertical-align:top; padding-top:3px;">
             <% if trn.translation_key.locked? %>
-              <div style="text-align:center; padding-top:1px;"><%=image_tag("/tr8n/images/lock.png", :style=>"height:12px", :title => trla("This phrase is locked", "Translator label"))%></div>
+              <div style="text-align:center; padding-top:1px;">
+							  <%=image_tag("/tr8n/images/lock.png", :style=>"height:14px", :title => trla("This phrase is locked", "Translator label"))%>
+                <%=link_to_function(image_tag("/tr8n/images/exclamation.png", :title=> trla("Report this translation", "Translator label")), "tr8nLightbox.show('/tr8n/translator/lb_report?translation_id=#{trn.id}', {width:600, height:360});")%>
+							</div>
 						<% else %>
               <%=link_to_function(image_tag("/tr8n/images/thumb_up.png", :title=>trla("Vote up this translation", "Translator label")), "tr8nTranslator.voteOnTranslation('#{trn.translation_key.key}', '#{trn.id}', 1)")%> 
               <%=link_to_function(image_tag("/tr8n/images/thumb_down.png", :title=>trla("Vote down this translation", "Translator label")), "tr8nTranslator.voteOnTranslation('#{trn.translation_key.key}','#{trn.id}', -1)")%> 
-              <%=link_to_function(image_tag("/tr8n/images/exclamation.png", :title=>trla("Report this translation", "Translator label")), "tr8nTranslator.reportTranslation('#{trn.translation_key.key}','#{trn.id}')")%>
+              <%=link_to_function(image_tag("/tr8n/images/exclamation.png", :title=>trla("Report this translation", "Translator label")), "tr8nLightbox.show('/tr8n/translator/lb_report?translation_id=#{trn.id}', {width:600, height:360});")%>
             <% end %>   
           </td>
           <td style="text-align:left;vertical-align:top;font-size:11px; padding-top:3px;">
