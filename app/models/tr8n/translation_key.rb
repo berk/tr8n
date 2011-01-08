@@ -54,7 +54,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
         new_tkey = create(:key => key, 
                           :label => label, 
                           :description => desc, 
-                          :locale => (Tr8n::Config.block_options[:default_locale] || Tr8n::Config.default_locale),
+                          :locale => (options[:locale] || Tr8n::Config.block_options[:default_locale] || Tr8n::Config.default_locale),
                           :level => (options[:level] || Tr8n::Config.block_options[:level] || 0),
                           :admin => Tr8n::Config.block_options[:admin])
         unless options[:source].blank?

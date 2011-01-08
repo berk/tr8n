@@ -33,7 +33,7 @@ class Tr8n::TranslationDomain < ActiveRecord::Base
   alias :keys         :translation_keys
   
   def self.find_or_create(url)
-    domain_name = URI.parse(url).host || 'localhost'
+    domain_name = URI.parse(url || 'localhost').host || 'localhost'
     Tr8n::Cache.fetch("translation_domain_#{domain_name}") do 
       find_by_name(domain_name) || create(:name => domain_name)
     end  
