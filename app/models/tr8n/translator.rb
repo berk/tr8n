@@ -27,6 +27,7 @@ class Tr8n::Translator < ActiveRecord::Base
   belongs_to :user, :class_name => Tr8n::Config.user_class_name, :foreign_key => :user_id
   
   has_many  :translator_logs,               :class_name => "Tr8n::TranslatorLog",             :dependent => :destroy, :order => "created_at desc"
+  has_many  :translator_following,          :class_name => "Tr8n::TranslatorFollowing",       :dependent => :destroy, :order => "created_at desc"
   has_many  :translator_metrics,            :class_name => "Tr8n::TranslatorMetric",          :dependent => :destroy
   has_many  :translations,                  :class_name => "Tr8n::Translation",               :dependent => :destroy
   has_many  :translation_votes,             :class_name => "Tr8n::TranslationVote",           :dependent => :destroy
@@ -257,6 +258,15 @@ class Tr8n::Translator < ActiveRecord::Base
   def title
     return 'admin' if admin?
     Tr8n::Config.translator_levels[level.to_s] || 'unknown'
+  end
+
+  def follow(object)
+    Tr8n::TranslatorFollowing.find_or_create(self, object)
+  end
+
+  def unfollow(object)
+    tf = Tr8n::TranslatorFollowing.find(:first, :conditions => ["object_type = ? and object_id = ?", object.class.name, object.id])
+    tf.destroy if tf
   end
 
   def self.level_options

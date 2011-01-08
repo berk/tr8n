@@ -95,6 +95,10 @@ class Tr8n::Admin::TranslatorController < Tr8n::Admin::BaseController
     Tr8n::Translator.create(:user_id => params[:translator][:user_id])
     redirect_to_source
   end
+
+  def following
+    @following = Tr8n::TranslatorFollowing.filter(:params => params, :filter => Tr8n::TranslatorFollowingFilter)
+  end
    
   def log
     @logs = Tr8n::TranslatorLog.filter(:params => params, :filter => Tr8n::TranslatorLogFilter)

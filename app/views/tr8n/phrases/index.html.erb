@@ -11,15 +11,18 @@
 	        </button>
 			  </div>
 				
-	    	<%=text_field_tag(:search, params[:search], {:style => "width:90%;font-size:12px;"})%><br>
-				<div style="padding-top:5px;">
-	          <%=tra("Show phrases", "Phrases search filter header")%>
+	    	<%=text_field_tag(:search, params[:search], {:style => "width:90%;font-size:12px;height:20px"})%><br>
+				<div style="margin-top:10px; padding:3px; font-size:11px; color:#666; font-weight:bold;">
+	          <%=tra("Search phrases", "Phrases search filter header")%>
 	          <%=select_tag(:phrase_type, tr8n_options_for_select(Tr8n::TranslationKey.filter_phrase_type_options, params[:phrase_type]), :onChange => "toggleFilterOptions()")%>
 	          <span id="extended_filter_options" style="<%='display:none' unless params[:phrase_type]=="with" %>">
 	            <%=tra("marked as", "Phrases search filter option")%>
 	            <%=select_tag(:phrase_status, tr8n_options_for_select(Tr8n::TranslationKey.filter_phrase_status_options, params[:phrase_status]))%>
 	          </span>
-	      </div>					
+						<%=tra("include", "Phrases search filter option")%>
+						<%=select_tag(:phrase_lock, tr8n_options_for_select(Tr8n::TranslationKey.filter_phrase_lock_options, params[:phrase_lock]))%>
+	      </div>
+									
 	  <% end %>
 	</div>
 	
@@ -52,8 +55,10 @@
 	          <% translations = tk.translations_for(tr8n_current_language) %>
 				    <% if translations.empty? %>
 	            <%= tra("There are no translations for this phrase.") %> 
-	            <%= tra("Be the first one to [link: translate it].", "", 
-	                    :link => lambda{|str| link_to(str, :controller => "/tr8n/phrases", :action => :view, :translation_key_id => tk.id, :section_key => @section_key)}  ) %>
+							<% unless tk.locked? %>
+		            <%= tra("Be the first one to [link: translate it].", "", 
+		                    :link => lambda{|str| link_to(str, :controller => "/tr8n/phrases", :action => :view, :translation_key_id => tk.id, :section_key => @section_key)}  ) %>
+							<% end %>				
 				    <% else %>   
 	            <%= render :partial => "/tr8n/common/translation_votes", :locals => {:translation_key => tk, :translations => translations[0..4], :section_key => @section_key} %>
 						<% end %>	

@@ -35,6 +35,7 @@
 	  }
 		
 		function addTranslation() {
+			Tr8n.Effects.hide('translation_key_toolbar');
 			Tr8n.Effects.hide('tranlsations_module'); 
 	    Tr8n.Effects.hide('comments_module'); 
 	    Tr8n.Effects.hide('permutations_module');
@@ -42,6 +43,7 @@
 		}
 		
 	  function addContextRules() {
+      Tr8n.Effects.hide('translation_key_toolbar');
 	    Tr8n.Effects.hide('tranlsations_module'); 
 	    Tr8n.Effects.hide('comments_module'); 
 	    Tr8n.Effects.hide('translation_module');
@@ -49,6 +51,7 @@
 	  }
 	
 	  function viewTranslations() {
+      Tr8n.Effects.show('translation_key_toolbar');
 	    Tr8n.Effects.hide('translation_module');
 	    Tr8n.Effects.hide('permutations_module');
 	    Tr8n.Effects.show('tranlsations_module'); 
@@ -61,7 +64,7 @@
 	<%= render :partial => "permutations_module" %>
 	<%= render :partial => "comments_module" %>
 	
-	<% if @show_add_dialog %>
+	<% if @show_add_dialog and not @translation_key.locked? %>
 		<script>
 	    addEvent(window, "load", function(event) {
 			  addTranslation();

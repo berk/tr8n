@@ -24,7 +24,7 @@
 
 <td style="text-align:center; vertical-align:top; color:grey; padding-top:3px;">
   <% if translation.translation_key.locked? %>
-    <div style="text-align:center;padding-top:4px;"><%=image_tag("/tr8n/images/lock.png", :style=>"width:12px", :title => trla("This phrase is locked"))%></div>
+    <div style="text-align:center;padding-top:1px;"><%=image_tag("/tr8n/images/lock.png", :style=>"height:12px", :title => trla("This phrase is locked"))%></div>
 	<% else %>
     <%=link_to_function(image_tag("/tr8n/images/thumb_up.png"), "tr8nTranslator.voteOnTranslation('#{translation.translation_key.key}', '#{translation.id}', 1)")%> 
     <%=link_to_function(image_tag("/tr8n/images/thumb_down.png"), "tr8nTranslator.voteOnTranslation('#{translation.translation_key.key}','#{translation.id}', -1)")%> 

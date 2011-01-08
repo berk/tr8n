@@ -128,11 +128,6 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     @language ||= (locale ? Tr8n::Language.for(locale) : Tr8n::Config.default_language)
   end
   
-  def level
-    return 0 if super.nil?
-    super
-  end
-  
   def tokenized_label
     @tokenized_label ||= Tr8n::TokenizedLabel.new(label)
   end
@@ -206,6 +201,10 @@ class Tr8n::TranslationKey < ActiveRecord::Base
 
   def unlocked?(language = Tr8n::Config.current_language)
     not locked?(language)
+  end
+
+  def followed?(translator = Tr8n::Config.current_translator)
+    Tr8n::TranslatorFollowing.following_for(translator, self)
   end
     
   def add_translation(label, rules = nil, language = Tr8n::Config.current_language, translator = Tr8n::Config.current_translator)
@@ -427,6 +426,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   def default_decoration(language = Tr8n::Config.current_language, options = {})
     return label if Tr8n::Config.current_user_is_guest?
     return label unless Tr8n::Config.current_user_is_translator?
+    return label unless translator_permitted_to_translate?
     return label if locked?(language)
 
     classes = ['tr8n_translatable']
@@ -443,11 +443,21 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     html    
   end
   
+  def level
+    return 0 if super.nil?
+    super
+  end
+  
+  def translator_permitted_to_translate?(translator = Tr8n::Config.current_translator)
+    translator.level >= level
+  end
+  
   def decorate_translation(language, translated_label, translated = true, options = {})
     return translated_label if options[:skip_decorations]
     return translated_label if Tr8n::Config.current_user_is_guest?
     return translated_label unless Tr8n::Config.current_user_is_translator?
     return translated_label unless Tr8n::Config.current_translator.enable_inline_translations?
+    return translated_label unless translator_permitted_to_translate?
     return translated_label if locked?(language)
     return translated_label if self.language == language
 
@@ -490,7 +500,9 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   def self.filter_phrase_type_options
     [["all", "any"], 
      ["without translations", "without"], 
-     ["with translations", "with"]] 
+     ["with translations", "with"],
+     ["followed by me", "followed"]
+    ] 
   end
   
   def self.filter_phrase_status_options
@@ -498,46 +510,64 @@ class Tr8n::TranslationKey < ActiveRecord::Base
       ["pending approval", "pending"], 
       ["approved", "approved"]]
   end
+
+  def self.filter_phrase_lock_options
+     [["locked and unlocked", "any"],
+      ["locked only", "locked"], 
+      ["unlocked only", "unlocked"]]
+  end
   
   def self.search_conditions_for(params)
-    conditions = ["tr8n_translation_keys.locale <> ?", Tr8n::Config.current_language.locale]
+    conditions = ["tr8n_translation_keys.locale <> ? and (level is null or level <= ?)", Tr8n::Config.current_language.locale, Tr8n::Config.current_translator.level]
     
     if Tr8n::Config.enable_caching?
       conditions[0] << " and verified_at is not null"
     end  
     
     unless params[:search].blank?
-      conditions[0] << " and " unless conditions[0].blank?
-      conditions[0] << "(tr8n_translation_keys.label like ? or tr8n_translation_keys.description like ?)" 
+      conditions[0] << " and (tr8n_translation_keys.label like ? or tr8n_translation_keys.description like ?)" 
       conditions << "%#{params[:search]}%"
       conditions << "%#{params[:search]}%"  
     end
 
     # for with and approved, allow user to specify the kinds
     if params[:phrase_type] == "with"
-      conditions[0] << " and " unless conditions[0].blank?
-      conditions[0] << "tr8n_translation_keys.id in (select tr8n_translations.translation_key_id from tr8n_translations where tr8n_translations.language_id = ?) "
+      conditions[0] << " and tr8n_translation_keys.id in (select tr8n_translations.translation_key_id from tr8n_translations where tr8n_translations.language_id = ?) "
       conditions << Tr8n::Config.current_language.id
       
       # if approved, ensure that translation key is locked
       if params[:phrase_status] == "approved" 
-        conditions[0] << " and " unless conditions[0].blank?
-        conditions[0] << "tr8n_translation_keys.id in (select tr8n_translation_key_locks.translation_key_id from tr8n_translation_key_locks where tr8n_translation_key_locks.language_id = ? and tr8n_translation_key_locks.locked = ?) "
+        conditions[0] << " and tr8n_translation_keys.id in (select tr8n_translation_key_locks.translation_key_id from tr8n_translation_key_locks where tr8n_translation_key_locks.language_id = ? and tr8n_translation_key_locks.locked = ?) "
         conditions << Tr8n::Config.current_language.id
         conditions << true
       
         # if approved, ensure that translation key does not have a lock or unlocked
       elsif params[:phrase_status] == "pending" 
-        conditions[0] << " and " unless conditions[0].blank?
-        conditions[0] << "tr8n_translation_keys.id not in (select tr8n_translation_key_locks.translation_key_id from tr8n_translation_key_locks where tr8n_translation_key_locks.language_id = ? and tr8n_translation_key_locks.locked = ?) "
+        conditions[0] << " and tr8n_translation_keys.id not in (select tr8n_translation_key_locks.translation_key_id from tr8n_translation_key_locks where tr8n_translation_key_locks.language_id = ? and tr8n_translation_key_locks.locked = ?) "
         conditions << Tr8n::Config.current_language.id
         conditions << true
       end
             
     elsif params[:phrase_type] == "without"
-      conditions[0] << " and " unless conditions[0].blank?
-      conditions[0] << "tr8n_translation_keys.id not in (select tr8n_translations.translation_key_id from tr8n_translations where tr8n_translations.language_id = ?)"
+      conditions[0] << " and tr8n_translation_keys.id not in (select tr8n_translations.translation_key_id from tr8n_translations where tr8n_translations.language_id = ?)"
       conditions << Tr8n::Config.current_language.id
+      
+    elsif params[:phrase_type] == "followed"
+      conditions[0] << " and tr8n_translation_keys.id in (select tr8n_translator_following.object_id from tr8n_translator_following where tr8n_translator_following.translator_id = ? and tr8n_translator_following.object_type = ?)"
+      
+      conditions << Tr8n::Config.current_translator.id
+      conditions << 'Tr8n::TranslationKey'
+    end
+    
+    if params[:phrase_lock] == "locked"
+      conditions[0] << " and tr8n_translation_keys.id in (select tr8n_translation_key_locks.translation_key_id from tr8n_translation_key_locks where tr8n_translation_key_locks.language_id = ? and tr8n_translation_key_locks.locked = ?) "
+      conditions << Tr8n::Config.current_language.id
+      conditions << true
+      
+    elsif params[:phrase_lock] == "unlocked"  
+      conditions[0] << " and tr8n_translation_keys.id not in (select tr8n_translation_key_locks.translation_key_id from tr8n_translation_key_locks where tr8n_translation_key_locks.language_id = ? and tr8n_translation_key_locks.locked = ?) "
+      conditions << Tr8n::Config.current_language.id
+      conditions << true
     end
     
     conditions

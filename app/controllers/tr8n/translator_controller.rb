@@ -39,4 +39,22 @@ class Tr8n::TranslatorController < Tr8n::BaseController
     @fallback_language = (tr8n_current_translator.fallback_language || tr8n_default_language)
     render(:partial => params[:section], :locals => {:mode => :view})
   end
+  
+  def follow
+    if params[:translation_key_id]
+      object = Tr8n::TranslationKey.find_by_id(params[:translation_key_id])
+      trfn("You are now following this translation key") if object
+    end
+    tr8n_current_translator.follow(object) if object
+    redirect_to_source
+  end
+
+  def unfollow
+    if params[:translation_key_id]
+      object = Tr8n::TranslationKey.find_by_id(params[:translation_key_id])
+    end
+    tr8n_current_translator.unfollow(object) if object
+    redirect_to_source
+  end
+  
 end

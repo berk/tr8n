@@ -1,0 +1,20 @@
+<%= render :partial => "/tr8n/admin/common/header" %>
+<%= render :partial => "tabs" %>
+<%= tr8n_will_filter(@following) %>
+
+<% form_tag("", :id => "sources_form") do %>
+  <%= will_filter_table_tag(@following, :columns => [
+    :created_at,
+    [:translator_id, lambda{|following|
+      if following.translator
+        link_to(following.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :translator_id => following.translator.id)
+      else
+        "Unknown" 
+      end  
+    }],
+    :object_type, 
+    :object_id
+  ]) %>
+<% end %>
+
+<%= render :partial => "/tr8n/admin/common/footer" %>

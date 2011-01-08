@@ -1,10 +1,11 @@
 <div id="comments_module">
 	<div class="section_title">
+		<%=tr8n_toggler_tag("comments_content")%>
 	  <%=tra("Comments") %>
 		<a name="comments">&nbsp;</a>
 	</div>
 
-	<div class="section_box">
+	<div class="section_box" id="comments_content">
 		<% if @comments.any? %>
 		  <div style="margin-bottom:5px; padding-bottom:2px; border-bottom:1px solid #ccc; ">
 		    <table style="width:100%;">
