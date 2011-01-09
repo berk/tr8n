@@ -76,7 +76,7 @@ module Tr8n::KeyboardMapping
     return "US Int'l"
   end  
   
-  def self.current
+  def self.current_1_44
     [
       {:key => '\u0627\u0644\u0639\u0631\u0628\u064a\u0629', :name => 'Arabic', :locale => ''},
       {:key => '\u0985\u09b8\u09ae\u09c0\u09df\u09be', :name => 'Assamese', :locale => ''},

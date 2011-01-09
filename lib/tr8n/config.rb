@@ -80,7 +80,8 @@ class Tr8n::Config
        Tr8n::TranslationKey, Tr8n::TranslationKeySource, Tr8n::TranslationKeyComment, Tr8n::TranslationKeyLock, 
        Tr8n::TranslationSource, Tr8n::TranslationDomain,
        Tr8n::Translation, Tr8n::TranslationVote,
-       Tr8n::Translator, Tr8n::TranslatorLog, Tr8n::TranslatorMetric, Tr8n::TranslatorFollowing, 
+       Tr8n::Translator, Tr8n::TranslatorLog, Tr8n::TranslatorMetric, 
+       Tr8n::TranslatorFollowing, Tr8n::TranslatorReport, 
        Tr8n::LanguageForumTopic, Tr8n::LanguageForumMessage, Tr8n::LanguageForumAbuseReport,
        Tr8n::Glossary
     ]    
