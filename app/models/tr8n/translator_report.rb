@@ -67,9 +67,11 @@ class Tr8n::TranslatorReport < ActiveRecord::Base
     report = find_or_create(translator, object)
     report.update_attributes(:reason => reason, :comment => comment)
     
-    if object.is_a?(Tr8n::Translation)
+    if object.is_a?(Tr8n::Translation) 
       object.vote!(translator, -100)
-      submit(translator, object.translator, 'reported translation', comment)
+      submit(translator, object.translator, "bad translation #{object.id}", comment)
+    elsif object.is_a?(Tr8n::LanguageForumMessage)
+      submit(translator, object.translator, "bad message #{object.id}", comment)
     end
   end
   

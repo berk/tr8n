@@ -27,6 +27,17 @@
 		<% if @reported_object.is_a?(Tr8n::TranslationKey) %>
 		   <% @translation_key = @reported_object %>
 	     <%= render :partial => '/tr8n/phrases/header' %>
+    <% elsif @reported_object.is_a?(Tr8n::LanguageForumMessage) %>
+      <div style="padding:10px; background-color:#eff8ff; border: 1px solid #ccc; margin-bottom: 5px;">
+        <div style="color:grey;font-size:20px;padding-bottom:10px;">
+            <%=trl("Forum Message")%>
+        </div>
+        <div style="padding-bottom:5px;font-size:14px; max-height:50px; overflow:auto;">
+            <%=image_tag("/tr8n/images/left_quote.png", :style=>"text-align:bottom;padding-bottom:5px;") %>
+            <%=@reported_object.toHTML %>
+            <%=image_tag("/tr8n/images/right_quote.png", :style=>"text-align:bottom;padding-top:5px;") %>
+        </div>
+      </div>		    
 		<% elsif @reported_object.is_a?(Tr8n::Translation) %>
 			<div style="padding:10px; background-color:#eff8ff; border: 1px solid #ccc; margin-bottom: 5px;">
 			  <div style="color:grey;font-size:20px;padding-bottom:10px;">
