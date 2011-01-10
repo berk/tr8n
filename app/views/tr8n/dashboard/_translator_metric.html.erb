@@ -10,36 +10,48 @@
 	<%= translator_rank_chart(lang)%>
 	 
 	<div style="margin:5px; color:#666;"> 
- 	  <%=tra("Accepted:", "Header for accepted language translations") %>
-    <% if lang %>
-      <%=link_to(translator_metric.accepted_translations || 0, 
-                :controller => "/tr8n/translations", :action => :index, :locale => lang.locale,
-                :submitted_by => :me, :with_status => :accepted) %>
-    <% else %>
-      <%= translator_metric.accepted_translations || 0 %>         
-    <% end %>           
+    <span style="white-space:nowrap;">
+      <span style="background-color:#00FF00;display:inline;white-space:nowrap;">&nbsp;&nbsp;&nbsp</span>
+	 	  <%=tra("Accepted:", "Header for accepted language translations") %>
+	    <% if lang %>
+	      <%=link_to(translator_metric.accepted_translations || 0, 
+	                :controller => "/tr8n/translations", :action => :index, :locale => lang.locale,
+	                :submitted_by => :me, :with_status => :accepted) %>
+	    <% else %>
+	      <%= translator_metric.accepted_translations || 0 %>         
+	    <% end %>
+		</span>	  
+		         
     &nbsp;&nbsp;
 		
-		<%=tra("Pending:", "Header for pending language translations") %>
-    <% if lang %>
-      <%=link_to(translator_metric.pending_vote_translations || 0, 
-                :controller => "/tr8n/translations", :action => :index, :locale => lang.locale,
-                :submitted_by => :me, :with_status => :pending) %>
-    <% else %>
-      <%= translator_metric.pending_vote_translations || 0 %>         
-    <% end %>           
+    <span style="white-space:nowrap;">
+      <span style="background-color:#FFFF00;display:inline;white-space:nowrap;">&nbsp;&nbsp;&nbsp</span>
+			<%=tra("Pending:", "Header for pending language translations") %>
+	    <% if lang %>
+	      <%=link_to(translator_metric.pending_vote_translations || 0, 
+	                :controller => "/tr8n/translations", :action => :index, :locale => lang.locale,
+	                :submitted_by => :me, :with_status => :pending) %>
+	    <% else %>
+	      <%= translator_metric.pending_vote_translations || 0 %>         
+	    <% end %>
+		</span>
+			           
     &nbsp;&nbsp;
 		
-    <%=tra("Rejected:", "Header for rejected language translations") %>
-    <% if lang %>
-      <%=link_to(translator_metric.rejected_translations || 0, 
-                :controller => "/tr8n/translations", :action => :index, :locale => lang.locale,
-                :submitted_by => :me, :with_status => :rejected) %>
-    <% else %>
-      <%= translator_metric.rejected_translations || 0 %>         
-    <% end %>           
+    <span style="white-space:nowrap;">
+      <span style="background-color:#FF0000;display:inline;white-space:nowrap;">&nbsp;&nbsp;&nbsp</span>
+	    <%=tra("Rejected:", "Header for rejected language translations") %>
+	    <% if lang %>
+	      <%=link_to(translator_metric.rejected_translations || 0, 
+	                :controller => "/tr8n/translations", :action => :index, :locale => lang.locale,
+	                :submitted_by => :me, :with_status => :rejected) %>
+	    <% else %>
+	      <%= translator_metric.rejected_translations || 0 %>         
+	    <% end %>
+		</span>	           
 
     <br><br>      
+		
 	  <%=tra("Total Translations:", "Header for total translations count") %>
     <% if lang %>
       <%=link_to(translator_metric.total_translations || 0, 
@@ -48,9 +60,9 @@
     <% else %>
       <%= translator_metric.total_translations || 0 %>         
     <% end %>           
-   </div> 
+  </div> 
 
-   <div style="margin:10px; color:#ccc; text-align:center; width:100%;">
+  <div style="margin:10px; color:#ccc; text-align:center; width:100%;">
       <%=tra("The ranks are calculated realtime", "Dashboard section header")%>
-   </div>
+  </div>
 </div>

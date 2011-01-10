@@ -8,24 +8,33 @@
 
   <%= language_completeness_chart(lang)%>
 
-  <div style="margin:5px; color:#666;"> 
-    <%=tra("Approved:", "Header for approved phrases") %>
-    <%=link_to(language_metric.locked_key_count || 0, 
-              :controller => "/tr8n/phrases", :action => :index, :locale => lang.locale,
-              :phrase_type => :with, :phrase_status => :approved) %>
+  <div style="margin:5px; color:#666;">
+	  <span style="white-space:nowrap;">
+	    <span style="background-color:#00FF00;display:inline;white-space:nowrap;">&nbsp;&nbsp;&nbsp</span>
+	    <%=tra("Approved:", "Header for approved phrases") %>
+	    <%=link_to(language_metric.locked_key_count || 0, 
+	              :controller => "/tr8n/phrases", :action => :index, :locale => lang.locale,
+	              :phrase_type => :with, :phrase_status => :approved) %>
+		</span>						
     &nbsp;&nbsp;		
 		
-    <%=tra("Pending Approval:", "Header for phrases that are pending approval") %>
-    <%=link_to(language_metric.pending_approval_count || 0, 
-                  :controller => "/tr8n/phrases", :action => :index, :locale => lang.locale,
-                  :phrase_type => :with, :phrase_status => :pending) %>
+    <span style="white-space:nowrap;">
+	    <span style="background-color:#FFFF00;display:inline;white-space:nowrap;">&nbsp;&nbsp;&nbsp;</span>
+	    <%=tra("Pending Approval:", "Header for phrases that are pending approval") %>
+	    <%=link_to(language_metric.pending_approval_count || 0, 
+	                  :controller => "/tr8n/phrases", :action => :index, :locale => lang.locale,
+	                  :phrase_type => :with, :phrase_status => :pending) %>
+    </span>           
 
     &nbsp;&nbsp;    
 		
-    <%=tra("Not Translated:", "Header for phrases without translation") %>
-    <%=link_to(language_metric.not_translated_count || 0, 
-                  :controller => "/tr8n/phrases", :action => :index, :locale => lang.locale,
-                  :phrase_type => :without) %>
+    <span style="white-space:nowrap;">
+	    <span style="background-color:#FF0000;display:inline;white-space:nowrap;">&nbsp;&nbsp;&nbsp;</span> 
+	    <%=tra("Not Translated:", "Header for phrases without translation") %>
+	    <%=link_to(language_metric.not_translated_count || 0, 
+	                  :controller => "/tr8n/phrases", :action => :index, :locale => lang.locale,
+	                  :phrase_type => :without) %>
+    </span>           
 
     <br><br>  		
     <%=tra("Total Phrases:", "Header for total phrase count") %>

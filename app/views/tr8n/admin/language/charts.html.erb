@@ -1,36 +1,35 @@
 <%= render :partial => "/tr8n/admin/common/header" %>
 <%= render :partial => "tabs" %>
 
-<script language="JavaScript" src="/tr8n/javascripts/FusionCharts.js"></script>
+<%=link_to("Calculate total metrics", {:action => :calculate_total_metrics}, :confirm => "Are you sure you want to run this opperation?")%>
 
-<table style="width:100%; border:0px; border-bottom:1px solid #ccc;">
-	<tr>
-		<td>
-      <div id="users_by_language" align="center"></div>
-		</td>
-		<td>
-      <div id="translators_by_language" align="center"></div>			
-		</td>
-	</tr>
-	<tr >
-		<td>
-			<div id="translations_by_language" align="center"></div>
-		</td>
-		<td>
-			<div id="locked_keys_by_language" align="center"></div>
-		</td>
-	</tr>
-</table>
+<style>
+	.chart {
+    margin-top:10px;
+		margin-bottom:10px;
+		text-align:center;
+		border: 1px dotted #ccc;
+		padding:10px;
+	}
+	
+	.chart_title {
+		font-size:18px;
+	}
+</style>
 
-<script type="text/javascript">
-	 function createChart(chartId, type, url) {
-	    var chart = new FusionCharts("/tr8n/charts/FCF_" + type + ".swf", chartId, "450", "500");
-	    chart.setDataURL(url);
-	    chart.render(chartId);
-	 }
+<%
+  charts = [
+    ['Users by Language', :user_count],
+    ['Translators by Language', :translator_count],
+    ['Translations by Language', :translation_count],
+    ['Translated Phrases by Language', :translated_key_count],
+    ['Locked Phrases by Language', :locked_key_count]
+  ].each do |chart|
+%>
 
-	 createChart("users_by_language", "Pie3D", "/tr8n/admin/chart/users_by_language");
-   createChart("translators_by_language", "Pie3D", "/tr8n/admin/chart/translators_by_language");
-   createChart("translations_by_language", "Pie3D", "/tr8n/admin/chart/translations_by_language");
-   createChart("locked_keys_by_language", "Pie3D", "/tr8n/admin/chart/locked_keys_by_language");
-</script>
+<div class="chart">
+  <div class="chart_title"><%=chart.first%> (top 20)</div>
+  <%= language_metric_chart(chart.last) %>
+</div>
+
+<% end %>
