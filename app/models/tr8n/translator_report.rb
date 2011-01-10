@@ -59,6 +59,10 @@ class Tr8n::TranslatorReport < ActiveRecord::Base
     if object.is_a?(Tr8n::LanguageForumTopic)
       return ['Inappropriate Language', 'Bad Tokens', 'Spam', 'Vandalism', 'Other:']
     end
+
+    if object.is_a?(Tr8n::TranslationKeyComment)
+      return ['Inappropriate Language', 'Spam', 'Vandalism', 'Other:']
+    end
     
     ['Inappropriate Language']
   end

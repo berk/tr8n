@@ -30,11 +30,13 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   has_many :translation_key_locks,    :class_name => "Tr8n::TranslationKeyLock",    :dependent => :destroy
   has_many :translation_key_sources,  :class_name => "Tr8n::TranslationKeySource",  :dependent => :destroy
   has_many :translation_sources,      :class_name => "Tr8n::TranslationSource",     :through => :translation_key_sources
+  has_many :translation_domains,      :class_name => "Tr8n::TranslationDomain",     :through => :translation_sources
   has_many :translation_key_comments, :class_name => "Tr8n::TranslationKeyComment", :dependent => :destroy, :order => "created_at desc"
   
   alias :locks        :translation_key_locks
   alias :key_sources  :translation_key_sources
   alias :sources      :translation_sources
+  alias :domains      :translation_domains
   alias :comments     :translation_key_comments
   
   def self.find_or_create(label, desc = "", options = {})
@@ -484,7 +486,17 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   def update_translation_count!
     update_attributes(:translation_count => Tr8n::Translation.count(:conditions => ["translation_key_id = ?", self.id]))
   end
-      
+
+  def source_map
+    @source_map ||= begin
+      map = {}
+      sources.each do |source|
+        (map[source.domain.name] ||= []) << source
+      end
+      map
+    end
+  end
+  
   def after_save
     Tr8n::Cache.delete("translation_key_#{key}")
   end

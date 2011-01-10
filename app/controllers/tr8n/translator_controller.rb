@@ -64,6 +64,8 @@ class Tr8n::TranslatorController < Tr8n::BaseController
       @reported_object = Tr8n::Translation.find_by_id(params[:translation_id])
     elsif params[:message_id]
       @reported_object = Tr8n::LanguageForumMessage.find_by_id(params[:message_id])
+    elsif params[:comment_id]
+      @reported_object = Tr8n::TranslationKeyComment.find_by_id(params[:comment_id])
     end
     render :layout => false
   end

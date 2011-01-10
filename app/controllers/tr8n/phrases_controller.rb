@@ -253,8 +253,9 @@ class Tr8n::PhrasesController < Tr8n::BaseController
     redirect_to_source
   end
 
-  def report_comment
-    
+  def lb_sources
+    @translation_key = Tr8n::TranslationKey.find(params[:translation_key_id])
+    render :layout => false
   end
     
 private

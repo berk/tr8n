@@ -1,0 +1,12 @@
+<% color = @reported_object.key.locked? ? "#ECFFEF" : "#FDFDDF" %>
+<div style="font-size: 11px; color: grey; margin-top:5px; margin-bottom:5px; padding:3px; background:<%=color%>; border:1px dotted #ccc;">
+  <% if @reported_object.key.locked? %>
+    <div style="float:right"><%=image_tag("/tr8n/images/lock.png", :style=>"width:12px", :title => trl("This phrase is locked"))%></div>
+  <% end %>
+
+  <%=trl("Original Phrase:", "Translation section header")%> 
+  <%=link_to(@reported_object.key.sanitized_label, :controller => "/tr8n/phrases", :action => :view, :locale => @reported_object.language.locale, :translation_key_id => @reported_object.key.id) %>
+  <% unless @reported_object.key.description.blank? %>
+    <div style="padding-top:2px;"><%= @reported_object.key.description %></div>
+  <% end %>  
+</div>

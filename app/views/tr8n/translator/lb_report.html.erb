@@ -38,6 +38,17 @@
             <%=image_tag("/tr8n/images/right_quote.png", :style=>"text-align:bottom;padding-top:5px;") %>
         </div>
       </div>		    
+    <% elsif @reported_object.is_a?(Tr8n::TranslationKeyComment) %>
+      <div style="padding:10px; background-color:#eff8ff; border: 1px solid #ccc; margin-bottom: 5px;">
+        <div style="color:grey;font-size:20px;padding-bottom:10px;">
+            <%=trl("Translation Key Comment")%>
+        </div>
+        <div style="padding-bottom:5px;font-size:14px; max-height:50px; overflow:auto;">
+            <%=image_tag("/tr8n/images/left_quote.png", :style=>"text-align:bottom;padding-bottom:5px;") %>
+            <%=@reported_object.toHTML %>
+            <%=image_tag("/tr8n/images/right_quote.png", :style=>"text-align:bottom;padding-top:5px;") %>
+        </div>
+      </div>        
 		<% elsif @reported_object.is_a?(Tr8n::Translation) %>
 			<div style="padding:10px; background-color:#eff8ff; border: 1px solid #ccc; margin-bottom: 5px;">
 			  <div style="color:grey;font-size:20px;padding-bottom:10px;">
@@ -55,19 +66,8 @@
 			      <%=trl("Context:")%> <%= @reported_object.context %>  
 			    </div>
 			  <% end %>
-				
-				<% color = @reported_object.key.locked? ? "#ECFFEF" : "#FDFDDF" %>
-				<div style="font-size: 11px; color: grey; margin-top:5px; margin-bottom:5px; padding:3px; background:<%=color%>; border:1px dotted #ccc;">
-				  <% if @reported_object.key.locked? %>
-				    <div style="float:right"><%=image_tag("/tr8n/images/lock.png", :style=>"width:12px", :title => trl("This phrase is locked"))%></div>
-				  <% end %>
-				
-				  <%=trl("Original Phrase:", "Translation section header")%> 
-					<%=link_to(@reported_object.key.sanitized_label, :controller => "/tr8n/phrases", :action => :view, :locale => @reported_object.language.locale, :translation_key_id => @reported_object.key.id) %>
-				  <% unless @reported_object.key.description.blank? %>
-				    <div style="padding-top:2px;"><%= @reported_object.key.description %></div>
-				  <% end %>  
-				</div>
+
+        <%=render :partial => 'header_key_report'%>				
 			</div>		
 		<% end %>	 
 	
@@ -96,7 +96,7 @@
               </div>
             </td>
             <td>
-              <%= text_area_tag("comment", '', :style => "width:500px; height:80px;") %>
+              <%= text_area_tag("comment", '', :style => "width:500px; height:70px;") %>
 							<div style="font-size:10px; color:grey; padding-top:10px; font-style:italic;"><%=trl('Note: Please submit your comments in English.')%></div>
             </td>
           </tr>

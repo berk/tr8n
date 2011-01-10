@@ -1,0 +1,49 @@
+<style>
+  .lightbox {
+    background-color: white;
+  }
+  .title {
+    padding: 5px;
+    text-align: left;
+    font-size: 14px;
+    font-weight: bold;
+  }
+  .buttons {
+    text-align: center;
+  }
+  .content {
+    border: 1px dotted brown;
+    background-color: #f8f7f6;
+    padding-bottom: 10px;
+  }
+  .content td {
+    vertical-align: top;
+    padding: 5px;
+  }
+</style>
+
+<div class="lightbox">
+  <div>
+    <%= render :partial => '/tr8n/phrases/header' %>
+    <div style="color:grey;font-size:20px;padding-bottom:10px;">
+        <%=trl("Translation Key Sources")%>
+    </div>
+  	
+		<div style="max-height:150px; overflow:auto;">
+  	<% @translation_key.source_map.each do |domain, sources| %>
+		  <div style="border: 1px dotted #ccc; background-color: #eee; padding:5px; margin-bottom:5px; ">
+			  <strong><%= domain %></strong>
+			</div>
+			<% sources.each do |source| %>
+	      <div style="border: 1px dotted #ccc; background-color: #eff8ff; padding:5px; padding-left:20px; margin-bottom:5px;">
+			    <%= source.source %>
+				</div>
+			<% end %>	
+		<% end %>
+		</div>
+  </div>	
+    
+	<div style="text-align:center;padding-top:10px;">
+     <%=link_to_function("<span>#{trl("Close", "Tr8n lightbox close button")}</span>", "tr8nLightbox.hide()", :class => "tr8n_grey_button tr8n_pcb") %>
+	</div>
+</div>

@@ -13,9 +13,10 @@
     end    
     unless @translation_key.locked?
       if @translation_key.permutatable?
-        actions << link_to_function("#{image_tag('/tr8n/images/table_gear.png', :style=>'height:15px; vertical-align:bottom')} #{tra("Generate Context Rules")}", "addContextRules()")
+        actions << link_to_function("#{image_tag('/tr8n/images/script_gear.png', :style=>'height:15px; vertical-align:bottom')} #{tra("Generate Context Rules")}", "addContextRules()")
       end
     end
+    actions << link_to_function("#{image_tag('/tr8n/images/table_multiple.png', :style=>'height:15px; vertical-align:bottom')} #{tra("View Sources")}", "tr8nLightbox.show('/tr8n/phrases/lb_sources?translation_key_id=#{@translation_key.id}', {width:600, height:340});")
     if @translation_key.followed?
       actions << link_to("#{image_tag('/tr8n/images/eye_not.png', :style=>'height:15px; vertical-align:bottom')} #{tra("Unfollow")}", :controller => '/tr8n/translator', :action => :unfollow, :translation_key_id => @translation_key.id)
     else
