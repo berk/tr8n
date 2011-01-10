@@ -34,7 +34,7 @@ class Tr8n::Config
     Thread.current[:tr8n_current_language]   = Tr8n::Language.for(locale) || default_language
     Thread.current[:tr8n_current_user]       = site_current_user
     Thread.current[:tr8n_current_translator] = Tr8n::Translator.for(site_current_user)
-    Thread.current[:tr8n_block_options]            = {}
+    Thread.current[:tr8n_block_options]      = {}
   end
   
   def self.current_user
@@ -218,6 +218,10 @@ class Tr8n::Config
     config[:enable_language_flags]
   end
 
+  def self.enable_language_stats?
+    config[:enable_language_stats]
+  end
+
   def self.open_registration_mode?
     config[:open_registration_mode]
   end
@@ -230,6 +234,9 @@ class Tr8n::Config
     config[:enable_translator_language]
   end
 
+  def self.enable_country_tracking?
+    config[:enable_country_tracking]
+  end
   #########################################################
   # Config Sections
   def self.caching

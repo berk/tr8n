@@ -279,6 +279,14 @@ class Tr8n::Translator < ActiveRecord::Base
     end
   end
 
+  def update_last_ip(new_ip)
+    return unless Tr8n::Config.enable_country_tracking?
+    return if self.last_ip == new_ip
+
+    country_code = Tr8n::IpLocation.find_by_ip(new_ip).ctry
+    update_attributes(:last_ip => new_ip, :country_code => country_code)
+  end
+
   def after_save
     Tr8n::Cache.delete("translator_for_#{user_id}")
   end

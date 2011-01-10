@@ -1,0 +1,76 @@
+#--
+# Copyright (c) 2011 Scott Steadman, Michael Berkovich, Geni Inc
+#
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+#++
+
+class Tr8n::IpLocation < ActiveRecord::Base
+  set_table_name :tr8n_ip_locations
+
+  def self.no_country_clause
+    %q{COALESCE(country, 'ZZZ') = 'ZZZ'}
+  end
+
+  def self.find_by_ip(ip)
+    ip = case ip
+      when String
+        Tr8n::IpAddress.new(ip).to_i
+      else
+        ip.to_i
+    end
+    first(:conditions => ['low <= ? AND ? <= high', ip, ip]) || new.freeze
+  rescue ArgumentError
+    puts "Invalid ip: #{ip}" unless Rails.env.test?
+    new.freeze
+  end
+
+  def blank?
+    new_record? || 'ZZZ' == cntry
+  end
+
+  def self.import_from_file(file, opts=nil)
+    opts ||= {:verbose => false}
+    transaction do
+      puts "Deleting old records..." if opts[:verbose]
+      delete_all
+      puts "Done." if opts[:verbose]
+
+      puts "Importing new records..." if opts[:verbose]
+      file = File.open(file) if file.is_a?(String)
+      file.each_line do |line|
+        next if line =~ /^\s*\#|^\s*$/
+        line.chomp!.tr!('"\'','')
+        values = line.split(',')
+        create!(
+          :low      =>  values[0],
+          :high     =>  values[1],
+          :registry =>  values[2],
+          :assigned =>  Time.at(values[3].to_i),
+          :ctry     =>  values[4],
+          :cntry    =>  values[5],
+          :country  =>  Iconv.conv('UTF-8', 'ISO_8859-1', values[6])
+        )
+        $stdout << '.' if opts[:verbose]
+      end
+      puts "Done." if opts[:verbose]
+    end
+  end
+  
+end

@@ -222,4 +222,9 @@ namespace :tr8n do
     puts "Destruction process took #{t1-t0} mls"
   end
   
+  desc 'Update IP to Location table (file=<file|config/tr8n/data/ip_locations.csv>)'
+  task :import_ip_locations => :environment do
+    Tr8n::IpLocation.import_from_file('config/tr8n/data/ip_locations.csv', :verbose => true)
+  end
+  
 end

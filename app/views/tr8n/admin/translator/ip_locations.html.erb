@@ -1,0 +1,9 @@
+<%= render :partial => "/tr8n/admin/common/header" %>
+<%= render :partial => "tabs" %>
+<%= tr8n_will_filter(@ip_locations) %>
+
+<% form_tag("", :id => "metrics_form") do %>
+  <%= will_filter_table_tag(@ip_locations) %>
+<% end %>
+
+<%= render :partial => "/tr8n/admin/common/footer" %>

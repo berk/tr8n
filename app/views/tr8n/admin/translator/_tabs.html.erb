@@ -5,7 +5,9 @@
    ["Following", {:action => :following}],
    ["Reports", {:action => :reports}],
    ["Log", {:action => :log}],
-   ["Metrics", {:action => :metrics}]].each do |link|
+   ["Metrics", {:action => :metrics}],
+   ["Ip Locations", {:action => :ip_locations}]
+  ].each do |link|
       if controller.action_name == link.last[:action].to_s
         current_tab = link.first if current_tab.blank?
         links << link.first

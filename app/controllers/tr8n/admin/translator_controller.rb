@@ -111,5 +111,9 @@ class Tr8n::Admin::TranslatorController < Tr8n::Admin::BaseController
   def metrics
     @metrics = Tr8n::TranslatorMetric.filter(:params => params, :filter => Tr8n::TranslatorMetricFilter)
   end
+
+  def ip_locations
+    @ip_locations = Tr8n::IpLocation.filter(:params => params, :filter => Tr8n::IpLocationFilter)
+  end
      
 end
