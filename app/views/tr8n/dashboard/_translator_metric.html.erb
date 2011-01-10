@@ -1,83 +1,56 @@
-<table style="width:100%; border:1px dotted #ccc; background-color:white;">
-    <tr>
-      <td colspan="2" style="text-align:center; font-size:14px; padding:3px;">
-        <% if lang %>
-          <%=tra("Your Translations", "Dashboard section header") %>
-				<% else %>	
-          <%=tra("Your Total Translations", "Dashboard section header") %>
-				<% end %>	 
-      </td>
-    </tr> 
-    <tr>
-      <td style="vertical-align:middle; padding-left:5px;">
-        <table cellpadding="1px" cellspacing="1px">
-          <tr>
-            <td style="width:20px;"><div style="height:15px; width:15px; background-color:green;"></div></td>
-            <td style="width:50px;"><%=tra("Accepted:", "Header for accepted language translations") %></td>
-            <td style="width:40px;">
-					    <% if lang %>
-                <%=link_to(translator_metric.accepted_translations || 0, 
-                          :controller => "/tr8n/translations", :action => :index, :locale => lang.locale,
-                          :submitted_by => :me, :with_status => :accepted) %>
-							<% else %>
-								<%= translator_metric.accepted_translations || 0 %>					
-							<% end %>						
-            </td>
-          </tr>
-          <tr>
-            <td style=" "><div style="height:15px; width:15px; background-color:yellow;"></div></td>
-            <td style=" "><%=tra("Pending:", "Header for pending language translations") %></td>
-            <td style=" ">
-              <% if lang %>
-                <%=link_to(translator_metric.pending_vote_translations || 0, 
-                          :controller => "/tr8n/translations", :action => :index, :locale => lang.locale,
-                          :submitted_by => :me, :with_status => :pending) %>
-              <% else %>
-                <%= translator_metric.pending_vote_translations || 0 %>         
-              <% end %>           
-           </td>
-          </tr>
-          <tr>
-            <td style=" "><div style="height:15px; width:15px; background-color:red;"></div></td>
-            <td style=" "><%=tra("Rejected:", "Header for rejected language translations") %></td>
-            <td style=" ">
-              <% if lang %>
-                <%=link_to(translator_metric.rejected_translations || 0, 
-                          :controller => "/tr8n/translations", :action => :index, :locale => lang.locale,
-                          :submitted_by => :me, :with_status => :rejected) %>
-              <% else %>
-                <%= translator_metric.rejected_translations || 0 %>         
-              <% end %>           
-            </td>
-          </tr>
-          <tr>
-            <td> </td>
-            <td><%=tra("Total Translations:", "Header for total translations count") %></td>
-            <td>
-              <% if lang %>
-                <%=link_to(translator_metric.total_translations || 0, 
-                          :controller => "/tr8n/translations", :action => :index, :locale => lang.locale,
-                          :submitted_by => :me) %>
-              <% else %>
-                <%= translator_metric.total_translations || 0 %>         
-              <% end %>           
-            </td>
-          </tr>
-        </table>
-      </td>
-      <td style="vertical-align:middle; width:220px; text-align:center">
-        <% if lang %>
-          <div id="translator_chart_<%=lang.id%>"></div>
-				<% else %>
-				  <div id="translator_chart"></div>     
-				<% end %>      
-      </td>   
-    </tr>
-   <tr>
-     <td colspan="4" align="center">
-        <div style="color:#ccc; text-align:center; width:100%;">
-          <%=tra("The ranks are calculated realtime", "Dashboard section header")%>
-        </div>
-     </td>
-   </tr>
-</table>      
+<div style="text-align:center; width:100%; border:1px dotted #ccc; background-color:white;">
+  <div style="font-size:14px; padding:3px;"> 
+		<% if lang %>
+		  <%=tra("Your Translations", "Dashboard section header") %>
+		<% else %>	
+		  <%=tra("Your Total Translations", "Dashboard section header") %>
+		<% end %>	 
+	</div>
+	
+	<%= translator_rank_chart(lang)%>
+	 
+	<div style="margin:5px; color:#666;"> 
+ 	  <%=tra("Accepted:", "Header for accepted language translations") %>
+    <% if lang %>
+      <%=link_to(translator_metric.accepted_translations || 0, 
+                :controller => "/tr8n/translations", :action => :index, :locale => lang.locale,
+                :submitted_by => :me, :with_status => :accepted) %>
+    <% else %>
+      <%= translator_metric.accepted_translations || 0 %>         
+    <% end %>           
+    &nbsp;&nbsp;
+		
+		<%=tra("Pending:", "Header for pending language translations") %>
+    <% if lang %>
+      <%=link_to(translator_metric.pending_vote_translations || 0, 
+                :controller => "/tr8n/translations", :action => :index, :locale => lang.locale,
+                :submitted_by => :me, :with_status => :pending) %>
+    <% else %>
+      <%= translator_metric.pending_vote_translations || 0 %>         
+    <% end %>           
+    &nbsp;&nbsp;
+		
+    <%=tra("Rejected:", "Header for rejected language translations") %>
+    <% if lang %>
+      <%=link_to(translator_metric.rejected_translations || 0, 
+                :controller => "/tr8n/translations", :action => :index, :locale => lang.locale,
+                :submitted_by => :me, :with_status => :rejected) %>
+    <% else %>
+      <%= translator_metric.rejected_translations || 0 %>         
+    <% end %>           
+
+    <br><br>      
+	  <%=tra("Total Translations:", "Header for total translations count") %>
+    <% if lang %>
+      <%=link_to(translator_metric.total_translations || 0, 
+                :controller => "/tr8n/translations", :action => :index, :locale => lang.locale,
+                :submitted_by => :me) %>
+    <% else %>
+      <%= translator_metric.total_translations || 0 %>         
+    <% end %>           
+   </div> 
+
+   <div style="margin:10px; color:#ccc; text-align:center; width:100%;">
+      <%=tra("The ranks are calculated realtime", "Dashboard section header")%>
+   </div>
+</div>

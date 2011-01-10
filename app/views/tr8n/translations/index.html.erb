@@ -10,7 +10,7 @@
 	          </button>
 	     </div>
 			 
-	     <%=text_field_tag(:search, params[:search], {:style => "width:90%;font-size:12px;height:20px"})%><br>
+	    <%=text_field_tag(:search, params[:search], {:style => "width:90%;font-size:12px;height:20px"})%><br>
       <div style="margin-top:10px; padding:3px; font-size:11px; color:#666; font-weight:bold;">
           <%=tra("Show")%>
           <%=select_tag(:with_status, options_for_select(Tr8n::Translation.filter_status_options, params[:with_status]))%>

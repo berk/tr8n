@@ -120,16 +120,4 @@
 	    <%=render :partial=>"votes", :locals => {:lang => lang}%>
 		</div>
 	<% end %>
-	
-	
-	<script type="text/javascript">
-	   createChart("translator_chart", "Pie3D", "/tr8n/chart/translator_rank");
-	   
-	  <% tr8n_current_translator.languages.each do |lang| %>
-		   <% next if lang.default? %>
-	     createChart("translator_chart_<%=lang.id%>", "Pie3D", "/tr8n/chart/translator_rank?language_id=<%=lang.id%>");
-	     createChart("language_chart_<%=lang.id%>", "Pie3D", "/tr8n/chart/language_completeness?language_id=<%=lang.id%>");
-	  <% end %>
-	</script>
-	
 <% end %>

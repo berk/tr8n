@@ -2,16 +2,15 @@
 
 	<%= render :partial => "/tr8n/common/header" %>
 	
-	<div class="section_box colored">
-	  <div style="float:right; padding-right:5px;">
-	    <%=tr8n_help_icon_tag %>
-	  </div>
+	<div class="section_box" style="margin-bottom:10px; background-color:#EFF8FF; margin-top:0px;">
 	  <% form_tag({:action => :index}, {:method => :get, :id => "glossary_search_form"}) do %>
-	    <%=text_field_tag(:search, params[:search], {:style => "width:400px;height:20px;font-size:14px;"})%>
-	    
-	    <button type="submit" class="translator_btn translator_small_btn" onClick="Tr8n.Effects.submit('glossary_search_form'); return false;">
-	        <span><%=tra("Search", "Glossary search section")%></span>
-	    </button>
+       <div style="float:right">
+            <button type="submit" class="translator_btn translator_small_btn" onClick="Tr8n.Effects.submit('glossary_search_form'); return false;">
+                <span><%=tra("Search")%></span>
+            </button>
+       </div>
+       
+      <%=text_field_tag(:search, params[:search], {:style => "width:90%;font-size:12px;height:20px"})%><br>
 	  <% end %>
 	</div>
 	
