@@ -16,9 +16,17 @@
 			  </div>
 			
         <div id="language_case_labels_<%=index%>" style="<%='display:none' if lcase.native_name.blank? %>">
-	        <strong><%= lcase.native_name %></strong> 
+	        <strong><%= lcase.native_name %></strong>
+					<span style="color:grey; font-size:10px;">
+            <% if lcase.application == 'phrase' %>
+              <%= tra("applied to the entire phrase of the token value") -%>
+            <% else %>
+              <%= tra("applied to every word in the token value") -%>
+            <% end %>
+					</span> 
 	        <br>
-	        <span style="color:grey; font-size:10px;">(::<%= lcase.keyword %>) 
+	        <span style="color:grey; font-size:10px;">
+					  (::<%= lcase.keyword %>)
 	          <%= lcase.description %> 
 	        </span>
         </div>
@@ -27,13 +35,15 @@
 					<span style="font-weight:bold;padding-left:5px;"><%=tra("Key:", "Language case key")%></span>
 	        <%= text_field_tag("cases[#{index}][keyword]", lcase.keyword, :style => "width:50px;")%>
 	        <span style="font-weight:bold;padding-left:5px;"><%=tra("Name:", "Language case name")%></span>
-	        <%= text_field_tag("cases[#{index}][native_name]", lcase.native_name, :style => "width:200px;")%>
+	        <%= text_field_tag("cases[#{index}][native_name]", lcase.native_name, :style => "width:100px;")%>
 					<span style="font-weight:bold;padding-left:5px;"><%=tra("Description:", "Language case description")%></span>
-	        <%= text_field_tag("cases[#{index}][description]", lcase.description, :style => "width:400px;")%>
+	        <%= text_field_tag("cases[#{index}][description]", lcase.description, :style => "width:220px;")%>
+          <span style="font-weight:bold;padding-left:5px;"><%=tra("Application:", "Language case description")%></span>
+          <%=select_tag("cases[#{index}][application]", tr8n_options_for_select(lcase.class.application_options, lcase.application), :style => "width:120px")%>
 				</div>
       </div>              
 	     <div id="language_case_rules_<%=index%>" style="padding:5px; border: 1px dotted #ccc; margin-top:0px; margin-bottom:5px; border-top: 0px;">
-	        <%= render(:partial => "edit_case_rules", :locals => {:lcase => lcase, :case_index => index}) %>
+	        <%= render(:partial => "edit_language_case_rules", :locals => {:lcase => lcase, :case_index => index}) %>
 			 </div>		 
 				
   <% end %>

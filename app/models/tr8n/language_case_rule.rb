@@ -37,7 +37,7 @@ class Tr8n::LanguageCaseRule < ActiveRecord::Base
   end
   
   def self.gender_options
-    [["no gender", "none"], ["unknown", "unknown"], ["male", "male"], ["female", "female"]]
+    [["not applicable", "none"], ["unknown", "unknown"], ["male", "male"], ["female", "female"]]
   end
   
   def self.condition_options(with_if = false)
@@ -143,7 +143,7 @@ class Tr8n::LanguageCaseRule < ActiveRecord::Base
   def description
     return "undefined rule" if definition.blank?
     
-    desc = "if"
+    desc = "If"
     if definition["gender"] != "none"
       desc << " subject"
       if ["male", "female"].include?(definition["gender"])
@@ -152,7 +152,7 @@ class Tr8n::LanguageCaseRule < ActiveRecord::Base
         desc << " <strong>has an unknown gender</strong>"
       end
     end
-    desc << " and" unless desc == "if"
+    desc << " and" unless desc == "If"
     desc << " token value"
     desc << describe_part(1)
   
@@ -167,7 +167,7 @@ class Tr8n::LanguageCaseRule < ActiveRecord::Base
       when "prepand" then desc << " prepand the value with"        
       when "append" then desc << " append the value with"        
     end
-    desc << " <strong>'" << humanize_values(definition["operation_value"]) << "'</strong>"
+    desc << " <strong>'" << humanize_values(definition["operation_value"]) << "'</strong> "
   end
   
   def describe_part(index)
@@ -182,6 +182,5 @@ class Tr8n::LanguageCaseRule < ActiveRecord::Base
     end
     desc << " <strong>'" << humanize_values(definition["value#{index}"]) << "'</strong>"
   end
-  
   
 end

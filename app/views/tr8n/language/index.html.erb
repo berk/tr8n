@@ -1,3 +1,15 @@
+<style>
+	.language_case_rule {
+		padding:5px;
+		vertical-align:middle;
+		border-bottom: 1px dotted #ccc;
+	}
+	
+	.language_case_rule:hover {
+		background-color:#eee;
+	}
+	
+</style>
 <% Tr8n::Config.with_options(:default_locale => 'en-US', :admin => true) do %>
 
 	<%= render :partial => "/tr8n/common/header" %>

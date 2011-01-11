@@ -26,7 +26,9 @@ class Tr8n::LanguageCase < ActiveRecord::Base
 
   belongs_to :language, :class_name => "Tr8n::Language"   
   belongs_to :translator, :class_name => "Tr8n::Translator"   
-  has_many   :language_case_rules, :class_name => "Tr8n::LanguageCaseRule",  :dependent => :destroy
+  has_many   :language_case_rules, :class_name => "Tr8n::LanguageCaseRule", :order => 'position asc', :dependent => :destroy
+  
+  serialize :definition
   
   def self.by_id(case_id)
     Tr8n::Cache.fetch("language_case_#{case_id}") do 
@@ -69,7 +71,13 @@ class Tr8n::LanguageCase < ActiveRecord::Base
   def apply(object, value, options)
     html_tag_expression = /<\/?[^>]*>/
     html_tokens = value.scan(html_tag_expression).uniq
-    words = value.gsub(html_tag_expression, "").split(" ").uniq
+    sanitized_value = value.gsub(html_tag_expression, "")
+    
+    if application == 'phrase'
+      words = [sanitized_value]
+    else  
+      words = sanitized_value.split(" ").uniq
+    end
     
     # replace html tokens with temporary placeholders
     html_tokens.each_with_index do |html_token, index|
@@ -117,6 +125,10 @@ class Tr8n::LanguageCase < ActiveRecord::Base
     return case_value unless Tr8n::Config.current_translator.enable_inline_translations?
     
     "<span class='tr8n_language_case' case_id='#{id}' rule_id='#{case_rule ? case_rule.id : ''}' case_key='#{case_map_key.gsub("'", "\'")}'>#{case_value}</span>"
+  end
+
+  def self.application_options
+    [["every word", "words"], ["entire phrase", "phrase"]]
   end
 
   def after_save
