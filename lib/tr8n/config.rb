@@ -83,7 +83,7 @@ class Tr8n::Config
        Tr8n::Translator, Tr8n::TranslatorLog, Tr8n::TranslatorMetric, 
        Tr8n::TranslatorFollowing, Tr8n::TranslatorReport, 
        Tr8n::LanguageForumTopic, Tr8n::LanguageForumMessage, Tr8n::LanguageForumAbuseReport,
-       Tr8n::Glossary
+       Tr8n::Glossary, Tr8n::IpLocation
     ]    
   end
 
