@@ -25,8 +25,8 @@ module Tr8n::BaseHelper
 
   # for admin translations
   def tra(label, desc = "", tokens = {}, options = {})
-    if Tr8n::Config.config[:enable_admin_translations]
-      if Tr8n::Config.config[:enable_admin_inline_mode]
+    if Tr8n::Config.enable_admin_translations?
+      if Tr8n::Config.enable_admin_inline_mode?
         tr(label, desc, tokens, options)
       else
         trl(label, desc, tokens, options)

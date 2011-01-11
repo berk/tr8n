@@ -102,7 +102,7 @@
 	
 	    <%=tr8n_toggler_tag("lang_content_#{lang.id}")%>
 			
-	    <%=image_tag("/tr8n/images/flags/#{lang.flag}.png", :title=>lang.native_name)%>&nbsp;
+	    <%=image_tag("/tr8n/images/flags/#{lang.flag}.png", :title=>lang.native_name) if Tr8n::Config.enable_language_flags? %>&nbsp;
 	    <a name="<%=lang.locale%>" style="text-decoration:none;color:black;"><%=lang.english_name%></a>
 			
 			<% if tr8n_current_translator.manager? %> 

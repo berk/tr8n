@@ -234,9 +234,18 @@ class Tr8n::Config
     config[:enable_translator_language]
   end
 
+  def self.enable_admin_translations?
+    config[:enable_admin_translations]
+  end
+
+  def self.enable_admin_inline_mode?
+    config[:enable_admin_inline_mode]
+  end
+
   def self.enable_country_tracking?
     config[:enable_country_tracking]
   end
+  
   #########################################################
   # Config Sections
   def self.caching

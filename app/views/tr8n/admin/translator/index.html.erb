@@ -12,7 +12,8 @@
     [:name, lambda{|translator|
        link_to(translator.name, :action => :view, :translator_id => translator.id) 
     }],
-    [:site_administrator, lambda{|translator|
+    :country_code, 
+    [:admin, lambda{|translator|
       translator.admin?  
     }, 'text-align:right'],
     [:level, lambda{|translator|
