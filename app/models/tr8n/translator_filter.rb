@@ -39,4 +39,8 @@ class Tr8n::TranslatorFilter < Tr8n::BaseFilter
     end
   end
   
+  def default_filter_if_empty
+    "created_today"
+  end
+  
 end
