@@ -76,7 +76,7 @@ module Tr8n::Admin::BaseHelper
     chart_params << "cht=bhs"
     chart_params << "chbh=10"
     chart_params << "chco=008000"
-    chart_params << "chd=t:#{counts.join(',')}"
+    chart_params << "chd=t:#{counts.reverse.join(',')}"
     
     image_tag("http://chart.apis.google.com/chart?#{chart_params.join('&')}")     
   end

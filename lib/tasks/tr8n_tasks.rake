@@ -18,6 +18,11 @@ namespace :tr8n do
   
   desc "Switches from manager flag to levels approach"
   task :upgrade_managers => :environment do
+    # both of the following management approaches are deprecated, now use level only
+    Tr8n::LanguageUser.find(:all, :conditions => "manager = true").each do |lu|
+      next unless lu.translator
+      lu.translator.update_attributes(:level => Tr8n::Config.manager_level)
+    end
     Tr8n::Translator.connection.execute("update tr8n_translators set level = #{Tr8n::Config.manager_level} where manager = true")
   end
   
@@ -225,11 +230,6 @@ namespace :tr8n do
   desc 'Update IP to Location table (file=<file|config/tr8n/data/ip_locations.csv>)'
   task :import_ip_locations => :environment do
     Tr8n::IpLocation.import_from_file('config/tr8n/data/ip_locations.csv', :verbose => true)
-  end
-  
-  desc 'Switches managers to use the new translator level approach'
-  task :upgrade_managers => :environment do
-    Tr8n::Translator.connection.execute("update tr8n_translators set level = 1000 where manager = true")  
   end
   
 end
