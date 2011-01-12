@@ -140,8 +140,6 @@ class Tr8n::LanguageController < Tr8n::BaseController
     case_index = params[:case_index].to_i
     lcase = cases[case_index]
 
-    pp params
-  
     if params[:case_action].index("add_rule_at")
       position = params[:case_action].split("_").last.to_i
       rule_data = params[:edit_rule].merge(:language => tr8n_current_language)
