@@ -275,14 +275,14 @@ class Tr8n::LanguageController < Tr8n::BaseController
   end
   
   def lb_language_case_rule
-    @cases = parse_language_cases
-    @case = @cases[case_index]
+    @case = Tr8n::LanguageCase.new(params[:case])
+    @rule_index = params[:rule_index]
     
     if params[:case_action].index("add_rule_at")
       @rule = Tr8n::LanguageCaseRule.new(:definition => {})
       @new_rule = true
     else
-      @rule = @case.rules[rule_index]
+      @rule = Tr8n::LanguageCaseRule.new(params[:rule])
     end
     
     render :layout => false

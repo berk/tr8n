@@ -8,16 +8,17 @@
 		margin:0px;
   }
 </style>
+
 <div id="language_cases_container" style="font-size:12px;">
   <%=render(:partial => "header", :locals => {:section => "language_cases", :label => "Language Cases", :description => "", :mode => mode})%>
   
   <% form_for(:language, tr8n_current_language, :url => {:action => :index}, :html => {:id => 'language_cases_form', :method => :post}) do |f| %>
-    <div class="section_box colored">
+    <div id="language_cases_content" class="section_box colored">
       <div style="float:right; padding-right:5px;">
           <%=tr8n_help_icon_tag %>
       </div>
-      <div ondblclick="switchSectionMode('language_cases', 'edit')">
-      	
+			
+      <div>
 				<div style="padding-top:5px;padding-bottom:15px;font-size:12px;">
 					<%=tra("A language case is an inflection or use of a noun (or pronoun) to show its relation to other words in the sentence.")%>
 					<%=tra("In some languages, like Russian, the form of a token {actor} will changed based on where and how the token is used in a sentence.", "", :actor => "{actor}")%>
@@ -39,6 +40,7 @@
 					  <% @cases.each_with_index do |lcase, index| %>
 						    <div>
 							    <div style="padding-bottom:5px; font-size:12px;">
+                    <%=tr8n_toggler_tag("case_#{index}_content")%>
 					          <strong><%= lcase.native_name %></strong>
 					          <span style="color:grey; font-size:10px;">
 					            <% if lcase.application == 'phrase' %>
@@ -48,14 +50,16 @@
 					            <% end %>
 					          </span> 
 										<br>
-                    <span style="color:grey; font-size:10px;">(::<%= lcase.keyword %>) <%= lcase.description %> </span>
+                    <span style="color:grey; font-size:10px; padding-left:15px;">(::<%= lcase.keyword %>) <%= lcase.description %> </span>
 									</div>
 									
-	                <ol style="font-size: 12px; padding-left:10px; margin:1em; list-style-type:decimal; margin-top:0px;">
-	                <% lcase.rules.each do |rule| %>
-	                    <li style=""><%=rule.description %></li>
-	                <% end %> 
-	                </ol>
+									<div id="case_<%=index%>_content">
+		                <ol style="font-size: 12px; padding-left:20px; margin:1em; list-style-type:decimal; margin-top:0px;">
+		                <% lcase.rules.each do |rule| %>
+		                    <li style=""><%=rule.description %></li>
+		                <% end %> 
+		                </ol>
+									</div>
 								</div>	
 					  <% end %>
 						
@@ -112,10 +116,15 @@
 	
 	var edit_case_index, edit_rule_index, case_action;
   function addLanguageCaseRule(case_index, position) {
-    var form_hash = Tr8n.Utils.serializeForm('language_cases_form');
+    var form_hash = {};
+    form_hash['case_action'] = "add_rule_at_" + position;
     form_hash['case_index'] = case_index;
     form_hash['rule_index'] = position;
-    form_hash['case_action'] = "add_rule_at_" + position;
+
+    form_hash['case[keyword]'] = Tr8n.value('cases_' + case_index + '_keyword');
+    form_hash['case[native_name]'] = Tr8n.value('cases_' + case_index + '_native_name');
+    form_hash['case[description]'] = Tr8n.value('cases_' + case_index + '_description');
+		
 		edit_case_index = case_index;
 		edit_rule_index = position;
 		edit_case_action = form_hash['case_action'];
@@ -124,14 +133,29 @@
   }
 
   function editLanguageCaseRule(case_index, position) {
-    var form_hash = Tr8n.Utils.serializeForm('language_cases_form');
+    var form_hash = {};
+    form_hash['case_action'] = "update_rule_at_" + position;
     form_hash['case_index'] = case_index;
     form_hash['rule_index'] = position;
-    form_hash['case_action'] = "update_rule_at_" + position;
+		
+    form_hash['case[keyword]'] = Tr8n.value('cases_' + case_index + '_keyword');
+    form_hash['case[native_name]'] = Tr8n.value('cases_' + case_index + '_native_name');
+    form_hash['case[description]'] = Tr8n.value('cases_' + case_index + '_description');
+
+    form_hash['rule[definition][gender]'] = Tr8n.value('cases_' + case_index + '_rules_' + position + '_definition_gender');
+    form_hash['rule[definition][part1]'] = Tr8n.value('cases_' + case_index + '_rules_' + position + '_definition_part1');
+    form_hash['rule[definition][value1]'] = Tr8n.value('cases_' + case_index + '_rules_' + position + '_definition_value1');
+    form_hash['rule[definition][multipart]'] = Tr8n.value('cases_' + case_index + '_rules_' + position + '_definition_multipart');
+    form_hash['rule[definition][operator]'] = Tr8n.value('cases_' + case_index + '_rules_' + position + '_definition_operator');
+    form_hash['rule[definition][part2]'] = Tr8n.value('cases_' + case_index + '_rules_' + position + '_definition_part2');
+    form_hash['rule[definition][value2]'] = Tr8n.value('cases_' + case_index + '_rules_' + position + '_definition_value2');
+    form_hash['rule[definition][operation]'] = Tr8n.value('cases_' + case_index + '_rules_' + position + '_definition_operation');
+    form_hash['rule[definition][operation_value]'] = Tr8n.value('cases_' + case_index + '_rules_' + position + '_definition_operation_value');
+    
     edit_case_index = case_index;
     edit_rule_index = position;
     edit_case_action = form_hash['case_action'];
-		
+    
     tr8nLightbox.show('/tr8n/language/lb_language_case_rule?' + Tr8n.Utils.toQueryParams(form_hash), {width:600, height:270});
   }
 

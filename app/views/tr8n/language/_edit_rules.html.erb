@@ -4,30 +4,39 @@
        cls = Tr8n::Config.language_rule_dependencies[dependency] 
   %>
 	    <div style="margin-bottom:10px; border-bottom: 1px dotted #ccc; padding-bottom:5px;">
-	      <div style="font-weight:bold; padding-bottom:5px;">
+	      <div style="font-weight:bold; padding-bottom:5px; background-color:#f1f4fa; border:1px dotted #ccc; padding:5px;">
 				  <%= tra("#{cls.dependency_label.capitalize} Rules")%>
 				</div>
 	      
-				<% if @rules[dependency].empty? %>
-				  <div style="font-style:italic; font-size: 10px; color: grey;">
-				  	<%=tra("There are no #{cls.dependency_label} rules defined for this language.")%>
-						<%=link_to_function(tra("Click here to add a new #{cls.dependency_label} rule."), "addLanguageRule('#{cls.dependency}', '0')")%>
-				  </div>
-				<% end %>
-				
-	      <% @rules[dependency].each_with_index do |rule, index| %>
-				    <div style="padding-bottom:3px;">
-				      <input type="button" value=" + " onClick="addLanguageRule('<%=dependency%>','<%=index+1%>')" style="cursor:pointer; width: 30px;">
-				      <input type="button" value=" - " onClick="deleteLanguageRule('<%=dependency%>','<%=index%>')" style="cursor:pointer; width: 30px;">
-				      
-				      <% rule.definition ||= {} %>
-				      
-				      <%=hidden_field_tag("rules[#{dependency}][#{index}][id]", rule.id)%>
-				      <%=hidden_field_tag("rules[#{dependency}][#{index}][reset_values]", "false", :id => "rule_#{index}_reset_values")%>
-				      
-				      <%=render :partial=> "/tr8n/language/rules/#{dependency}_rule", :locals => {:rule => rule, :index => index} %>
-				    </div>
-	      <% end %> 
+				<div id="<%=dependency%>_rule_content" style="background-color:#eee; border:1px dotted #ccc; padding:5px;">
+					<% if @rules[dependency].empty? %>
+					  <div style="font-style:italic; font-size: 10px; color: grey;">
+					  	<%=tra("There are no #{cls.dependency_label} rules defined for this language.")%>
+							<%=link_to_function(tra("Click here to add a new #{cls.dependency_label} rule."), "addLanguageRule('#{cls.dependency}', '0')")%>
+					  </div>
+					<% end %>
+					
+		      <% @rules[dependency].each_with_index do |rule, index| %>
+					    <div style="padding-bottom:3px;">
+							  <table> 
+								  <tr>
+								  	<td style="vertical-align:middle;width:1%;white-space:nowrap;padding-right:3px;">
+										  <%=link_to_function(image_tag("/tr8n/images/add.png"), "addLanguageRule('#{dependency}','#{index+1}')")%>
+			                <%=link_to_function(image_tag("/tr8n/images/delete.png"), "deleteLanguageRule('#{dependency}','#{index}')")%>
+										</td>	
+								    <td style="vertical-align:middle;text-align:left;">  
+								      <% rule.definition ||= {} %>
+								      
+								      <%=hidden_field_tag("rules[#{dependency}][#{index}][id]", rule.id)%>
+								      <%=hidden_field_tag("rules[#{dependency}][#{index}][reset_values]", "false", :id => "rule_#{index}_reset_values")%>
+								      
+								      <%=render :partial=> "/tr8n/language/rules/#{dependency}_rule", :locals => {:rule => rule, :index => index} %>
+                    </td>
+                  </tr>
+								</table>
+					    </div>
+		      <% end %>
+				</div>	 
       </div>
   <% end %> 
 </div>

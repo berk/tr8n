@@ -2,7 +2,7 @@
   <%=render(:partial => "header", :locals => {:section => "prohibited_words", :label => "Prohibited Words", :description => "", :mode => mode})%>
 
   <% form_for(:language, tr8n_current_language, :url => {:controller => :language, :action => :manage}, :html => {:id => 'prohibited_words_form', :method => :post}) do |f| %>
-    <div class="section_box colored" ondblclick="switchSectionMode('prohibited_words', 'edit')">
+    <div id="prohibited_words_content" class="section_box colored">
       <% if mode == :edit %>
         <%=f.text_area(:curse_words, :style => "width:100%; height:60px; background:white;")%>
         <div style="color:grey; font-size:10px; padding-top:10px;"><%=tra("Add any prohibited/curse words that should not be allowed in translations for this language. Separate words with commas.")%></div>

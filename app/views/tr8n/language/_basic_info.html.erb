@@ -2,11 +2,11 @@
   <%=render(:partial => "header", :locals => {:section => "basic_info", :label => "Basic Information", :description => "", :mode => mode})%>
   
   <% form_for(:language, tr8n_current_language, :url => {:action => :index}, :html => {:id => 'basic_info_form', :method => :post}) do |f| %>
-    <div class="section_box colored">
+    <div id="basic_info_content" class="section_box colored">
       <div style="float:right; padding-right:5px;">
           <%=tr8n_help_icon_tag %>
       </div>
-      <div ondblclick="switchSectionMode('basic_info', 'edit')">
+      <div>
         <table cellpadding="0px" cellspacing="0px">
           <tr>
             <th style="width:120px;padding:3px; text-align:left; vertical-align:middle;font-weight:bold;"><%=trla("Native Name:", "Language native name")%></th>

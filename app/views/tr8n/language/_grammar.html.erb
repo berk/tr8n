@@ -2,7 +2,7 @@
   <%=render(:partial => "header", :locals => {:section => "grammar", :label => "Context Rules", :description => "", :mode => mode})%>
 
   <% form_for(:language, tr8n_current_language, :url => {:action => :index}, :html => {:id => 'grammar_form', :method => :post}) do |f| %>
-    <div class="section_box colored" ondblclick="switchSectionMode('grammar', 'edit')">
+    <div id="grammar_content" class="section_box colored">
       <div style="float:right; padding-right:5px;">
         <%=tr8n_help_icon_tag %>
       </div>
