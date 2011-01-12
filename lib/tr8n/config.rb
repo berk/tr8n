@@ -90,22 +90,30 @@ class Tr8n::Config
   # will clean all tables and initialize default values
   # never ever do it on live !!!
   def self.reset_all!
+    puts "Resetting tr8n tables..."
     models.each do |cls|
+      puts ">> Resetting #{cls.name}..."
       cls.delete_all
     end
+    puts "Done."
 
+    puts "Initializing default languages..."
     default_languages.each do |locale, info|
+      puts ">> Initializing #{info[:english_name]}..."
       lang = Tr8n::Language.find_or_create(locale, info[:english_name])
       info[:right_to_left] = false if info[:right_to_left].nil?
       fallback_key = info.delete(:fallback_key)
       lang.update_attributes(info)
       lang.reset!
     end
+    puts "Created #{default_languages.size} languages."
     
-    Tr8n::Glossary.delete_all
+    puts "Initializing default glossary..."
     default_glossary.each do |keyword, description|
       Tr8n::Glossary.create(:keyword => keyword, :description => description)
     end
+    
+    puts "Done."
   end
   
   def self.root
