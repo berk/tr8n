@@ -52,7 +52,7 @@ class Tr8n::LanguageCaseRule < ActiveRecord::Base
   end
 
   def self.operation_options
-    [["then replace with", "replace"], ["then prepand", "prepand"], ["then append", "append"]]
+    [["replace with", "replace"], ["prepand", "prepand"], ["append", "append"]]
   end
 
   def self.operator_options
