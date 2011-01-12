@@ -227,4 +227,9 @@ namespace :tr8n do
     Tr8n::IpLocation.import_from_file('config/tr8n/data/ip_locations.csv', :verbose => true)
   end
   
+  desc 'Switches managers to use the new translator level approach'
+  task :upgrade_managers => :environment do
+    Tr8n::Translator.connection.execute("update tr8n_translators set level = 1000 where manager = true")  
+  end
+  
 end
