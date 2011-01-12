@@ -47,30 +47,28 @@ class Tr8n::IpLocation < ActiveRecord::Base
 
   def self.import_from_file(file, opts=nil)
     opts ||= {:verbose => false}
-    transaction do
-      puts "Deleting old records..." if opts[:verbose]
-      delete_all
-      puts "Done." if opts[:verbose]
+    puts "Deleting old records..." if opts[:verbose]
+    delete_all
+    puts "Done." if opts[:verbose]
 
-      puts "Importing new records..." if opts[:verbose]
-      file = File.open(file) if file.is_a?(String)
-      file.each_line do |line|
-        next if line =~ /^\s*\#|^\s*$/
-        line.chomp!.tr!('"\'','')
-        values = line.split(',')
-        create!(
-          :low      =>  values[0],
-          :high     =>  values[1],
-          :registry =>  values[2],
-          :assigned =>  Time.at(values[3].to_i),
-          :ctry     =>  values[4],
-          :cntry    =>  values[5],
-          :country  =>  Iconv.conv('UTF-8', 'ISO_8859-1', values[6])
-        )
-        $stdout << '.' if opts[:verbose]
-      end
-      puts "Done." if opts[:verbose]
+    puts "Importing new records..." if opts[:verbose]
+    file = File.open(file) if file.is_a?(String)
+    file.each_line do |line|
+      next if line =~ /^\s*\#|^\s*$/
+      line.chomp!.tr!('"\'','')
+      values = line.split(',')
+      create!(
+        :low      =>  values[0],
+        :high     =>  values[1],
+        :registry =>  values[2],
+        :assigned =>  Time.at(values[3].to_i),
+        :ctry     =>  values[4],
+        :cntry    =>  values[5],
+        :country  =>  Iconv.conv('UTF-8', 'ISO_8859-1', values[6])
+      )
+      $stdout << '.' if opts[:verbose]
     end
+    puts "Done." if opts[:verbose]
   end
   
 end
