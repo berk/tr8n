@@ -195,8 +195,10 @@ class Tr8n::Token
   def sanitize_token_value(object, value, options, language)
     value = "#{value.to_s}" unless value.is_a?(String)
     
-    if options[:sanitize_values] and not value.html_safe?
-      value = ERB::Util.html_escape(value)
+    unless Tr8n::Config.block_options[:skip_html_escaping]
+      if options[:sanitize_values] and not value.html_safe?
+        value = ERB::Util.html_escape(value)
+      end
     end
     
     if has_case_key?

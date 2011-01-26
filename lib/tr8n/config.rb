@@ -695,9 +695,10 @@ class Tr8n::Config
   def self.with_options(opts = {})
     Thread.current[:tr8n_block_options] = opts
     if block_given?
-      yield
+      ret = yield
     end
     Thread.current[:tr8n_block_options] = {}
+    ret
   end
   
 end
