@@ -484,7 +484,7 @@ logger:
 			&nbsp;&nbsp;&nbsp;&lt;head&gt;<br>
 			&nbsp;&nbsp;&nbsp;&lt;/head&gt;<br>
 			&nbsp;&nbsp;&nbsp;&lt;body&gt;<br>
-			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;%= @content_for_layout %&gt;<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;%= yield %&gt;<br>
 			&nbsp;&nbsp;&nbsp;&lt;/body&gt;<br>
 			&lt;/html&gt;<br>
    </div> 		
@@ -524,7 +524,7 @@ logger:
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div style="float:right"&gt;<br>
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;%= tr8n_language_selector_tag %&gt;<br>
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br><br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;%= @content_for_layout %&gt;<br><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;%= yield %&gt;<br><br>
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;%= tr8n_language_strip_tag %&gt;<br>
       &nbsp;&nbsp;&nbsp;&lt;/body&gt;<br>
       &lt;/html&gt;<br>
