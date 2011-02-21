@@ -1,4 +1,4 @@
-<% Tr8n::Config.with_options(:default_locale => 'en-US', :admin => true) do %>
+<%= Tr8n::Config.with_options(:default_locale => 'en-US', :admin => true) do %>
 	<div class="head">
 	  <div class="action">
 	    <%=link_to_function(image_tag("/tr8n/images/close.gif", :style => "border:0px; padding:5px;", :alt=>trla("Close")), "tr8nLanguageSelector.hide()")%>
@@ -64,7 +64,7 @@
 	  </table>
 	</div>
 	
-	<% form_tag({:controller => :language, :action => :switch}, :id => "language_selector_form", :style=>"padding:0px;margin:0px;") do %>
+	<%= form_tag({:controller => :language, :action => :switch}, :id => "language_selector_form", :style=>"padding:0px;margin:0px;") do %>
 	    <%=hidden_field_tag(:source_url, @source_url)%>
 	    <%=hidden_field_tag(:locale, tr8n_current_language.locale, :id => "language_selector_locale")%>
 	    <%=hidden_field_tag(:language_action, "switch_language", :id => "language_selector_action")%>
