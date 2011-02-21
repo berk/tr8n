@@ -22,6 +22,7 @@
 #++
 
 require 'digest/md5'
+require 'erb'
 
 class Tr8n::TranslationKey < ActiveRecord::Base
   set_table_name :tr8n_translation_keys
@@ -426,10 +427,13 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   end
   
   def default_decoration(language = Tr8n::Config.current_language, options = {})
-    return label if Tr8n::Config.current_user_is_guest?
-    return label unless Tr8n::Config.current_user_is_translator?
-    return label unless translator_permitted_to_translate?
-    return label if locked?(language)
+
+    hlabel = ERB::Util.html_escape(label)
+    
+    return hlabel if Tr8n::Config.current_user_is_guest?
+    return hlabel unless Tr8n::Config.current_user_is_translator?
+    return hlabel unless translator_permitted_to_translate?
+    return hlabel if locked?(language)
 
     classes = ['tr8n_translatable']
 
@@ -440,9 +444,9 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     end
 
     html = "<span class='#{classes.join(' ')}' translation_key_id='#{id}'>"
-    html << label
+    html << hlabel
     html << "</span>"
-    html    
+    html.html_safe   
   end
   
   def level
@@ -455,13 +459,16 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   end
   
   def decorate_translation(language, translated_label, translated = true, options = {})
-    return translated_label if options[:skip_decorations]
-    return translated_label if Tr8n::Config.current_user_is_guest?
-    return translated_label unless Tr8n::Config.current_user_is_translator?
-    return translated_label unless Tr8n::Config.current_translator.enable_inline_translations?
-    return translated_label unless translator_permitted_to_translate?
-    return translated_label if locked?(language)
-    return translated_label if self.language == language
+    
+    hlabel = ERB::Util.html_escape(translated_label)
+
+    return hlabel if options[:skip_decorations]
+    return hlabel if Tr8n::Config.current_user_is_guest?
+    return hlabel unless Tr8n::Config.current_user_is_translator?
+    return hlabel unless Tr8n::Config.current_translator.enable_inline_translations?
+    return hlabel unless translator_permitted_to_translate?
+    return hlabel if locked?(language)
+    return hlabel if self.language == language
 
     classes = ['tr8n_translatable']
     
@@ -474,9 +481,9 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     end  
 
     html = "<span class='#{classes.join(' ')}' translation_key_id='#{id}'>"
-    html << translated_label
+    html << hlabel
     html << "</span>"
-    html
+    html.html_safe
   end
       
   def verify!(time = Time.now)
