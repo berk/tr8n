@@ -70,10 +70,10 @@ class Tr8n::Translation < ActiveRecord::Base
   end
   
   def rank_label
-    return "<span style='color:grey'>0</span>" if rank.blank?
+    return "<span style='color:grey'>0</span>".html_safe if rank.blank?
     
     prefix = (rank > 0) ? "+" : ""
-    "<span style='#{rank_style(rank)}'>#{prefix}#{rank}</span>" 
+    "<span style='#{rank_style(rank)}'>#{prefix}#{rank}</span>".html_safe
   end
 
   # populate language rules from the internal rules hash

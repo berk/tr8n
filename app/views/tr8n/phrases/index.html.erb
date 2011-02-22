@@ -56,8 +56,7 @@
 				    <% if translations.empty? %>
 	            <%= tra("There are no translations for this phrase.") %> 
 							<% unless tk.locked? %>
-		            <%= tra("Be the first one to [link: translate it].", "", 
-		                    :link => lambda{|str| link_to(str, :controller => "/tr8n/phrases", :action => :view, :translation_key_id => tk.id, :section_key => @section_key)}  ) %>
+			    <%= tra("Be the first one to") %> <%= link_to(h(tra("translate it")), :controller => "/tr8n/phrases", :action => :view, :translation_key_id => tk.id, :section_key => @section_key) %>.
 							<% end %>				
 				    <% else %>   
 	            <%= render :partial => "/tr8n/common/translation_votes", :locals => {:translation_key => tk, :translations => translations[0..4], :section_key => @section_key} %>

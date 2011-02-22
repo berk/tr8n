@@ -225,7 +225,7 @@ module Tr8n::HelperMethods
       img_url = Tr8n::Config.silhouette_image
     end
     
-    img_tag = "<img src='#{img_url}' style='width:48px'>"
+    img_tag = "<img src='#{img_url}' style='width:48px'>".html_safe
     
     if translator and options[:linked]
       link_to(img_tag, translator.link)
