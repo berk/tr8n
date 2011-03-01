@@ -1,13 +1,14 @@
 <% if Tr8n::Config.enabled? %>
 	<table>
 	  <tr>
-	    <% per_column = Tr8n::Language.enabled_languages.size / opts[:cols] %> 
+	    <% per_column = Tr8n::Language.enabled_languages.size / opts[:cols] %>
 	    <td style='width:<%=opts[:col_size]%>; vertical-align:top; text-align:left;'>
 	      <% Tr8n::Language.enabled_languages.each_with_index do |lang, index| %>
-	        <%= "</td><td style='width:#{opts[:col_size]}; vertical-align:top; text-align:left;'>" if (index+1) % (per_column+1) == 0 %>
+	        <%= "</td><td style='width:#{opts[:col_size]}; vertical-align:top; text-align:left;'>".html_safe if (index+1) % (per_column+1) == 0 %>
 					<div style="padding:2px 0"><%= tr8n_language_name_tag(lang, opts) %> </div>
 	      <% end %>
 	    </td>
 	  </tr>
 	</table>
 <% end %>
+

@@ -12,17 +12,17 @@
 	      html << "<div style='font-size:10px;color:grey'>"
 	      html << vote.translation.translation_key.description
 	      html << "</div>"
-	      html.join("")
+	      html.join("").html_safe
       else
-        "Deleted Translation"  
-      end  
+        "Deleted Translation"
+      end
     }],
     [:language, lambda{|vote|
       if vote.translation and vote.translation.language
         link_to(vote.translation.language.english_name, :controller => "/tr8n/admin/language", :action => :view, :lang_id => vote.translation.language.id)
       else
-         "Deleted Language"    
-      end  
+         "Deleted Language"
+      end
     }],
     [:translation_id, lambda{|vote|
       if vote.translation
@@ -33,39 +33,39 @@
 	        html << "Context: #{vote.translation.context}"
 	        html << "</div>"
 	      end
-	      html.join("") 
+	      html.join("").html_safe
       else
-        "Deleted Translation"  
-      end  
+        "Deleted Translation"
+      end
     }],
     [:translator_id, lambda{|vote|
       if vote.translator
         link_to(vote.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :translator_id => vote.translator.id)
       else
-        "Unknown" 
-      end  
+        "Unknown"
+      end
     }],
-    [:vote, lambda{|vote| 
+    [:vote, lambda{|vote|
       html = []
       if vote.vote == 1
         html << "<span style='color:green'>"
       else
         html << "<span style='color:red'>"
-      end     
+      end
       html << vote.vote
       html << "</span>"
-      html.join("")
+      html.join("").html_safe
     }, 'text-align:right;'],
     [:actions, lambda{|vote|
       html = []
       html << link_to("Delete", {:action => :delete_vote, :vote_id => vote.id}, {:confirm => "Are you sure you want to delete this vote?"})
-      html.join(' | ')
+      html.join(' | ').html_safe
     }, 'text-align:right;white-space:nowrap;']
   ]) %>
 <% end %>
 
 <%= will_filter_actions_bar_tag(@votes, [
-  ['Delete Selected Votes', 'deleteSelectedVotes()'] 
+  ['Delete Selected Votes', 'deleteSelectedVotes()']
 ]) %>
 
 <%= render :partial => "/tr8n/admin/common/footer" %>

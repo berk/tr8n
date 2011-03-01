@@ -6,21 +6,21 @@
     <div id="wf_filter_conditions" class="conditions">
         <%= render :partial=> "/wf/filter/conditions", :locals => {:wf_filter => wf_filter} %>
     </div>
-    
+
     <div class="wf_footer">
       <div style="float:right">
-        <%=link_to_function("Toggle Conditions", "wfFilter.toggleDebugger()", :style=>"font-size:9px") %>
+        <%= link_to_function("Toggle Conditions", "wfFilter.toggleDebugger()", :style=>"font-size:9px") %>
         &nbsp;&nbsp;
-        Order: 
+        Order:
         <%= select_tag(:wf_order, options_for_select(wf_filter.condition_options, wf_filter.order), {:onChange=>"markDirty()"}) %>
         <%= select_tag(:wf_order_type, options_for_select(wf_filter.order_type_options, wf_filter.order_type), {:onChange=>"markDirty()"}) %>
-        Per Page: 
+        Per Page:
         <%= select_tag(:wf_per_page, options_for_select(wf_filter.per_page_options, wf_filter.per_page.to_s), {:onChange=>"markDirty()"}) %>
-        &nbsp;&nbsp;<%=link_to_function("<span>Submit Filter</span>", "wfFilter.submit()", :class => "wf_grey_button wf_pcb") %>
+        &nbsp;&nbsp;<%= link_to_function("<span>Submit xFilter</span>".html_safe, "wfFilter.submit()", :class => "wf_grey_button wf_pcb") %>
       </div>
       <div>
-        <%=link_to_function("<span>+ Add</span>", "wfFilter.addCondition()", :class => "wf_grey_button wf_pcb") %>
-        <%=link_to_function("<span>- Clear</span>", "wfFilter.removeAllConditions()", :class => "wf_grey_button wf_pcb") %>
+        <%= link_to_function("<span>+ Add</span>".html_safe, "wfFilter.addCondition()", :class => "wf_grey_button wf_pcb") %>
+        <%= link_to_function("<span>- Clear</span>".html_safe, "wfFilter.removeAllConditions()", :class => "wf_grey_button wf_pcb") %>
         &nbsp;&nbsp;<span id="wf_loader" class="spinner" style="display:none;"><%=image_tag "/wf/images/spinner.gif", {:style=>"vertical-align:middle"} %> Loading...</span>
       </div>
     </div>
@@ -30,3 +30,4 @@
     </div>
 </div>
 <% end %>
+

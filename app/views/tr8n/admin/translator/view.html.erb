@@ -19,8 +19,8 @@
             <%=link_to(@translator.name, @translator.link) %>
             (<%=@translator.user.id%>)
           <% else %>
-            Unknown  
-          <% end %>  
+            Unknown
+          <% end %>
         </td>
     </tr>
     <tr>
@@ -36,21 +36,21 @@
             Translator Level
         </th>
         <td>
-            <span id="translator_level_container"> 
+            <span id="translator_level_container">
               <span id='translator_title'><%= @translator.title %></span>
               &nbsp;&nbsp;
               <%= link_to_function('change', "Tr8n.Effects.hide('translator_level_container'); Tr8n.Effects.show('translator_level_options_container');") unless @translator.admin? %>
             </span>
-            
+
             <span id="translator_level_options_container" style='display:none'>
             	<% form_tag do %>
 	              <%= select_tag('translator_level', options_for_select(Tr8n::Translator.level_options, @translator.level.to_s)) %>
 	              <%= link_to_function('save', 'updateTranslatorLevel()')%> | <%= link_to_function('cancel', "Tr8n.Effects.show('translator_level_container'); Tr8n.Effects.hide('translator_level_options_container');")%>
 							<% end %>
             </span>
-            
+
         </td>
-    </tr> 
+    </tr>
     <tr>
         <th>
             Blocked
@@ -66,7 +66,7 @@
         <td>
             <%= (@translator.rank ? (@translator.rank * 100).to_i / 100.0 : 0) %>
         </td>
-		</tr>	
+		</tr>
     <tr>
         <th>
             Last Ip
@@ -74,7 +74,7 @@
         <td>
             <%= @translator.last_ip %>
         </td>
-    </tr> 
+    </tr>
     <tr>
         <th>
             Country Code
@@ -82,7 +82,7 @@
         <td>
             <%= @translator.country_code %>
         </td>
-    </tr> 
+    </tr>
     <tr>
         <th>
             Inline Translations Enabled
@@ -115,7 +115,7 @@
         <td>
             <%=@translator.created_at %>
         </td>
-    </tr>    
+    </tr>
     <tr>
         <th>
             Updated At
@@ -130,36 +130,36 @@
         </th>
         <td>
 					<%= @translator.language_users.collect{|lu|
-                  link_to(lu.language.english_name, :controller => "/tr8n/admin/language", :action => :view, :lang_id => lu.language.id) 
-              }.join(", ") -%>
+                  link_to(lu.language.english_name, :controller => "/tr8n/admin/language", :action => :view, :lang_id => lu.language.id)
+              }.join(", ").html_safe -%>
         </td>
-		</tr>	    
+		</tr>
     <tr>
         <th>
-            
+
         </th>
         <td>
           <% if @translator.blocked? %>
             <%=link_to_function("Unblock", "performTranslatorAction('unblock')") %>
           <% else %>
             <%=link_to_function("Block", "performTranslatorAction('block')") %>
-          <% end %>  
+          <% end %>
 
           | <%=link_to("Delete", {:action => :delete, :translator_id => @translator.id}, :confirm => "Are you sure you want to do that?")%>
-					
+
           | <%=link_to("View Translations", "/tr8n/admin/translation?wf_c0=translator_id&wf_o0=is&wf_v0_0=#{@translator.id}") %>
           | <%=link_to("View Metrics", "/tr8n/admin/translator/metrics?wf_c0=translator_id&wf_o0=is&wf_v0_0=#{@translator.id}") %>
           | <%=link_to("View Reported Translations", "/tr8n/admin/translation?wf_c0=translator_id&wf_o0=is&wf_v0_0=#{@translator.id}&wf_c1=rank&wf_o1=is_less_than&wf_v1_0=-100") %>
           | <%=link_to("View Reported Forum Messages", "/tr8n/admin/forum/reports?wf_c0=author_id&wf_o0=is&wf_v0_0=#{@translator.id}") %>
         </td>
-    </tr>    
+    </tr>
 </table>
 
 <script>
   function performTranslatorAction(action) {
     var reason = prompt("Please provide a reason why you want to " + action + " this translator:");
     location = "/tr8n/admin/translator/" + action + "?translator_id=<%=@translator.id%>&reason=" + reason;
-  }  
+  }
 </script>
 
 <h1>
@@ -226,3 +226,4 @@
 		location = "/tr8n/admin/translator/update_level?translator_id=<%=@translator.id%>&new_level=" + Tr8n.value('translator_level') + "&reason=" + reason;
 	}
 </script>
+

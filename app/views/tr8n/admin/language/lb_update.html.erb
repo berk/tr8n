@@ -1,7 +1,7 @@
-<% form_for(:language, @language, :url => {:action => :update}, :html => {:id => 'tr8n_form', :method => :post, :class => "tr8n"}) do |form| %>
+<%= form_for(@language, :as => :language, :url => {:action => :update}, :html => {:id => 'tr8n_form', :method => :post, :class => "tr8n"}) do |form| %>
   <%= form.hidden_field :id %>
   <%= hidden_field_tag :source_url, request.env['HTTP_REFERER'] %>
-  
+
   <h2>Language Details</h2>
   <table class="admin_table">
       <tr>
@@ -51,7 +51,7 @@
           <td>
               <%= form.text_field :featured_index %>
           </td>
-      </tr>			
+      </tr>
       <tr>
           <th>
               Google Key:
@@ -59,7 +59,7 @@
           <td>
               <%= form.text_field :google_key %>
           </td>
-      </tr>     
+      </tr>
       <tr>
           <th>
               Facebook Key:
@@ -67,10 +67,11 @@
           <td>
               <%= form.text_field :facebook_key %>
           </td>
-      </tr>     
+      </tr>
   </table>
-  
+
 	<div><i>Note: providing google key/locale will enable google suggestions for that language.</i></div>
 
   <%= render :partial => "/tr8n/admin/common/lightbox_buttons" %>
 <% end %>
+

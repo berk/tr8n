@@ -43,10 +43,10 @@ module Tr8n::CommonMethods
     end.collect do |l|
       l.first.downcase.gsub(/-[a-z]+$/i) { |x| x.upcase }
     end
-  rescue 
+  rescue
     []
   end
-  
+
   def tr8n_user_preffered_locale
     tr8n_browser_accepted_locales.each do |locale|
       lang = Tr8n::Language.for(locale)
@@ -54,7 +54,7 @@ module Tr8n::CommonMethods
     end
     Tr8n::Config.default_locale
   end
-  
+
   def tr8n_request_remote_ip
     @remote_ip ||= if request.env['HTTP_X_FORWARDED_FOR']
       request.env['HTTP_X_FORWARDED_FOR'].split(',').first
@@ -62,10 +62,10 @@ module Tr8n::CommonMethods
       request.remote_ip
     end
   end
-  
+
   def init_tr8n
     tr8n_current_locale = nil
-    
+
     begin
       tr8n_current_locale = eval(Tr8n::Config.current_locale_method)
     rescue Exception => ex
@@ -75,7 +75,7 @@ module Tr8n::CommonMethods
       session[:locale] = params[:locale] if params[:locale]
       tr8n_current_locale = session[:locale]
     end
-    
+
     tr8n_current_user = nil
     if Tr8n::Config.site_user_info_enabled?
       begin
@@ -88,11 +88,11 @@ module Tr8n::CommonMethods
       tr8n_current_user = Tr8n::Translator.find_by_id(session[:tr8n_translator_id]) if session[:tr8n_translator_id]
       tr8n_current_user = Tr8n::Translator.new unless tr8n_current_user
     end
-    
+
     # initialize request thread variables
     Tr8n::Config.init(tr8n_current_locale, tr8n_current_user)
-  
-    # track user's last ip address  
+
+    # track user's last ip address
     if Tr8n::Config.enable_country_tracking? and Tr8n::Config.current_user_is_translator?
       Tr8n::Config.current_translator.update_last_ip(tr8n_request_remote_ip)
     end
@@ -120,12 +120,12 @@ module Tr8n::CommonMethods
     options.merge!(:host => host)
 
 #     pp [source, options[:source], url]
-    
+
     unless Tr8n::Config.enabled?
       return Tr8n::TranslationKey.substitute_tokens(label, tokens, options)
     end
-    
-    Tr8n::Config.current_language.translate(label, desc, tokens, options)
+#    debugger
+    Tr8n::Config.current_language.translate(label, desc, tokens, options).html_safe
   end
 
   # for translating labels
@@ -145,3 +145,4 @@ module Tr8n::CommonMethods
   # end translation helper methods
 
 end
+

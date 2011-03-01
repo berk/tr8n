@@ -10,13 +10,13 @@
         links << link.first
       else
         links << link_to(link.first, link.last)
-      end 
-	 end   
+      end
+	 end
 %>
 
 <div class="section_title">
 	<span style="font-size:12px; float:right; padding-top:5px;">
-	  <%=links.join(" | ")%>
+	  <%= links.join(" | ").html_safe %>
 	</span>
   <%=current_tab %>
 </div>

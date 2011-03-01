@@ -4,7 +4,7 @@
 <%= tr8n_will_filter(@languages) %>
 
 <%=link_to_function("+ Add New Language", "tr8nLightbox.show('/tr8n/admin/language/lb_update', {height:350})")%>
- | 
+ |
 <%=link_to_function("Calculate Completeness", 'calculateCompleteness()')%>
 <br>
 
@@ -16,12 +16,12 @@
 	    html = []
 	    if lang.enabled?
 	      html << '<span style="color:green">'
-	    else  
+	    else
 	      html << '<span style="color:red">'
 	    end
 	    html << lang.locale
 	    html << '</span>'
-	    html.join(' ')
+	    html.join(' ').html_safe
 	  }],
 	  [:english_name, lambda{|lang| link_to(lang.english_name, :action => :view, :lang_id => lang.id)}],
 	  [:native_name, lambda{|lang| lang.native_name}],
@@ -29,71 +29,72 @@
 	    html = []
 	    if lang.right_to_left?
 	      html << '<span style="color:red">'
-	    else  
+	    else
 	      html << '<span style="color:green">'
 	    end
 	    html << lang.right_to_left?
 	    html << '</span>'
-	    html.join(' ')
+	    html.join(' ').html_safe
 	  }],
 	  [:featured_index, lambda{|lang| lang.featured_index}, 'text-align:right;'],
-	  [:users, lambda{|lang| lang.total_metric.user_count}, 'text-align:right;'], 
-	  [:translators, lambda{|lang| lang.total_metric.translator_count}, 'text-align:right;'], 
-	  [:translations, lambda{|lang| lang.total_metric.translation_count}, 'text-align:right;'], 
+	  [:users, lambda{|lang| lang.total_metric.user_count}, 'text-align:right;'],
+	  [:translators, lambda{|lang| lang.total_metric.translator_count}, 'text-align:right;'],
+	  [:translations, lambda{|lang| lang.total_metric.translation_count}, 'text-align:right;'],
 	  [:completeness, lambda{|lang|
 	    html = []
 	    completeness = lang.completeness ? lang.completeness : 0
 	    if completeness > 90
 	      html << '<span style="color:green">'
-	    elsif completeness > 60 
+	    elsif completeness > 60
 	      html << '<span style="color:yellow">'
-	    else  
+	    else
 	      html << '<span style="color:red">'
 	    end
 	    html << "#{completeness}%"
 	    html << '</span>'
-	    html.join(' ')
+	    html.join(' ').html_safe
 	  }, 'text-align:right;'],
 	  [:actions, lambda{|lang|
-	     html = [] 
+	     html = []
 	     html << link_to_function("Update", "tr8nLightbox.show('/tr8n/admin/language/lb_update?lang_id=#{lang.id}', {height:350})")
 	     unless lang.default?
 	      if lang.enabled?
 	        html << link_to("Disable", :action => :disable, :lang_id => lang.id)
 	      else
-	        html << link_to("Enable", :action => :enable, :lang_id => lang.id) 
+	        html << link_to("Enable", :action => :enable, :lang_id => lang.id)
 	      end
-	     end 
-	     html.join(' | ') 
+	     end
+	     html.join(' | ').html_safe
 	  }, 'text-align:right;white-space:nowrap;']
 	]) %>
 <% end %>
 
 <%= will_filter_actions_bar_tag(@languages, [
-['Enable Selected Languages', 'enableSelectedLanguages()'], 
+['Enable Selected Languages', 'enableSelectedLanguages()'],
 ['Disable Selected Languages', 'disableSelectedLanguages()']]) %>
 
 <script>
 	function calculateCompleteness() {
 		if (!confirm('Are you sure you want to run this opperation?'))
 		   return;
-			    
-	  location = '/tr8n/admin/language/calculate_total_metrics'	
+
+	  location = '/tr8n/admin/language/calculate_total_metrics'
 	}
-	
+
   function disableSelectedLanguages() {
     if (!confirm("Are you sure you want to disable those languages?")) return;
-    
+
     Tr8n.element('languages_form').action = "/tr8n/admin/language/disable";
     Tr8n.element('languages_form').submit();
   }
 
   function enableSelectedLanguages() {
     if (!confirm("Are you sure you want to enable those languages?")) return;
-    
+
     Tr8n.element('languages_form').action = "/tr8n/admin/language/enable";
     Tr8n.element('languages_form').submit();
   }
 </script>
 
 <%= render :partial => "/tr8n/admin/common/footer" %>
+

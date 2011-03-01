@@ -9,14 +9,15 @@
 <%=link_to_function("+ Add glossary term", "tr8nLightbox.show('/tr8n/admin/glossary/lb_update', {height:450})") %>
 
 <% form_tag("", :id => "terms_form") do %>
-  <%= will_filter_table_tag(@terms, :columns => [:keyword, :description, :updated_at, 
+  <%= will_filter_table_tag(@terms, :columns => [:keyword, :description, :updated_at,
      [:actions, lambda{|term|
         actions = []
         actions << link_to_function("Update", "tr8nLightbox.show('/tr8n/admin/glossary/lb_update?glossary_id=#{term.id}', {height:450})")
         actions << link_to("Delete", {:action => :delete, :glossary_id => term.id}, {:confirm => "Are you sure you want to delete this glossary term?"})
-        actions.join(" | ")
-     }, 'white-space: nowrap'] 
+        actions.join(" | ").html_safe
+     }, 'white-space: nowrap']
   ]) %>
 <% end %>
 
 <%= render :partial => "/tr8n/admin/common/footer" %>
+

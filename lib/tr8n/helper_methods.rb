@@ -33,9 +33,9 @@ module Tr8n::HelperMethods
     return if Tr8n::Config.current_language.default?
     return unless Tr8n::Config.open_registration_mode? or Tr8n::Config.current_user_is_translator?
     return unless Tr8n::Config.current_translator.enable_inline_translations?
-    
-    link_to(image_tag("/tr8n/images/translate_icn.gif", :style => "vertical-align:middle; border: 0px;", :title => search), 
-           :controller => "/tr8n/phrases", :action => :index, 
+
+    link_to(image_tag("/tr8n/images/translate_icn.gif", :style => "vertical-align:middle; border: 0px;", :title => search),
+           :controller => "/tr8n/phrases", :action => :index,
            :search => search, :phrase_type => phrase_type, :phrase_status => phrase_status)
   end
 
@@ -60,27 +60,27 @@ module Tr8n::HelperMethods
   def tr8n_language_name_tag(lang = Tr8n::Config.current_language, opts = {})
     show_flag = opts[:flag].nil? ? true : opts[:flag]
     name_type = opts[:name].nil? ? :full : opts[:name] # :full, :native, :english, :locale
-    linked = opts[:linked].nil? ? true : opts[:linked] 
-    
+    linked = opts[:linked].nil? ? true : opts[:linked]
+
     html = "<span style='white-space: nowrap'>"
     html << tr8n_language_flag_tag(lang, opts) if show_flag
-    
+
     name = case name_type
       when :native  then lang.native_name
       when :english then lang.english_name
       when :locale  then lang.locale
       else lang.full_name
     end
-    
+
     if linked
-      html << link_to(name, :controller => "/tr8n/language", 
-              :action => :switch, :language_action => :switch_language, 
+      html << link_to(name, :controller => "/tr8n/language",
+              :action => :switch, :language_action => :switch_language,
               :locale => lang.locale,
               :source_url => opts[:source_url])
-    else    
+    else
       html << name
     end
-    
+
     html << "</span>"
     html.html_safe
   end
@@ -89,66 +89,66 @@ module Tr8n::HelperMethods
     opts[:style] ||= "color:#1166bb;"
     opts[:show_arrow] ||= true
     opts[:arrow_style] ||= "font-size:8px;"
-    render(:partial => '/tr8n/common/language_selector', :locals => {:opts => opts})    
+    render(:partial => '/tr8n/common/language_selector', :locals => {:opts => opts})
   end
 
   def tr8n_language_strip_tag(opts = {})
     opts[:flag] = opts[:flag].nil? ? false : opts[:flag]
-    opts[:name] = opts[:name].nil? ? :native : opts[:name] 
-    opts[:linked] = opts[:linked].nil? ? true : opts[:linked] 
-    opts[:javascript] = opts[:javascript].nil? ? false : opts[:javascript] 
-    
-    render(:partial => '/tr8n/common/language_strip', :locals => {:opts => opts})    
+    opts[:name] = opts[:name].nil? ? :native : opts[:name]
+    opts[:linked] = opts[:linked].nil? ? true : opts[:linked]
+    opts[:javascript] = opts[:javascript].nil? ? false : opts[:javascript]
+
+    render(:partial => '/tr8n/common/language_strip', :locals => {:opts => opts})
   end
 
   def tr8n_language_table_tag(opts = {})
     opts[:cols] = opts[:cols].nil? ? 4 : opts[:cols]
     opts[:col_size] = opts[:col_size].nil? ? "300px" : opts[:col_size]
-    render(:partial => '/tr8n/common/language_table', :locals => {:opts => opts.merge(:name => :english)})    
+    render(:partial => '/tr8n/common/language_table', :locals => {:opts => opts.merge(:name => :english)})
   end
 
   def tr8n_translator_login_tag(opts = {})
     opts[:class] ||= 'tr8n_right_horiz_list'
-    render(:partial => '/tr8n/common/translator_login', :locals => {:opts => opts})    
+    render(:partial => '/tr8n/common/translator_login', :locals => {:opts => opts})
   end
 
   def tr8n_flashes_tag(opts = {})
-    render(:partial => '/tr8n/common/flashes', :locals => {:opts => opts})    
+    render(:partial => '/tr8n/common/flashes', :locals => {:opts => opts})
   end
 
   def tr8n_scripts_tag(opts = {})
-    render(:partial => '/tr8n/common/scripts', :locals => {:opts => opts})    
+    render(:partial => '/tr8n/common/scripts', :locals => {:opts => opts})
   end
-  
+
   def tr8n_client_sdk_scripts_tag(opts = {})
     javascript_include_tag("/tr8n/javascripts/tr8n_client_sdk.js", :locals => {:opts => opts})
   end
 
   def tr8n_translator_rank_tag(translator, rank = nil)
     return "" unless translator
-    
+
     rank ||= translator.rank || 0
-    
+
     html = "<span dir='ltr'>"
     1.upto(5) do |i|
-      if rank > i * 20 - 10  and rank < i * 20  
+      if rank > i * 20 - 10  and rank < i * 20
         html << image_tag("/tr8n/images/rating_star05.png")
-      elsif rank < i * 20 - 10 
+      elsif rank < i * 20 - 10
         html << image_tag("/tr8n/images/rating_star0.png")
       else
         html << image_tag("/tr8n/images/rating_star1.png")
-      end 
+      end
     end
     html << "</span>"
     html.html_safe
   end
-  
+
   def tr8n_help_icon_tag(filename = "index")
     link_to(image_tag("/tr8n/images/help.png", :style => "border:0px; vertical-align:middle;", :title => trl("Help")), {:controller => "/tr8n/help", :action => filename}, :target => "_new")
   end
-  
+
   def tr8n_help_link(text, opts = {})
-    filename = opts[:filename].nil? ? text.downcase.gsub(' ', '_') : opts[:filename] 
+    filename = opts[:filename].nil? ? text.downcase.gsub(' ', '_') : opts[:filename]
     classname = "tr8n_selected" if filename == controller.action_name
     link_to(text, { :controller => "/tr8n/help", :action => filename }, :class => classname)
   end
@@ -160,37 +160,37 @@ module Tr8n::HelperMethods
     html << "</div>"
     html.html_safe
   end
-  
+
   def tr8n_toggler_tag(content_id, label = "", open = true)
     html = "<span id='#{content_id}_open' "
     html << "style='display:none'" unless open
     html << ">"
-    html << link_to_function("#{image_tag("/tr8n/images/arrow_down.gif", :style=>'text-align:center; vertical-align:middle')} #{label}", "Tr8n.Effects.hide('#{content_id}_open'); Tr8n.Effects.show('#{content_id}_closed'); Tr8n.Effects.blindUp('#{content_id}');", :style=> "text-decoration:none")
-    html << "</span>" 
+    html << link_to_function("#{image_tag("/tr8n/images/arrow_down.gif", :style=>'text-align:center; vertical-align:middle')} #{label}".html_safe, "Tr8n.Effects.hide('#{content_id}_open'); Tr8n.Effects.show('#{content_id}_closed'); Tr8n.Effects.blindUp('#{content_id}');", :style=> "text-decoration:none")
+    html << "</span>"
     html << "<span id='#{content_id}_closed' "
     html << "style='display:none'" if open
     html << ">"
-    html << link_to_function("#{image_tag("/tr8n/images/arrow_right.gif", :style=>'text-align:center; vertical-align:middle')} #{label}", "Tr8n.Effects.show('#{content_id}_open'); Tr8n.Effects.hide('#{content_id}_closed'); Tr8n.Effects.blindDown('#{content_id}');", :style=> "text-decoration:none")
+    html << link_to_function("#{image_tag("/tr8n/images/arrow_right.gif", :style=>'text-align:center; vertical-align:middle')} #{label}".html_safe, "Tr8n.Effects.show('#{content_id}_open'); Tr8n.Effects.hide('#{content_id}_closed'); Tr8n.Effects.blindDown('#{content_id}');", :style=> "text-decoration:none")
     html << "</span>"
     html.html_safe
-  end  
-  
+  end
+
   def tr8n_sitemap(sections, splitters, options = {})
     html = ""
     html << "<table style='width:100%'>"
     html << "<tr>"
-    splitters.each do |splitter| 
+    splitters.each do |splitter|
       html << "<td style='vertical-align:top; width:" << (100 / splitters.size).to_s << "%;'>"
-      html << generate_sitemap(sections[splitter.first..splitter.last], options)      
+      html << generate_sitemap(sections[splitter.first..splitter.last], options)
       html << "</td>"
-    end 
+    end
     html << "</tr>"
     html << "</table>"
     html.html_safe
   end
-  
+
   def tr8n_breadcrumb_tag(source = nil, opts = {})
-    source ||= "#{controller.class.name.underscore.gsub("_controller", "")}/#{controller.action_name}" 
+    source ||= "#{controller.class.name.underscore.gsub("_controller", "")}/#{controller.action_name}"
     section = Tr8n::SiteMap.section_for_source(source)
     return "" unless section
     opts[:separator] ||= " >> "
@@ -199,18 +199,18 @@ module Tr8n::HelperMethods
 
     links = section.parents.collect{|node| link_to(node.title(params), node.link(params))}
     return "" if links.size <= opts[:min_elements]
-    
+
     links.delete(links.first) if opts[:skip_root]
     links.unshift(link_to(opts[:root].first, opts[:root].last)) if opts[:root]
-    
+
     html = "<div id='tr8n_breadcrumb' class='tr8n_breadcrumb'>"
     html << links.join(opts[:separator])
-    html << '</div>'    
+    html << '</div>'
   end
-  
+
   def tr8n_user_tag(translator, options = {})
     return "Deleted Translator" unless translator
-    
+
     if options[:linked]
       link_to(translator.name, translator.link)
     else
@@ -224,24 +224,24 @@ module Tr8n::HelperMethods
     else
       img_url = Tr8n::Config.silhouette_image
     end
-    
+
     img_tag = "<img src='#{img_url}' style='width:48px'>".html_safe
-    
+
     if translator and options[:linked]
       link_to(img_tag, translator.link)
-    else  
+    else
       img_tag
     end
-  end  
-  
+  end
+
   def tr8n_will_paginate(collection = nil, options = {})
-    will_paginate(collection, options.merge(:previous_label => tr("&laquo; Previous", "Previous entries in a list", {}, options), 
+    will_paginate(collection, options.merge(:previous_label => tr("&laquo; Previous", "Previous entries in a list", {}, options),
                                             :next_label => tr("Next &raquo;", "Next entries in a list", {}, options)))
   end
 
   def tr8n_page_entries_info(collection, options = {})
     entry_name = options[:entry_name] || (collection.empty? ? 'entry' : collection.first.class.name.underscore.sub('_', ' '))
-    
+
     if collection.total_pages < 2
       case collection.size
         when 0
@@ -252,7 +252,7 @@ module Tr8n::HelperMethods
           tr("Displaying [bold: all {count}] #{entry_name.pluralize}", "Paginator all entries message", {:count => collection.size}, options)
       end
     else
-      tr("Displaying #{entry_name.pluralize} [bold: {start_num} - {end_num}] of [bold: {total_count}] in total", 
+      tr("Displaying #{entry_name.pluralize} [bold: {start_num} - {end_num}] of [bold: {total_count}] in total",
          "Paginator custom message", {
             :start_num    => collection.offset + 1,
             :end_num      => collection.offset + collection.length,
@@ -265,7 +265,7 @@ module Tr8n::HelperMethods
   def tr8n_select_month(date, options = {}, html_options = {})
     month_names = options[:use_short_month] ? Tr8n::Config.default_abbr_month_names : Tr8n::Config.default_month_names
     select_month(date, options.merge(
-      :use_month_names => month_names.collect{|month_name| Tr8n::Language.translate(month_name, options[:description] || "Month name")} 
+      :use_month_names => month_names.collect{|month_name| Tr8n::Language.translate(month_name, options[:description] || "Month name")}
     ), html_options)
   end
 
@@ -274,17 +274,18 @@ private
   def generate_sitemap(sections, options = {})
     html = "<ul class='section_list'>"
     sections.each do |section|
-      html << "<li class='section_list_item'>" 
+      html << "<li class='section_list_item'>"
       html << "<a href='/tr8n/phrases/index?section_key=#{section.key}'>" << tr(section.label, section.description) << "</a>"
       html << "<a href='" << section.data[:link] << "' target='_new'><img src='/tr8n/images/bullet_go.png' style='border:0px; vertical-align:middle'></a>" if section.data[:link]
-      
+
       if section.children.size > 0
         html << generate_sitemap(section.children, options)
-      end  
+      end
       html << "</li>"
     end
     html << "</ul>"
     html.html_safe
   end
-  
+
 end
+

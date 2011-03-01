@@ -35,10 +35,11 @@ module Tr8n::BaseHelper
       Tr8n::Config.default_language.translate(label, desc, tokens, options)
     end
   end
-  
+
   # for admin translations
   def trla(label, desc = "", tokens = {}, options = {})
     tra(label, desc, tokens, options.merge(:skip_decorations => true))
   end
 
 end
+

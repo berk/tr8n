@@ -36,15 +36,15 @@ class Tr8n::BaseController < ApplicationController
   if Tr8n::Config.before_filters.any?
     before_filter *Tr8n::Config.before_filters
   end
-  
+
   if Tr8n::Config.after_filters.any?
     after_filter *Tr8n::Config.after_filters
   end
-  
+
   before_filter :validate_tr8n_enabled, :except => [:translate]
   before_filter :validate_guest_user, :except => [:select, :switch, :translate, :table]
   before_filter :validate_current_user, :except => [:translate]
-  
+
   layout Tr8n::Config.site_info[:tr8n_layout]
 
   def tr8n_current_user
@@ -66,12 +66,12 @@ class Tr8n::BaseController < ApplicationController
     Tr8n::Config.current_translator
   end
   helper_method :tr8n_current_translator
-  
+
   def tr8n_current_user_is_admin?
     Tr8n::Config.current_user_is_admin?
   end
   helper_method :tr8n_current_user_is_admin?
-  
+
   def tr8n_current_user_is_translator?
     Tr8n::Config.current_user_is_translator?
   end
@@ -82,23 +82,23 @@ class Tr8n::BaseController < ApplicationController
     tr8n_current_translator.manager?
   end
   helper_method :tr8n_current_user_is_manager?
-  
+
   def tr8n_current_user_is_guest?
     Tr8n::Config.current_user_is_guest?
   end
   helper_method :tr8n_current_user_is_guest?
-  
+
 private
-  
+
   def tr8n_features_tabs
-    @tabs ||= begin 
+    @tabs ||= begin
       tabs = Tr8n::Config.features.clone
       unless Tr8n::Config.multiple_base_languages?
         tabs = tabs.select{|tab| tab[:default_language]} if tr8n_current_language.default?
       end
-    
+
       unless tr8n_current_user_is_translator? and tr8n_current_translator.manager?
-        tabs = tabs.select{|tab| !tab[:manager_only]}  
+        tabs = tabs.select{|tab| !tab[:manager_only]}
       end
       tabs
     end
@@ -118,13 +118,13 @@ private
   def page
     params[:page] || 1
   end
-  
+
   def per_page
     params[:per_page] || 30
   end
-  
+
   def sanitize_label(label)
-#  do not double escape    
+#  do not double escape
 #  CGI::escapeHTML(label.strip)
    ERB::Util.html_escape(label.strip)
   end
@@ -147,7 +147,7 @@ private
 
   # make sure users have the rights to access this section
   def validate_current_user
-    unless Tr8n::Config.open_registration_mode? or Tr8n::Config.current_user_is_translator? 
+    unless Tr8n::Config.open_registration_mode? or Tr8n::Config.current_user_is_translator?
       trfe("You don't have rights to access that section.")
       return redirect_to(Tr8n::Config.default_url)
     end
@@ -165,29 +165,29 @@ private
   def validate_language_management
     # admins can do everything
     return if tr8n_current_user_is_admin?
-    
+
     if tr8n_current_language.default?
       trfe("Only administrators can modify this language")
       return redirect_to(@tabs.first[:link])
     end
 
-    unless tr8n_current_user_is_translator? and tr8n_current_translator.manager? 
-      trfe("In order to manage a language you first must request to become a manager of that language. Please send your request to Geni support.")
+    unless tr8n_current_user_is_translator? and tr8n_current_translator.manager?
+      trfe("In order to manage a language you first must request to become a manager of that language. Please send your request to support.")
       return redirect_to(@tabs.first[:link])
     end
   end
-  
+
   def validate_default_language
     return if Tr8n::Config.multiple_base_languages?
     redirect_to(tr8n_features_tabs.first[:link]) if tr8n_current_language.default?
   end
-  
+
   def validate_language
     return unless params[:language]
     return if params[:language][:fallback_language_id].blank? # default
-    
+
     fallback_language = Tr8n::Language.find(params[:language][:fallback_language_id])
-    
+
     while fallback_language do
       if fallback_language == tr8n_current_language
         return "You are creating an infinite loop with fallback languages. Please ensure that languages do not fall back onto each other."
@@ -195,12 +195,13 @@ private
       fallback_language = fallback_language.fallback_language
     end
   end
-    
+
   def validate_admin
     unless tr8n_current_user_is_admin?
       trfe("You must be an admin in order to view this section of the site")
       redirect_to_site_default_url
     end
   end
-  
+
 end
+

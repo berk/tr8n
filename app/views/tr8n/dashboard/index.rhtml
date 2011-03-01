@@ -1,5 +1,5 @@
 <% Tr8n::Config.with_options(:default_locale => 'en-US', :admin => true) do %>
-	
+
 	<%= render :partial => "/tr8n/common/header" %>
 	<script language="JavaScript" src="/tr8n/javascripts/FusionCharts.js"></script>
 	<script type="text/javascript">
@@ -9,17 +9,17 @@
 	      chart.render(chartId);
 	   }
 	</script>
-	
+
 	<div class="section_title">
 		<% if Tr8n::Config.enable_translator_language? %>
 		  <div style="float:right; font-size:12px; padding-top:5px;">
 		     <%=link_to(tra("edit preferences", "Translator preferences link"), :controller => "/tr8n/translator", :action => :index)%>
 		  </div>
 		<% end %>
-		
+
 	  <%=tra("{user}'s Dashboard", "Dashboard section title", :user => [tr8n_current_translator, :name]) %>
 	</div>
-	
+
 	<div class="section_box" style="background-color:#FDFFF0;">
 	    <table style="width:100%">
 	      <tr>
@@ -34,7 +34,7 @@
 										<tr>
 											<td style="width:150px"><%=tra("Your Overall Rank:", "Dashboard section header") %></td>
 											<td>
-									        <%=tr8n_translator_rank_tag(tr8n_current_translator)%>			
+									        <%=tr8n_translator_rank_tag(tr8n_current_translator)%>
 											</td>
 										</tr>
 										<tr>
@@ -54,7 +54,7 @@
 	                  <tr>
 	                    <td><%=tra("Your Forum Messages:", "Dashboard section header") %></td>
 	                    <td>
-	                       <%=tr8n_current_translator.language_forum_messages.count %> 
+	                       <%=tr8n_current_translator.language_forum_messages.count %>
 	                    </td>
 	                  </tr>
 	                  <tr>
@@ -63,29 +63,29 @@
 			                  <% langs = [] %>
 			                  <% tr8n_current_translator.languages.each do |lang|
 			                      next if lang.default?
-			                      langs << link_to(lang.english_name, :anchor => lang.locale)  
-			                     end %>       
-			                  <%= langs.join(" | ") %>
+			                      langs << link_to(lang.english_name, :anchor => lang.locale)
+			                     end %>
+			                  <%= langs.join(" | ").html_safe %>
 	                    </td>
 	                  </tr>
 									</table>
 					      </td>
 					    </tr>
 					  </table>
-						
-	        </td>       
-	      	
+
+	        </td>
+
 	        <td style="width:50%;padding-top:3px;padding-right:3px;">
 	          <%=render :partial => "translator_metric", :locals => {:translator_metric => tr8n_current_translator.total_metric, :lang => nil} %>
-	        </td>       
+	        </td>
 	      </tr>
-	    </table>  
+	    </table>
 	</div>
-	
+
 	<% tr8n_current_translator.languages.each do |lang| %>
 		<% next if lang.default? %>
 		<% translator_metric = tr8n_current_translator.metric_for(lang) %>
-		
+
 		<div class="section_title">
 		  <div style="float:right; font-size:12px; font-weight:normal; padding-top:5px;">
 	      <%=link_to(tra("select", "Language action link"), :locale => lang.locale)%>
@@ -99,25 +99,26 @@
 	      <% end %>
 	      | <%=link_to(tra("remove", "Language action link"), "/tr8n/language/remove?language_id=#{lang.id}")%>
 		  </div>
-	
+
 	    <%=tr8n_toggler_tag("lang_content_#{lang.id}")%>
-			
+
 	    <%=image_tag("/tr8n/images/flags/#{lang.flag}.png", :title=>lang.native_name) if Tr8n::Config.enable_language_flags? %>&nbsp;
 	    <a name="<%=lang.locale%>" style="text-decoration:none;color:black;"><%=lang.english_name%></a>
-			
-			<% if tr8n_current_translator.manager? %> 
+
+			<% if tr8n_current_translator.manager? %>
 			  <span style="color:#ccc; font-size:12px;">(<%=tra("You are managing this language") %>)</span>
 			<% end %>
 		</div>
-		
+
 		<div id="lang_content_<%=lang.id%>" class="section_box colored">
 	    <%=render :partial=>"statistics", :locals => {:lang => lang, :translator_metric => translator_metric}%>
-			
+
 	    <%=render :partial=>"forum", :locals => {:lang => lang}%>
-	
+
 	    <%=render :partial=>"translations", :locals => {:lang => lang}%>
-	
+
 	    <%=render :partial=>"votes", :locals => {:lang => lang}%>
 		</div>
 	<% end %>
 <% end %>
+

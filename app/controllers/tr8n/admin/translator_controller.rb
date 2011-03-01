@@ -25,6 +25,8 @@ class Tr8n::Admin::TranslatorController < Tr8n::Admin::BaseController
 
   def index
     @translators = Tr8n::Translator.filter(:params => params, :filter => Tr8n::TranslatorFilter)
+    @translators = Tr8n::Translator.filter(:params => params)
+    debugger
   end
 
   def view
@@ -38,7 +40,7 @@ class Tr8n::Admin::TranslatorController < Tr8n::Admin::BaseController
       params[:translators].each do |translator_id|
         translator = Tr8n::Translator.find_by_id(translator_id)
         translator.destroy if translator
-      end  
+      end
     end
     redirect_to_source
   end
@@ -50,7 +52,7 @@ class Tr8n::Admin::TranslatorController < Tr8n::Admin::BaseController
   end
 
   def unblock
-    @translator = Tr8n::Translator.find(params[:translator_id])    
+    @translator = Tr8n::Translator.find(params[:translator_id])
     @translator.unblock!(tr8n_current_user, params[:reason])
     redirect_to_source
   end
@@ -66,17 +68,17 @@ class Tr8n::Admin::TranslatorController < Tr8n::Admin::BaseController
     @translator.demote!(tr8n_current_user, params[:reason])
     redirect_to_source
   end
-  
+
   def update_stats
     Tr8n::Translator.all.each do |trans|
       trans.update_total_metrics!
     end
-  
+
     redirect_to :action => :index
   end
-   
+
   def lb_register
-    @translator = Tr8n::Translator.new    
+    @translator = Tr8n::Translator.new
     render :layout => false
   end
 
@@ -86,12 +88,12 @@ class Tr8n::Admin::TranslatorController < Tr8n::Admin::BaseController
     unless user
       return redirect_to_source
     end
-    
+
     translator = Tr8n::Translator.find_by_user_id(user.id)
     if translator
       return redirect_to_source
     end
-    
+
     Tr8n::Translator.create(:user_id => params[:translator][:user_id])
     redirect_to_source
   end
@@ -103,7 +105,7 @@ class Tr8n::Admin::TranslatorController < Tr8n::Admin::BaseController
   def reports
     @reports = Tr8n::TranslatorReport.filter(:params => params, :filter => Tr8n::TranslatorReportFilter)
   end
-   
+
   def log
     @logs = Tr8n::TranslatorLog.filter(:params => params, :filter => Tr8n::TranslatorLogFilter)
   end
@@ -115,5 +117,6 @@ class Tr8n::Admin::TranslatorController < Tr8n::Admin::BaseController
   def ip_locations
     @ip_locations = Tr8n::IpLocation.filter(:params => params, :filter => Tr8n::IpLocationFilter)
   end
-     
+
 end
+

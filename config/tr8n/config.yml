@@ -2,9 +2,9 @@
 # Tr8n Configuration
 #
 # Default settings for all environments
-# 
-# You can overload any feature for any environment by changing the 
-# environment settings at the bottom of the file. 
+#
+# You can overload any feature for any environment by changing the
+# environment settings at the bottom of the file.
 #
 # Alternatively, you can overload any of the methods of Tr8n::Config
 #############################################################################
@@ -13,56 +13,56 @@ defaults: &defaults
   enable_tr8n:                true      # enables the engine
   enable_key_source_tracking: false     # builds the site map sources
   enable_key_caller_tracking: false     # tracks all calls to labels with their traces - for debugging only
-  
-  enable_glossary_hints:      true      # shows glossary in the translator    
-  enable_software_keyboard:   true      # shows the soft keyboard icon  
+
+  enable_glossary_hints:      true      # shows glossary in the translator
+  enable_software_keyboard:   true      # shows the soft keyboard icon
   enable_google_suggestions:  true      # uses google for suggestions
   enable_keyboard_shortcuts:  true      # adds some keyboard shortcuts like ctrl+shift+s
   enable_dictionary_lookup:   true      # shows dictionary words definitions
-  
+
   enable_fallback_languages:  true      # for example: Catalan can fallback onto Spanish
   enable_translator_language: true      # translator can translate from non-default language
 
   enable_language_flags:      true      # shows flag icons next to the languages
   enable_language_stats:      true      # shows percent completion of a language
-  
+
   enable_admin_translations:  true      # registers tr8n admin keys in the system
   enable_admin_inline_mode:   true      # allows tr8n engine sections to be inline translated
-  
+
   enable_language_cases:      true      # enables support for language cases
   enable_client_sdk:          false     # allows javascript to use tr8nProxy object
-  
-  enable_country_tracking:    true      # tracks and reports translator countries 
+
+  enable_country_tracking:    true      # tracks and reports translator countries
 
   #############################################################################
   # Featured languages can be added as a bottom strip bar on all pages using
   #
   #  <%= tr8n_language_strip_tag %>
-  # 
+  #
   # The featured languages can be configured in the admin tool.
   # Alternatively, you can provide the list of languages here, and run:
-  # 
-  #  rake tr8n:featured_languages 
+  #
+  #  rake tr8n:featured_languages
   #
   #############################################################################
-  featured_languages:         ["en-US", "es", "pt", "fr", "de", "it", "ru", "et", "iw", "zh-TW"]
-  
+  featured_languages:         ["en", "es", "pt", "fr", "de", "it", "ru", "et", "iw", "zh-TW"]
+
   #############################################################################
-  # Set the following flag to true if you would like to allow any registered 
+  # Set the following flag to true if you would like to allow any registered
   # user to become a translator. The users become translators as soon as they
-  # enable inline translation mode, submit a translation, or vote on a 
+  # enable inline translation mode, submit a translation, or vote on a
   # translation. If the flag is set to false, then a user must be promoted to
   # be a translator in order to submit or vote on translations.
   #############################################################################
   open_registration_mode:     true
 
   #############################################################################
-  # Tr8n best run with caching enabled 
-  # You can configure cache adapter and store parameters by providing the 
-  # the name of your class implementation and the store settings. 
+  # Tr8n best run with caching enabled
+  # You can configure cache adapter and store parameters by providing the
+  # the name of your class implementation and the store settings.
   #
-  # For example: 
-  #  
+  # For example:
+  #
   # cache_adapter:  ActiveSupport::Cache
   # cache_store:    memory_store
   # cache_store:    file_store
@@ -81,7 +81,7 @@ defaults: &defaults
     version:                  1 # you can change the version to invalidate the cache
 
   #############################################################################
-  # By default, Tr8n will use its own logger. If you set it to false,  
+  # By default, Tr8n will use its own logger. If you set it to false,
   # it will use default Rails logger.
   #############################################################################
   logger:
@@ -92,14 +92,14 @@ defaults: &defaults
   #############################################################################
   # Site Integration Settings
   #############################################################################
-  site_info:  
+  site_info:
     title:                    Tr8n                            # site title - provide your site title here
     contact_email:            admin@tr8n.org                  # contact email for questions about translations
     current_locale_method:    current_locale                  # application controller method that sets and returns current locale
-    default_url:              /tr8n/home                      # default site url where to redirect the user if Tr8n is disabled            
-    default_locale:           en-US                           # locale of the site default language
+    default_url:              /tr8n/home                      # default site url where to redirect the user if Tr8n is disabled
+    default_locale:           enable_paranoia_mode                              # locale of the site default language
     sitemap_path:             /config/tr8n/site/sitemap.json  # location of the sitemap definition file
-    splash_screen:            /tr8n/common/splash_screen      # location of the Tr8n splash screen  
+    splash_screen:            /tr8n/common/splash_screen      # location of the Tr8n splash screen
     tr8n_layout:              tr8n                            # layout for the tr8n pages
     tr8n_helpers:             []                              # if you need to add extra helpers
     admin_layout:             tr8n_admin                      # layout to be used for the admin user interface
@@ -113,96 +113,96 @@ defaults: &defaults
       current_user_method:    current_user                    # returns current user object
       methods:                                                # User object methods mapping
         id:                   id
-        name:                 name                            
+        name:                 name
         gender:               gender
         admin:                admin?
         guest:                guest?
         mugshot:              mugshot
         link:                 link
         locale:               locale
-        
+
   #############################################################################
   # Rules Engine Settings
   #############################################################################
-  rules_engine:  
+  rules_engine:
     language_rule_classes:    [Tr8n::NumericRule, Tr8n::GenderRule, Tr8n::GenderListRule, Tr8n::DateRule, Tr8n::ValueRule]
     data_token_classes:       [Tr8n::Tokens::DataToken, Tr8n::Tokens::HiddenToken, Tr8n::Tokens::MethodToken, Tr8n::Tokens::TransformToken]
     decoration_token_classes: [Tr8n::Tokens::DecorationToken]
     allow_nil_token_values:   true
-    numeric_rule:             
+    numeric_rule:
       token_suffixes:         [count, num, age, hours, minutes, years, seconds]
       object_method:          to_i
-    gender_rule:  
+    gender_rule:
       token_suffixes:         [user, profile, actor, target, partner, parent, child, sibling, manager]
       object_method:          gender
-      method_values:  
+      method_values:
         female:               female
         male:                 male
         neutral:              neutral
         unknown:              unknown
-    list_rule:                # use list_rule if your site does not support user genders 
+    list_rule:                # use list_rule if your site does not support user genders
       object_method:          size
       token_suffixes:         [list]
-    gender_list_rule:         # similiar to list rule, but works together with gender rule 
+    gender_list_rule:         # similiar to list rule, but works together with gender rule
       object_method:          size
       token_suffixes:         [list]
-    date_rule:                
+    date_rule:
       token_suffixes:         [date]
       object_method:          to_date
-    value_rule:               
+    value_rule:
       token_suffixes:         *
       object_method:          to_s
-    
+
     # minimal rank makes the translation acceptable for subsitution and counts towards the translator rank
     translation_threshold:    1
-    
+
     viewing_user_token:       viewing_user
-    translation_rank_styles:  
+    translation_rank_styles:
       -1000..-5:              color:red;font-weight:bold;
       -4..-1:                 color:red;
       1..10:                  color:green;
       11..1000:               color:green;font-weight:bold;
-  
+
   #############################################################################
   # API Settings
   #############################################################################
-  api:  
+  api:
     enabled:                  true
     response_encoding:        json     # options: xml, json
     allow_key_registration:   true
-  
+
   #############################################################################
   # Translator Roles         - manager level is set at 1000 and anything above
-  # 
-  # You can restrict translations by surroudning translation keys with the 
+  #
+  # You can restrict translations by surroudning translation keys with the
   # following block:
   #
-  # Tr8n::Config.with_options(:level => 150) do  
+  # Tr8n::Config.with_options(:level => 150) do
   #   tr("Some Key")
   # end
   #
   # Alternatively, you could provide this information in the key options:
-  # 
-  # tr("Label", "Description", {}, {:level => 150}) 
   #
-  # This means that only translators with the level 150 and above can 
+  # tr("Label", "Description", {}, {:level => 150})
+  #
+  # This means that only translators with the level 150 and above can
   # translate this key.
   #############################################################################
-  translator_level:  
+  translator_level:
     0:                        regular
     50:                       trusted
     100:                      professional
     1000:                     manager
- 
+
   #############################################################################
   # Localization Settings
   #############################################################################
-  localization:  
+  localization:
     default_day_names:        [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]
     default_abbr_day_names:   [Sun, Mon, Tue, Wed, Thu, Fri, Sat]
     default_month_names:      [January, February, March, April, May, June, July, August, September, October, November, December]
     default_abbr_month_names: [Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec]
-    custom_date_formats:  
+    custom_date_formats:
       default:                '%m/%d/%Y'            # 07/4/2008
       short_numeric:          '%m/%d'               # 07/4
       short_numeric_year:     '%m/%d/%y'            # 07/4/08
@@ -213,7 +213,7 @@ defaults: &defaults
       monthname_abbr:         '%b %d'               # Jul 4
       monthname_abbr_year:    '%b %d, %Y'           # Jul 4, 2008
       date_time:              '%m/%d/%Y at %H:%M'   # 01/03/1010 at 5:30
- 
+
 #############################################################################
 # Environment Settings
 # You can overload any feature defined in the defaults for any environment
@@ -221,11 +221,11 @@ defaults: &defaults
 development:
   <<: *defaults
 #  enable_key_source_tracking: false
-  
+
 test:
   <<: *defaults
 #  enable_key_source_tracking: false
-      
+
 qa:
   <<: *defaults
 #  enable_key_source_tracking: false
@@ -237,3 +237,4 @@ stage:
 production:
   <<: *defaults
 #  enable_key_source_tracking: false
+

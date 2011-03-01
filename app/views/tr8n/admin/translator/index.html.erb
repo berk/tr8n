@@ -3,27 +3,27 @@
 <%= tr8n_will_filter(@translators) %>
 
 <%= link_to_function("+ Register new translator", "tr8nLightbox.show('/tr8n/admin/translator/lb_register', {height:150})") %>
- | 
+ |
 <%= link_to("Update translators stats", {:action => :update_stats}, :confirm => "Are you sure you want to run this opperation?")%>
 
-<% form_tag("", :id => "translators_form") do %>
+<%= form_tag("", :id => "translators_form") do %>
   <%= will_filter_table_tag(@translators, :columns => [
     [:checkbox, :translators],
     [:name, lambda{|translator|
-       link_to(translator.name, :action => :view, :translator_id => translator.id) 
+       link_to(translator.name, :action => :view, :translator_id => translator.id)
     }],
-    :country_code, 
+    :country_code,
     [:admin, lambda{|translator|
-      translator.admin?  
+      translator.admin?
     }, 'text-align:right'],
     [:level, lambda{|translator|
       if translator.admin?
-        "<span style='color:red'>#{translator.title}</span>"
+        "<span style='color:red'>#{translator.title}</span>".html_safe
       elsif translator.manager?
-        "<span style='color:brown'>#{translator.title}</span>"
+        "<span style='color:brown'>#{translator.title}</span>".html_safe
       else
         translator.title
-      end     
+      end
     }, 'text-align:right'],
     [:blocked, lambda{|translator|
       html = []
@@ -31,14 +31,14 @@
         html << "<span style='color:red'>"
       else
         html << "<span style='color:green'>"
-      end     
+      end
       html << translator.blocked?
       html << "</span>"
-      html.join("")
+      html.join("").html_safe
     }, 'text-align:right'],
     [:rank, lambda{|translator|
       translator.rank ? (translator.rank * 100).to_i / 100.0 : 0
-    }, 'text-align:right'], 
+    }, 'text-align:right'],
     [:translation_count, lambda{|translator|
       link_to(translator.total_metric.total_translations || 0, "/tr8n/admin/translation?wf_c0=translator_id&wf_o0=is&wf_v0_0=#{translator.id}")
     }, 'text-align:right'],
@@ -46,23 +46,23 @@
       html = []
       html << (translator.total_metric.total_votes || 0)
       html << " (<span style='color:green'>"
-      html << (translator.total_metric.positive_votes || 0) 
+      html << (translator.total_metric.positive_votes || 0)
       html << "</span>/<span style='color:red'>"
       html << (translator.total_metric.negative_votes || 0)
       html << "</span>)"
-      html.join("")			
+      html.join("").html_safe
     }, 'text-align:right'],
     [:actions, lambda{|translator|
       html = []
       html << link_to("View", :action => :view, :translator_id => translator.id)
       html << link_to("Delete", {:action => :delete, :translator_id => translator.id}, :confirm => "Are you sure you want to do that?")
-      html.join(' | ')
+      html.join(' | ').html_safe
     }, 'text-align:right;white-space:nowrap;']
   ]) %>
 <% end %>
 
 <%= will_filter_actions_bar_tag(@translators, [
-['Delete Selected Translators', 'deleteSelectedTranslators()'] 
+['Delete Selected Translators', 'deleteSelectedTranslators()']
 ]) %>
 
 <%= render :partial => "/tr8n/admin/common/footer" %>
@@ -75,3 +75,4 @@
     Tr8n.element('translators_form').submit();
   }
 </script>
+

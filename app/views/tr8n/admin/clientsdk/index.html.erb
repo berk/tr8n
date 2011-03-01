@@ -5,16 +5,16 @@
 <div class="section_title">
   <span style="font-size:12px; color:grey; float:right; padding-top:5px;">
     <strong>Make sure that key source tracking is enabled!</strong> And try not to register useless phrases in production.
-  </span> 
-	
-  Tr8n JavaScript Client SDK Test Tool  
+  </span>
+
+  Tr8n JavaScript Client SDK Test Tool
 </div>
 
 <div style="font-size:12px; color:grey; padding-bottom:5px;">
-  Tr8n JavaScript Client SDK is used for retrieving translations in a client application as well as register new phrases on the server. 
-	It fully supports all language rules and token types available on the server. 
+  Tr8n JavaScript Client SDK is used for retrieving translations in a client application as well as register new phrases on the server.
+	It fully supports all language rules and token types available on the server.
 	Keep in mind that token notations may deffer from the server side implementation - based on the language used on the server.
-</div> 
+</div>
 
 <div style="background:#EFF8FF; border: 1px dotted #ccc; padding:5px; padding-bottom: 0px;">
 <% form_tag do %>
@@ -31,16 +31,16 @@
       <td rowspan="3" style="width:15%; padding:2px; vertical-align:top;">
 			   <center>
 			   <div style="width:150px; text-align:center; padding-top:15px;">
-			     <%=link_to_function("<span>Translate Label</span>", "translate();", :class => "tr8n_grey_button tr8n_pcb") %>
+			     <%=link_to_function("<span>Translate Label</span>".html_safe, "translate();", :class => "tr8n_grey_button tr8n_pcb") %>
 
 	         <div style="margin-top:15px; padding:2px; text-align:center; border: 1px dotted #ccc;">
-              <%=link_to_function("<span>View Examples</span>", "tr8nLightbox.show('/tr8n/admin/clientsdk/lb_samples', {height:450});", :class => "tr8n_grey_button tr8n_pcb", :style=>"width:200px;") %><br>
-              <%=link_to("<span>View Phrases</span>", "/tr8n/phrases/index?section_key=clientsdk", :target => "_phrases", :class => "tr8n_grey_button tr8n_pcb", :style=>"width:200px;") %><br>
-              <%=link_to_function("<span>Load Translations</span>", "reloadTranslations();", :class => "tr8n_grey_button tr8n_pcb", :style=>"width:200px;") %><br>
-              <%=link_to_function("<span>Clear Results</span>", "clearResults();", :class => "tr8n_grey_button tr8n_pcb", :style=>"width:200px;") %><br>
-              <%=link_to_function("<span>Run Speed Test</span>", "speedTest();", :class => "tr8n_grey_button tr8n_pcb", :style=>"width:200px;") %><br>
-	            <%=link_to("<span>Download SDK</span>", "/tr8n/javascripts/tr8n_client_sdk.js", :class => "tr8n_grey_button tr8n_pcb", :style=>"width:200px;") %><br>
-	         </div> 
+              <%=link_to_function("<span>View Examples</span>".html_safe, "tr8nLightbox.show('/tr8n/admin/clientsdk/lb_samples', {height:450});", :class => "tr8n_grey_button tr8n_pcb", :style=>"width:200px;") %><br>
+              <%=link_to("<span>View Phrases</span>".html_safe, "/tr8n/phrases/index?section_key=clientsdk", :target => "_phrases", :class => "tr8n_grey_button tr8n_pcb", :style=>"width:200px;") %><br>
+              <%=link_to_function("<span>Load Translations</span>".html_safe, "reloadTranslations();", :class => "tr8n_grey_button tr8n_pcb", :style=>"width:200px;") %><br>
+              <%=link_to_function("<span>Clear Results</span>".html_safe, "clearResults();", :class => "tr8n_grey_button tr8n_pcb", :style=>"width:200px;") %><br>
+              <%=link_to_function("<span>Run Speed Test</span>".html_safe, "speedTest();", :class => "tr8n_grey_button tr8n_pcb", :style=>"width:200px;") %><br>
+	            <%=link_to("<span>Download SDK</span>".html_safe, "/tr8n/javascripts/tr8n_client_sdk.js", :class => "tr8n_grey_button tr8n_pcb", :style=>"width:200px;") %><br>
+	         </div>
 
 				 </div>
 				 </center>
@@ -49,13 +49,13 @@
     <tr>
       <td colspan="2" style="padding:2px; background:#F1F4FA;">
         <div style="font-weight:bold;">Tokens JSON <span style='color:grey'>- provides values for tokens used in translation. (required, if data tokens are defined)</span></div>
-        <%=text_area_tag(:tokens, "{'count':5}", :style => "width:99%; height:40px;")%>     
+        <%=text_area_tag(:tokens, "{'count':5}", :style => "width:99%; height:40px;")%>
       </td>
     </tr>
     <tr>
       <td colspan="2" style="padding:2px;">
         <div style="font-weight:bold; padding-top:10px;">Translation <span style='color:grey'>- translated label with substituted tokens</span></div>
-        <%=text_area_tag(:result, "", :style => "width:99%; background:#F9F8F7;", :readonly => true)%>     
+        <%=text_area_tag(:result, "", :style => "width:99%; background:#F9F8F7;", :readonly => true)%>
       </td>
     </tr>
   </table>
@@ -70,7 +70,7 @@
     "debugger": "debugger",
     "source": "clientsdk",
     "decorations": {"bold": "<strong>{$0}</strong>", "italic": "<i>{$0}</i>", "link": "<a href='{$href}'>{$0}</a>"},
-    "rules": {"number":{"token_suffixes":["count", "num"]}, 
+    "rules": {"number":{"token_suffixes":["count", "num"]},
               "gender":{"token_suffixes":["user", "profile", "actor", "target"]},
               "list":{"token_suffixes":["list"]}, "date":{"token_suffixes":["date"]}
     }
@@ -80,28 +80,28 @@
 		Tr8n.element('debugger').innerHTML = '';
 		Tr8n.element('result').value = '';
 	}
-	
+
   function reloadTranslations() {
 		tr8nProxy.initTranslations(true);
 	}
-	
+
 	function useExample(index) {
     Tr8n.element('label').value = Tr8n.value('tr8n_example_label_' + index);
 		Tr8n.element('tokens').value = Tr8n.value('tr8n_example_tokens_' + index);
 		clearResults();
 		tr8nLightbox.hide();
 	}
-	
+
   function translate() {
     var tokens = null;
-    
+
     if (Tr8n.element('tokens').value != "") {
       tokens = eval("[" + Tr8n.value('tokens') + "]")[0];
     }
-    
+
     Tr8n.element('result').value = tr8nProxy.tr(Tr8n.value('label'), '', tokens);
   }
-  
+
   function speedTest() {
 		var tokens = null;
 
@@ -114,16 +114,16 @@
     tr8nProxy.log("Running tests (100 itterations)... ");
     tr8nProxy.log("Disabling logger... ");
 		tr8nProxy.disableLogger();
-		
+
 		var result = '';
     var t0 = new Date().getTime();
     for(var i=0; i<100; i++) {
       result = tr8nProxy.tr(Tr8n.value('label'), '', tokens);
     }
     var t1 = new Date().getTime();
-		
+
 		Tr8n.element('result').value = result;
-		
+
     tr8nProxy.enableLogger();
     tr8nProxy.log("Enabling logger... ");
     tr8nProxy.log('Test took: ' + (t1 - t0) + ' mls');
@@ -131,3 +131,4 @@
 </script>
 
 <%= render :partial => "/tr8n/admin/common/footer" %>
+

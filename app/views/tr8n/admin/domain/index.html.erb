@@ -4,7 +4,7 @@
 
 <% form_tag("", :id => "domains_form") do %>
   <%= will_filter_table_tag(@domains, :columns => [
-		[:checkbox, 'domains'],         
+		[:checkbox, 'domains'],
 		:name, :description, :created_at, :updated_at,
     [:source_count, lambda{|domain|
       link_to(domain.translation_sources.size, "/tr8n/admin/domain/sources?wf_c0=translation_domain_id&wf_o0=is&wf_v0_0=#{domain.id}")
@@ -12,7 +12,7 @@
     [:actions, lambda{|domain|
       html = []
       html << link_to("Delete", {:action => :delete, :domain_id => domain.id}, {:confirm => "Are you sure you want to delete this domain?"})
-      html.join(' | ')
+      html.join(' | ').html_safe
     }, 'padding:5px;text-align:right;white-space:nowrap;']
   ]) %>
 <% end %>
@@ -30,4 +30,5 @@
     Tr8n.element('domains_form').action = "/tr8n/admin/domain/delete";
     Tr8n.element('domains_form').submit();
   }
-</script> 
+</script>
+
