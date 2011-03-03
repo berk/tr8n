@@ -247,8 +247,12 @@ class Tr8n::LanguageController < Tr8n::BaseController
       end
 
       if language_action == "enable_inline_mode"
+        Rails.logger.debug tr8n_current_translator.inspect
+        Rails.logger.debug tr8n_current_translator.frozen?
         tr8n_current_translator.enable_inline_translations!
       elsif language_action == "disable_inline_mode"
+        Rails.logger.debug tr8n_current_translator.inspect
+        Rails.logger.debug tr8n_current_translator.frozen?
         tr8n_current_translator.disable_inline_translations!
       elsif language_action == "switch_language"
         tr8n_current_translator.switched_language!(Tr8n::Language.find_by_locale(params[:locale]))

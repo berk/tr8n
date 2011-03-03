@@ -110,12 +110,16 @@ class Tr8n::Translator < ActiveRecord::Base
   end
   
   def enable_inline_translations!
-    update_attributes(:inline_mode => true)
+    # HACK because of frozen hash in Thread.current
+    Tr8n::Translator.find(self.id).update_attributes(:inline_mode => true)
+#    update_attributes(:inline_mode => true)
     Tr8n::TranslatorLog.log(self, :enabled_inline_translations, Tr8n::Config.current_language.id)
   end
 
   def disable_inline_translations!(actor = user)
-    update_attributes(:inline_mode => false)
+    # HACK because of frozen hash in Thread.current
+    Tr8n::Translator.find(self.id).update_attributes(:inline_mode => false)
+#    update_attributes(:inline_mode => false)
     Tr8n::TranslatorLog.log(self, :disabled_inline_translations, Tr8n::Config.current_language.id)
   end
 
