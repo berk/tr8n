@@ -25,6 +25,9 @@ class Tr8n::BaseController < ApplicationController
 
   layout Tr8n::Config.site_info[:tr8n_layout]
 
+  # HACK hardcoded here as otherwise it would not run in Rails 3 production
+  before_filter :init_tr8n
+
   if Tr8n::Config.tr8n_helpers.any?
     helper *Tr8n::Config.tr8n_helpers
   end
@@ -132,7 +135,7 @@ private
   # handle disabled state for tr8n
   def validate_tr8n_enabled
     if Tr8n::Config.disabled?
-      Rails.logger.debug trfe("You don't have rights to access that section.")
+      Rails.logger.info trfe("You don't have rights to access that section.")
       return redirect_to(Tr8n::Config.default_url)
     end
   end
@@ -140,7 +143,7 @@ private
   # guest users can still switch between languages outside of the site
   def validate_guest_user
     if tr8n_current_user_is_guest?
-      Rails.logger.debug trfe("You must be a registered user in order to access this section of the site.")
+      Rails.logger.info trfe("You must be a registered user in order to access this section of the site.")
       return redirect_to(Tr8n::Config.default_url)
     end
   end
@@ -148,7 +151,7 @@ private
   # make sure users have the rights to access this section
   def validate_current_user
     unless Tr8n::Config.open_registration_mode? or Tr8n::Config.current_user_is_translator?
-      Rails.logger.debug trfe("You don't have rights to access that section.")
+      Rails.logger.info trfe("You don't have rights to access that section.")
       return redirect_to(Tr8n::Config.default_url)
     end
   end
@@ -156,7 +159,7 @@ private
   # make sure that the current user is a translator
   def validate_current_translator
     if tr8n_current_user_is_translator? and tr8n_current_translator.blocked?
-      Rails.logger.debug trfe("Your translation privileges have been revoked. Please contact the site administrator for more details.")
+      Rails.logger.info trfe("Your translation privileges have been revoked. Please contact the site administrator for more details.")
       return redirect_to(Tr8n::Config.default_url)
     end
   end
@@ -167,12 +170,12 @@ private
     return if tr8n_current_user_is_admin?
 
     if tr8n_current_language.default?
-      Rails.logger.debug trfe("Only administrators can modify this language")
+      Rails.logger.info trfe("Only administrators can modify this language")
       return redirect_to(@tabs.first[:link])
     end
 
     unless tr8n_current_user_is_translator? and tr8n_current_translator.manager?
-      Rails.logger.debug trfe("In order to manage a language you first must request to become a manager of that language. Please send your request to support.")
+      Rails.logger.info trfe("In order to manage a language you first must request to become a manager of that language. Please send your request to support.")
       return redirect_to(@tabs.first[:link])
     end
   end
@@ -198,7 +201,7 @@ private
 
   def validate_admin
     unless tr8n_current_user_is_admin?
-      Rails.logger.debug trfe("You must be an admin in order to view this section of the site")
+      Rails.logger.info trfe("You must be an admin in order to view this section of the site")
       redirect_to_site_default_url
     end
   end

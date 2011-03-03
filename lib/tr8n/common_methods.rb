@@ -24,9 +24,10 @@
 module Tr8n::CommonMethods
 
   def self.included(base)
-    if 'ApplicationController' == base.name
-      base.append_before_filter :init_tr8n
-    end
+    # HACK hardcoded in base_controller in order to work in Rails 3 Production mode
+#    if 'ApplicationController' == base.name
+#      base.append_before_filter :init_tr8n
+#    end
   end
 
   ######################################################################
