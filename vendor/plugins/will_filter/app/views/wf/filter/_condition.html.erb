@@ -14,10 +14,10 @@
 
 <tr>
   <td class="wf_condition" style="padding:2px;">
-    <%= select_tag "wf_c#{index}", options_for_select(wf_filter.condition_options, condition.key.to_s), {:class=>"wf_input", :style=>"width:100%;", :onChange=>"wfFilter.updateConditionAt('#{index}')"} %>
+    <%= select_tag "wf_c#{index}", options_for_select_simple(wf_filter.condition_options, condition.key.to_s), {:class=>"wf_input", :style=>"width:100%;", :onChange=>"wfFilter.updateConditionAt('#{index}')"} %>
   </td>
   <td class="wf_operator" style="padding:2px;">
-    <%= select_tag "wf_o#{index}", options_for_select(wf_filter.operator_options_for(condition.key), condition.operator.to_s), {:class=>"wf_input", :style=>"width:100%;", :onChange=>"wfFilter.updateConditionAt('#{index}')"} %>
+    <%= select_tag "wf_o#{index}", options_for_select_simple(wf_filter.operator_options_for(condition.key), condition.operator.to_s), {:class=>"wf_input", :style=>"width:100%;", :onChange=>"wfFilter.updateConditionAt('#{index}')"} %>
   </td>
   <td class="wf_values" style="padding:2px;">
 	  <%= render :partial => "/wf/filter/containers/#{condition.container.template_name}", :locals => {:container => condition.container, :index => index} %>

@@ -45,7 +45,7 @@
 		        <%=tra("Token Gender:")%>  			
 		  		</td>
 					<td>
-			     <%=select_tag("#{rule_prefix}[definition][gender]", options_for_select(@rule.class.gender_options, @rule.definition[:gender]), :style => "width:150px")%>			
+			     <%=select_tag("#{rule_prefix}[definition][gender]", options_for_select_simple(@rule.class.gender_options, @rule.definition[:gender]), :style => "width:150px")%>			
 					</td>
 		  	</tr>
 				<tr>

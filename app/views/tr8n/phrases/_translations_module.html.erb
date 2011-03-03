@@ -2,7 +2,7 @@
 	<div class="section_title">
 		<% unless @translation_key.locked? %>
 	    <div style="float:right; font-size: 12px; font-weight:normal;">
-	      <%= link_to_function("#{image_tag('/tr8n/images/add.png', :style=>'vertical-align:bottom')} #{tra("add translation")}", "addTranslation()") %>
+	      <%= link_to_function("#{image_tag('/tr8n/images/add.png', :style=>'vertical-align:bottom')} #{tra("add translation")}".html_safe, "addTranslation()".html_safe) %>
 	    </div> 
     <% end %>
 				
@@ -18,13 +18,13 @@
          <%=hidden_field_tag(:translation_key_id, @translation_key.id) %>
          <div style="padding-top:5px;">
               <%=trla("Show")%>
-              <%=select_tag(:with_status, options_for_select(Tr8n::Translation.filter_status_options, params[:with_status]), :onChange => "Tr8n.Effects.submit('translations_search_form')")%>
+              <%=select_tag(:with_status, options_for_select_simple(Tr8n::Translation.filter_status_options, params[:with_status]), :onChange => "Tr8n.Effects.submit('translations_search_form')")%>
               <%=trla("submitted by")%>
-              <%=select_tag(:submitted_by, options_for_select(Tr8n::Translation.filter_submitter_options, params[:submitted_by]), :onChange => "Tr8n.Effects.submit('translations_search_form')")%>
+              <%=select_tag(:submitted_by, options_for_select_simple(Tr8n::Translation.filter_submitter_options, params[:submitted_by]), :onChange => "Tr8n.Effects.submit('translations_search_form')")%>
               <%=trla("created on")%>
-              <%=select_tag(:submitted_on, options_for_select(Tr8n::Translation.filter_date_options, params[:submitted_on]), :onChange => "Tr8n.Effects.submit('translations_search_form')")%>
+              <%=select_tag(:submitted_on, options_for_select_simple(Tr8n::Translation.filter_date_options, params[:submitted_on]), :onChange => "Tr8n.Effects.submit('translations_search_form')")%>
               <%=trla("grouped by")%>
-              <%=select_tag(:grouped_by, options_for_select(Tr8n::Translation.filter_group_by_options, params[:grouped_by]), :onChange => "Tr8n.Effects.submit('translations_search_form')")%>
+              <%=select_tag(:grouped_by, options_for_select_simple(Tr8n::Translation.filter_group_by_options, params[:grouped_by]), :onChange => "Tr8n.Effects.submit('translations_search_form')")%>
          </div>
       <% end %>
     </div>

@@ -44,6 +44,10 @@ class Tr8n::IpAddress
     return true
   end
 
+  def to_i
+    1232
+  end
+  
   def non_routable?
     self.class.non_routable_networks.each {|network| return true if network.include?(self)}
     false

@@ -12,10 +12,10 @@
         <%= link_to_function("Toggle Conditions", "wfFilter.toggleDebugger()", :style=>"font-size:9px") %>
         &nbsp;&nbsp;
         Order:
-        <%= select_tag(:wf_order, options_for_select(wf_filter.condition_options, wf_filter.order), {:onChange=>"markDirty()"}) %>
-        <%= select_tag(:wf_order_type, options_for_select(wf_filter.order_type_options, wf_filter.order_type), {:onChange=>"markDirty()"}) %>
+        <%= select_tag(:wf_order, options_for_select_simple(wf_filter.condition_options, wf_filter.order), {:onChange=>"markDirty()"}) %>
+        <%= select_tag(:wf_order_type, options_for_select_simple(wf_filter.order_type_options, wf_filter.order_type), {:onChange=>"markDirty()"}) %>
         Per Page:
-        <%= select_tag(:wf_per_page, options_for_select(wf_filter.per_page_options, wf_filter.per_page.to_s), {:onChange=>"markDirty()"}) %>
+        <%= select_tag(:wf_per_page, options_for_select_simple(wf_filter.per_page_options, wf_filter.per_page.to_s), {:onChange=>"markDirty()"}) %>
         &nbsp;&nbsp;<%= link_to_function("<span>Submit xFilter</span>".html_safe, "wfFilter.submit()", :class => "wf_grey_button wf_pcb") %>
       </div>
       <div>

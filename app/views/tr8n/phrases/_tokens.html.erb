@@ -101,7 +101,7 @@
 						      <%=token.name %>     
 						    </td>
 						    <td style="font-size:10px; padding:5px; vertical-align:middle;">
-						      <%=select_tag("rules[#{token.name}][rule_id]", options_for_select(rule_options, @rules[token].to_s), :onChange => "Tr8n.element('check_#{index}').checked = true;")%>      
+						      <%=select_tag("rules[#{token.name}][rule_id]", options_for_select_simple(rule_options, @rules[token].to_s), :onChange => "Tr8n.element('check_#{index}').checked = true;")%>      
 						    </td>
 						  </tr>
 						<% end %>

@@ -23,9 +23,17 @@
 
 module Tr8n::HelperMethods
   include Tr8n::CommonMethods
+  
+  def options_for_select_simple(options,selected)
+    out = ""
+    options.each do |a,b|
+      out+="<option value=\"#{b}\"#{b==selected ? "selected" : ""}>#{a}</option>"
+    end
+    out.html_safe
+  end
 
   def tr8n_options_for_select(options, selected = nil, description = nil, lang = Tr8n::Config.current_language)
-    options_for_select(options.tro(description), selected)
+    options_for_select_simple(options.tro(description), selected)
   end
 
   def tr8n_phrases_link_tag(search = "", phrase_type = :without, phrase_status = :any)

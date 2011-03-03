@@ -34,6 +34,9 @@ class Tr8n::LanguageUser < ActiveRecord::Base
   # when users get promoted, they are automatically get associated with a language and marked as translators
 
   def self.find_or_create(user, language)
+    language = Tr8n::Language.find_by_locale("en") # HACK as Tr8n::Config.default_language is not found
+    Rails.logger.debug("#{user.id} #{language.id}")
+    Rails.logger.debug("#{pp user} #{pp language}")
     lu = find(:first, :conditions => ["user_id = ? and language_id = ?", user.id, language.id])
     lu || create(:user => user, :language => language)
   end

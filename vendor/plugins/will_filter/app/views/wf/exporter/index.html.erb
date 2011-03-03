@@ -38,7 +38,7 @@
 	</table>
 	<hr>
 	<div style="text-align:center; width:100%; padding:3px;">
-	  Format: <%= select_tag("wf_export_format_selector", options_for_select(@wf_filter.export_formats,  @wf_filter.format)) %>
+	  Format: <%= select_tag("wf_export_format_selector", options_for_select_simple(@wf_filter.export_formats,  @wf_filter.format)) %>
 	</div>
 	<div style="text-align:center; width:100%; padding:3px;">
 	    <%=link_to_function("<span>Export</span>", "wfExporter.exportFilter()", :class => "wf_grey_button wf_pcb") %>

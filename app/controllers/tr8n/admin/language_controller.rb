@@ -24,6 +24,8 @@
 class Tr8n::Admin::LanguageController < Tr8n::Admin::BaseController
   
   def index
+    Rails.logger.debug("Languages: #{@languages} #{params} #{Tr8n::LanguageFilter.inspect}")
+    Rails.logger.debug(Tr8n::Language.filter(:params => params, :filter => Tr8n::LanguageFilter))
     @languages = Tr8n::Language.filter(:params => params, :filter => Tr8n::LanguageFilter)
   end
 

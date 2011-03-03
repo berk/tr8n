@@ -13,11 +13,11 @@
 	    <%=text_field_tag(:search, params[:search], {:style => "width:90%;font-size:12px;height:20px"})%><br>
       <div style="margin-top:10px; padding:3px; font-size:11px; color:#666; font-weight:bold;">
           <%=tra("Show")%>
-          <%=select_tag(:with_status, options_for_select(Tr8n::Translation.filter_status_options, params[:with_status]))%>
+          <%=select_tag(:with_status, options_for_select_simple(Tr8n::Translation.filter_status_options, params[:with_status]))%>
           <%=tra("submitted by")%>
-          <%=select_tag(:submitted_by, options_for_select(Tr8n::Translation.filter_submitter_options, params[:submitted_by]))%>
+          <%=select_tag(:submitted_by, options_for_select_simple(Tr8n::Translation.filter_submitter_options, params[:submitted_by]))%>
           <%=tra("created on")%>
-          <%=select_tag(:submitted_on, options_for_select(Tr8n::Translation.filter_date_options, params[:submitted_on]))%>
+          <%=select_tag(:submitted_on, options_for_select_simple(Tr8n::Translation.filter_date_options, params[:submitted_on]))%>
 	    </div>
 	  <% end %>
 	</div>

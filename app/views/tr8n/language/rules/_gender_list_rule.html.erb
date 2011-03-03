@@ -1,5 +1,5 @@
-<%=select_tag("rules[#{rule.class.dependency}][#{index}][definition][part1]", options_for_select(rule.class.part1_options, rule.definition[:part1]), :style => "width:120px", :onChange=>"updateLanguageRules()")%>
-<%=select_tag("rules[#{rule.class.dependency}][#{index}][definition][value1]", options_for_select(rule.class.value1_options, rule.definition[:value1]), :style => "width:140px", :onChange=>"updateLanguageRules()")%>
+<%=select_tag("rules[#{rule.class.dependency}][#{index}][definition][part1]", options_for_select_simple(rule.class.part1_options, rule.definition[:part1]), :style => "width:120px", :onChange=>"updateLanguageRules()")%>
+<%=select_tag("rules[#{rule.class.dependency}][#{index}][definition][value1]", options_for_select_simple(rule.class.value1_options, rule.definition[:value1]), :style => "width:140px", :onChange=>"updateLanguageRules()")%>
 
 <% multipart = (rule.definition[:multipart].to_s == "true") %>
 
@@ -7,17 +7,17 @@
 
 <% link_style = 'display:none' if multipart %>
 <span id="extension_link_<%=rule_key%>" style="vertical-align:bottom;<%= link_style %>">
-  <%=link_to_function(tra("more &raquo;"), "Tr8n.Effects.show('rule_#{rule_key}_second_part'); Tr8n.Effects.hide('extension_link_#{rule_key}'); Tr8n.element('rule_#{rule_key}_multipart').value='true';")%>
+  <%=link_to_function(tra("more &raquo;").html_safe, "Tr8n.Effects.show('rule_#{rule_key}_second_part'); Tr8n.Effects.hide('extension_link_#{rule_key}'); Tr8n.element('rule_#{rule_key}_multipart').value='true';")%>
 </span>
 
 <% second_part_style = 'display:none' unless multipart %>
 <span id="rule_<%=rule_key%>_second_part" style="<%= second_part_style %>">
   <%=hidden_field_tag("rules[#{rule.class.dependency}][#{index}][definition][multipart]", rule.definition[:multipart].to_s, :id => "rule_#{rule_key}_multipart")%>
   
-	<%=select_tag("rules[#{rule.class.dependency}][#{index}][definition][part2]", options_for_select(rule.class.part2_options(rule.definition[:value1]), rule.definition[:part2]), :style => "width:120px", :onChange=>"updateLanguageRules()")%>
-	<%=select_tag("rules[#{rule.class.dependency}][#{index}][definition][value2]", options_for_select(rule.class.value2_options(rule.definition[:value1]), rule.definition[:value2]), :style => "width:140px")%>
+	<%=select_tag("rules[#{rule.class.dependency}][#{index}][definition][part2]", options_for_select_simple(rule.class.part2_options(rule.definition[:value1]), rule.definition[:part2]), :style => "width:120px", :onChange=>"updateLanguageRules()")%>
+	<%=select_tag("rules[#{rule.class.dependency}][#{index}][definition][value2]", options_for_select_simple(rule.class.value2_options(rule.definition[:value1]), rule.definition[:value2]), :style => "width:140px")%>
   
   <span style="vertical-align:bottom;">
-    <%=link_to_function(tra("&laquo; less"), "Tr8n.Effects.hide('rule_#{rule_key}_second_part'); Tr8n.Effects.show('extension_link_#{rule_key}'); Tr8n.element('rule_#{rule_key}_multipart').value='false';")%>
+    <%=link_to_function(tra("&laquo; less").html_safe, "Tr8n.Effects.hide('rule_#{rule_key}_second_part'); Tr8n.Effects.show('extension_link_#{rule_key}'); Tr8n.element('rule_#{rule_key}_multipart').value='false';".html_safe)%>
   </span>
 </span>

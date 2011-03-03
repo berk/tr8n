@@ -1,3 +1,3 @@
-<%=select_tag("rules[#{rule.class.dependency}][#{index}][definition][operator]", options_for_select(rule.class.operator_options, rule.definition[:operator]), :style => "width:120px")%>
+<%=select_tag("rules[#{rule.class.dependency}][#{index}][definition][operator]", options_for_select_simple(rule.class.operator_options, rule.definition[:operator]), :style => "width:120px")%>
 <%=text_field_tag("rules[#{rule.class.dependency}][#{index}][definition][value]", Tr8n::LanguageRule.humanize_values(rule.definition[:value]), :style => "width:400px")%>
 
