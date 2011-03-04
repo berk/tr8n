@@ -13,7 +13,7 @@
 	
   <div class="section_box" id="translations_content">
     <div style="color:#666; font-weight:bold; padding:10px; border: 1px dotted #ccc; margin-bottom:10px; background-color:#EFF8FF;">
-      <% form_tag({}, {:method => :get, :id => "translations_search_form"}) do %>
+      <%= form_tag({}, {:method => :get, :id => "translations_search_form"}) do %>
          <%=hidden_field_tag(:section_key, @section_key) %>
          <%=hidden_field_tag(:translation_key_id, @translation_key.id) %>
          <div style="padding-top:5px;">

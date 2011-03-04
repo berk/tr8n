@@ -1,5 +1,5 @@
 <div class="section_box colored">
-  <% form_tag({:action => :submit_comment}, {:method => :post, :id => "translation_key_comments_form"}) do %>
+  <%= form_tag({:action => :submit_comment}, {:method => :post, :id => "translation_key_comments_form"}) do %>
     <%= hidden_field_tag(:translation_key_id, @translation_key.id)%>
     <%= hidden_field_tag(:section_key, @section_key) %>
     

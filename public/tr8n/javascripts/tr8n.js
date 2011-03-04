@@ -591,8 +591,8 @@ Tr8n.Lightbox.prototype = {
 
     this.container.innerHTML = "<div style='font-size:18px;text-align:left;padding:10px;'><img src='/tr8n/images/spinner.gif' style='vertical-align:middle'> Loading...</div>";
 
-    var overlay_height  = window.innerHeight < screen.availHeight ? screen.availHeight : window.innerHeight;
-    var overlay_width   = window.innerWidth  < screen.availWidth  ? screen.availWidth  : window.innerWidth;
+    var overlay_height  =  window.innerHeight;
+    var overlay_width   = window.innerWidth;
 
     this.overlay.style.position = "fixed";
     this.overlay.style.top      = "0px";
