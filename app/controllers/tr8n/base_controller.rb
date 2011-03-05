@@ -25,9 +25,6 @@ class Tr8n::BaseController < ApplicationController
 
   layout Tr8n::Config.site_info[:tr8n_layout]
 
-  # HACK hardcoded here as otherwise it would not run in Rails 3 production
-  before_filter :init_tr8n
-
   if Tr8n::Config.tr8n_helpers.any?
     helper *Tr8n::Config.tr8n_helpers
   end

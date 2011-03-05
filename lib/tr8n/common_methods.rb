@@ -145,5 +145,8 @@ module Tr8n::CommonMethods
   end
   # end translation helper methods
 
+  def tr8n_current_google_language_code
+    Tr8n::Config.current_language.google_key
+  end
 end
 
