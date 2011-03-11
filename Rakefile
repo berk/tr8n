@@ -21,6 +21,9 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
+require 'bundler'
+Bundler::GemHelper.install_tasks
+
 require(File.join(File.dirname(__FILE__), 'config', 'boot'))
 
 require 'rake'
