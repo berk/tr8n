@@ -1,4 +1,46 @@
+def tr8n_db_path
+  Rails.root.join("db/tr8n")
+end
+
+def tr8n_db_filename
+  tr8n_db_path.join("tr8n.sql.gz")
+end
+
 namespace :tr8n do
+  desc "Dump tr8n tables"
+  task :dump_db => :environment do
+    config = Rails.application.config.database_configuration
+    current_config = config[Rails.env]
+    abort "db is not mysql" unless current_config['adapter'] =~ /mysql/
+    
+    database = current_config['database']
+    user = current_config['username']
+    password = current_config['password']
+
+    tr8n_tables = ActiveRecord::Base.connection.tables.find_all {|t| t.include?("tr8n_") }.join(" ")
+    FileUtils.mkdir_p(tr8n_db_path)
+    command = "mysqldump --add-drop-table -u #{user} --password=#{password} #{database} #{tr8n_tables} | gzip > #{tr8n_db_filename}"
+    puts "Excuting: #{command}"
+    system command
+  end
+
+  desc "Import tr8n tables"
+  task :import_db => :environment do
+    config = Rails.application.config.database_configuration
+    current_config = config[Rails.env]
+    abort "db is not mysql" unless current_config['adapter'] =~ /mysql/
+    
+    database = current_config['database']
+    user = current_config['username']
+    password = current_config['password']
+
+    tr8n_table = ActiveRecord::Base.connection.tables.find_all {|t| t.include?("tr8n_") }.join(" ")
+    abort "TR8N import file does not exist" unless File.exists?(tr8n_db_filename)
+    command = "gunzip < #{tr8n_db_filename} | mysql -u #{user} --password=#{password} #{database}"
+    puts "Excuting: #{command}"
+    system command
+  end
+
   desc "Sync config and db migrations for tr8n plugin."
   task :sync do
     system "rsync -ruv vendor/plugins/tr8n/config/tr8n ./config"

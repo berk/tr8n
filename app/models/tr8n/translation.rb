@@ -157,9 +157,9 @@ class Tr8n::Translation < ActiveRecord::Base
     self.label.blank?    
   end
 
-  def uniq?
+  def uniq?(bypass=true)
     # for now, treat all translations as uniq
-    return true
+    return true if bypass
     
     conditions = ["translation_key_id = ? and language_id = ? and label = ?", translation_key.id, language.id, label]
     if self.id
