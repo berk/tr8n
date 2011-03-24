@@ -36,6 +36,19 @@ class Tr8n::Translation < ActiveRecord::Base
   alias :votes :translation_votes
 
   VIOLATION_INDICATOR = -10
+ 
+  def self.add_vote_to_all_translations!
+    translator = Tr8n::Translator.first
+    count = 0 
+    Tr8n::Translation.all.each do |translation|
+      if translation.votes.empty?
+        count += 1
+        Rails.logger.debug "No votes for #{translation.inspect}"
+        translation.vote!(translator,1)
+      end
+    end
+    Rails.logger.debug "Found #{count} translations without vote"
+  end
 
   def vote!(translator, score)
     score = score.to_i
