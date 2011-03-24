@@ -288,7 +288,9 @@ class Tr8n::Translator < ActiveRecord::Base
     return if self.last_ip == new_ip
 
     country_code = Tr8n::IpLocation.find_by_ip(new_ip).ctry
-    update_attributes(:last_ip => new_ip, :country_code => country_code)
+    # HACK to get around frozen hash
+    s = Tr8n::Translator.where(:id=>self.id).first
+    s.update_attributes(:last_ip => new_ip, :country_code => country_code)
   end
 
   def after_save
