@@ -1,2 +1,2 @@
-<%= Tr8n::Config.with_options(:default_locale => 'en-US', :admin => true) { render :partial => "register_with_options" } %>
+<%= Tr8n::Config.with_options(:default_locale => Tr8n::Config.default_admin_locale, :admin => true) { render :partial => "register_with_options" } %>
 

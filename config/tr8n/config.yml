@@ -98,6 +98,7 @@ defaults: &defaults
     current_locale_method:    current_locale                  # application controller method that sets and returns current locale
     default_url:              /tr8n/home                      # default site url where to redirect the user if Tr8n is disabled
     default_locale:           enable_paranoia_mode                              # locale of the site default language
+    default_admin_locale:     en-US                           # locale of the admin default language
     sitemap_path:             /config/tr8n/site/sitemap.json  # location of the sitemap definition file
     splash_screen:            /tr8n/common/splash_screen      # location of the Tr8n splash screen
     tr8n_layout:              tr8n                            # layout for the tr8n pages

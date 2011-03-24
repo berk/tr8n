@@ -1,4 +1,4 @@
-<% Tr8n::Config.with_options(:default_locale => 'en-US', :admin => true) do %>
+<% Tr8n::Config.with_options(:default_locale => Tr8n::Config.default_admin_locale, :admin => true) do %>
 	<%= render :partial => "/tr8n/common/header" %>
 	
 	<div class="section_box" style="margin-bottom:10px; background-color:#EFF8FF; margin-top:0px;">
