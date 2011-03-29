@@ -1,3 +1,5 @@
+require 'csv'
+
 def tr8n_db_path
   Rails.root.join("db/tr8n")
 end
@@ -6,7 +8,106 @@ def tr8n_db_filename
   tr8n_db_path.join("tr8n.sql.gz")
 end
 
+def tr8n_source_filename
+  tr8n_db_path.join("sources.json")
+end
+
+class CountryLang
+  attr_accessor :country_name
+  attr_accessor :language_names
+  
+  def initialize(country_name, language_names)
+    self.country_name = country_name
+    self.language_names = language_names
+  end
+end
+
 namespace :tr8n do
+  # Example usage of iso country mapping in application controller
+  #   @country_code = Thread.current[:country_code] = (session[:country_code] ||= GeoIP.new(Rails.root.join("lib/geoip/GeoIP.dat")).country(request.remote_ip)[3]).downcase
+  #   @iso_country = Tr8n::IsoCountry.find_by_code(@country_code.upcase)
+  #   ...
+  #   if @iso_country and not @iso_country.languages.empty?
+  #     session[:locale] =  @iso_country.languages.first.locale
+  #   else
+  #     session[:locale] = tr8n_user_preffered_locale
+  #   end
+
+  desc "Import and setup iso 3166 countries"
+  task :import_and_setup_iso_3166 => :environment do
+    iso_countries = []
+    country_languages = []
+    CSV.parse(File.open(Rails.root.join("docs/geoip_iso_3166.csv"))) do |row|
+      unless Tr8n::IsoCountry.find_by_code(row[0].strip)
+        iso_countries << Tr8n::IsoCountry.create(:code=>row[0].strip, :country_english_name=>row[1].strip)
+      else
+        iso_countries << Tr8n::IsoCountry.find_by_code(row[0].strip)
+      end
+    end
+
+    CSV.parse(File.open(Rails.root.join("docs/countries_lang.csv"))) do |row|
+      country_languages << CountryLang.new(row[0].strip, row[1].strip) unless row[0]==""
+    end
+    
+    puts iso_countries.inspect
+    found = []
+    errors = []
+    country_languages.each do |language|
+      best_guess_default_language_name = language.language_names.split(" ")[0].gsub(",","")
+      language_lookup = Tr8n::Language.find(:first, :conditions => ['english_name LIKE ?', "%(#{language.country_name})%"])
+      language_lookup = Tr8n::Language.find(:first, :conditions => ['english_name LIKE ?', "%#{best_guess_default_language_name}%"]) unless language_lookup
+      if language.country_name=="Taiwan"
+        language_lookup = Tr8n::Language.find(:first, :conditions => ['english_name LIKE ?', "%Chinese (Traditional)%"]) unless language_lookup
+      end
+      country_lookup = Tr8n::IsoCountry.find(:first, :conditions => ['country_english_name LIKE ?', "%#{language.country_name}%"])
+      if language_lookup and country_lookup
+        country_lookup.languages << language_lookup unless country_lookup.languages.exists?(language_lookup)
+        found << "#{language.country_name} #{best_guess_default_language_name} > #{language_lookup.english_name} #{language_lookup.locale} > #{country_lookup.country_english_name} #{country_lookup.code}"
+      else
+        errors << "#{language.country_name} #{best_guess_default_language_name} ! #{language_lookup} #{country_lookup}"
+      end
+    end
+    gb = Tr8n::IsoCountry.find_by_code("GB")
+    gb.languages.delete_all
+    gb.languages << Tr8n::Language.find_by_locale("en-UK")
+    gb.save
+
+    us = Tr8n::IsoCountry.find_by_code("US")
+    us.languages.delete_all
+    us.languages << Tr8n::Language.find_by_locale("en-US")
+    us.save
+    
+    puts "Found #{found.count} countries"
+    puts ""
+    found.each do |x| puts x end
+
+    puts "Did not find #{errors.count} countries"
+    puts ""
+    errors.each do |x| puts x end
+ 
+    puts "No languages for:"    
+    nocount = count = 0
+    Tr8n::IsoCountry.all.each do |country|
+      if country.languages.empty?
+        puts country.inspect
+        nocount += 1
+      else
+        count += 1
+      end
+    end
+    puts "Languages for #{count} countries"
+    puts "No languages for #{nocount} countries"
+  end
+
+  desc "Dump tr8n tables"
+  task :dump_sources => :environment do
+    sources = []
+    Tr8n::TranslationSource.all.each do |translation_source|
+      sources << translation_source.source unless translation_source.source.downcase.include?("tr8n")
+    end
+    puts "[#{sources.sort.map {|s| "\"#{s}\""}.join(",")}]"
+  end
+
   desc "Dump tr8n tables"
   task :dump_db => :environment do
     config = Rails.application.config.database_configuration
