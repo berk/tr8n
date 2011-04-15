@@ -25,6 +25,8 @@
 **** Tr8n Generic Helper Functions
 ****************************************************************************/
 
+document.createElement('tr8n');
+
 var Tr8n = Tr8n || {
   element:function(element_id) {
     if (typeof element_id == 'string') return document.getElementById(element_id);
@@ -98,7 +100,8 @@ Tr8n.Translator = function(options) {
   this.container.id             = 'tr8n_translator';
   this.container.style.display  = "none";
 
-  document.body.appendChild(this.container)
+  document.body.appendChild(this.container);
+
 
   var event_type = Tr8n.Utils.isOpera() ? 'click' : 'contextmenu';
 

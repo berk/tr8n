@@ -439,9 +439,9 @@ class Tr8n::TranslationKey < ActiveRecord::Base
       classes << 'tr8n_not_translated'
     end
 
-    html = "<span class='#{classes.join(' ')}' translation_key_id='#{id}'>"
+    html = "<tr8n class='#{classes.join(' ')}' translation_key_id='#{id}'>"
     html << label
-    html << "</span>"
+    html << "</tr8n>"
     html    
   end
   
@@ -473,9 +473,9 @@ class Tr8n::TranslationKey < ActiveRecord::Base
       classes << (translated ? 'tr8n_translated' : 'tr8n_not_translated')
     end  
 
-    html = "<span class='#{classes.join(' ')}' translation_key_id='#{id}'>"
+    html = "<tr8n class='#{classes.join(' ')}' translation_key_id='#{id}'>"
     html << translated_label
-    html << "</span>"
+    html << "</tr8n>"
     html
   end
       
