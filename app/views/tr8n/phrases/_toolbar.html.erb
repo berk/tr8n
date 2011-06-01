@@ -1,6 +1,6 @@
 <div id="translation_key_toolbar" style="font-size:12px; margin-top:0px; background-color:#f8f7f6; border:1px solid #eee; padding:5px; color:grey; background: url('/wf/images/sort_bg.gif') repeat-x scroll 0 0 transparent;">
   <div style="float:right;">
-     <%=link_to(image_tag("/tr8n/images/help.png", :style=>"vertical-align:bottom;", :title => trl("Help")), '/tr8n/help') %>
+     <%=link_to(image_tag("/tr8n/images/help.png", :style=>"vertical-align:bottom;", :title => trl("Help")), @translation_key.class.help_url) %>
   </div>
   <%
     actions = []
@@ -12,11 +12,15 @@
       end
     end    
     unless @translation_key.locked?
-      if @translation_key.permutatable?
+      if @translation_key.rules? and @translation_key.permutatable?
         actions << link_to_function("#{image_tag('/tr8n/images/script_gear.png', :style=>'height:15px; vertical-align:bottom')} #{tra("Generate Context Rules")}", "addContextRules()")
       end
     end
-    actions << link_to_function("#{image_tag('/tr8n/images/table_multiple.png', :style=>'height:15px; vertical-align:bottom')} #{tra("View Sources")}", "tr8nLightbox.show('/tr8n/phrases/lb_sources?translation_key_id=#{@translation_key.id}', {width:600, height:340});")
+		
+		if @translation_key.sources?
+      actions << link_to_function("#{image_tag('/tr8n/images/table_multiple.png', :style=>'height:15px; vertical-align:bottom')} #{tra("View Sources")}", "tr8nLightbox.show('/tr8n/phrases/lb_sources?translation_key_id=#{@translation_key.id}', {width:600, height:340});")
+		end
+			
     if @translation_key.followed?
       actions << link_to("#{image_tag('/tr8n/images/eye_not.png', :style=>'height:15px; vertical-align:bottom')} #{tra("Unfollow")}", :controller => '/tr8n/translator', :action => :unfollow, :translation_key_id => @translation_key.id)
     else

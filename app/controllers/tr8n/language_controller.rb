@@ -34,7 +34,7 @@ class Tr8n::LanguageController < Tr8n::BaseController
     @cases = tr8n_current_language.cases
     @fallback_language = (tr8n_current_language.fallback_language || tr8n_default_language)
   end
-  
+
   def update_language_section
     @cases = tr8n_current_language.cases
     @rules = rules_by_dependency(tr8n_current_language.rules)

@@ -14,11 +14,11 @@
 		    <%= f.text_area(:label, :id => "tr8n_translation_label_#{@translation_key.id}", :style=>"width:99%;height:60px;border:1px solid #ccc;background-color:white;padding:3px;", :class => "keyboardInput" ) %>
 		  </div>
 			
-		  <% if @translation_key.translation_tokens? or tr8n_current_language.has_rules? %>
+		  <% if @translation_key.rules? %>
           <%= render(:partial => "tokens") %>
 			<% end %>		
 	
-			<% if Tr8n::Config.enable_google_suggestions? and tr8n_current_language.suggestible? %>  
+			<% if Tr8n::Config.enable_google_suggestions? and tr8n_current_language.suggestible? and @translation_key.suggestions? %>  
 				<div id="tr8n_google_suggestion_container_<%=@translation_key.id%>" style="display:none; padding-bottom:10px;">
 				    <div class="section_title">
 				        <%=trla("Suggested Translation")%>
@@ -67,7 +67,7 @@
 				</div>
 			<% end %>
 		
-      <% if Tr8n::Config.enable_dictionary_lookup? %>
+      <% if Tr8n::Config.enable_dictionary_lookup? and @translation_key.dictionary? %>
 	      <div id="tr8n_dictionary_container" style="padding-top:5px; padding-bottom:10px;">
 						<div class="section_title">
 						  <%=trla("Dictionary Definitions for Original Phrase in English")%>

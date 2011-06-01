@@ -505,6 +505,38 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     Tr8n::Cache.delete("translation_key_#{key}")
   end
 
+  def add_translation(label, rules = nil, lang = Tr8n::Config.current_language, translator = Tr8n::Config.current_translator) 
+    Tr8n::Translation.create(:translation_key => self, :label => label, :language => lang, :translator => translator)
+  end
+
+  ###############################################################
+  ## Feature Related Stuff
+  ###############################################################
+  
+  def self.title
+    "Original Phrase in {language}".translate(nil, :language => Tr8n::Config.current_language.native_name)
+  end
+  
+  def self.help_url
+    '/tr8n/help'
+  end
+  
+  def suggestions?
+    true 
+  end
+
+  def rules?
+    translation_tokens? or Tr8n::Config.current_language.has_rules?
+  end
+  
+  def dictionary?
+    true 
+  end
+
+  def sources?
+    true
+  end
+
   ###############################################################
   ## Search Related Stuff
   ###############################################################

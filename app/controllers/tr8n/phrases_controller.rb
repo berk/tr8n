@@ -32,7 +32,6 @@ class Tr8n::PhrasesController < Tr8n::BaseController
    
     unless params[:section_key].blank?
       source_names = sitemap_sources_for(@section_key)
-      pp source_names
       sources = Tr8n::TranslationSource.find(:all, :conditions => ["source in (?)", source_names])
       source_ids = sources.collect{|source| source.id}
       
