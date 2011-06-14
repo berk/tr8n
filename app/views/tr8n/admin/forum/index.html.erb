@@ -2,7 +2,7 @@
 <%= render :partial => "tabs" %>
 <%= tr8n_will_filter(@topics) %>
 
-<% form_tag("", :id => "topics_form") do %>
+<%= form_tag("", :id => "topics_form") do %>
   <%= will_filter_table_tag(@topics, :columns => [:created_at,
     [:language_id, lambda{|topic|
       if topic.language
@@ -26,7 +26,7 @@
         actions = []
         actions << link_to("View Messages", "/tr8n/admin/forum/messages?wf_c0=language_forum_topic_id&wf_o0=is&wf_v0_0=#{topic.id}")
         actions << link_to("Delete", {:action => :delete_topic, :topic_id => topic.id}, {:confirm => "Are you sure you want to delete this topic?"})
-        actions.join(" | ")
+        actions.join(" | ").html_safe
     }, 'white-space: nowrap'] 
   ]) %>
 <% end %>

@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010 Michael Berkovich, Geni Inc
+# Copyright (c) 2010-2011 Michael Berkovich
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -24,7 +24,7 @@
 class Tr8n::TranslationVote < ActiveRecord::Base
   set_table_name :tr8n_translation_votes
   
-  belongs_to :translation,  :class_name => "Tr8n::Translation",  :dependent => :destroy
+  belongs_to :translation,  :class_name => "Tr8n::Translation"
   belongs_to :translator,   :class_name => "Tr8n::Translator"
     
   def self.find_or_create(translation, translator)

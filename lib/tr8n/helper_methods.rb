@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010 Michael Berkovich, Geni Inc
+# Copyright (c) 2010-2011 Michael Berkovich
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -22,6 +22,7 @@
 #++
 
 module Tr8n::HelperMethods
+
   include Tr8n::CommonMethods
 
   def tr8n_options_for_select(options, selected = nil, description = nil, lang = Tr8n::Config.current_language)
@@ -36,23 +37,25 @@ module Tr8n::HelperMethods
     
     link_to(image_tag("/tr8n/images/translate_icn.gif", :style => "vertical-align:middle; border: 0px;", :title => search), 
            :controller => "/tr8n/phrases", :action => :index, 
-           :search => search, :phrase_type => phrase_type, :phrase_status => phrase_status)
+           :search => search, :phrase_type => phrase_type, :phrase_status => phrase_status).html_safe
   end
 
   def tr8n_dir_attribute_tag
-    "dir='<%=Tr8n::Config.current_language.dir%>'"
+    "dir='<%=Tr8n::Config.current_language.dir%>'".html_safe
   end
 
   def tr8n_splash_screen_tag
     html = "<div id='tr8n_splash_screen' style='display:none'>"
     html << (render :partial => Tr8n::Config.splash_screen)
     html << "</div>"
+    html.html_safe
   end
 
   def tr8n_language_flag_tag(lang = Tr8n::Config.current_language, opts = {})
     return "" unless Tr8n::Config.enable_language_flags?
     html = image_tag("/tr8n/images/flags/#{lang.flag}.png", :style => "vertical-align:middle;", :title => lang.native_name)
-    html << "&nbsp;" 
+    html << "&nbsp;".html_safe 
+    html.html_safe
   end
 
   def tr8n_language_name_tag(lang = Tr8n::Config.current_language, opts = {})
@@ -71,7 +74,7 @@ module Tr8n::HelperMethods
     end
     
     if linked
-      html << link_to(name, :controller => "/tr8n/language", 
+      html << link_to(name.html_safe, :controller => "/tr8n/language", 
               :action => :switch, :language_action => :switch_language, 
               :locale => lang.locale,
               :source_url => opts[:source_url])
@@ -80,6 +83,7 @@ module Tr8n::HelperMethods
     end
     
     html << "</span>"
+    html.html_safe
   end
 
   def tr8n_language_selector_tag(opts = {})
@@ -137,16 +141,17 @@ module Tr8n::HelperMethods
       end 
     end
     html << "</span>"
+    html.html_safe    
   end
   
   def tr8n_help_icon_tag(filename = "index")
-    link_to(image_tag("/tr8n/images/help.png", :style => "border:0px; vertical-align:middle;", :title => trl("Help")), {:controller => "/tr8n/help", :action => filename}, :target => "_new")
+    link_to(image_tag("/tr8n/images/help.png", :style => "border:0px; vertical-align:middle;", :title => trl("Help")), {:controller => "/tr8n/help", :action => filename}, :target => "_new").html_safe
   end
   
   def tr8n_help_link(text, opts = {})
     filename = opts[:filename].nil? ? text.downcase.gsub(' ', '_') : opts[:filename] 
     classname = "tr8n_selected" if filename == controller.action_name
-    link_to(text, { :controller => "/tr8n/help", :action => filename }, :class => classname)
+    link_to(text, { :controller => "/tr8n/help", :action => filename }, :class => classname).html_safe
   end
 
   def tr8n_spinner_tag(id = "spinner", label = nil, cls='spinner')
@@ -154,19 +159,21 @@ module Tr8n::HelperMethods
     html << image_tag("/tr8n/images/spinner.gif", :style => "vertical-align:middle;")
     html << " #{trl(label)}" if label
     html << "</div>"
+    html.html_safe
   end
   
   def tr8n_toggler_tag(content_id, label = "", open = true)
     html = "<span id='#{content_id}_open' "
     html << "style='display:none'" unless open
     html << ">"
-    html << link_to_function("#{image_tag("/tr8n/images/arrow_down.gif", :style=>'text-align:center; vertical-align:middle')} #{label}", "Tr8n.Effects.hide('#{content_id}_open'); Tr8n.Effects.show('#{content_id}_closed'); Tr8n.Effects.blindUp('#{content_id}');", :style=> "text-decoration:none")
+    html << link_to_function("#{image_tag("/tr8n/images/arrow_down.gif", :style=>'text-align:center; vertical-align:middle')} #{label}".html_safe, "Tr8n.Effects.hide('#{content_id}_open'); Tr8n.Effects.show('#{content_id}_closed'); Tr8n.Effects.blindUp('#{content_id}');", :style=> "text-decoration:none")
     html << "</span>" 
     html << "<span id='#{content_id}_closed' "
     html << "style='display:none'" if open
     html << ">"
-    html << link_to_function("#{image_tag("/tr8n/images/arrow_right.gif", :style=>'text-align:center; vertical-align:middle')} #{label}", "Tr8n.Effects.show('#{content_id}_open'); Tr8n.Effects.hide('#{content_id}_closed'); Tr8n.Effects.blindDown('#{content_id}');", :style=> "text-decoration:none")
+    html << link_to_function("#{image_tag("/tr8n/images/arrow_right.gif", :style=>'text-align:center; vertical-align:middle')} #{label}".html_safe, "Tr8n.Effects.show('#{content_id}_open'); Tr8n.Effects.hide('#{content_id}_closed'); Tr8n.Effects.blindDown('#{content_id}');", :style=> "text-decoration:none")
     html << "</span>" 
+    html.html_safe
   end  
   
   def tr8n_sitemap(sections, splitters, options = {})
@@ -180,6 +187,7 @@ module Tr8n::HelperMethods
     end 
     html << "</tr>"
     html << "</table>"
+    html.html_safe
   end
   
   def tr8n_breadcrumb_tag(source = nil, opts = {})
@@ -199,13 +207,14 @@ module Tr8n::HelperMethods
     html = "<div id='tr8n_breadcrumb' class='tr8n_breadcrumb'>"
     html << links.join(opts[:separator])
     html << '</div>'    
+    html.html_safe
   end
   
   def tr8n_user_tag(translator, options = {})
     return "Deleted Translator" unless translator
     
     if options[:linked]
-      link_to(translator.name, translator.link)
+      link_to(translator.name, translator.link).html_safe
     else
       translator.name
     end
@@ -218,18 +227,18 @@ module Tr8n::HelperMethods
       img_url = Tr8n::Config.silhouette_image
     end
     
-    img_tag = "<img src='#{img_url}' style='width:48px'>"
+    img_tag = "<img src='#{img_url}' style='width:48px'>".html_safe
     
     if translator and options[:linked]
-      link_to(img_tag, translator.link)
+      link_to(img_tag, translator.link).html_safe
     else  
-      img_tag
+      img_tag.html_safe
     end
   end  
   
   def tr8n_will_paginate(collection = nil, options = {})
     will_paginate(collection, options.merge(:previous_label => tr("&laquo; Previous", "Previous entries in a list", {}, options), 
-                                            :next_label => tr("Next &raquo;", "Next entries in a list", {}, options)))
+                                            :next_label => tr("Next &raquo;", "Next entries in a list", {}, options))).html_safe
   end
 
   def tr8n_page_entries_info(collection, options = {})
@@ -262,6 +271,19 @@ module Tr8n::HelperMethods
     ), html_options)
   end
 
+  def tr8n_with_options_tag(opts, &block)
+    Thread.current[:tr8n_block_options] = opts
+    if block_given?
+      ret = capture(&block) 
+    end
+    Thread.current[:tr8n_block_options] = {}
+    ret
+  end
+
+  def tr8n_button_tag(label, function, opts = {})
+    link_to_function("<span>#{label}</span>".html_safe, function, :class => "tr8n_grey_button tr8n_pcb")    
+  end
+
 private
 
   def generate_sitemap(sections, options = {})
@@ -277,6 +299,7 @@ private
       html << "</li>"
     end
     html << "</ul>"
+    html.html_safe
   end
   
 end

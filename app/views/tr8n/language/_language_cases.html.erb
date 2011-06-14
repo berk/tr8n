@@ -12,7 +12,7 @@
 <div id="language_cases_container" style="font-size:12px;">
   <%=render(:partial => "header", :locals => {:section => "language_cases", :label => "Language Cases", :description => "", :mode => mode})%>
   
-  <% form_for(:language, tr8n_current_language, :url => {:action => :index}, :html => {:id => 'language_cases_form', :method => :post}) do |f| %>
+  <%= form_for(tr8n_current_language, :as => :language, :url => {:action => :index}, :html => {:id => 'language_cases_form', :method => :post}) do |f| %>
     <div id="language_cases_content" class="section_box colored">
       <div style="float:right; padding-right:5px;">
           <%=tr8n_help_icon_tag %>

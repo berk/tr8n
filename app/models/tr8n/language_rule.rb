@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010 Michael Berkovich, Geni Inc
+# Copyright (c) 2010-2011 Michael Berkovich
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -23,12 +23,18 @@
 
 class Tr8n::LanguageRule < ActiveRecord::Base
   set_table_name :tr8n_language_rules
+  after_save      :clear_cache
+  after_destroy   :clear_cache
 
   belongs_to :language, :class_name => "Tr8n::Language"   
   belongs_to :translator, :class_name => "Tr8n::Translator"   
   
   serialize :definition
-  
+
+  def definition
+    @indifferent_def ||= HashWithIndifferentAccess.new(super)
+  end
+
   def self.by_id(rule_id)
     Tr8n::Cache.fetch("language_rule_#{rule_id}") do 
       find_by_id(rule_id)
@@ -104,11 +110,7 @@ class Tr8n::LanguageRule < ActiveRecord::Base
     destroy
   end
 
-  def after_save
-    Tr8n::Cache.delete("language_rule_#{id}")
-  end
-
-  def after_destroy
+  def clear_cache
     Tr8n::Cache.delete("language_rule_#{id}")
   end
 

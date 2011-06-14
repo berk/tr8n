@@ -1,4 +1,4 @@
-<% form_for(:translation_key, @key, :url => {:action => :update}, :html => {:id => 'tr8n_form', :method => :post, :class => "tr8n"}) do |form| %>
+<%= form_for(@key, :as => :translation_key, :url => {:action => :update}, :html => {:id => 'tr8n_form', :method => :post, :class => "tr8n"}) do |form| %>
   <%= form.hidden_field :id %>
   <%= hidden_field_tag :source_url, request.env['HTTP_REFERER'] %>
   

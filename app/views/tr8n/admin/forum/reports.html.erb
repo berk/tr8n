@@ -2,7 +2,7 @@
 <%= render :partial => "tabs" %>
 <%= tr8n_will_filter(@reports) %>
 
-<% form_tag("", :id => "reports_form") do %>
+<%= form_tag("", :id => "reports_form") do %>
   <%= will_filter_table_tag(@reports, :columns => [:created_at,
     [:language_id, lambda{|report|
       if report.language
@@ -42,7 +42,7 @@
         actions = []
         actions << link_to("Delete Message", {:action => :delete_message, :msg_id => report.message.id}, {:confirm => "Are you sure you want to delete this message?"}) if report.message
         actions << link_to("Delete Report", {:action => :delete_report, :report_id => report.id}, {:confirm => "Are you sure you want to delete this report?"})
-        actions.join(" | ")
+        actions.join(" | ").html_safe
     }, 'white-space: nowrap'] 
   ]) %>
 <% end %>

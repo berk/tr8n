@@ -3,7 +3,7 @@
 	  <%=trla("Translation for {language} Language", "", :language => tr8n_current_language.native_name)%>
 	</div>
 	
-	<% form_for(:translation, @translation, :url => {:controller => "/tr8n/translations", :action => :translate}, :html => {:id => 'translation_form', :method => :post}) do |f| %>
+	<%= form_for(@translation, :as => :translation, :url => {:controller => "/tr8n/translations", :action => :translate}, :html => {:id => 'translation_form', :method => :post}) do |f| %>
 		  <%= hidden_field_tag(:translation_id, @translation.id) %>
 		  <%= hidden_field_tag(:new_translation, (@translation.id == nil).to_s ) %>
 		  <%= hidden_field_tag(:translation_key_id, @translation_key.id) %>

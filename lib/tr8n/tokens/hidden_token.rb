@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010 Michael Berkovich, Geni Inc
+# Copyright (c) 2010-2011 Michael Berkovich
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -36,50 +36,52 @@
 #
 ####################################################################### 
 
-
-class Tr8n::Tokens::HiddenToken < Tr8n::Token
-  
-  def self.expression
-    /(\{_[\w]+\})/
-  end
-
-  def allowed_in_translation?
-    false
-  end
-
-  def supports_cases?
-    false
-  end
-
-  def dependant?
-    false
-  end
-
-  def dependency_rules
-    []
-  end
-
-  def language_rule
-    nil
-  end
-
-  # return humanized form
-  def prepare_label_for_translator(label)
-    label.gsub(full_name, humanized_name)
-  end
-
-  # return humanized form
-  def prepare_label_for_suggestion(label, index)
-    label.gsub(full_name, humanized_name)
-  end
-  
-  def humanized_name
-    @humanized_name ||= begin
-      hnm = name[1..-1].clone
-      hnm.gsub!('__', ' ')
-      hnm.gsub!('_', '/')
-      hnm
+module Tr8n
+  module Tokens
+    class HiddenToken < Tr8n::Token
+      def self.expression
+        /(\{_[\w]+\})/
+      end
+    
+      def allowed_in_translation?
+        false
+      end
+    
+      def supports_cases?
+        false
+      end
+    
+      def dependant?
+        false
+      end
+    
+      def dependency_rules
+        []
+      end
+    
+      def language_rule
+        nil
+      end
+    
+      # return humanized form
+      def prepare_label_for_translator(label)
+        label.gsub(full_name, humanized_name)
+      end
+    
+      # return humanized form
+      def prepare_label_for_suggestion(label, index)
+        label.gsub(full_name, humanized_name)
+      end
+      
+      def humanized_name
+        @humanized_name ||= begin
+          hnm = name[1..-1].clone
+          hnm.gsub!('__', ' ')
+          hnm.gsub!('_', '/')
+          hnm
+        end
+      end
+      
     end
   end
-  
 end

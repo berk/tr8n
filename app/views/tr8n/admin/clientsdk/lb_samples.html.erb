@@ -24,9 +24,8 @@
 	Tr8n Client SDK JavaScript Examples
 </div>
 
-
-<% form_tag("", :class => "tr8n") do %>
-	<div style="height:350px; overflow:auto;">
+<%= form_tag("", :class => "tr8n") do %>
+	<div style="height:400px; overflow:auto;">
 		<table class="admin_table">
 			<tr>
 				<th>Label</th>
@@ -51,5 +50,5 @@
 <% end %>
 
 <div style="text-align:center;padding-top:10px;">
-   <%=link_to_function("<span>#{trl("Close", "Tr8n lightbox close button")}</span>", "tr8nLightbox.hide();", :class => "tr8n_grey_button tr8n_pcb") %> 
+   <%=tr8n_button_tag(trl("Close", "Tr8n lightbox close button"), "tr8nLightbox.hide();") %> 
 </div>

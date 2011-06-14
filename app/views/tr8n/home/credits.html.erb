@@ -1,4 +1,4 @@
-<% Tr8n::Config.with_options(:default_locale => 'en-US', :admin => true) do %>
+<%= tr8n_with_options_tag(:default_locale => 'en-US', :admin => true) do %>
 	<style>
 	  .content_hd,
 	  .content_bd,
@@ -71,12 +71,8 @@
 		
 
         <td>
-           <%=image_tag("http://www.gravatar.com/avatar/3d3c200d0a9fbb17a3bcaf1c3e8c2eeb?s=100")%>      
         </td>
         <td>
-          <strong>Jordi Bunster</strong><br>
-          Software Developer<br>
-          <%=link_to("https://github.com/jordi", "https://github.com/jordi")%>
         </td>
 	
 	    </tr>

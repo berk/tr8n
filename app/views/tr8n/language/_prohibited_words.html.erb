@@ -1,7 +1,7 @@
 <div id="prohibited_words_container">
   <%=render(:partial => "header", :locals => {:section => "prohibited_words", :label => "Prohibited Words", :description => "", :mode => mode})%>
 
-  <% form_for(:language, tr8n_current_language, :url => {:controller => :language, :action => :manage}, :html => {:id => 'prohibited_words_form', :method => :post}) do |f| %>
+  <%= form_for(tr8n_current_language, :as => :language, :url => {:controller => :language, :action => :manage}, :html => {:id => 'prohibited_words_form', :method => :post}) do |f| %>
     <div id="prohibited_words_content" class="section_box colored">
       <% if mode == :edit %>
         <%=f.text_area(:curse_words, :style => "width:100%; height:60px; background:white;")%>

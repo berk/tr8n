@@ -17,7 +17,7 @@
 </div> 
 
 <div style="background:#EFF8FF; border: 1px dotted #ccc; padding:5px; padding-bottom: 0px;">
-<% form_tag do %>
+<%= form_tag do %>
   <table style="width:100%;">
     <tr>
       <td style="width:42%; padding:2px; background:#F1F4FA;">
@@ -31,15 +31,15 @@
       <td rowspan="3" style="width:15%; padding:2px; vertical-align:top;">
 			   <center>
 			   <div style="width:150px; text-align:center; padding-top:15px;">
-			     <%=link_to_function("<span>Translate Label</span>", "translate();", :class => "tr8n_grey_button tr8n_pcb") %>
+			     <%=link_to_function("<span>Translate Label</span>".html_safe, "translate();", :class => "tr8n_grey_button tr8n_pcb") %>
 
 	         <div style="margin-top:15px; padding:2px; text-align:center; border: 1px dotted #ccc;">
-              <%=link_to_function("<span>View Examples</span>", "tr8nLightbox.show('/tr8n/admin/clientsdk/lb_samples', {height:450});", :class => "tr8n_grey_button tr8n_pcb", :style=>"width:200px;") %><br>
-              <%=link_to("<span>View Phrases</span>", "/tr8n/phrases/index?section_key=clientsdk", :target => "_phrases", :class => "tr8n_grey_button tr8n_pcb", :style=>"width:200px;") %><br>
-              <%=link_to_function("<span>Load Translations</span>", "reloadTranslations();", :class => "tr8n_grey_button tr8n_pcb", :style=>"width:200px;") %><br>
-              <%=link_to_function("<span>Clear Results</span>", "clearResults();", :class => "tr8n_grey_button tr8n_pcb", :style=>"width:200px;") %><br>
-              <%=link_to_function("<span>Run Speed Test</span>", "speedTest();", :class => "tr8n_grey_button tr8n_pcb", :style=>"width:200px;") %><br>
-	            <%=link_to("<span>Download SDK</span>", "/tr8n/javascripts/tr8n_client_sdk.js", :class => "tr8n_grey_button tr8n_pcb", :style=>"width:200px;") %><br>
+              <%=link_to_function("<span>View Examples</span>".html_safe, "tr8nLightbox.show('/tr8n/admin/clientsdk/lb_samples', {height:450});", :class => "tr8n_grey_button tr8n_pcb", :style=>"width:200px;") %><br>
+              <%=link_to("<span>View Phrases</span>".html_safe, "/tr8n/phrases/index?section_key=clientsdk", :target => "_phrases", :class => "tr8n_grey_button tr8n_pcb", :style=>"width:200px;") %><br>
+              <%=link_to_function("<span>Load Translations</span>".html_safe, "reloadTranslations();", :class => "tr8n_grey_button tr8n_pcb", :style=>"width:200px;") %><br>
+              <%=link_to_function("<span>Clear Results</span>".html_safe, "clearResults();", :class => "tr8n_grey_button tr8n_pcb", :style=>"width:200px;") %><br>
+              <%=link_to_function("<span>Run Speed Test</span>".html_safe, "speedTest();", :class => "tr8n_grey_button tr8n_pcb", :style=>"width:200px;") %><br>
+	            <%=link_to("<span>Download SDK</span>".html_safe, "/tr8n/javascripts/tr8n_client_sdk.js", :class => "tr8n_grey_button tr8n_pcb", :style=>"width:200px;") %><br>
 	         </div> 
 
 				 </div>

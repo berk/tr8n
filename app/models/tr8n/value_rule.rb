@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010 Michael Berkovich, Geni Inc
+# Copyright (c) 2010-2011 Michael Berkovich
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -111,6 +111,7 @@ class Tr8n::ValueRule < Tr8n::LanguageRule
       when "is_not" then desc << " is not"        
     end
     desc << " <strong>'" << Tr8n::LanguageRule.humanize_values(definition["value"]) << "'</strong>"
+    desc.html_safe
   end
 
 end

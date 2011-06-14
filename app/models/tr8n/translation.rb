@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010 Michael Berkovich, Geni Inc
+# Copyright (c) 2010-2011 Michael Berkovich
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -23,6 +23,8 @@
 
 class Tr8n::Translation < ActiveRecord::Base
   set_table_name :tr8n_translations
+  after_save      :clear_cache
+  after_destroy   :clear_cache
 
   belongs_to :language,         :class_name => "Tr8n::Language"
   belongs_to :translation_key,  :class_name => "Tr8n::TranslationKey"
@@ -73,7 +75,7 @@ class Tr8n::Translation < ActiveRecord::Base
     return "<span style='color:grey'>0</span>" if rank.blank?
     
     prefix = (rank > 0) ? "+" : ""
-    "<span style='#{rank_style(rank)}'>#{prefix}#{rank}</span>" 
+    "<span style='#{rank_style(rank)}'>#{prefix}#{rank}</span>".html_safe 
   end
 
   # populate language rules from the internal rules hash
@@ -204,15 +206,6 @@ class Tr8n::Translation < ActiveRecord::Base
   
   def clear_cache
     Tr8n::Cache.delete("translations_#{language.locale}_#{translation_key.key}")
-  end
-  
-  def after_save
-    clear_cache
-    translation_key.update_translation_count!
-  end
-
-  def after_destroy
-    clear_cache
     translation_key.update_translation_count!
   end
   

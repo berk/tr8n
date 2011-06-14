@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010 Michael Berkovich, Geni Inc
+# Copyright (c) 2010-2011 Michael Berkovich
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -29,7 +29,7 @@ class Tr8n::Logger < Logger
     return Rails.logger unless Tr8n::Config.enable_logger?
     @logger ||= begin
       logfile_path = Tr8n::Config.log_path if Tr8n::Config.log_path.first == '/' 
-      logfile_path = "#{RAILS_ROOT}/#{Tr8n::Config.log_path}" unless logfile_path
+      logfile_path = "#{Tr8n::Config.root}/#{Tr8n::Config.log_path}" unless logfile_path
       logfile_dir = logfile_path.split("/")[0..-2].join("/")
       FileUtils.mkdir_p(logfile_dir) unless File.exist?(logfile_dir)
       logfile = File.open(logfile_path, 'a')

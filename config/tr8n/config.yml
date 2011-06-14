@@ -93,25 +93,25 @@ defaults: &defaults
   # Site Integration Settings
   #############################################################################
   site_info:  
-    title:                    Tr8n                            # site title - provide your site title here
-    contact_email:            admin@tr8n.org                  # contact email for questions about translations
-    current_locale_method:    current_locale                  # application controller method that sets and returns current locale
-    default_url:              /tr8n/home                      # default site url where to redirect the user if Tr8n is disabled            
-    default_locale:           en-US                           # locale of the site default language
-    sitemap_path:             /config/tr8n/site/sitemap.json  # location of the sitemap definition file
-    splash_screen:            /tr8n/common/splash_screen      # location of the Tr8n splash screen  
-    tr8n_layout:              tr8n                            # layout for the tr8n pages
-    tr8n_helpers:             []                              # if you need to add extra helpers
-    admin_layout:             tr8n_admin                      # layout to be used for the admin user interface
-    admin_helpers:            []                              # if you need to add extra helpers
-    before_filters:           []                              # filters from application controller
-    skip_before_filters:      []                              # filters from application controller
-    after_filters:            []                              # filters from application controller
+    title:                    "Tr8n"                            # site title - provide your site title here
+    contact_email:            "admin@tr8n.org"                  # contact email for questions about translations
+    current_locale_method:    "current_locale"                  # application controller method that sets and returns current locale
+    default_url:              "/tr8n/home"                      # default site url where to redirect the user if Tr8n is disabled            
+    default_locale:           "en-US"                           # locale of the site default language
+    sitemap_path:             "/config/tr8n/site/sitemap.json"  # location of the sitemap definition file
+    splash_screen:            "/tr8n/common/splash_screen"      # location of the Tr8n splash screen  
+    tr8n_layout:              "tr8n"                            # layout for the tr8n pages
+    tr8n_helpers:             []                                # if you need to add extra helpers
+    admin_layout:             "tr8n_admin"                      # layout to be used for the admin user interface
+    admin_helpers:            []                                # if you need to add extra helpers
+    before_filters:           []                                # filters from application controller
+    skip_before_filters:      []                                # filters from application controller
+    after_filters:            []                                # filters from application controller
     user_info:
-      enabled:                false                           # if disabled, will fallback onto translators
-      class_name:             User                            # class name for the User object type
-      current_user_method:    current_user                    # returns current user object
-      methods:                                                # User object methods mapping
+      enabled:                false                             # if disabled, will fallback onto translators
+      class_name:             User                              # class name for the User object type
+      current_user_method:    current_user                      # returns current user object
+      methods:                                                  # User object methods mapping
         id:                   id
         name:                 name                            
         gender:               gender
@@ -125,9 +125,9 @@ defaults: &defaults
   # Rules Engine Settings
   #############################################################################
   rules_engine:  
-    language_rule_classes:    [Tr8n::NumericRule, Tr8n::GenderRule, Tr8n::GenderListRule, Tr8n::DateRule, Tr8n::ValueRule]
-    data_token_classes:       [Tr8n::Tokens::DataToken, Tr8n::Tokens::HiddenToken, Tr8n::Tokens::MethodToken, Tr8n::Tokens::TransformToken]
-    decoration_token_classes: [Tr8n::Tokens::DecorationToken]
+    language_rule_classes:    ["Tr8n::NumericRule", "Tr8n::GenderRule", "Tr8n::GenderListRule", "Tr8n::DateRule", "Tr8n::ValueRule"]
+    data_token_classes:       ["Tr8n::Tokens::DataToken", "Tr8n::Tokens::HiddenToken", "Tr8n::Tokens::MethodToken", "Tr8n::Tokens::TransformToken"]
+    decoration_token_classes: ["Tr8n::Tokens::DecorationToken"]
     allow_nil_token_values:   true
     numeric_rule:             
       token_suffixes:         [count, num, age, hours, minutes, years, seconds]
@@ -150,7 +150,7 @@ defaults: &defaults
       token_suffixes:         [date]
       object_method:          to_date
     value_rule:               
-      token_suffixes:         *
+      token_suffixes:         "*"
       object_method:          to_s
     
     # minimal rank makes the translation acceptable for subsitution and counts towards the translator rank
@@ -158,10 +158,10 @@ defaults: &defaults
     
     viewing_user_token:       viewing_user
     translation_rank_styles:  
-      -1000..-5:              color:red;font-weight:bold;
-      -4..-1:                 color:red;
-      1..10:                  color:green;
-      11..1000:               color:green;font-weight:bold;
+      -1000..-5:              "color:red;font-weight:bold;"
+      -4..-1:                 "color:red;"
+      1..10:                  "color:green;"
+      11..1000:               "color:green;font-weight:bold;"
   
   #############################################################################
   # API Settings
@@ -181,19 +181,27 @@ defaults: &defaults
   #   tr("Some Key")
   # end
   #
+  # or you can use a role:
+  #
+  # Tr8n::Config.with_options(:role => :professional) do  
+  #   tr("Some Key")
+  # end
+  #
   # Alternatively, you could provide this information in the key options:
   # 
-  # tr("Label", "Description", {}, {:level => 150}) 
+  # tr("Label", "Description", {}, {:role => :professional}) 
   #
-  # This means that only translators with the level 150 and above can 
+  # This means that only translators with the level 100 and above can 
   # translate this key.
   #############################################################################
-  translator_level:  
-    0:                        regular
-    50:                       trusted
-    100:                      professional
-    1000:                     manager
- 
+  translator_roles:         # translation key level
+    regular:                  0
+    trusted:                  50
+    professional:             100
+    manager:                  1000   # reserved for translation tools
+    admin:                    10000  # reserved for admin tools
+  
+  default_translation_key_level: 0
   #############################################################################
   # Localization Settings
   #############################################################################

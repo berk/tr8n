@@ -2,7 +2,7 @@
 	<div class="section_title">
 		<% unless @translation_key.locked? %>
 	    <div style="float:right; font-size: 12px; font-weight:normal;">
-	      <%= link_to_function("#{image_tag('/tr8n/images/add.png', :style=>'vertical-align:bottom')} #{tra("add translation")}", "addTranslation()") %>
+	      <%= link_to_function(tra("+ add translation"), "addTranslation()") %>
 	    </div> 
     <% end %>
 				
@@ -13,7 +13,7 @@
 	
   <div class="section_box" id="translations_content">
     <div style="color:#666; font-weight:bold; padding:10px; border: 1px dotted #ccc; margin-bottom:10px; background-color:#EFF8FF;">
-      <% form_tag({}, {:method => :get, :id => "translations_search_form"}) do %>
+      <%= form_tag({}, {:method => :get, :id => "translations_search_form"}) do %>
          <%=hidden_field_tag(:section_key, @section_key) %>
          <%=hidden_field_tag(:translation_key_id, @translation_key.id) %>
          <div style="padding-top:5px;">
@@ -42,7 +42,7 @@
           
           <%=tr8n_toggler_tag("translations_section_#{index}", "", true)%>
 					<span style="font-size:14px;">
-            <%=key %>
+            <%=key.html_safe %>
 					</span>
         </div>
         <div id="translations_section_<%=index%>">

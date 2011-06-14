@@ -1,3 +1,5 @@
+<%= tr8n_with_options_tag(:default_locale => 'en-US', :admin => true) do %>
+
 <style>
   .lightbox {
   	background-color: white;
@@ -71,7 +73,7 @@
 			</div>		
 		<% end %>	 
 	
-    <% form_tag({:action => :submit_report}, {:method => :post, :id => :tr8n_form}) do %>
+    <%= form_tag({:action => :submit_report}, {:method => :post, :id => :tr8n_form}) do %>
       <%= hidden_field_tag :source_url, request.env['HTTP_REFERER'] %>
       <%= hidden_field_tag(:object_id, @reported_object.id) %>
       <%= hidden_field_tag(:object_type, @reported_object.class.name) %>
@@ -107,3 +109,5 @@
     <% end %>
 		
 </div>
+
+<% end %>

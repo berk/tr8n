@@ -1,4 +1,4 @@
-<% Tr8n::Config.with_options(:default_locale => 'en-US', :admin => true) do %>
+<%= tr8n_with_options_tag(:default_locale => 'en-US', :admin => true) do %>
 	<style>
 	  .tr8n_languages_table {
 	    text-align:center;
@@ -27,6 +27,6 @@
 		  <%=tr8n_language_table_tag(:source_url => @source_url)%>
 		</div>
 		
-		<%= tra("Don't see the language you're interested in? Let us know at {email}.", nil, :email=>link_to(Tr8n::Config.site_info[:contact_email], "mailto:#{Tr8n::Config.site_info[:contact_email]}")) %>
+		<%= tra("Don't see the language you're interested in? Let us know at {email}.", nil, :email=>link_to(Tr8n::Config.site_info[:contact_email], "mailto:#{Tr8n::Config.site_info[:contact_email]}")).html_safe %>
 	</div>
 <% end %>	

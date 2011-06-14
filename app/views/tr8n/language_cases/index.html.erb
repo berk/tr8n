@@ -1,4 +1,4 @@
-<% Tr8n::Config.with_options(:default_locale => 'en-US', :admin => true) do %>
+<%= tr8n_with_options_tag(:default_locale => 'en-US', :admin => true) do %>
 
 	<%= render :partial => "/tr8n/common/header" %>
 	
@@ -7,7 +7,7 @@
 	</div>
 	
 	<div style="background:#EFF8FF; border: 1px dotted #ccc; padding:10px;">
-	  <% form_tag({:action => :index}, {:method => :get, :id => "case_search_form"}) do %>
+	  <%= form_tag({:action => :index}, {:method => :get, :id => "case_search_form"}) do %>
 	      <div style="float:right">
 	        <button type="submit" class="translator_btn translator_small_btn" onClick="Tr8n.Effects.submit('case_search_form'); return false;">
 	            <span><%=tra("Search", "Search button label")%></span>

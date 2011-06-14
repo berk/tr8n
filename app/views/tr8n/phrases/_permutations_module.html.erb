@@ -1,5 +1,5 @@
 <div id="permutations_module" class="section_box colored" style="display:none">
-	<% form_for(:translation, @translation, :url => {:controller => "/tr8n/translations", :action => :permutate}, :html => {:id => 'permutation_form', :method => :post}) do |f| %>
+	<%= form_for(@translation, :as => :translation, :url => {:controller => "/tr8n/translations", :action => :permutate}, :html => {:id => 'permutation_form', :method => :post}) do |f| %>
 	    <%= hidden_field_tag(:translation_key_id, @translation_key.id) %>
 	    <%= hidden_field_tag(:source_url, @source_url) %>
 	    <%= hidden_field_tag(:translation_has_dependencies, "true") %>

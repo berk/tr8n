@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010 Michael Berkovich, Geni Inc
+# Copyright (c) 2010-2011 Michael Berkovich
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -41,10 +41,12 @@
 #
 ####################################################################### 
 
-class Tr8n::Tokens::DataToken < Tr8n::Token
-  
-  def self.expression
-    /(\{[^_][\w]+(:[\w]+)?(::[\w]+)?\})/
+module Tr8n
+  module Tokens
+    class DataToken < Tr8n::Token
+      def self.expression
+        /(\{[^_][\w]+(:[\w]+)?(::[\w]+)?\})/
+      end
+    end
   end
-
 end

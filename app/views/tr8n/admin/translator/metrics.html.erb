@@ -2,7 +2,7 @@
 <%= render :partial => "tabs" %>
 <%= tr8n_will_filter(@metrics) %>
 
-<% form_tag("", :id => "metrics_form") do %>
+<%= form_tag("", :id => "metrics_form") do %>
   <%= will_filter_table_tag(@metrics, :columns => [
     [:translator_id, lambda{|metric|
       if metric.translator

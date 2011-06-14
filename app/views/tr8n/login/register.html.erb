@@ -1,10 +1,10 @@
-<% Tr8n::Config.with_options(:default_locale => 'en-US', :admin => true) do %>
+<%= tr8n_with_options_tag(:default_locale => 'en-US', :admin => true) do %>
 	<h2 class="underscore content_hd">
 	  <%=tr('Register for Tr8n Translator Account') %>
 	</h2>
 	<div class="content_bd">
 	  <div class="page_form">
-	  <% form_tag({}, :method => :post) do %>
+	  <%= form_tag({}, :method => :post) do %>
 	    <div class="field">
 	      <div class="strong field_hd txt_r h4"><%=tr('Email:') %></div>
 	      <div class="field_bd">
@@ -48,7 +48,7 @@
 	      <div class="field_bd">
 	        <button class="button super blue xlarge"><span><%= tr('Register') %></span></button>
 	        <%= tr("or") %>
-	        <%=link_to(tr("Login to Tr8n Translation Engine"), "/tr8n/login/index")%>
+	        <%=link_to(tr("Login"), "/tr8n/login/index")%>
 	      </div>
 	    </div>
 	  <% end %>

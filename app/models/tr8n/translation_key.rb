@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010 Michael Berkovich, Geni Inc
+# Copyright (c) 2010-2011 Michael Berkovich
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -25,6 +25,8 @@ require 'digest/md5'
 
 class Tr8n::TranslationKey < ActiveRecord::Base
   set_table_name :tr8n_translation_keys
+  after_save      :clear_cache
+  after_destroy   :clear_cache
   
   has_many :translations,             :class_name => "Tr8n::Translation",           :dependent => :destroy
   has_many :translation_key_locks,    :class_name => "Tr8n::TranslationKeyLock",    :dependent => :destroy
@@ -52,12 +54,20 @@ class Tr8n::TranslationKey < ActiveRecord::Base
         end
       end
       
+      level = options[:level] || Tr8n::Config.block_options[:level] || Tr8n::Config.default_translation_key_level
+      role_key = options[:role] || Tr8n::Config.block_options[:role] 
+      if role_key # role overrides level
+        level = Tr8n::Config.translator_roles[role_key]
+        raise Tr8n::Exception("Unknown translator role: #{role_key}") unless level 
+      end
+      locale = options[:locale] || Tr8n::Config.block_options[:default_locale] || Tr8n::Config.default_locale
+      
       existing_key ||= begin
         new_tkey = create(:key => key, 
                           :label => label, 
                           :description => desc, 
-                          :locale => (options[:locale] || Tr8n::Config.block_options[:default_locale] || Tr8n::Config.default_locale),
-                          :level => (options[:level] || Tr8n::Config.block_options[:level] || 0),
+                          :locale => locale,
+                          :level => level,
                           :admin => Tr8n::Config.block_options[:admin])
         unless options[:source].blank?
           # at the time of creation - mark the first source of the key
@@ -373,7 +383,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     return find_all_valid_translations(valid_translations_for(language)) if options[:api]
     
     if Tr8n::Config.disabled? or language.default?
-      return substitute_tokens(label, token_values, options.merge(:fallback => false), language)
+      return substitute_tokens(label, token_values, options.merge(:fallback => false), language).html_safe
     end
     
     if Tr8n::Config.enable_translator_language? and Tr8n::Config.current_user_is_translator?
@@ -384,17 +394,17 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     
     # if you want to present the label in it's sanitized form - for the phrase list
     if options[:default_language] 
-      return decorate_translation(language, sanitized_label, translation != nil, options)
+      return decorate_translation(language, sanitized_label, translation != nil, options).html_safe
     end
     
     if translation
       translated_label = substitute_tokens(translation.label, token_values, options, language)
-      return decorate_translation(language, translated_label, translation != nil, options.merge(:fallback => (translation_language != language)))
+      return decorate_translation(language, translated_label, translation != nil, options.merge(:fallback => (translation_language != language))).html_safe
     end
 
     # no translation found  
     translated_label = substitute_tokens(label, token_values, options, Tr8n::Config.default_language)
-    decorate_translation(language, translated_label, translation != nil, options)  
+    decorate_translation(language, translated_label, translation != nil, options).html_safe  
   end
 
   ###############################################################
@@ -442,7 +452,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     html = "<tr8n class='#{classes.join(' ')}' translation_key_id='#{id}'>"
     html << label
     html << "</tr8n>"
-    html    
+    html.html_safe    
   end
   
   def level
@@ -497,11 +507,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     end
   end
   
-  def after_save
-    Tr8n::Cache.delete("translation_key_#{key}")
-  end
-
-  def after_destroy
+  def clear_cache
     Tr8n::Cache.delete("translation_key_#{key}")
   end
 

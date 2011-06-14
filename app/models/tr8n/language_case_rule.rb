@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010 Michael Berkovich, Geni Inc
+# Copyright (c) 2010-2011 Michael Berkovich
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -168,6 +168,7 @@ class Tr8n::LanguageCaseRule < ActiveRecord::Base
       when "append" then desc << " append the value with"        
     end
     desc << " <strong>'" << humanize_values(definition["operation_value"]) << "'</strong> "
+    desc.html_safe
   end
   
   def describe_part(index)

@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010 Michael Berkovich, Geni Inc
+# Copyright (c) 2010-2011 Michael Berkovich
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -30,29 +30,31 @@
 # 
 ####################################################################### 
 
-class Tr8n::Tokens::MethodToken < Tr8n::Token
-  
-  def self.expression
-    /(\{[^_][\w]+(\.[\w]+)(:[\w]+)?(::[\w]+)?\})/
+module Tr8n
+  module Tokens
+    class MethodToken < Tr8n::Token
+      def self.expression
+        /(\{[^_][\w]+(\.[\w]+)(:[\w]+)?(::[\w]+)?\})/
+      end
+    
+      def object_name
+        @object_name ||= name.split(".").first
+      end
+    
+      def object_method_name
+        @object_method_name ||= name.split(".").last
+      end
+    
+      def suffix
+        @suffix ||= object_name.split('_').last
+      end
+    
+      def substitute(label, values = {}, options = {}, language = Tr8n::Config.current_language)
+        object = values[object_name.to_sym]
+        raise Tr8n::TokenException.new("Missing value for a token: #{full_name}") unless object
+        object_value = sanitize_token_value(object, object.send(object_method_name), options.merge(:sanitize_values => true), language)
+        label.gsub(full_name, object_value)
+      end
+    end
   end
-
-  def object_name
-    @object_name ||= name.split(".").first
-  end
-
-  def object_method_name
-    @object_method_name ||= name.split(".").last
-  end
-
-  def suffix
-    @suffix ||= object_name.split('_').last
-  end
-
-  def substitute(label, values = {}, options = {}, language = Tr8n::Config.current_language)
-    object = values[object_name.to_sym]
-    raise Tr8n::TokenException.new("Missing value for a token: #{full_name}") unless object
-    object_value = sanitize_token_value(object, object.send(object_method_name), options.merge(:sanitize_values => true), language)
-    label.gsub(full_name, object_value)
-  end
-  
 end

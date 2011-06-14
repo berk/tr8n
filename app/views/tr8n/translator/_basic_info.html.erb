@@ -1,7 +1,7 @@
 <div id="basic_info_container">
   <%=render(:partial => "header", :locals => {:section => "basic_info", :label => "Translator Details", :description => "Translator details section title", :mode => mode})%>
   
-  <% form_for(:translator, tr8n_current_translator, :url => {:action => :index}, :html => {:id => 'basic_info_form', :method => :post}) do |f| %>
+  <%= form_for(tr8n_current_translator, :as => :translator, :url => {:action => :index}, :html => {:id => 'basic_info_form', :method => :post}) do |f| %>
     <div class="section_box colored">
       <div style="float:right; padding-right:5px;">
           <%=tr8n_help_icon_tag %>
@@ -9,7 +9,7 @@
       <div ondblclick="switchSectionMode('basic_info', 'edit')">
         <table>
           <tr>
-            <th style="width:120px;padding:3px;vertical-align:middle;font-weight:bold;"><%=trl("Name:", "Translator name")%></th>
+            <td style="width:120px;padding:3px;vertical-align:middle;font-weight:bold;"><%=trl("Name:", "Translator name")%></td>
             <td style="padding:3px;">
               <% if Tr8n::Config.site_user_info_disabled? and mode == :edit %>
                 <%=f.text_field(:name)%>
@@ -20,7 +20,7 @@
           </tr>
 
           <tr>
-            <th style="width:120px;padding:3px;vertical-align:middle;font-weight:bold;"><%=trla("Gender:", "Translator gender")%></th>
+            <td style="width:120px;padding:3px;vertical-align:middle;font-weight:bold;"><%=trla("Gender:", "Translator gender")%></td>
             <td style="padding:3px;">
               <% if Tr8n::Config.site_user_info_disabled? and mode == :edit %>
                 <%=f.radio_button(:gender, "male")%> <%=tr('Male', 'Gender') %>
@@ -34,7 +34,7 @@
 					
 					<% if Tr8n::Config.site_user_info_disabled? %>
 	          <tr>
-	            <th style="width:120px;padding:3px;vertical-align:middle;font-weight:bold;"><%=trla("Email:", "Translator email")%></th>
+	            <td style="width:120px;padding:3px;vertical-align:middle;font-weight:bold;"><%=trla("Email:", "Translator email")%></td>
 	            <td style="padding:3px;">
 	              <% if mode == :edit %>
 	                <%=f.text_field(:email)%>
@@ -44,7 +44,7 @@
 	            </td>
 	          </tr>
 	          <tr>
-	            <th style="width:120px;padding:3px;vertical-align:middle;font-weight:bold;"><%=trla("Password:", "Translator password")%></th>
+	            <td style="width:120px;padding:3px;vertical-align:middle;font-weight:bold;"><%=trla("Password:", "Translator password")%></td>
 	            <td style="padding:3px;">
 	              <% if mode == :edit %>
 	                <%=f.password_field(:password)%>
@@ -54,7 +54,7 @@
 	            </td>
 	          </tr>
 	          <tr>
-	            <th style="width:120px;padding:3px;vertical-align:middle;font-weight:bold;"><%=trla("Photo Url:", "Translator photo")%></th>
+	            <td style="width:120px;padding:3px;vertical-align:middle;font-weight:bold;"><%=trla("Photo Url:", "Translator photo")%></td>
 	            <td style="padding:3px;">
 	              <% if mode == :edit %>
 	                <%=f.text_field(:mugshot)%>
@@ -64,7 +64,7 @@
 	            </td>
 	          </tr>
 	          <tr>
-	            <th style="width:120px;padding:3px;vertical-align:middle;font-weight:bold;"><%=trla("Link Url", "Translator link")%></th>
+	            <td style="width:120px;padding:3px;vertical-align:middle;font-weight:bold;"><%=trla("Link Url", "Translator link")%></td>
 	            <td style="padding:3px;">
 	              <% if mode == :edit %>
 	                <%=f.text_field(:link)%>
@@ -77,7 +77,7 @@
 										
 					<% if Tr8n::Config.enable_translator_language? %>
 	          <tr>
-	            <th style="padding:3px;vertical-align:middle;font-weight:bold;"><%=trla("Fallback Language:", "Language to fall back onto if the language phrase is not translated")%></th>
+	            <td style="padding:3px;vertical-align:middle;font-weight:bold;"><%=trla("Fallback Language:", "Language to fall back onto if the language phrase is not translated")%></td>
 	            <td style="padding:3px;">
 	              <% if mode == :edit %>
 	                <%=select_tag("translator[fallback_language_id]", options_for_select(Tr8n::Language.options, @fallback_language.id.to_s))%>

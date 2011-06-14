@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010 Michael Berkovich, Geni Inc
+# Copyright (c) 2010-2011 Michael Berkovich
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -35,7 +35,7 @@ class Tr8n::LanguageUser < ActiveRecord::Base
   
   def self.find_or_create(user, language)
     lu = find(:first, :conditions => ["user_id = ? and language_id = ?", user.id, language.id])
-    lu || create(:user => user, :language => language)
+    lu || create(:user_id => user.id, :language_id => language.id)
   end
 
   def self.check_default_language_for(user)

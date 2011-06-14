@@ -1,4 +1,4 @@
-<% Tr8n::Config.with_options(:default_locale => 'en-US', :admin => true) do %>
+<%= tr8n_with_options_tag(:default_locale => 'en-US', :admin => true) do %>
 
 	<% if params[:stem_type] %>
 	  <% left_right = params[:stem_type].index("right") ? "right" : "left" %>  
@@ -36,7 +36,7 @@
 		<% end %>
 		
 		<div id="tr8n_language_case_exception_container" style="border: 1px dotted #ccc; padding:5px; <%='display:none' unless @map.id %>">
-			<% form_for(:map, @map, :url => {:action => :update_value_map}, :html => {:id => 'tr8n_language_case_form', :method => :post}) do |form| %>
+			<%= form_for(@map, :as => :map, :url => {:action => :update_value_map}, :html => {:id => 'tr8n_language_case_form', :method => :post}) do |form| %>
 			  <%= hidden_field_tag :map_id, @map.id %>
 	      <%= hidden_field_tag :case_key, @map.keyword %>
 			  

@@ -7,14 +7,16 @@
 <%=link_to_function("Update Translation Counts", 'updateTranslationCounts()')%>
 <br>
 
-<% form_tag("", :id => "keys_form") do %>
+<%= form_tag("", :id => "keys_form") do %>
 	<%= will_filter_table_tag(@keys, :columns => [
 	  [:checkbox, :keys],
 	  [:label, lambda{|key|
-	    html = link_to(key.label, :action => :view, :key_id => key.id) 
+      html = []
+	    html << link_to(key.label, :action => :view, :key_id => key.id) 
 	    html << '<div style="color:grey; font-size:10px;">'
 	    html << key.description.to_s  
 	    html << '</div>'  
+      html.join('').html_safe
 	  }],
     :locale,
     [:admin, lambda{|key| key.admin}, 'padding:5px;text-align:right;'],
@@ -26,7 +28,7 @@
 	    html = []
 	    html << link_to_function("Update", "tr8nLightbox.show('/tr8n/admin/translation_key/lb_update?key_id=#{key.id}', {height:250})")
 	    html << link_to("Delete", {:action => :delete, :key_id => key.id}, {:confirm => "Are you sure you want to delete this key?"})
-	    html.join(' | ')
+	    html.join(' | ').html_safe
 	  }, 'padding:5px;text-align:right;white-space:nowrap;']
 	]) %>
 <% end %>

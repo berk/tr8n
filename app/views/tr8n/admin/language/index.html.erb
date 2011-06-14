@@ -8,7 +8,7 @@
 <%=link_to_function("Calculate Completeness", 'calculateCompleteness()')%>
 <br>
 
-<% form_tag("", :id => "languages_form") do %>
+<%= form_tag("", :id => "languages_form") do %>
 	<%= will_filter_table_tag(@languages, :columns => [
     [:checkbox, 'languages'],
 	  [:flag, lambda{|lang| image_tag("/tr8n/images/flags/#{lang.flag}.png")}],
@@ -21,7 +21,7 @@
 	    end
 	    html << lang.locale
 	    html << '</span>'
-	    html.join(' ')
+	    html.join(' ').html_safe
 	  }],
 	  [:english_name, lambda{|lang| link_to(lang.english_name, :action => :view, :lang_id => lang.id)}],
 	  [:native_name, lambda{|lang| lang.native_name}],
@@ -34,7 +34,7 @@
 	    end
 	    html << lang.right_to_left?
 	    html << '</span>'
-	    html.join(' ')
+	    html.join(' ').html_safe
 	  }],
 	  [:featured_index, lambda{|lang| lang.featured_index}, 'text-align:right;'],
 	  [:users, lambda{|lang| lang.total_metric.user_count}, 'text-align:right;'], 
@@ -52,7 +52,7 @@
 	    end
 	    html << "#{completeness}%"
 	    html << '</span>'
-	    html.join(' ')
+	    html.join(' ').html_safe
 	  }, 'text-align:right;'],
 	  [:actions, lambda{|lang|
 	     html = [] 
@@ -64,7 +64,7 @@
 	        html << link_to("Enable", :action => :enable, :lang_id => lang.id) 
 	      end
 	     end 
-	     html.join(' | ') 
+	     html.join(' | ').html_safe 
 	  }, 'text-align:right;white-space:nowrap;']
 	]) %>
 <% end %>

@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010 Michael Berkovich, Geni Inc
+# Copyright (c) 2010-2011 Michael Berkovich
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -23,6 +23,8 @@
 
 class Tr8n::TranslationSource < ActiveRecord::Base
   set_table_name :tr8n_translation_sources
+  after_save      :clear_cache
+  after_destroy   :clear_cache
   
   belongs_to  :translation_domain,       :class_name => "Tr8n::TranslationDomain"
   
@@ -43,11 +45,7 @@ class Tr8n::TranslationSource < ActiveRecord::Base
     end  
   end
 
-  def after_save
-    Tr8n::Cache.delete("translation_source_#{translation_domain_id}_#{source}")
-  end
-
-  def after_destroy
+  def clear_cache
     Tr8n::Cache.delete("translation_source_#{translation_domain_id}_#{source}")
   end
   

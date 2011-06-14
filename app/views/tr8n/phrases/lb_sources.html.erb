@@ -1,3 +1,4 @@
+<%= tr8n_with_options_tag(:default_locale => 'en-US', :admin => true) do %>
 <style>
   .lightbox {
     background-color: white;
@@ -44,6 +45,7 @@
   </div>	
     
 	<div style="text-align:center;padding-top:10px;">
-     <%=link_to_function("<span>#{trl("Close", "Tr8n lightbox close button")}</span>", "tr8nLightbox.hide()", :class => "tr8n_grey_button tr8n_pcb") %>
+     <%=link_to_function("<span>#{trl("Close", "Tr8n lightbox close button")}</span>".html_safe, "tr8nLightbox.hide()", :class => "tr8n_grey_button tr8n_pcb") %>
 	</div>
 </div>
+<% end %>

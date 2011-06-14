@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010 Michael Berkovich, Geni Inc
+# Copyright (c) 2010-2011 Michael Berkovich
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -23,6 +23,8 @@
 
 class Tr8n::LanguageCase < ActiveRecord::Base
   set_table_name :tr8n_language_cases
+  after_save :clear_cache
+  after_destroy :clear_cache
 
   belongs_to :language, :class_name => "Tr8n::Language"   
   belongs_to :translator, :class_name => "Tr8n::Translator"   
@@ -131,12 +133,7 @@ class Tr8n::LanguageCase < ActiveRecord::Base
     [["every word", "words"], ["entire phrase", "phrase"]]
   end
 
-  def after_save
-    Tr8n::Cache.delete("language_case_#{id}")
-    Tr8n::Cache.delete("language_case_rules_#{id}") 
-  end
-
-  def after_destroy
+  def clear_cache
     Tr8n::Cache.delete("language_case_#{id}")
     Tr8n::Cache.delete("language_case_rules_#{id}") 
   end

@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010 Michael Berkovich, Geni Inc
+# Copyright (c) 2010-2011 Michael Berkovich
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -677,18 +677,36 @@ class Tr8n::Config
   end
 
   #########################################################
+  # Translator Roles and Levels
+  #########################################################
+  def self.translator_roles
+    config[:translator_roles]
+  end
+
   def self.translator_levels
-    config[:translator_levels] ||= {
-      '0'     =>  'regular',
-      '50'    =>  'trusted',
-      '100'   =>  'professional',
-      '1000'  =>  'manager'
-    } 
+    @translator_levels ||= begin
+      levels = HashWithIndifferentAccess.new
+      translator_roles.each do |key, val|
+        levels[val] = key
+      end
+      levels
+    end
   end
 
   def self.manager_level
     1000
   end
+
+  def self.admin_level
+    10000
+  end
+
+  def self.default_translation_key_level
+    config[:default_translation_key_level] || 0
+  end
+  
+  #########################################################
+  # API
   #########################################################
   def self.enable_api?
     api[:enabled]
@@ -696,16 +714,6 @@ class Tr8n::Config
 
   def self.enable_client_sdk?
     config[:enable_client_sdk]
-  end
-
-  #########################################################
-  def self.with_options(opts = {})
-    Thread.current[:tr8n_block_options] = opts
-    if block_given?
-      ret = yield
-    end
-    Thread.current[:tr8n_block_options] = {}
-    ret
   end
   
 end

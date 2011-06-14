@@ -2,7 +2,7 @@
 <%= render :partial => "tabs" %>
 <%= tr8n_will_filter(@comments) %>
 
-<% form_tag("", :id => "comments_form") do %>
+<%= form_tag("", :id => "comments_form") do %>
   <%= will_filter_table_tag(@comments, :columns => [
     [:checkbox, :comments],    
     [:language_id, lambda{|comment|

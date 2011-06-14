@@ -33,6 +33,8 @@ class CreateTr8nTables < ActiveRecord::Migration
       t.integer :fallback_language_id
       t.text    :curse_words  
       t.integer :featured_index, :default => 0
+      t.string  :google_key
+      t.string  :facebook_key
       t.timestamps
     end
     add_index :tr8n_languages, [:locale]
@@ -54,6 +56,7 @@ class CreateTr8nTables < ActiveRecord::Migration
       t.string  :latin_name
       t.string  :native_name
       t.text    :description
+      t.string  :application
       t.timestamps
     end
     add_index :tr8n_language_cases, [:language_id]
@@ -61,13 +64,14 @@ class CreateTr8nTables < ActiveRecord::Migration
     add_index :tr8n_language_cases, [:language_id, :keyword]
     
     create_table :tr8n_language_case_value_maps do |t|
-      t.string  :key, :null => false
+      t.string  :keyword, :null => false
       t.integer :language_id, :null => false
       t.integer :translator_id
       t.text    :map
+      t.boolean :reported
       t.timestamps
     end
-    add_index :tr8n_language_case_value_maps, [:key, :language_id]
+    add_index :tr8n_language_case_value_maps, [:keyword, :language_id]
     add_index :tr8n_language_case_value_maps, [:translator_id]
     
     create_table :tr8n_language_users do |t|
@@ -105,11 +109,24 @@ class CreateTr8nTables < ActiveRecord::Migration
       t.boolean :blocked,     :default => false
       t.boolean :reported,    :default => false
       t.integer :fallback_language_id
-      t.integer :rank,        :default => 0 
+      t.integer :rank,        :default => 0
+      t.string  :name
+      t.string  :gender
+      t.string  :email
+      t.string  :password
+      t.string  :mugshot
+      t.string  :link
+      t.string  :locale
+      t.integer :level,       :default => 0
+      t.integer :manager
+      t.string  :last_ip
+      t.string  :country_code
       t.timestamps
     end
     add_index :tr8n_translators, [:user_id]
     add_index :tr8n_translators, [:created_at]
+    add_index :tr8n_translators, [:email]
+    add_index :tr8n_translators, [:email, :password]      
 
     create_table :tr8n_translator_logs do |t|
       t.integer :translator_id
@@ -126,7 +143,7 @@ class CreateTr8nTables < ActiveRecord::Migration
     
     create_table :tr8n_translator_metrics do |t|
       t.integer :translator_id,         :null => false
-      t.integer :language_id,           :limit => 8
+      t.integer :language_id           
       t.integer :total_translations,    :default => 0
       t.integer :total_votes,           :default => 0
       t.integer :positive_votes,        :default => 0
@@ -140,15 +157,22 @@ class CreateTr8nTables < ActiveRecord::Migration
     add_index :tr8n_translator_metrics, [:created_at]
     
     create_table :tr8n_translation_keys do |t|
-      t.string  :key,   :null => false
-      t.text    :label, :null => false
-      t.text    :description
+      t.string    :type
+      t.string    :key,   :null => false
+      t.text      :label, :null => false
+      t.text      :description
+      t.timestamp :verified_at
+      t.integer   :translation_count
+      t.boolean   :admin
+      t.string    :locale
+      t.integer   :level, :default => 0
       t.timestamps
     end
     add_index :tr8n_translation_keys, [:key], :unique => true
 
     create_table :tr8n_translation_sources do |t|
       t.string  :source
+      t.integer :translation_domain_id
       t.timestamps
     end
     add_index :tr8n_translation_sources, [:source], :name => "tr8n_sources_source"
@@ -231,6 +255,69 @@ class CreateTr8nTables < ActiveRecord::Migration
     add_index :tr8n_language_forum_abuse_reports, [:language_id], :name => "tr8n_forum_reports_lang_id"
     add_index :tr8n_language_forum_abuse_reports, [:language_id, :translator_id], :name => "tr8n_forum_reports_lang_id_translator_id"
     add_index :tr8n_language_forum_abuse_reports, [:language_forum_message_id], :name => "tr8n_forum_reports_message_id"
+    
+    create_table :tr8n_translation_key_comments do |t|
+      t.integer :language_id, :null => false
+      t.integer :translation_key_id, :null => false
+      t.integer :translator_id, :null => false
+      t.text    :message, :null => false
+      t.timestamps
+    end
+    add_index :tr8n_translation_key_comments, [:language_id], :name => "tr8n_tkey_msgs_lang_id"
+    add_index :tr8n_translation_key_comments, [:translator_id], :name => "tr8n_tkey_msgs_translator_id"
+    add_index :tr8n_translation_key_comments, [:language_id, :translation_key_id], :name => "tr8n_tkey_msgs_lang_id_tkey_id"
+    
+    create_table :tr8n_language_case_rules do |t|
+      t.integer :language_case_id, :null => false
+      t.integer :language_id
+      t.integer :translator_id
+      t.text    :definition, :null => false
+      t.integer :position
+      t.timestamps
+    end
+    add_index :tr8n_language_case_rules, [:language_case_id], :name => "tr8n_lcr_case_id"
+    add_index :tr8n_language_case_rules, [:language_id], :name => "tr8n_lcr_lang_id"
+    add_index :tr8n_language_case_rules, [:translator_id], :name => "tr8n_lcr_translator_id"
+    
+    create_table :tr8n_translation_domains do |t|
+      t.string        :name
+      t.string        :description
+      t.integer       :source_count,  :default => 0
+      t.timestamps
+    end
+    add_index :tr8n_translation_domains, [:name], :unique => true    
+    
+    create_table :tr8n_translator_following do |t|
+      t.integer     :translator_id
+      t.integer     :object_id
+      t.string      :object_type
+      t.timestamps
+    end
+    add_index :tr8n_translator_following, [:translator_id] 
+    
+    create_table :tr8n_translator_reports do |t|
+      t.integer     :translator_id
+      t.string      :state
+      t.integer     :object_id
+      t.string      :object_type
+      t.string      :reason
+      t.text        :comment
+      t.timestamps
+    end
+    add_index :tr8n_translator_reports, [:translator_id]    
+    
+    create_table :tr8n_ip_locations do |t|
+      t.integer   :low,       :limit => 8
+      t.integer   :high,      :limit => 8
+      t.string    :registry,  :limit => 20
+      t.date      :assigned
+      t.string    :ctry,      :limit => 2
+      t.string    :cntry,     :limit => 3
+      t.string    :country,   :limit => 80
+      t.timestamps
+    end
+    add_index :tr8n_ip_locations, [:low]
+    add_index :tr8n_ip_locations, [:high]    
   end
 
   def self.down
@@ -253,5 +340,11 @@ class CreateTr8nTables < ActiveRecord::Migration
     drop_table :tr8n_language_forum_messages
     drop_table :tr8n_language_forum_topics
     drop_table :tr8n_language_forum_abuse_reports
+    drop_table :tr8n_translation_key_comments
+    drop_table :tr8n_language_case_rules
+    drop_table :tr8n_translation_domains
+    drop_table :tr8n_translator_following
+    drop_table :tr8n_translator_reports
+    drop_table :tr8n_ip_locations
   end
 end

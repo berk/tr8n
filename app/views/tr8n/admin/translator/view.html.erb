@@ -43,7 +43,7 @@
             </span>
             
             <span id="translator_level_options_container" style='display:none'>
-            	<% form_tag do %>
+            	<%= form_tag do %>
 	              <%= select_tag('translator_level', options_for_select(Tr8n::Translator.level_options, @translator.level.to_s)) %>
 	              <%= link_to_function('save', 'updateTranslatorLevel()')%> | <%= link_to_function('cancel', "Tr8n.Effects.show('translator_level_container'); Tr8n.Effects.hide('translator_level_options_container');")%>
 							<% end %>

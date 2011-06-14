@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010 Michael Berkovich, Geni Inc
+# Copyright (c) 2010-2011 Michael Berkovich
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -23,6 +23,8 @@
 
 class Tr8n::Language < ActiveRecord::Base
   set_table_name :tr8n_languages
+  after_save      :clear_cache
+  after_destroy   :clear_cache
 
   belongs_to :fallback_language,    :class_name => 'Tr8n::Language', :foreign_key => :fallback_language_id
   
@@ -291,13 +293,7 @@ class Tr8n::Language < ActiveRecord::Base
     true
   end
 
-  def after_save
-    Tr8n::Cache.delete("language_#{locale}")
-    Tr8n::Cache.delete("featured_languages")
-    Tr8n::Cache.delete("enabled_languages")
-  end
-
-  def after_destroy
+  def clear_cache
     Tr8n::Cache.delete("language_#{locale}")
     Tr8n::Cache.delete("featured_languages")
     Tr8n::Cache.delete("enabled_languages")

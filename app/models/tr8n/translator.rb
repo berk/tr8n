@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010 Michael Berkovich, Geni Inc
+# Copyright (c) 2010-2011 Michael Berkovich
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -23,6 +23,8 @@
 
 class Tr8n::Translator < ActiveRecord::Base
   set_table_name :tr8n_translators
+  after_save      :clear_cache
+  after_destroy   :clear_cache
 
   belongs_to :user, :class_name => Tr8n::Config.user_class_name, :foreign_key => :user_id
   
@@ -251,6 +253,7 @@ class Tr8n::Translator < ActiveRecord::Base
   end  
 
   def level
+    return Tr8n::Config.admin_level if admin?
     return 0 if super.nil?
     super
   end
@@ -283,15 +286,12 @@ class Tr8n::Translator < ActiveRecord::Base
     return unless Tr8n::Config.enable_country_tracking?
     return if self.last_ip == new_ip
 
-    country_code = Tr8n::IpLocation.find_by_ip(new_ip).ctry
-    update_attributes(:last_ip => new_ip, :country_code => country_code)
+#    need to figure out what to do with it
+#    ipl = Tr8n::IpLocation.find_by_ip(new_ip)
+#    update_attributes(:last_ip => new_ip, :country_code => (ipl? ? ipl.ctry : nil))
   end
 
-  def after_save
-    Tr8n::Cache.delete("translator_for_#{user_id}")
-  end
-
-  def after_destroy
+  def clear_cache
     Tr8n::Cache.delete("translator_for_#{user_id}")
   end
 

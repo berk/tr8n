@@ -1,7 +1,7 @@
 <div id="basic_info_container">
   <%=render(:partial => "header", :locals => {:section => "basic_info", :label => "Basic Information", :description => "", :mode => mode})%>
   
-  <% form_for(:language, tr8n_current_language, :url => {:action => :index}, :html => {:id => 'basic_info_form', :method => :post}) do |f| %>
+  <%= form_for(tr8n_current_language, :as => :language, :url => {:action => :index}, :html => {:id => 'basic_info_form', :method => :post}) do |f| %>
     <div id="basic_info_content" class="section_box colored">
       <div style="float:right; padding-right:5px;">
           <%=tr8n_help_icon_tag %>

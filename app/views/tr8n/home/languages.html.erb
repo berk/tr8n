@@ -1,7 +1,7 @@
 <div style="padding:20px;">
 	<%=tr("English is the default language here")%>
 	<br><br>
-	<% Tr8n::Config.with_options(:default_locale => 'ru') do %>
+  <%= tr8n_with_options_tag(:default_locale => 'ru') do %>
 	  <%=tr("Русский язык основной язык здесь")%>
 	<% end %>	
 </div>

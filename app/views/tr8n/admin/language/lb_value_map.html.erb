@@ -1,4 +1,4 @@
-<% form_for(:map, @map, :url => {:action => :update_value_map}, :html => {:id => 'tr8n_form', :method => :post, :class => "tr8n"}) do |form| %>
+<%= form_for(@map, :as => :map, :url => {:action => :update_value_map}, :html => {:id => 'tr8n_form', :method => :post, :class => "tr8n"}) do |form| %>
   <%= hidden_field_tag :map_id, @map.id %>
   
   <h2><%=tra("Language Case Values")%></h2>

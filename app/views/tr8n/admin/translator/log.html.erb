@@ -2,7 +2,7 @@
 <%= render :partial => "tabs" %>
 <%= tr8n_will_filter(@logs) %>
 
-<% form_tag("", :id => "sources_form") do %>
+<%= form_tag("", :id => "sources_form") do %>
   <%= will_filter_table_tag(@logs, :columns => [
     :created_at, 
     [:translator_id, lambda{|log|
@@ -19,7 +19,7 @@
       html << "<div style='#{log.decoration}'>"
       html << log.describe
       html << "</div>"
-      html.join("")
+      html.join("").html_safe
     }]
   ]) %>
 <% end %>

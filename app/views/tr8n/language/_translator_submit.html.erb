@@ -1,4 +1,4 @@
-<% form_for(:translation, @translation, :url => {:controller => "/tr8n/translations", :action => :translate}, :html => {:id => :tr8n_translator_form, :method => :post}) do |f| %>
+<%= form_for(@translation, :as => :translation, :url => {:controller => "/tr8n/translations", :action => :translate}, :html => {:id => :tr8n_translator_form, :method => :post}) do |f| %>
     <%= hidden_field_tag(:translation_key_id, @translation_key.id, :id => :tr8n_translator_translation_key_id) %>
     <%= hidden_field_tag(:translation_id, @translation.id, :id => :tr8n_translator_translation_id) %>
     <%= hidden_field_tag(:source_url, @source_url, :id => :tr8n_translator_source_url) %>

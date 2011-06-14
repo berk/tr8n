@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010 Michael Berkovich, Geni Inc
+# Copyright (c) 2010-2011 Michael Berkovich
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -44,15 +44,6 @@ class String
 
   def tr8n_translated?
     @tr8n_translated
-  end
-  
-  def html_safe
-    @html_safe = true
-    self
-  end
-  
-  def html_safe?
-    @html_safe
   end
   
 end

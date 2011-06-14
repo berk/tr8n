@@ -4,7 +4,7 @@
 </div>
 
 <div class="section_box colored">
-  <% form_tag({:action => :topic}, {:method => :post, :id => "forum_topic_form"}) do %>
+  <%= form_tag({:action => :topic}, {:method => :post, :id => "forum_topic_form"}) do %>
     <%=hidden_field_tag(:topic_id, @topic.id)%>
     
     <table style="width:99%">
