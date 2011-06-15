@@ -22,7 +22,6 @@
 #++
 
 module Tr8n::HelperMethods
-
   include Tr8n::CommonMethods
 
   def tr8n_options_for_select(options, selected = nil, description = nil, lang = Tr8n::Config.current_language)

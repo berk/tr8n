@@ -5,12 +5,14 @@ require 'rails'
 
 module Tr8n  
   class Engine < Rails::Engine
+    config.autoload_paths << File.expand_path("../../lib", __FILE__)
     config.autoload_paths << File.expand_path("../../lib/core_ext/**", __FILE__)
     config.autoload_paths << File.expand_path("../../lib/tr8n", __FILE__)
     config.autoload_paths << File.expand_path("../../lib/tr8n/tokens", __FILE__)
     config.autoload_paths << File.expand_path("../../app/models/tr8n", __FILE__)
     
-    ["../../lib/core_ext/**",
+    [
+     "../../lib/core_ext/**",
      "../../lib/tr8n",
      "../../lib/tr8n/tokens",
      "../../lib"

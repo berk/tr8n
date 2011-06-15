@@ -109,4 +109,4 @@ module Tr8n::ControllerMethods
     flash[:trfe] = tr(label, desc, tokens, options)
   end
   # end translation helper methods  
-end  
+end
