@@ -39,9 +39,6 @@ http://wiki.tr8n.org/index.php?title=Tr8n_Languages
 
 = Installation Instructions
 
-Tr8n is mostly self-contained. The only two plugins it depends on are will_paginate created by Mislav Marohnić for results pagination 
-and will_filter created by me for filtering results in the admin interface. 
-
 Add the following gems to your Gemfile: 
 
   gem "will_paginate", "~> 3.0.pre2"
