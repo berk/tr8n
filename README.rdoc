@@ -42,52 +42,34 @@ http://wiki.tr8n.org/index.php?title=Tr8n_Languages
 Tr8n is mostly self-contained. The only two plugins it depends on are will_paginate created by Mislav Marohnić for results pagination 
 and will_filter created by me for filtering results in the admin interface. 
 
-To install the required plugins, run the following commands:
+Add the following gems to your Gemfile: 
 
-  $ script/plugin install git://github.com/mislav/will_paginate.git
-  
-  $ script/plugin install git://github.com/berk/will_filter.git
-  $ rake will_filter:sync  
+  gem "will_paginate", "~> 3.0.pre2"
+  gem 'will_filter', "~> 3.0.0" 
+  gem 'tr8n', "~> 3.0.0" 
+
+And run:
+
+  $ bundle install
+
+To configure and initialize tr8n engine, run the following commands: 
+
+  $ rails generate tr8n  
   $ rake db:migrate 
-  $ cd public; ln -s ../vendor/plugins/will_filter/public/wf wf; cd ..;
-
-To install, configure and initialize Tr8n engine, run the following commands: 
-
-  $ script/plugin install git://github.com/berk/tr8n.git
-  $ rake tr8n:sync         
-  $ rake db:migrate 
-  $ rake tr8n:init
-  $ cd public; ln -s ../vendor/plugins/tr8n/public/tr8n tr8n; cd ..;
 
 = Integration Instructions
 
-The best way to get going with Tr8n is to run it in a stand-alone mode first, try out some translations 
-and then read the specification document, which will guide through the process of integrating Tr8n into your application.
+The best way to get going with Tr8n is to run the sample application and follow the instructions and documentation in the app:
 
-To run Tr8n in a stand-alone mode, run the following commands:
-
-  $ git clone git://github.com/berk/tr8n.git
-  $ cd tr8n
-  $ rake db:migrate
-  $ rake tr8n:init
-  $ script/server
-
-The above commands will create a development sqlite3 database in the db folder of tr8n, init the database and run the local web server. Now you can open your browser and point to:
-
-  http://localhost:3000/tr8n
-
-Congratulations! You are now running Tr8n in the stand-alone mode!
-
-
-= Sample Application
-
-You can now get the source code for a sample application that runs Tr8n in the integrated mode and start from there:
-
-  $ git clone git://github.com/berk/tr8n_examples.git
+  $ git clone -b rails3 git://github.com/berk/tr8n_examples.git
   $ cd tr8n_examples
   $ rake db:migrate
   $ rake tr8n:init
-  $ script/server
+  $ rails server
+
+Open your browser and point to:
+
+http://localhost:3000
 
 Live Tr8n sample application is running here:
 
