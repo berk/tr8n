@@ -58,7 +58,7 @@
 	  	<tr>
 	  		<td style="vertical-align:middle"><%=tr8n_help_icon_tag %></td>
 				<td style="font-size:10px; font-family:arial; vertical-align:middle">&nbsp;
-	        <%=trla("Click this icon to view [link: translation help] in a new window.", "", :link => lambda{|txt| link_to(txt, {:controller => "tr8n/help", :action => :index}, :target => "new")})%>
+	        <%=trla("Click this icon to view [link: translation help] in a new window.", "", :link => ["tr8n/help"])%>
 				</td>
 	  	</tr>
 	  </table>

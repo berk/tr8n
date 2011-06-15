@@ -4,10 +4,9 @@
   </div>
 <% else %>
   <div style="background-color:#EFF8FF; border: 1px dotted #ccc; font-size: 12px; padding:5px; margin-top:3x; margin-bottom:10px; color: #999;">
-    <%=tra("This language has [link: {count} {_phrases}] that need to be translated.", "Dashboard section header", 
+    <%=tra("This language has [link: {count||phrase}] that need to be translated.", "Dashboard section header", 
             :count => lang.total_metric.not_translated_count,
-            :link => lambda{|str| link_to(str, :controller => "/tr8n/phrases", :action => :index, :locale => lang.locale, :phrase_type => :without)},
-            :_phrases => "phrase".pluralize_for(lang.total_metric.not_translated_count)
+            :link => lambda{|str| link_to(str, :controller => "/tr8n/phrases", :action => :index, :locale => lang.locale, :phrase_type => :without)}
      )%>
   </div>
 <% end %>

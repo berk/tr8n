@@ -39,7 +39,7 @@ class String
   def tr8n_translated
     return self if frozen?
     @tr8n_translated = true
-    self
+    self.html_safe
   end
 
   def tr8n_translated?
