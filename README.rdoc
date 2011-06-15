@@ -51,8 +51,15 @@ And run:
 
 To configure and initialize tr8n engine, run the following commands: 
 
+  $ rails generate will_filter  
   $ rails generate tr8n  
   $ rake db:migrate 
+  $ rake tr8n:init 
+  $ rails server 
+
+Open your browser and point to:
+
+http://localhost:3000/tr8n
 
 = Integration Instructions
 

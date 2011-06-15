@@ -42,6 +42,8 @@ class Tr8nGenerator < Rails::Generators::Base
 
   def create_migration_file
     migration_template 'create_tr8n_tables.rb', 'db/migrate/create_tr8n_tables.rb'
-    # copy_folder 'tr8n', 'config/tr8n'
+    source = File.expand_path('../../../../config/tr8n', __FILE__)
+    target = "#{Rails.root}/config"
+    system "rsync -ruv #{source} #{target}"
   end
 end
