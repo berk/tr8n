@@ -22,6 +22,5 @@
 #++
 
 module ApplicationHelper
-  include Tr8n::HelperMethods
  
 end

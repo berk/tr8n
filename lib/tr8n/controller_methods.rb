@@ -22,7 +22,6 @@
 #++
 
 module Tr8n::ControllerMethods
-  include Tr8n::CommonMethods
 
   def self.included(base)
     if 'ApplicationController' == base.name
@@ -78,12 +77,17 @@ module Tr8n::ControllerMethods
     end
     
     tr8n_current_user = nil
-    if Tr8n::Config.site_user_info_enabled?
-      begin
-        tr8n_current_user = eval(Tr8n::Config.current_user_method)
-        tr8n_current_user = nil if tr8n_current_user.class.name != Tr8n::Config.user_class_name
-      rescue Exception => ex
-        raise Tr8n::Exception.new("Tr8n cannot be initialized because #{Tr8n::Config.current_user_method} failed with: #{ex.message}")
+    if Tr8n::Config.site_user_info_enabled? 
+      if self.methods.include?(Tr8n::Config.current_user_method.to_sym)
+        begin
+          tr8n_current_user = eval(Tr8n::Config.current_user_method)
+          tr8n_current_user = nil if tr8n_current_user.class.name != Tr8n::Config.user_class_name
+        rescue Exception => ex
+          raise Tr8n::Exception.new("Tr8n cannot be initialized because #{Tr8n::Config.current_user_method} failed with: #{ex.message}")
+        end
+      else  
+        tr8n_current_user = Tr8n::Translator.new
+        Tr8n::Logger.error("Site user integration is enabled, but #{Tr8n::Config.current_user_method} method is not defined")
       end
     else
       tr8n_current_user = Tr8n::Translator.find_by_id(session[:tr8n_translator_id]) if session[:tr8n_translator_id]
@@ -97,6 +101,40 @@ module Tr8n::ControllerMethods
     if Tr8n::Config.enable_country_tracking? and Tr8n::Config.current_user_is_translator?
       Tr8n::Config.current_translator.update_last_ip(tr8n_request_remote_ip)
     end
+  end
+
+  def tr(label, desc = "", tokens = {}, options = {})
+    unless desc.nil? or desc.is_a?(String)
+      raise Tr8n::Exception.new("The second parameter of the tr function must be a description")
+    end
+
+    begin
+      url     = request.url
+      host    = request.env['HTTP_HOST']
+      source  = "#{controller.class.name.underscore.gsub("_controller", "")}/#{controller.action_name}"
+    rescue Exception => ex
+      source = self.class.name
+      url = nil
+      host = 'localhost'
+    end
+
+    options.merge!(:source => source) unless options[:source]
+    options.merge!(:caller => caller)
+    options.merge!(:url => url)
+    options.merge!(:host => host)
+
+#     pp [source, options[:source], url]
+    
+    unless Tr8n::Config.enabled?
+      return Tr8n::TranslationKey.substitute_tokens(label, tokens, options)
+    end
+    
+    Tr8n::Config.current_language.translate(label, desc, tokens, options)
+  end
+
+  # for translating labels
+  def trl(label, desc = "", tokens = {}, options = {})
+    tr(label, desc, tokens, options.merge(:skip_decorations => true))
   end
 
   # flash notice

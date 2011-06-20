@@ -29,19 +29,7 @@ class Tr8n::HomeController < ApplicationController
     
   end
 
-  def tokens
-        
-  end
-
-  def rules
-        
-  end
-  
   def license
-    
-  end
-  
-  def docs
     
   end
   

@@ -1,6 +1,6 @@
 #############################################################################
 #
-# Tr8n Default Gender Rules
+# Tr8n Default Decoration Tokens
 #
 #############################################################################
 
@@ -10,7 +10,7 @@ b:          "<strong>{$0}</strong>"
 em:         "<em>{$0}</em>"
 italic:     "<i>{$0}</i>"
 i:          "<i>{$0}</i>"
-link:       "<a href='{$1}' style='{$2}'>{$0}</a>" 
-link1:      "<a href='{$1}' style='{$2}'>{$0}</a>"
-link2:      "<a href='{$1}' style='{$2}'>{$0}</a>"
+link:       "<a href='{$href}'>{$0}</a>" 
 br:         "<br>{$0}"
+div:        "<div id='{$id}' class='{$class}' style='{$style}'>{$0}</div>"
+span:       "<span id='{$id}' class='{$class}' style='{$style}'>{$0}</span>"

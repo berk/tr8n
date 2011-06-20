@@ -11,7 +11,7 @@
 
 defaults: &defaults
   enable_tr8n:                true      # enables the engine
-  enable_key_source_tracking: false     # builds the site map sources
+  enable_key_source_tracking: false     # builds the site map sources - must be enabled for the API
   enable_key_caller_tracking: false     # tracks all calls to labels with their traces - for debugging only
   
   enable_glossary_hints:      true      # shows glossary in the translator    
@@ -76,8 +76,8 @@ defaults: &defaults
   #############################################################################
   caching:
     enabled:                  false
-    adapter:                  ActiveSupport::Cache
-    store:                    [mem_cache_store, 'localhost:11211']
+    adapter:                  "ActiveSupport::Cache"
+    store:                    ['mem_cache_store', 'localhost:11211']
     version:                  1 # you can change the version to invalidate the cache
 
   #############################################################################
@@ -86,7 +86,7 @@ defaults: &defaults
   #############################################################################
   logger:
     enabled:                  true
-    log_path:                 log/tr8n.log          # location of the log file
+    log_path:                 "log/tr8n.log"          # location of the log file
     enable_paranoia_mode:     true                  # logs every translator action
 
   #############################################################################
@@ -112,14 +112,14 @@ defaults: &defaults
       class_name:             User                              # class name for the User object type
       current_user_method:    current_user                      # returns current user object
       methods:                                                  # User object methods mapping
-        id:                   id
-        name:                 name                            
-        gender:               gender
-        admin:                admin?
-        guest:                guest?
-        mugshot:              mugshot
-        link:                 link
-        locale:               locale
+        id:                   "id"
+        name:                 "name"                            
+        gender:               "gender"
+        admin:                "admin?"
+        guest:                "guest?"
+        mugshot:              "mugshot"
+        link:                 "link"
+        locale:               "locale"
         
   #############################################################################
   # Rules Engine Settings
@@ -130,33 +130,33 @@ defaults: &defaults
     decoration_token_classes: ["Tr8n::Tokens::DecorationToken"]
     allow_nil_token_values:   true
     numeric_rule:             
-      token_suffixes:         [count, num, age, hours, minutes, years, seconds]
-      object_method:          to_i
+      token_suffixes:         ["count", "num", "age", "hours", "minutes", "years", "seconds"]
+      object_method:          "to_i"
     gender_rule:  
-      token_suffixes:         [user, profile, actor, target, partner, parent, child, sibling, manager]
-      object_method:          gender
+      token_suffixes:         ["user", "profile", "actor", "target", "partner"]
+      object_method:          "gender"
       method_values:  
-        female:               female
-        male:                 male
-        neutral:              neutral
-        unknown:              unknown
+        female:               "female"
+        male:                 "male"
+        neutral:              "neutral"
+        unknown:              "unknown"
     list_rule:                # use list_rule if your site does not support user genders 
-      object_method:          size
-      token_suffixes:         [list]
+      object_method:          "size"
+      token_suffixes:         ["list"]
     gender_list_rule:         # similiar to list rule, but works together with gender rule 
-      object_method:          size
-      token_suffixes:         [list]
+      object_method:          "size"
+      token_suffixes:         ["list"]
     date_rule:                
-      token_suffixes:         [date]
-      object_method:          to_date
+      token_suffixes:         ["date"]
+      object_method:          "to_date"
     value_rule:               
       token_suffixes:         "*"
-      object_method:          to_s
+      object_method:          "to_s"
     
     # minimal rank makes the translation acceptable for subsitution and counts towards the translator rank
     translation_threshold:    1
     
-    viewing_user_token:       viewing_user
+    viewing_user_token:       "viewing_user"
     translation_rank_styles:  
       -1000..-5:              "color:red;font-weight:bold;"
       -4..-1:                 "color:red;"
@@ -168,7 +168,7 @@ defaults: &defaults
   #############################################################################
   api:  
     enabled:                  true
-    response_encoding:        json     # options: xml, json
+    response_encoding:        "json"     # options: xml, json
     allow_key_registration:   true
   
   #############################################################################

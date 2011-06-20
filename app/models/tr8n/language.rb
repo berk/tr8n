@@ -218,6 +218,10 @@ class Tr8n::Language < ActiveRecord::Base
     @rule_classes ||= rules.collect{|r| r.class}.uniq
   end
 
+  def rule_class_names  
+    @rule_class_names ||= rule_classes.collect{|r| r.name}
+  end
+
   def dependencies  
     @dependencies ||= rule_classes.collect{|r| r.dependency}.uniq
   end

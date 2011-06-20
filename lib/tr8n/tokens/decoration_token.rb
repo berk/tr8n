@@ -68,28 +68,34 @@ module Tr8n
         label.gsub(name, "(#{index})")
       end
         
-      def handle_default_decorations(lambda_token_name, lambda_token_value, token_values)
-        unless Tr8n::Config.default_decoration_tokens[lambda_token_name]
+      def handle_default_decorations(token_name, token_value, token_values)
+        unless Tr8n::Config.default_decoration_tokens[token_name]
           raise Tr8n::TokenException.new("Invalid decoration token value")
         end
     
-        lambda_value = Tr8n::Config.default_decoration_tokens[lambda_token_name].clone
-    
-        params = [lambda_token_value]
-        params += token_values[lambda_token_name.to_sym] if token_values[lambda_token_name.to_sym]
+        default_decoration = Tr8n::Config.default_decoration_tokens[token_name].clone
+        decoration_token_values = token_values[token_name.to_sym] || []
         
-        params.each_with_index do |param, index|
-          lambda_value.gsub!("{$#{index}}", param.to_s)
+        if decoration_token_values.is_a?(Array)
+          params = [token_value, decoration_token_values].flatten
+          params.each_with_index do |param, index|
+            default_decoration.gsub!("{$#{index}}", param.to_s)
+          end
+
+          # clean all the rest of the {$num} params, if any
+          param_index = params.size
+          while default_decoration.index("{$#{param_index}}")
+            default_decoration.gsub!("{$#{param_index}}", "")
+            param_index += 1
+          end
+        elsif decoration_token_values.is_a?(Hash)
+          default_decoration.gsub!("{$0}", token_value.to_s)
+          decoration_token_values.keys.each do |key|
+            default_decoration.gsub!("{$#{key}}", decoration_token_values[key])
+          end
         end
         
-        # clean all the rest of the {$num} params, if any
-        param_index = params.size
-        while lambda_value.index("{$#{param_index}}")
-          lambda_value.gsub!("{$#{param_index}}", "")
-          param_index += 1
-        end
-        
-        lambda_value
+        default_decoration
       end  
       
       def substitute(label, values = {}, options = {}, language = Tr8n::Config.current_language)
@@ -99,7 +105,7 @@ module Tr8n
         if method
           if method.is_a?(Proc)
             substitution_value = method.call(value)
-          elsif method.is_a?(Array)
+          elsif method.is_a?(Array) or method.is_a?(Hash)
             substitution_value = handle_default_decorations(name, value, values)
           elsif method.is_a?(String)
             substitution_value = method.to_s.gsub("{$0}", value)

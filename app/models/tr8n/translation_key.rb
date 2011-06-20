@@ -159,13 +159,13 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   def language_rules_dependant_tokens(language = Tr8n::Config.current_language)
     toks = []
     included_token_hash = {}
-    
+
     data_tokens.each do |token|
       next unless token.dependant?
       next if included_token_hash[token.name]
       
       token.language_rules.each do |rule_class|
-        if language.rule_classes.include?(rule_class)
+        if language.rule_class_names.include?(rule_class.name)
           toks << token
           included_token_hash[token.name] = token
         end
@@ -307,16 +307,16 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     find(:first, :offset => rand(count - 1))
   end
 
-  # returns back grouped by context
+  # returns back grouped by context - used by API
   def find_all_valid_translations(translations)
     if translations.empty?
-      return {:key => self.key, :label => self.label, :original => true}
+      return {:id => self.id, :key => self.key, :label => self.label, :original => true}
     end
     
     # if the first translation does not depend on any of the context rules
     # use it... we don't care about the rest of the rules.
     if translations.first.rules_hash.blank?
-      return {:key => self.key, :label => translations.first.label}
+      return {:id => self.id, :key => self.key, :label => translations.first.label}
     end
     
     # build a context hash for every kind of context rules combinations
@@ -336,7 +336,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
 
     # always add the default one at the end, so if none of the rules matched, use the english one
     valid_translations << {:label => self.label} unless context_hash_matches[""]
-    {:key => self.key, :labels => valid_translations}
+    {:id => self.id, :key => self.key, :labels => valid_translations}
   end
 
   def find_first_valid_translation(language, token_values)
@@ -450,7 +450,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     end
 
     html = "<tr8n class='#{classes.join(' ')}' translation_key_id='#{id}'>"
-    html << label
+    html << sanitized_label
     html << "</tr8n>"
     html.html_safe    
   end

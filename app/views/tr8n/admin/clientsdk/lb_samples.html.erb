@@ -11,6 +11,7 @@
     {:label => "Some [bold: decoration] stuff!", :tokens => "{'bold': '<strong>{$0}</strong>'}", :alt => "Uses decoration token."},
     {:label => "Using default [bold: decorations]!", :tokens => "", :alt => "Uses decoration token with a fallback default decoration."},
     {:label => "More default [italic: decorations]!", :tokens => "", :alt => "Uses decoration token with a fallback default decoration."},
+    {:label => "Even more [span: default decorations]!", :tokens => "{span: {style:'font-size:18px;font-weight:bold;color:blue;'}}", :alt => "Uses decoration token with a fallback default decoration."},
     {:label => "[link: Click here] is a link default decoration!", :tokens => "{'link':{'href':'http://www.google.com'}}", :alt => "Uses decoration token with a fallback default decoration."},
     {:label => "You have [link: {count|| message, messages}] in your mailbox!", :tokens => "{'link':{'href':'http://www.google.com'}, 'count': 5}", :alt => "Uses decoration and data tokens together."},
   ]
