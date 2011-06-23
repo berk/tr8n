@@ -78,14 +78,10 @@ module Tr8n::ControllerMethods
     
     tr8n_current_user = nil
     if Tr8n::Config.site_user_info_enabled? 
-      if self.methods.include?(Tr8n::Config.current_user_method.to_sym)
-        begin
-          tr8n_current_user = eval(Tr8n::Config.current_user_method)
-          tr8n_current_user = nil if tr8n_current_user.class.name != Tr8n::Config.user_class_name
-        rescue Exception => ex
-          raise Tr8n::Exception.new("Tr8n cannot be initialized because #{Tr8n::Config.current_user_method} failed with: #{ex.message}")
-        end
-      else  
+      begin
+        tr8n_current_user = eval(Tr8n::Config.current_user_method)
+        tr8n_current_user = nil if tr8n_current_user.class.name != Tr8n::Config.user_class_name
+      rescue Exception => ex
         tr8n_current_user = Tr8n::Translator.new
         Tr8n::Logger.error("Site user integration is enabled, but #{Tr8n::Config.current_user_method} method is not defined")
       end
@@ -103,9 +99,19 @@ module Tr8n::ControllerMethods
     end
   end
 
+  ############################################################
+  # There are two ways to call the tr method
+  #
+  # tr(label, desc = "", tokens = {}, options = {})
+  # or 
+  # tr(label, {:context => "", tokens => {},  ...})
+  ############################################################
+  
   def tr(label, desc = "", tokens = {}, options = {})
-    unless desc.nil? or desc.is_a?(String)
-      raise Tr8n::Exception.new("The second parameter of the tr function must be a description")
+    if desc.is_a?(Hash)
+      options = desc
+      tokens  = options[:tokens] || {}
+      desc    = options[:context] || ""
     end
 
     begin

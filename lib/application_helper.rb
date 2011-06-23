@@ -55,8 +55,10 @@ module ApplicationHelper
   
   # translation functions
   def tr(label, desc = "", tokens = {}, options = {})
-    unless desc.nil? or desc.is_a?(String)
-      raise Tr8n::Exception.new("The second parameter of the tr function must be a description")
+    if desc.is_a?(Hash)
+      options = desc
+      tokens  = options[:tokens] || {}
+      desc    = options[:context] || ""
     end
 
     begin
