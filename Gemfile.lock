@@ -1,3 +1,8 @@
+PATH
+  remote: .
+  specs:
+    tr8n (0.1.0)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -75,5 +80,6 @@ PLATFORMS
 DEPENDENCIES
   rails (~> 3.0.0)
   sqlite3
+  tr8n!
   will_filter (~> 3.0.0)
   will_paginate (~> 3.0.pre2)
