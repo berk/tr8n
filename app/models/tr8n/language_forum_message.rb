@@ -38,9 +38,4 @@ class Tr8n::LanguageForumMessage < ActiveRecord::Base
     translator.update_attributes(:reported => true)
     report
   end
-  
-  def toHTML
-    return "" unless message
-    ERB::Util.html_escape(message).gsub("\n", "<br>")
-  end
 end

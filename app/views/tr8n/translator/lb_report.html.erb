@@ -36,7 +36,7 @@
         </div>
         <div style="padding-bottom:5px;font-size:14px; max-height:50px; overflow:auto;">
             <%=image_tag("/tr8n/images/left_quote.png", :style=>"text-align:bottom;padding-bottom:5px;") %>
-            <%=@reported_object.toHTML %>
+            <%= simple_format(@reported_object.to_html) %>
             <%=image_tag("/tr8n/images/right_quote.png", :style=>"text-align:bottom;padding-top:5px;") %>
         </div>
       </div>		    
@@ -47,7 +47,7 @@
         </div>
         <div style="padding-bottom:5px;font-size:14px; max-height:50px; overflow:auto;">
             <%=image_tag("/tr8n/images/left_quote.png", :style=>"text-align:bottom;padding-bottom:5px;") %>
-            <%=@reported_object.toHTML %>
+            <%= simple_format(@reported_object.to_html) %>
             <%=image_tag("/tr8n/images/right_quote.png", :style=>"text-align:bottom;padding-top:5px;") %>
         </div>
       </div>        
