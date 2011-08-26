@@ -49,7 +49,7 @@ module Tr8n
         @suffix ||= object_name.split('_').last
       end
     
-      def substitute(label, values = {}, options = {}, language = Tr8n::Config.current_language)
+      def substitute(label, values = {}, options = {}, language)
         object = values[object_name.to_sym]
         raise Tr8n::TokenException.new("Missing value for a token: #{full_name}") unless object
         object_value = sanitize_token_value(object, object.send(object_method_name), options.merge(:sanitize_values => true), language)

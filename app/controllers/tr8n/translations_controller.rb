@@ -49,7 +49,7 @@ class Tr8n::TranslationsController < Tr8n::BaseController
     @translation.label = sanitize_label(params[:translation][:label])
     @translation.rules = parse_rules
 
-    unless @translation.can_be_edited_by?(tr8n_current_translator)
+    unless @translation.can_be_edited_by?(tr8n_current_translator, Tr8n::Config.current_language)
       tr8n_current_translator.tried_to_perform_unauthorized_action!("tried to update translation which is locked or belongs to another translator")
       trfe("You are not authorized to edit this translation")
       return redirect_to(@source_url)
@@ -68,7 +68,7 @@ class Tr8n::TranslationsController < Tr8n::BaseController
     end
     
     unless @translation.clean?
-      tr8n_current_translator.used_abusive_language!
+      tr8n_current_translator.used_abusive_language!(Tr8n::Config.current_language)
       trfe("Your translation contains prohibited words and will not be accepted")
       return redirect_to(@source_url)
     end
@@ -119,7 +119,7 @@ class Tr8n::TranslationsController < Tr8n::BaseController
 
   # list of translations    
   def index
-    conditions = Tr8n::Translation.search_conditions_for(params)
+    conditions = Tr8n::Translation.search_conditions_for(params, Tr8n::Config.current_language, Tr8n::Config.current_translator)
     @translations = Tr8n::Translation.paginate(:per_page => per_page, :page => page, :conditions => conditions, :order => "created_at desc, rank desc")    
   end
 
@@ -133,7 +133,7 @@ class Tr8n::TranslationsController < Tr8n::BaseController
       unless params[:label].strip.blank?
         @translation.label = sanitize_label(params[:label])
         
-        unless @translation.can_be_edited_by?(tr8n_current_translator)
+        unless @translation.can_be_edited_by?(tr8n_current_translator, Tr8n::Config.current_language)
           tr8n_current_translator.tried_to_perform_unauthorized_action!("tried to update translation that is not his")
           @translation.label = "You are not authorized to edit this translation as you were not it's creator"
           mode = :edit
@@ -147,7 +147,7 @@ class Tr8n::TranslationsController < Tr8n::BaseController
             @translation.label = "There already exists such translation for this phrase. Please vote on it instead or suggest an elternative translation."
             mode = :edit
           elsif not @translation.clean?
-            tr8n_current_translator.used_abusive_language!
+            tr8n_current_translator.used_abusive_language!(Tr8n::Config.current_language)
             @translation.label = "Your translation contains prohibited words and will not be accepted. Click on cancel and try again."
             mode = :edit
           else
@@ -166,12 +166,12 @@ class Tr8n::TranslationsController < Tr8n::BaseController
     translation = Tr8n::Translation.find(params[:translation_id])
     translator = translation.translator
 
-    unless translation.can_be_deleted_by?(tr8n_current_translator)
+    unless translation.can_be_deleted_by?(tr8n_current_translator, Tr8n::Config.current_language)
       tr8n_current_translator.tried_to_perform_unauthorized_action!("tried to delete translation that is not his")
       trfe("You are not authorized to delete this translation as you were not it's creator")
     else
       translation.destroy_with_log!(tr8n_current_translator)
-      translator.update_rank!
+      translator.update_rank!(Tr8n::Config.current_language)
       trfn("Your translation has been removed.")
     end
     

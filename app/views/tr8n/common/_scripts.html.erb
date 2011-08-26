@@ -1,6 +1,6 @@
 <% if Tr8n::Config.enabled? and not params[:disable_tr8n_js] %>
 
-	<%= tr8n_splash_screen_tag %>
+  <%= tr8n_splash_screen_tag %>
 
   <%=stylesheet_link_tag("/tr8n/stylesheets/tr8n.css") -%>
   <%=javascript_include_tag("/tr8n/javascripts/tr8n.js") -%>
@@ -10,8 +10,8 @@
 
   <% if Tr8n::Config.enable_effects? %>
     <%=javascript_include_tag(Tr8n::Config.effects_library_path) -%>
-	<% end %>
-	
+  <% end %>
+
   <% if Tr8n::Config.enable_google_suggestions? and Tr8n::Config.current_user_is_translator? %>
     <script type="text/javascript" src="<%=request.ssl? ? 'https' : 'http' %>://www.google.com/jsapi"></script>
     <script type="text/javascript">
@@ -20,22 +20,22 @@
   <% end %>
 
   <% if Tr8n::Config.enable_software_keyboard? %>
-	  <script> 
-		  VKI_default_layout = "<%=Tr8n::KeyboardMapping.current_1_36%>";
-		</script> 	  
+    <script>
+      VKI_default_layout = "<%= Tr8n::KeyboardMapping.current_1_36(Tr8n::Config.current_language) %>";
+    </script>
     <%=javascript_include_tag("/tr8n/javascripts/keyboard_1_36.js", :charset => "UTF-8") -%>
     <%=stylesheet_link_tag("/tr8n/stylesheets/keyboard_1_36.css") -%>
-  <% end %>  
+  <% end %>
 
-  <% if Tr8n::Config.enable_keyboard_shortcuts? %>  
+  <% if Tr8n::Config.enable_keyboard_shortcuts? %>
     <%=javascript_include_tag("/tr8n/javascripts/shortcut.js", :charset => "UTF-8") -%>
     <script type="text/javascript">
-       <% Tr8n::Config.default_shortcuts.each do |key, data| %>     	
-				  shortcut.add("<%=key%>", function() {
-				    <%=data["script"]%>
-				  });
-			 <% end %>
+       <% Tr8n::Config.default_shortcuts.each do |key, data| %>
+          shortcut.add("<%=key%>", function() {
+            <%=data["script"]%>
+          });
+       <% end %>
     </script>
-  <% end %>  
-  
+  <% end %>
+
 <% end %>

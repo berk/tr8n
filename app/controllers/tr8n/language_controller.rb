@@ -236,9 +236,9 @@ class Tr8n::LanguageController < Tr8n::BaseController
       end
       
       if language_action == "enable_inline_mode"
-        tr8n_current_translator.enable_inline_translations!
+        tr8n_current_translator.enable_inline_translations!(Tr8n::Config.current_language.id)
       elsif language_action == "disable_inline_mode"
-        tr8n_current_translator.disable_inline_translations!
+        tr8n_current_translator.disable_inline_translations!(Tr8n::Config.current_language.id)
       elsif language_action == "switch_language"
         tr8n_current_translator.switched_language!(Tr8n::Language.find_by_locale(params[:locale]))
       end   
@@ -247,7 +247,7 @@ class Tr8n::LanguageController < Tr8n::BaseController
     elsif language_action == "become_translator" # non-translator mode
       Tr8n::Translator.register
     elsif language_action == "enable_inline_mode" or language_action == "toggle_inline_mode" # non-translator mode
-      Tr8n::Translator.register.enable_inline_translations!
+      Tr8n::Translator.register(Tr8n::Config.current_user).enable_inline_translations!(Tr8n::Config.current_language.id)
     end
     
     redirect_to_source

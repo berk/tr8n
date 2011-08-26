@@ -106,7 +106,7 @@ module Tr8n
         label.gsub(full_name, language_rule.default_transform(*piped_params))    
       end
       
-      def substitute(label, values = {}, options = {}, language = Tr8n::Config.current_language)
+      def substitute(label, values = {}, options = {}, language)
         # only the default language allows for the transform tokens
         return label unless language.default?
         

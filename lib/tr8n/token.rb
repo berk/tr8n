@@ -400,8 +400,7 @@ class Tr8n::Token
     lcase.apply(object, value, options)
   end
   
-  def substitute(label, values = {}, options = {}, language = Tr8n::Config.current_language)
-    
+  def substitute(label, values = {}, options = {}, language)
     # get the object from the values
     object = values[name_key]
 

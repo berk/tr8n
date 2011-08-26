@@ -176,13 +176,13 @@ class Tr8n::Translation < ActiveRecord::Base
     language.clean_sentence?(label)
   end
   
-  def can_be_edited_by?(editor)
-    return false if translation_key.locked?
+  def can_be_edited_by?(editor, language)
+    return false if translation_key.locked?(language)
     translator == editor
   end
 
-  def can_be_deleted_by?(editor)
-    return false if translation_key.locked?
+  def can_be_deleted_by?(editor, language)
+    return false if translation_key.locked?(language)
     return true if editor.manager?
     
     translator == editor
@@ -246,7 +246,7 @@ class Tr8n::Translation < ActiveRecord::Base
      ["date", "date"]].collect{|option| [option.first.trl("Translation filter group by option"), option.last]}
   end
   
-  def self.search_conditions_for(params, language = Tr8n::Config.current_language)
+  def self.search_conditions_for(params, language, translator)
     conditions = ["language_id = ?", language.id]
     
     unless params[:search].blank?
@@ -271,7 +271,7 @@ class Tr8n::Translation < ActiveRecord::Base
     if params[:submitted_by] == "me"
       conditions[0] << " and " unless conditions[0].blank?
       conditions[0] << " translator_id = ? "
-      conditions << Tr8n::Config.current_translator.id
+      conditions << translator.id
     end
     
     if params[:submitted_on] == "today"

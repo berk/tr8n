@@ -42,12 +42,13 @@
 	    </tr>  
 	    <% @translation_keys.each do |tk| %>
 	      <tr style="border-bottom:1px solid #ccc;">
-	        <% color = tk.locked? ? "#ECFFEF" : "#FDFDDF" %>
+	        <% color = tk.locked?(Tr8n::Config.current_language) ? "#ECFFEF" : "#FDFDDF" %>
 	        <td style="padding:5px; background: <%=color%>; ">
-	          <% if tk.locked? %>
+	          <% if tk.locked?(Tr8n::Config.current_language) %>
 	            <div style="float:right"><%=image_tag("/tr8n/images/lock.png", :style=>"width:12px", :title => trla("This phrase is locked"))%></div>
 	          <% end %>
-	          <%=link_to(tk.default_decoration, :action => :view, :translation_key_id => tk.id, :section_key => @section_key)%>
+	          <%- decorate = !(Tr8n::Config.current_user_is_guest? || !Tr8n::Config.current_user_is_translator? || !tk.translator_permitted_to_translate?(Tr8n::Config.current_translator) || tk.locked?(Tr8n::Config.current_language)) %>
+	          <%=link_to(decorate ? tk.default_decoration(Tr8n::Config.current_language) : tk, :action => :view, :translation_key_id => tk.id, :section_key => @section_key, :viewing_)%>
 	          <div style="color:grey;font-size:10px;padding-top:3px;"><%=tk.description%></div>
 	        </td>
 	        <td style="padding:5px; vertical-align:top">
@@ -55,7 +56,7 @@
 	          <% translations = tk.translations_for(tr8n_current_language) %>
 				    <% if translations.empty? %>
 	            <%= tra("There are no translations for this phrase.") %> 
-							<% unless tk.locked? %>
+							<% unless tk.locked?(Tr8n::Config.current_language) %>
 		            <%= tra("Be the first one to [link: translate it].", "", 
 		                    :link => lambda{|str| link_to(str, :controller => "/tr8n/phrases", :action => :view, :translation_key_id => tk.id, :section_key => @section_key)}  ) %>
 							<% end %>				

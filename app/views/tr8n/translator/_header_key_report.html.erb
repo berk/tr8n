@@ -1,6 +1,6 @@
-<% color = @reported_object.key.locked? ? "#ECFFEF" : "#FDFDDF" %>
+<% color = @reported_object.key.locked?(Tr8n::Config.current_language) ? "#ECFFEF" : "#FDFDDF" %>
 <div style="font-size: 11px; color: grey; margin-top:5px; margin-bottom:5px; padding:3px; background:<%=color%>; border:1px dotted #ccc;">
-  <% if @reported_object.key.locked? %>
+  <% if @reported_object.key.locked?(Tr8n::Config.current_language) %>
     <div style="float:right"><%=image_tag("/tr8n/images/lock.png", :style=>"width:12px", :title => trl("This phrase is locked"))%></div>
   <% end %>
 

@@ -58,7 +58,7 @@ class Tr8n::Translator < ActiveRecord::Base
     trn
   end
 
-  def self.register(user = Tr8n::Config.current_user)
+  def self.register(user)
     return unless user
     
     translator = Tr8n::Translator.find_or_create(user)
@@ -76,7 +76,7 @@ class Tr8n::Translator < ActiveRecord::Base
     Tr8n::TranslatorMetric.find_or_create(self, language)
   end
 
-  def update_metrics!(language = Tr8n::Config.current_language)
+  def update_metrics!(language)
     # calculate total metrics
     total_metric.update_metrics!
     
@@ -84,7 +84,7 @@ class Tr8n::Translator < ActiveRecord::Base
     metric_for(language).update_metrics!
   end
   
-  def update_rank!(language = Tr8n::Config.current_language)
+  def update_rank!(language)
     # calculate total rank
     total_metric.update_rank!
     
@@ -111,14 +111,14 @@ class Tr8n::Translator < ActiveRecord::Base
     Tr8n::TranslatorLog.log_admin(self, :got_new_level, actor, reason, new_level.to_s)
   end
   
-  def enable_inline_translations!
+  def enable_inline_translations!(language)
     update_attributes(:inline_mode => true)
-    Tr8n::TranslatorLog.log(self, :enabled_inline_translations, Tr8n::Config.current_language.id)
+    Tr8n::TranslatorLog.log(self, :enabled_inline_translations, language)
   end
 
-  def disable_inline_translations!(actor = user)
+  def disable_inline_translations!(language)
     update_attributes(:inline_mode => false)
-    Tr8n::TranslatorLog.log(self, :disabled_inline_translations, Tr8n::Config.current_language.id)
+    Tr8n::TranslatorLog.log(self, :disabled_inline_translations, language)
   end
 
   def switched_language!(language)
@@ -151,7 +151,7 @@ class Tr8n::Translator < ActiveRecord::Base
     Tr8n::TranslatorLog.log_manager(self, :updated_language_case, lcase.id)
   end
 
-  def used_abusive_language!(language = Tr8n::Config.current_language)
+  def used_abusive_language!(language)
     Tr8n::TranslatorLog.log_abuse(self, :used_abusive_language, language.id)
   end
 

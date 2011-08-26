@@ -24,7 +24,7 @@
 
 module Tr8n::KeyboardMapping
 
-  def self.current_1_36
+  def self.current_1_36(language)
     [{:key => "Arabic", :name => "Arabic"},
     {:key => "Armenian East", :name => "Armenian"},
     {:key => "Armenian West", :name => "Armenian"},
@@ -70,13 +70,13 @@ module Tr8n::KeyboardMapping
     {:key => "Ukrainian", :name => "Ukrainian"},
     {:key => "US", :name => "English"},
     {:key => "US Int'l", :name => "US Int'l"}].each do |pair|
-      return pair[:key] if pair[:name] == Tr8n::Config.current_language.english_name.split(" ").first
+      return pair[:key] if pair[:name] == language.english_name.split(" ").first
     end
     
     return "US Int'l"
   end  
   
-  def self.current_1_44
+  def self.current_1_44(language)
     [
       {:key => '\u0627\u0644\u0639\u0631\u0628\u064a\u0629', :name => 'Arabic', :locale => ''},
       {:key => '\u0985\u09b8\u09ae\u09c0\u09df\u09be', :name => 'Assamese', :locale => ''},
@@ -166,7 +166,7 @@ module Tr8n::KeyboardMapping
       {:key => '\u4e2d\u6587\u6ce8\u97f3\u7b26\u53f7', :name => 'Chinese Bopomofo IME', :locale => ''},
       {:key => '\u4e2d\u6587\u4ed3\u9889\u8f93\u5165\u6cd5', :name => 'Chinese Cangjie IME', :locale => ''}
     ].each do |kb|
-      return kb[:key] if kb[:name].index(Tr8n::Config.current_language.english_name.split(" ").first)
+      return kb[:key] if kb[:name].index(language.english_name.split(" ").first)
     end
     
     return "US International"

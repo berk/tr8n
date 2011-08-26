@@ -46,7 +46,7 @@ class Tr8n::Api::V1::TranslationController < Tr8n::Api::V1::BaseController
     
     translation.label = sanitize_label(params[:label])
 
-    unless translation.can_be_edited_by?(tr8n_current_translator)
+    unless translation.can_be_edited_by?(tr8n_current_translator, Tr8n::Config.current_language)
       tr8n_current_translator.tried_to_perform_unauthorized_action!("tried to update translation which is locked or belongs to another translator")
       return sanitize_api_response({:error => "You are not authorized to edit this translation"})
     end  
@@ -62,7 +62,7 @@ class Tr8n::Api::V1::TranslationController < Tr8n::Api::V1::BaseController
     end
     
     unless translation.clean?
-      tr8n_current_translator.used_abusive_language!
+      tr8n_current_translator.used_abusive_language!(Tr8n::Config.current_language)
       return sanitize_api_response({:error => "Your translation contains prohibited words and will not be accepted"})
     end
 

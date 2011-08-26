@@ -23,7 +23,7 @@
 </td>  
 
 <td style="text-align:center; vertical-align:top; color:grey; padding-top:2px;">
-  <% if translation.translation_key.locked? %>
+  <% if translation.translation_key.locked?(Tr8n::Config.current_language) %>
     <div style="text-align:center;">
 		  <%=image_tag("/tr8n/images/lock.png", :style=>"height:14px", :title => trla("This phrase is locked"))%>
       <%=link_to_function(image_tag("/tr8n/images/exclamation.png"), "tr8nLightbox.show('/tr8n/translator/lb_report?translation_id=#{translation.id}', {width:600, height:360});")%>
@@ -36,7 +36,7 @@
 </td>
 
 <td style="text-align:left; vertical-align:top; padding-top:3px;">
-  <% if mode == :view and translation.can_be_edited_by?(tr8n_current_translator) %>
+  <% if mode == :view and translation.can_be_edited_by?(tr8n_current_translator, Tr8n::Config.current_language) %>
     <span onDblClick="updateTranslationRow('<%=translation.id%>', 'edit')" title="Translation for: <%=translation.key.label%>">
       <%= translation.label %> 
     </span>
@@ -60,10 +60,10 @@
 <% if [:view, :edit].include?(mode) %> 
 	<td style="text-align:right; vertical-align:top; padding-top:3px;">
 	 <% if mode == :view %> 
-	    <% if translation.can_be_edited_by?(tr8n_current_translator) %>
+	    <% if translation.can_be_edited_by?(tr8n_current_translator, Tr8n::Config.current_language) %>
 	        <%=link_to_function(image_tag("/tr8n/images/pencil.png"), "updateTranslationRow('#{translation.id}', 'edit')")%>
 	        <%=link_to_function(image_tag("/tr8n/images/cross.png"), "deleteTranslationRow('#{translation.id}', '#{@section_key}')")%>
-	    <% elsif translation.can_be_deleted_by?(tr8n_current_translator)  %>
+	    <% elsif translation.can_be_deleted_by?(tr8n_current_translator, Tr8n::Config.current_language)  %>
 	        <%=link_to_function(image_tag("/tr8n/images/cross.png"), "deleteTranslationRow('#{translation.id}', '#{@section_key}')")%>
 	    <% end %>   
 	<% elsif mode == :edit %>
