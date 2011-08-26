@@ -1,5 +1,5 @@
 <ul class="<%=opts[:class]%>" style="<%=opts[:style]%>">
-<% if !Tr8n::Config.current_user or Tr8n::Config.current_user.guest? %>
+<% if !Tr8n::Config.current_user or Tr8n::Config.current_user_is_guest? %>
   <li><%=link_to(trl("Login", "Translator login link"), "/tr8n/login")%></li>
 <% else %>
   <li><%=tr("Welcome {user}!", "", :user => [Tr8n::Config.current_user, :name]) %></li>
