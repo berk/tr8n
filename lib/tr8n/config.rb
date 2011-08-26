@@ -33,7 +33,7 @@ class Tr8n::Config
   def self.init(locale, site_current_user)
     Thread.current[:tr8n_current_language]   = Tr8n::Language.for(locale) || default_language
     Thread.current[:tr8n_current_user]       = site_current_user
-    Thread.current[:tr8n_current_translator] = Tr8n::Translator.for(site_current_user)
+    Thread.current[:tr8n_current_translator] = Tr8n::Translator.for(site_current_user) || (guest_user?(current_user) ? Tr8n::Translator.register(current_user) : nil)
     Thread.current[:tr8n_block_options]      = {}
   end
   
@@ -57,7 +57,7 @@ class Tr8n::Config
   # and from this point on, will track the user
   # this can happen any time user tries to translate something or enables inline translations
   def self.current_translator
-    Thread.current[:tr8n_current_translator] ||= Tr8n::Translator.register
+    Thread.current[:tr8n_current_translator]
   end
   
   def self.default_language
