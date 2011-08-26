@@ -39,7 +39,6 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   alias :key_sources  :translation_key_sources
   alias :sources      :translation_sources
   alias :domains      :translation_domains
-  alias :comments     :translation_key_comments
   
   def self.find_or_create(label, desc = "", options = {})
     key = generate_key(label, desc)
@@ -217,15 +216,6 @@ class Tr8n::TranslationKey < ActiveRecord::Base
 
   def followed?(translator = Tr8n::Config.current_translator)
     Tr8n::TranslatorFollowing.following_for(translator, self)
-  end
-    
-  def add_translation(label, rules = nil, language = Tr8n::Config.current_language, translator = Tr8n::Config.current_translator)
-    raise Tr8n::Exception.new("The sentence contains dirty words") unless language.clean_sentence?(label)
-    
-    translation = Tr8n::Translation.create(:translation_key => self, :language => language, 
-                                           :translator => translator, :label => label, :rules => rules)
-    translation.vote!(translator, 1)
-    translation
   end
 
   # returns all translations for the key, language and minimal rank
@@ -511,16 +501,12 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     Tr8n::Cache.delete("translation_key_#{key}")
   end
 
-  def add_translation(label, rules = nil, lang = Tr8n::Config.current_language, translator = Tr8n::Config.current_translator) 
-    Tr8n::Translation.create(:translation_key => self, :label => label, :language => lang, :translator => translator)
-  end
-
   ###############################################################
   ## Feature Related Stuff
   ###############################################################
   
-  def self.title
-    "Original Phrase in {language}".translate(nil, :language => Tr8n::Config.current_language.native_name)
+  def self.title(language)
+    "Original Phrase in {language}".translate(nil, :language => language.native_name)
   end
   
   def self.help_url

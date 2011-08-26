@@ -80,10 +80,6 @@ class Tr8n::Language < ActiveRecord::Base
     end
   end
   
-  def current?
-    self.locale == Tr8n::Config.current_language.locale
-  end
-  
   def default?
     self.locale == Tr8n::Config.default_locale
   end
