@@ -198,8 +198,9 @@ class Tr8n::Language < ActiveRecord::Base
     translation_key = Tr8n::TranslationKey.find_or_create(label, desc, options)
 
     unless options.keys.include? :skip_decorations
-      viewing_translator  = tokens[:viewing_translator]
-      options[:skip_decorations] = self.default? || !viewing_translator || !viewing_translator.enable_inline_translations?
+      viewing_translator  = options[:viewing_translator]
+      Thread.current[:expl_skip_decoration] = true
+      options[:skip_decorations] = self.default? || !(viewing_translator && viewing_translator.enable_inline_translations?)
     end
 
     translation_key.translate(self, tokens, options).tr8n_translated

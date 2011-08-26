@@ -214,7 +214,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     !locked?(language)
   end
 
-  def followed?(translato)
+  def followed?(translator)
     Tr8n::TranslatorFollowing.following_for(translator, self)
   end
 
@@ -389,12 +389,12 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     
     if translation
       translated_label = substitute_tokens(translation.label, token_values, options, language)
-      return decorate_translation(language, translated_label, translator, translation != nil, options.merge(:fallback => (translation_language != language))).html_safe
+      return decorate_translation(language, translated_label, options[:viewing_translator], translation != nil, options.merge(:fallback => (translation_language != language))).html_safe
     end
 
     # no translation found  
     translated_label = substitute_tokens(label, token_values, options, Tr8n::Config.default_language)
-    decorate_translation(language, translated_label, translator, translation != nil, options).html_safe  
+    decorate_translation(language, translated_label, options[:viewing_translator], translation != nil, options).html_safe  
   end
 
   ###############################################################
@@ -431,7 +431,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   end
   
   def translator_permitted_to_translate?(translator)
-    translator.level >= level
+    translator.present? && translator.level >= level
   end
 
   def decorate_translation(language, translated_label, translator, translated = true, options = {})

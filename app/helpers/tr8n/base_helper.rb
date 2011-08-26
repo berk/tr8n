@@ -32,10 +32,11 @@ module Tr8n::BaseHelper
         trl(label, desc, tokens, options)
       end
     else
+      options[:viewing_translator] = Tr8n::Config.current_translator
       Tr8n::Config.default_language.translate(label, desc, tokens, options)
     end
   end
-  
+
   # for admin translations
   def trla(label, desc = "", tokens = {}, options = {})
     tra(label, desc, tokens, options.merge(:skip_decorations => true))

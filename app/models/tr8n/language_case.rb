@@ -102,9 +102,10 @@ class Tr8n::LanguageCase < ActiveRecord::Base
       end
 
       if options[:skip_decorations]
+      if options[:skip_decorations] == true # skip decorations has to be explicetally set to true
         value = value.gsub(word, case_value || word)
       else
-        value = value.gsub(word, decorate_language_case(word, case_value || word, case_rule, options))
+        value = value.gsub(word, decorate_language_case(word, case_value || word, case_rule))
       end
     end
     
@@ -123,7 +124,7 @@ class Tr8n::LanguageCase < ActiveRecord::Base
     nil
   end
 
-  def decorate_language_case(case_map_key, case_value, case_rule, options = {})
+  def decorate_language_case(case_map_key, case_value, case_rule)
     "<span class='tr8n_language_case' case_id='#{id}' rule_id='#{case_rule ? case_rule.id : ''}' case_key='#{case_map_key.gsub("'", "\'")}'>#{case_value}</span>"
   end
 

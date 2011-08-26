@@ -134,7 +134,7 @@ module Tr8n::ControllerMethods
     unless Tr8n::Config.enabled?
       return Tr8n::TranslationKey.substitute_tokens(label, tokens, options, Tr8n::Config.current_language)
     end
-    
+    options[:viewing_translator] ||= Tr8n::Config.current_translator
     Tr8n::Config.current_language.translate(label, desc, tokens, options)
   end
 

@@ -24,6 +24,7 @@
 class String
 
   def translate(desc = "", tokens = {}, options = {}, language = Tr8n::Config.current_language)
+    options[:viewing_translator] ||= Tr8n::Config.current_translator
     language.translate(self, desc, tokens, options)
   end
 
