@@ -1,0 +1,47 @@
+<style>
+	.field_name {
+		width:150px;
+		font-weight: bold;
+		padding:3px !important;
+	}
+	
+	.field_value {
+	  width:350px;	
+    padding:3px !important;
+	}
+	
+  .field_desc {
+		color: #444;
+		font-size: 11px;
+    padding:3px !important;
+	}
+	
+</style>
+<div id="relationships_container">
+  <%=render(:partial => "header", :locals => {:section => "relationships", :label => "Relationships", :description => "", :mode => mode})%>
+
+  <% form_for(:language, tr8n_current_language, :url => {:controller => :language, :action => :manage}, :html => {:id => 'relationships_form', :method => :post}) do |f| %>
+    <div id="relationships_content" class="section_box colored">
+      <div style="float:right; padding-right:5px;">
+        <%=tr8n_help_icon_tag %>
+      </div>
+      
+      <div style="padding-top:5px;padding-bottom:10px;font-size:12px;">
+          <%=tra("Relationships are connections between persons by blood or marriage.") %> 
+          <%=tra("This section allows to specify the reduction rules for chained relationships.") %>
+					
+					<div style="padding-top:10px;">
+	          <%=tra("For example, relation resulting from the following chain [bold: ['mother', 'father', 'brother', 'wife']] will result in '[bold: mother's father's brother's wife]' in English using the following [bold: left-to-right] reduction rule: '[bold: {rule}]'.", "", :rule => "{left::pos} {right}")%> 
+	          <%=tra("Same relationship chain in Russian will result in '[bold: жена брата отца матери]' using the following [bold: right-to-left] reduction rule: '[bold: {rule}]'.", "", :rule => "{left} {right::pos}")%> 
+  					<%=tra("Keep in mind, that you must specify language case rules for possessive case in order to get the words in the right form.")%>
+          </div>
+					
+      </div>
+    	
+      <div style="padding-top:10px;">
+			 <%=link_to("Click here to define the reduction rules for the relationship path.", :controller => "/tr8n/phrases", :action => :view, :translation_key_id => Tr8n::ConfigurationKey.for_key("relationship_path"))%>
+      </div>
+			
+    </div>
+  <% end %>  
+</div>  

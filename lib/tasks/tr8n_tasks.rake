@@ -232,4 +232,47 @@ namespace :tr8n do
     Tr8n::IpLocation.import_from_file('config/tr8n/data/ip_locations.csv', :verbose => true)
   end
   
+  desc 'imports relationships'
+  task :import_relationships => :environment do
+    puts "Initializing default relationship keys..."
+
+    Tr8n::RelationshipKey.delete_all
+    
+    # will be used for relationship translations  - geni user does not work!  User.geni_user
+    system_translator = Tr8n::Translator.find_by_rank(1000000) || Tr8n::Translator.create(:user => User.first, :rank => 1000000)
+    
+    default_relationship_keys.each do |key, data|
+      rkey = Tr8n::RelationshipKey.find_or_create(key)
+      rkey.description ||= data.delete(:description)
+      rkey.save
+      
+      data.each do |locale, labels|
+        language = Tr8n::Language.for(locale)
+        labels = [labels].flatten # there could be a few translation variations
+        labels.each do |lbl|
+          trn = rkey.add_translation(lbl, nil, language, system_translator)
+          trn.vote!(system_translator, 1)
+        end
+      end
+    end
+  end
+
+  def default_relationship_keys
+    @default_relationship_keys ||= Tr8n::Config.load_yml("/config/tr8n/data/default_relationship_keys.yml", nil)
+  end
+
+  desc 'imports configuration keys'
+  task :import_configuration_keys => :environment do
+    puts "Initializing default configuration keys..."
+
+    Tr8n::ConfigurationKey.delete_all
+    default_configuration_keys.each do |key, value|
+      Tr8n::ConfigurationKey.find_or_create(key, value[:label], value[:description])
+    end
+  end
+
+  def default_configuration_keys
+    @default_configuration_keys ||= Tr8n::Config.load_yml("/config/tr8n/data/default_configuration_keys.yml", nil)
+  end
+  
 end

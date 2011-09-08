@@ -261,6 +261,10 @@ class Tr8n::Config
     config[:enable_country_tracking]
   end
   
+  def self.enable_relationships?
+    config[:enable_relationships]
+  end
+  
   #########################################################
   # Config Sections
   def self.caching

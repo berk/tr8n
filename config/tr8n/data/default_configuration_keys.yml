@@ -1,0 +1,9 @@
+#############################################################################
+#
+# Tr8n Configuration Keys
+#
+#############################################################################
+
+relationship_path:
+  label: "{a:gender::pos} {b:gender}"
+  description: "Use {a} and {b} tokens to indicate the sequence of relationship reduction."

@@ -32,7 +32,8 @@ defaults: &defaults
   enable_language_cases:      true      # enables support for language cases
   enable_client_sdk:          false     # allows javascript to use tr8nProxy object
   
-  enable_country_tracking:    true      # tracks and reports translator countries 
+  enable_country_tracking:    true      # tracks and reports translator countries
+  enable_relationships:       false 
 
   #############################################################################
   # Featured languages can be added as a bottom strip bar on all pages using

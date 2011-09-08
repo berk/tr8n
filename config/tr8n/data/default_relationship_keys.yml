@@ -1,0 +1,494 @@
+#############################################################################
+#
+# Tr8n Relationship Keys
+# 
+# The rules must be specified in the sequence they will be evaluated in
+#
+#############################################################################
+
+"0,0":
+  description: "yourself"
+  en:  "yourself"
+  ru: "Вы"
+  he: "אני"
+  
+"1f,0":
+  description: "a female parent"
+  en: "mother"
+  ru: "мать"
+  hi: "Maa"
+  he: "אמא"
+  
+"1m,0":
+  description: "a male parent"
+  en: "father"
+  ru: "отец"
+  hi: ["Baap", "Pitah"]
+  he: "אבא"
+
+"1,0":
+  description: "father or mother"
+  en: "parent"
+  ru: "родитель"
+
+"0,1f":
+  description: "a female child"
+  en: "daughter"
+  ru: "дочь"
+  hi: "Beti"
+  he: "בת"
+  
+"0,1m":
+  description: "a male child"
+  en: "son"
+  ru: "сын"
+  hi: "Beta"
+  he: "בן"
+    
+"0,1":
+  description: "a son or daughter of any age"
+  en: "child"
+  ru: "ребенок"
+    
+"0,1m1m":
+  description: "son's son"
+  hi: "Potaa"
+  
+"0,1f1m":
+  description: "daughter's son"
+  hi: ["Naatii", "Navasa"]
+  
+"0,1m1f":
+  description: "son's daughter"
+  hi: "Potii"
+  
+"0,1m1f":
+  description: "daughter's daughter"
+  hi: ["Naatin", "Navaasii"]
+
+"1,1f":
+  description: "a woman or girl in relation to other children of her parents"
+  en: "sister"
+  ru: "сестра"
+  hi: "Behan"
+  he: "אחות"
+  
+"1,1f:m0,0":
+  description: "sister's husband"
+  hi: "Jiija"
+  
+"1,1f1m":
+  description: "sister's son"
+  hi: "Bhanja"
+  
+"1,1f1f":
+  description: "sister's daughter"
+  hi: "Bhanji"
+  
+"1,1m":
+  description: "a man or boy in relation to other children of his parents"
+  en: "brother"
+  ru: "брат"
+  hi: "Bhai"
+  he: "אח"
+  
+"1,1m:f0,0":
+  description: "brother's wife"
+  hi: "Bhabhi"
+  
+"1,1m1m":
+  description: "brother's son"
+  hi: "Bhatija"
+  
+"1,1m1f":
+  description: "brother's daughter"
+  hi: "Bhatiji"
+  
+"1,1":
+  description: "a brother or sister"
+  en: "sibling"
+  ru: "брат/сестра"
+      
+"1f1f,0":
+  description: "the mother of one's mother" 
+  en: "maternal grandmother"
+  
+"1f1m,0":
+  description: "the father of one's mother"
+  en: "maternal grandfather"
+    
+"1f1,0":    
+  description: "the parent of one's mother"
+  en: "maternal grandparent"
+
+"1m1f,0":
+  description: "the mother of one's father" 
+  en: "paternal grandmother"
+  hi: "Dadi" 
+  
+"1m1m,0":  
+  description: "the father of one's father"
+  en: "paternal grandfather"
+  hi: "Dada"
+  
+"1m1<1m":
+  description: "father's older brother"      
+  hi: "Taya"      
+
+"1m1<1m:f0,0":
+  description: "father's older brother's wife"      
+  hi: "Tayi"      
+
+"1m1>1m":
+  description: "father's younger brother"      
+  hi: "Chacha"      
+
+"1m1<1m:f0,0":
+  description: "father's younger brother's wife"      
+  hi: "Chachi"      
+  
+"1f1,0":  
+  description: "the parent of one's father"
+  en: "paternal grandparent"
+  
+"1m1,1f":
+  description: "father's sister"      
+  hi: "Bua"      
+  
+"1m1,1f:m0,0":
+  description: "father's sister's husband"      
+  hi: "Phupha"      
+
+"1f1f,0":
+  description: "mother's mother"      
+  hi: "Naani"
+        
+"1f1m,0":
+  description: "mother's father"      
+  hi: "Nana"
+  
+"1f1,1m":
+  description: "mother's brother"
+  hi: "Mama"
+          
+"1f1,1m:f0,0":
+  description: "mother's brother's wife"      
+  hi: "Maami"
+  
+"1f1,1f":
+  description: "mother's sister"      
+  hi: "Maasi"
+
+"1f1,1f:m0,0":
+  description: "mother's sister's husband"
+  hi: "Maasad"
+  
+"2f,0":  
+  description: "the mother of one's father or mother" 
+  en: "grandmother"
+  ru: "бабушка"
+  he: "סבתא"
+  
+"2m,0":
+  description: "the father of one's father or mother" 
+  en: "grandfather"
+  ru: "дедушка"
+  he: "סבא"
+    
+"2,0":    
+  description: "the parent of one's father or mother" 
+  en: "grandparent"
+  ru: "бабушка/дедушка"
+  
+"0,2f":  
+  description: "a girl child of one's son or daughter"
+  en: "granddaughter"
+  ru: "внучка"
+  he: "נכדה"
+  
+"0,2m": 
+  description: "a boy child of one's son or daughter"
+  en: "grandson"
+  ru: "внук"
+  he: "נכד"
+  
+"0,2": 
+  description: "a child of one's son or daughter."
+  en: grandchild
+  ru: "внучка/внук"
+  
+"2,1f":
+  description: "the sister of one's father or mother or the wife of one's uncle"
+  en: aunt
+  ru: "тетя"
+  he: "דודה"
+  
+"2,1m":
+  description: "the brother of one's father or mother or the husband of one's aunt"
+  en: uncle
+  ru: "дядя"
+  he: "דוד"
+  
+"2,1": 
+  description: "the sister or the brother of one's father or mother or the wife of one's uncle"
+  en: aunt/uncle
+  ru: "тетя/дядя"
+  
+"1,2f":
+  description: a daughter of one's brother or sister or of one's brother-in-law or sister-in-law
+  en: niece
+  ru: "племянница"
+
+"1,2m":
+  description: a son of one's brother or sister or of one's brother-in-law or sister-in-law 
+  en: nephew
+  ru: "племянник"
+
+"1,2":
+  description: a son or a daof one's brother or sister or of one's brother-in-law or sister-in-law 
+  en: niece/nephew
+  ru: "племянница/племянник"
+
+"2,2m":
+  description: "parent's sibling's son"
+  en: "first cousin"
+  ru: "двоюродный брат"
+  he: "בן דוד"
+
+"2,2f":
+  description: "parent's sibling's daughter"
+  en: "first cousin"
+  ru: "двоюродная сестра"
+  he: "בת דודה"
+
+"3,3m":
+  description: "grandparent's sibling's grandson"
+  ru: "троюродный брат"
+
+"3,3f":
+  description: "grandparent's sibling's granddaughter"
+  ru: "троюродная сестра"
+
+"X,X":  
+  description: "any child of one's uncle or aunt for X>1"
+  en: "{X:ord} cousin"
+  ru: "{X::mrel} брат/сестра"
+
+"X,Xm": 
+  description: "any child of one's uncle or aunt for X>1"
+  ru: "{X::mrel} брат"
+  
+"X,Xf": 
+  description: "any child of one's uncle or aunt for X>1"
+  ru: "{X::frel} сестра"
+  
+"fiancee":
+  description: a woman to whom a man is engaged to be married 
+  en: fiancée
+  
+"fiance":
+  description: a man to whom a woman is engaged to be married 
+  en: fiance
+  
+"bride":
+  description: a woman on her wedding day or just before and after the event
+  en: bride
+   
+"bridegroom":
+  description: a man on his wedding day or just before and after the event 
+  en: bridegroom
+
+"0,0:f0,0":
+  description: the woman to whom a particular man is married
+  en: wife
+  ru: "жена"
+  hi: "Patni"
+  
+"0,0:m0,0":
+  description: the man to whom a particular woman is married
+  en: husband
+  ru: "муж"
+  hi: "Pati"
+
+"0,0:0,0":
+  description: one's husband or wife
+  en: spouse
+  ru: "жена/муж"
+  
+"0,0.0,0":
+  description: "a husband or a wife; spouse"
+  en: partner
+  
+"1,0:f0,0":
+  description: "the wife of one's father by a later marriage"   
+  en: stepmother
+  ru: "мачеха"
+  
+"1,0:m0,0":
+  description: "the husband of one's mother by a later marriage"
+  en: stepfather
+  ru: "отчим"
+  
+"1,0:0,0":
+  description: "a stepfather or stepmother"
+  en: stepparent
+  ru: "мачеха/отчим"
+
+"0,0:0,1f":
+  description: "a daughter of one's husband or wife by a previous marriage"
+  en: stepdaughter
+  ru: "падчерица"
+  
+"0,0:0,1m":
+  description: "a son of one's husband or wife by a previous marriage"
+  en: stepson
+  ru: "пасынок"
+  
+"0,0:0,1":  
+  description: "a stepdaughter or a stepson"
+  en: stepchild
+  ru: "приемный ребенок"
+  
+"1,0:0,1f":
+  description: "one's stepfather's or stepmother's daughter by a previous marriage"
+  en: stepsister
+  ru: "сводная сестра"
+  
+"1,0:0,1m":
+  description: "one's stepfather's or stepmother's son by a previous marriage"
+  en: stepbrother
+  ru: "сводный брат"
+  
+"1,0:0,1":
+  description: "a stepsister or a stepbrother"
+  en: stepsibling
+  ru: "сводная сестра/брат"
+  
+"2,1:m0,0":
+  description: "a brother of one's father or mother"
+  en: uncle
+  ru: "дядя"
+  
+"2,1:f0,0":
+  description: "a sister of one's father or mother"
+  en: aunt
+  ru: "тетя"
+  
+"2,1:0,0":
+  description: "a sister of one's father or mother"
+  en: "aunt/uncle"
+  ru: "тетя/дядя"
+
+"2,1f:0,0":
+  description: "mother's brother or sister"
+  en: aunt/uncle
+  ru: "тетя/дядя"
+  
+"2,1m:0,0":
+  description: "father's brother or sister"
+  en: aunt/uncle
+  ru: "тетя/дядя"
+  
+"0,0:1f,0":
+  description: "the mother of one's husband or wife"
+  en: mother-in-law
+  ru: "свекровь"
+  hi: "Saas"
+  
+"0,0:1m,0":
+  description: "the father of one's husband or wife"
+  en: father-in-law
+  ru: "отчим"
+  hi: "Sasur"
+  
+"0,0:1,0":
+  description: "a mother-in-law or a father-in-law"
+  en: parent-in-law
+  ru: "свекровь/отчим"
+  
+"0,1f:0,0":  
+  description: "the wife of one's son"
+  en: daughter-in-law
+  ru: "зять"
+  
+"0,1m:0,0":  
+  description: "the husband of one's daughter"
+  en: son-in-law
+  ru: "невестка"
+  
+"0,0:1,1f":  
+  description: "the sister of one's husband or wife."
+  en: sister-in-law
+  ru: "золовка"
+  
+"0,0:1,1m":
+  description: "the brother of one's husband or wife."
+  en: brother-in-law
+  ru: "шурин"
+    
+"1,1:f0,0": 
+  description: "the wife of one's brother"  
+  en: sister-in-law
+  ru: "золовка"
+
+"1,1m:0,0": 
+  description: "the wife of one's brother"  
+  en: sister-in-law
+
+"1,1:m0,0":  
+  description: "the husband of one's sister"
+  en: brother-in-law
+  ru: "шурин"
+
+"1,1f:0,0": 
+  description: "the husband of one's sister"  
+  en: brother-in-law
+
+"0,1:m0,0": 
+  description: "daughter's husband"
+  hi: "Damaad"
+  
+"0,1:f0,0": 
+  description: "son's wife"
+  hi: "Bahu"
+  
+"0,0:1m1<1m": 
+  description: "husband's older brother"
+  hi: "Jeth"
+  
+"0,0:1m1<1m:f0,0": 
+  description: "husband's older brother's wife"
+  hi: "Jethanii"
+  
+"0,0:1m1,1f": 
+  description: "husband's sister"
+  hi: "Nanad"
+  
+"0,0:1m1,1f:m0,0": 
+  description: "husband's Sister's Husband"
+  hi: "Nandoii"
+  
+"0,0:1m1>1m": 
+  description: "husband's younger brother"
+  hi: "Devar"
+  
+"0,0:1m1>1m:f0,0": 
+  description: "husband's yanger brother's wife"
+  hi: "Devaraanii"
+  
+"0,0:1f1,1f": 
+  description: "wife's sister"
+  hi: "Saalii"
+
+"0,0:1f1,1f:m0,0": 
+  description: "wife's sister's husband"
+  hi: "Saadhuu"
+  
+"0,0:1f1,1m": 
+  description: "wife's brother"
+  hi: "Salaa"
+  
+"0,0:1f1,1m:f0,0": 
+  description: "wife's brother's wife"  
+  hi: "Salhaj"
+  

@@ -1,0 +1,24 @@
+<% style = @relationship_key.locked? ? "background-color:#ECFFEF; border: 1px solid #50B74F;" : "background-color:#FDFDDF; border: 1px solid #DDCF6F;" %>
+<div class="section_box" style="margin-bottom:5px;<%=style%>;">
+  <div style="float:right; font-size:12px; padding-right:3px;">
+    <% if @relationship_key.locked? %>
+      <%=image_tag("/tr8n/images/lock.png", :style=>"vertical-align:bottom;", :title => trla("This phrase is locked.")) %>
+    <% else %>  
+      <%=image_tag("/tr8n/images/lock_open.png", :style=>"vertical-align:bottom;", :title => trla("This phrase is unlocked.")) %>
+    <% end %>
+  </div>
+	
+  <div style="color:grey;font-size:20px;padding-bottom:10px;"><%=trla("Original Phrase in {language}", nil, :language => @relationship_key.language.native_name)%></div>
+  
+  <div style="padding-top:5px;padding-bottom:10px;font-size:14px">
+      <%=image_tag("/tr8n/images/left_quote.png", :style=>"text-align:bottom;padding-bottom:5px;") %>
+      <%=@relationship_key.sanitized_label %>
+      <%=image_tag("/tr8n/images/right_quote.png", :style=>"text-align:bottom;padding-top:5px;") %>
+  </div>
+
+  <% unless @relationship_key.description.blank? %>
+    <div style="color:grey;font-size:12px;padding-left:10px;padding-top:1px;padding-bottom:1px;border-left:solid 1px #ccc;margin-left:10px;">
+      <%=@relationship_key.description %>
+    </div>
+  <% end %>
+</div>

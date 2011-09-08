@@ -1,0 +1,79 @@
+<%= javascript_include_tag("/tr8n/javascripts/jsDraw2D.js") %>
+
+<% Tr8n::Config.with_options(:default_locale => 'en-US', :admin => true) do %>
+
+  <%= render :partial => "/tr8n/common/header" %>
+	
+  <div class="section_box" style="margin-bottom:10px; background-color:#EFF8FF; margin-top:0px;">
+	  <div style="font-size:20px;font-weight:bold;"><%=tra("New Relationship Key")%></div>
+  </div>
+		
+  <div class="section_box">
+  
+    <% form_tag({:action => :new}, {:method => :post, :id => "relationship_key_form"}) do %>
+      <div style="font-size:12px;padding-bottom:5px;"><%=tra("Relationship Key")%> <span style="color:grey"> - use our guide to define the relationship key</span></div>
+      <%=text_field_tag(:key, params[:key], {:id => :relationship_key, :style => "width:99%;font-size:24px", :onKeyUp => "drawRelationship();"})%><br>
+			
+      <div style="font-size:12px;padding-bottom:5px;padding-top:5px;"><%=tra("Description")%> <span style="color:grey"> - optional, but recommended</span></div>
+      <%=text_field_tag(:description, params[:description], {:style => "width:99%;font-size:12px;height:14px"})%><br>
+			
+      <div style="font-size:12px;padding-bottom:5px;padding-top:5px;"><%=tra("{language} Translation", nil, :language => tr8n_current_language.native_name)%></div>
+      <%=text_field_tag(:translation, params[:translation], {:style => "width:99%;font-size:12px;height:14px"})%><br>
+    <% end %>
+  
+    <% if @enable_graph %>
+      <div id="canvas" style="overflow:hidden;position:relative;width:99%;height:400px;margin-top:10px;border:0px solid #ccc;"></div>
+	  <% end %>		
+		
+	   <div style="text-align:center; padding-top:30px; padding-bottom:10px;">
+	        <button type="submit" class="translator_btn translator_small_btn" onClick="Tr8n.Effects.submit('relationship_key_form'); return false;">
+	            <span><%=tra("Submit")%></span>
+	        </button>
+          <%=trla("or")%> <%= link_to(trla("Cancel"), :action => :index) %>
+	   </div>
+		 
+  </div>
+
+  <%= render :partial => "/tr8n/common/footer" %>
+	
+<% end %>
+
+
+<% if @enable_graph %>
+<script type="text/JavaScript">
+  var gr = new jsGraphics(document.getElementById("canvas"));
+  gr.showGrid(15, true, new jsColor(230,230,230));
+	
+	function drawRelationship() {
+	  if (gr) gr.clear();
+    gr = new jsGraphics(document.getElementById("canvas"));
+		
+		var rkey = Tr8n.value('relationship_key');
+		//alert(rkey);
+    
+		gr.showGrid(15, true, new jsColor(230,230,230));
+		
+		if (!(/^([\dfm]+)[\.,><]([\dfm]+)$/.test(rkey))) {
+		  //alert("Invalid relationship key");
+			gr.drawText("Invalid relationship key", new jsPoint(240,180), new jsFont("Arial", "bold", "24pt"), new jsColor("red"));
+			return;
+		}
+		
+		var parts = rkey.split(/\./); 
+		var color = new jsColor("gray");
+
+    var pen = new jsPen(color, 1);
+    gr.drawLine(pen,new jsPoint(400,100),new jsPoint(250,300));
+    gr.drawLine(pen,new jsPoint(400,100),new jsPoint(550,300));
+
+    gr.fillCircle(new jsColor("green"), new jsPoint(250,300), 40);
+    gr.fillCircle(new jsColor("gray"), new jsPoint(400,100), 20);
+    gr.fillCircle(new jsColor("red"), new jsPoint(550,300), 40);
+
+    gr.drawText("you", new jsPoint(225,285), new jsFont("Arial", "bold", "20pt"), new jsColor("red"));
+    gr.drawText("1", new jsPoint(310,180), new jsFont("Arial", "bold", "18pt"), color);
+    gr.drawText("1", new jsPoint(475,180), new jsFont("Arial", "bold", "18pt"), color);
+	}
+	
+</script>
+<% end %>
