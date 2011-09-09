@@ -106,7 +106,7 @@ class Tr8n::GenderRule < Tr8n::LanguageRule
   def evaluate(token)
     token_value = gender_token_value(token)
     return false unless token_value
-    
+
     if definition[:operator] == "is"
       return true if token_value == gender_object_value_for(definition[:value])
     elsif definition[:operator] == "is_not"
