@@ -22,6 +22,7 @@
 #++
 
 class Tr8n::Admin::LanguageController < Tr8n::Admin::BaseController
+  unloadable
   
   def index
     @languages = Tr8n::Language.filter(:params => params, :filter => Tr8n::LanguageFilter)

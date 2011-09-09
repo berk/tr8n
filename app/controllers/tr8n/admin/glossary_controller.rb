@@ -22,6 +22,7 @@
 #++
 
 class Tr8n::Admin::GlossaryController < Tr8n::Admin::BaseController
+  unloadable
 
   def index
     @terms = Tr8n::Glossary.filter(:params => params, :filter => Tr8n::GlossaryFilter)

@@ -22,6 +22,7 @@
 #++
 
 class Tr8n::TranslatorController < Tr8n::BaseController
+  unloadable
 
   def index
     @fallback_language = (tr8n_current_translator.fallback_language || tr8n_default_language)

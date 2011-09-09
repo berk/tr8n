@@ -22,6 +22,7 @@
 #++
 
 class Tr8n::Admin::TranslationController < Tr8n::Admin::BaseController
+  unloadable
 
   def index
     @translations = Tr8n::Translation.filter(:params => params, :filter => Tr8n::TranslationFilter)
