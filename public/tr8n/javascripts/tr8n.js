@@ -731,6 +731,7 @@ Tr8n.Utils = {
     }
 
     request.open(options.method, url, true);
+    request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     request.setRequestHeader('Accept', 'text/javascript, text/html, application/xml, text/xml, */*');
     request.send(options.parameters);
