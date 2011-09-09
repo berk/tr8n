@@ -31,7 +31,7 @@ class Tr8n::ConfigurationKey < Tr8n::TranslationKey
   
   def self.for_key(key)
     Tr8n::Cache.fetch("configuration_key_#{key}") do
-        find_by_key(key)
+        find_by_key(key.to_s)
     end
   end
 
