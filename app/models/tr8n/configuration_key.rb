@@ -43,6 +43,21 @@ class Tr8n::ConfigurationKey < Tr8n::TranslationKey
     Tr8n::Cache.delete("configuration_key_#{key}")
   end
 
+  def translate(language = Tr8n::Config.current_language, token_values = {}, options = {})
+    return find_all_valid_translations(valid_translations_for(language)) if options[:api]
+    
+    translation_language, translation = find_first_valid_translation_for_language(language, token_values)
+    
+    if translation
+      translated_label = substitute_tokens(translation.label, token_values, options, language)
+      return decorate_translation(language, translated_label, translation != nil, options.merge(:fallback => (translation_language != language)))
+    end
+
+    # no translation found  
+    translated_label = substitute_tokens(label, token_values, options, Tr8n::Config.default_language)
+    decorate_translation(language, translated_label, translation != nil, options)  
+  end
+  
   ###############################################################
   ## Feature Related Stuff
   ###############################################################
