@@ -34,12 +34,19 @@ class Tr8n::TranslationKeySource < ActiveRecord::Base
 
   serialize :details
 
+  def self.for(translation_key, translation_source)
+    return nil if translation_key.blank?
+    return nil if translation_source.blank?
+
+    Tr8n::Cache.fetch("tks_for_key_#{translation_key.id}_source_#{translation_source.id}") do
+      find_or_create translation_key, translation_source
+    end
+  end
+
   def self.find_or_create(translation_key, translation_source)
-    Tr8n::Cache.fetch("translation_key_source_#{translation_key.id}_#{translation_source.id}") do 
       tks = find(:first, :conditions => ["translation_key_id = ? and translation_source_id = ?", translation_key.id, translation_source.id])
       tks || create(:translation_key => translation_key, :translation_source => translation_source)
     end  
-  end
   
   def update_details!(options)
     return unless options[:caller_key]
@@ -52,7 +59,8 @@ class Tr8n::TranslationKeySource < ActiveRecord::Base
   end
   
   def clear_cache
-    Tr8n::Cache.delete("translation_key_source_#{translation_key_id}_#{translation_source_id}")
+    Tr8n::Cache.delete("tks_for_key_#{translation_key_id}_source_#{translation_source_id}")
+    Tr8n::Cache.delete("cached_translation_keys_for_source_#{translation_source_id}")
   end
   
 end
