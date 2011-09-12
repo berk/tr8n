@@ -77,7 +77,8 @@ class Tr8n::Config
     [ 
        Tr8n::LanguageRule, Tr8n::LanguageUser, Tr8n::Language, Tr8n::LanguageMetric,
        Tr8n::LanguageCase, Tr8n::LanguageCaseValueMap, Tr8n::LanguageCaseRule,
-       Tr8n::TranslationKey, Tr8n::TranslationKeySource, Tr8n::TranslationKeyComment, Tr8n::TranslationKeyLock,
+       Tr8n::TranslationKey, Tr8n::RelationshipKey, Tr8n::ConfigurationKey, 
+       Tr8n::TranslationKeySource, Tr8n::TranslationKeyComment, Tr8n::TranslationKeyLock,
        Tr8n::TranslationSource, Tr8n::TranslationDomain,
        Tr8n::Translation, Tr8n::TranslationVote,
        Tr8n::Translator, Tr8n::TranslatorLog, Tr8n::TranslatorMetric, 
@@ -710,6 +711,51 @@ class Tr8n::Config
     end
     Thread.current[:tr8n_block_options] = {}
     ret
+  end
+  
+  #########################################################
+  def self.system_translator
+    # will be used for relationship translations  - geni user does not work!  User.geni_user
+    @system_translator ||= Tr8n::Translator.find_by_rank(1000000) || Tr8n::Translator.create(:user => User.first, :rank => 1000000)
+  end
+  
+  def self.init_relationship_keys
+    puts "Initializing default relationship keys..."
+
+    Tr8n::RelationshipKey.delete_all
+    
+    default_relationship_keys.each do |key, data|
+      rkey = Tr8n::RelationshipKey.find_or_create(key)
+      rkey.description ||= data.delete(:description)
+      rkey.save
+      
+      data.each do |locale, labels|
+        language = Tr8n::Language.for(locale)
+        next unless language
+        labels = [labels].flatten # there could be a few translation variations
+        labels.each do |lbl|
+          trn = rkey.add_translation(lbl, nil, language, system_translator)
+          trn.vote!(system_translator, 1)
+        end
+      end
+    end
+  end
+  
+  def self.default_relationship_keys
+    @default_relationship_keys ||= load_yml("/config/tr8n/data/default_relationship_keys.yml", nil)
+  end
+  
+  def self.init_configuration_keys
+    puts "Initializing default configuration keys..."
+
+    Tr8n::ConfigurationKey.delete_all
+    default_configuration_keys.each do |key, value|
+      Tr8n::ConfigurationKey.find_or_create(key, value[:label], value[:description])
+    end
+  end
+  
+  def self.default_configuration_keys
+    @default_configuration_keys ||= load_yml("/config/tr8n/data/default_configuration_keys.yml", nil)
   end
   
 end

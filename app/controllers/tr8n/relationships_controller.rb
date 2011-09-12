@@ -49,6 +49,16 @@ class Tr8n::RelationshipsController < Tr8n::BaseController
     @relationship_key = Tr8n::RelationshipKey.new
   end
   
+  def path
+    
+  end
+  
+  def eval_path
+    value = Path.new(params[:etps]).translate.to_s
+    value = "The eTPS you provided could not be matched to any relationship keys" if value.blank?
+    render :text => value
+  end
+  
   def configure
     
   end
