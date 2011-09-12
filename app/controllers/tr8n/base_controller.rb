@@ -100,6 +100,8 @@ private
       unless tr8n_current_user_is_translator? and tr8n_current_translator.manager?
         tabs = tabs.select{|tab| !tab[:manager_only]}  
       end
+      
+      tabs.delete(:relationships) unless Tr8n::Config.enable_relationships?
       tabs
     end
   end
