@@ -133,7 +133,12 @@ button::-moz-focus-inner                        {border:none;}
 
 
 .tr8n_lightbox_overlay                          {position: absolute; top: 0%; left: 0%; width: 100%; height: 100%; background-color: white; z-index:1001; -moz-opacity: 0.5; opacity:.50; filter: alpha(opacity=50); }
-.tr8n_lightbox                                  {position: absolute; top: 50%; left: 50%; width: 50%; height: 80%; margin-left:-25%; margin-top:-40%; padding: 16px; border:solid 10px rgba(0,0,0, 0.2); background-color:white; border-radius:10px; z-index:1002; overflow: auto; }
+.tr8n_lightbox                                  {position: absolute; top: 50%; left: 50%; width: 50%; height: 80%; margin-left:-25%; margin-top:-40%; border:solid 10px rgba(0,0,0, 0.2); border-radius:10px; z-index:1002; overflow: auto; }
+.tr8n_lightbox .inner                           {background-color:white;}
+.tr8n_lightbox .inner .hd                       {background-color:white; padding: 5px; font-size: 18px;}
+.tr8n_lightbox .inner .bd                       {background-color:white; padding: 5px;}
+.tr8n_lightbox .inner .ft                       {background-color:white; text-align:center; padding:10px;}
+
 
 /****************************************/
 /*** Classes for the feature tabs

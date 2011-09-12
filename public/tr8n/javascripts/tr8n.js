@@ -593,14 +593,8 @@ Tr8n.Lightbox.prototype = {
     Tr8n.Utils.hideFlash();
 
     this.container.innerHTML = "<div style='font-size:18px;text-align:left;padding:10px;'><img src='/tr8n/images/spinner.gif' style='vertical-align:middle'> Loading...</div>";
-
-//    this.overlay.style.position = "fixed";
-//    this.overlay.style.top      = "0px";
-//    this.overlay.style.left     = "0px";
-//    this.overlay.style.dispaly  = "inline";
-//    this.overlay.style.width    = overlay_width + 'px';
-//    this.overlay.style.height   = overlay_height + 'px';
-    this.overlay.style.display  = "block";
+    
+		this.overlay.style.display  = "block";
 
     opts["width"] = opts["width"] || 700;
 		opts["height"] = opts["height"] || 520;
