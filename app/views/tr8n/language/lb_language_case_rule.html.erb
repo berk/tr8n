@@ -12,10 +12,6 @@
     text-align: center;
   }
   .content {
-    border: 1px dotted #ccc;
-    background-color: #f8f7f6;
-    padding:5px;
-    padding-bottom: 10px;
   }
   .content td {
     vertical-align: middle;
@@ -23,73 +19,82 @@
   }
 </style>
 
-<div class="lightbox">
-
-  <% form_tag({}, {:id => :language_case_rule_form}) do %>
-	  
-	  <% rule_prefix = "edit_rule" %>
-	
-	  <div style="padding:5px; border: 1px dotted #ccc; margin-bottom:10px; font-size:14px; background-color:#f1f4fa; font-weight:bold;">
-		   <%= @case.native_name.blank? ? 'New Language Case' : @case.native_name %>
-       <br>
-       <span style="color:grey; font-size:10px;">(::<%= @case.keyword %>) <%= @case.description %> </span>
+<div class="inner">
+	<div class="hd">
+		<div style="float:right;">
+			<%=link_to_function(image_tag("/tr8n/images/close.gif"), "tr8nLightbox.hide()") %>
+		</div>
+	  <div style="font-size:14px; font-weight:bold;">
+	     <%= @case.native_name.blank? ? 'New Language Case' : @case.native_name %>
+	     <br>
+	     <span style="color:grey; font-size:10px;">(::<%= @case.keyword %>) <%= @case.description %> </span>
 	  </div>
+	</div>	
 	
-	  <%=hidden_field_tag("#{rule_prefix}[position]", @rule_index)%>
+	<div class="bd">
+	  <% form_tag({}, {:id => :language_case_rule_form}) do %>
+		  
+		  <% rule_prefix = "edit_rule" %>
+		
+		
+		  <%=hidden_field_tag("#{rule_prefix}[position]", @rule_index)%>
+		
+		  <div class='content'>
+			  <div style="font-weight:bold; font-size:14px; padding-bottom:10px;"><%=tra("Language Case Rule Definition")%></div>
+			  <table>
+			  	<tr>
+			  		<td style="padding-right:5px;">
+			        <%=tra("Token Gender:")%>  			
+			  		</td>
+						<td>
+				     <%=select_tag("#{rule_prefix}[definition][gender]", options_for_select(@rule.class.gender_options, @rule.definition[:gender]), :style => "width:150px")%>			
+						</td>
+			  	</tr>
+					<tr>
+						<td><%=tra("Conditions:") %></td>
+						<td>
+				      <%=select_tag("#{rule_prefix}[definition][part1]", tr8n_options_for_select(@rule.class.condition_options, @rule.definition[:part1]), :style => "width:150px")%> 
+							<%=text_field_tag("#{rule_prefix}[definition][value1]", @rule.humanize_values(@rule.definition[:value1]), :style => "width:150px")%>
 	
-	  <div class='content'>
-		  <div style="font-weight:bold; font-size:14px; padding-bottom:10px;"><%=tra("Language Case Rule Definition")%></div>
-		  <table>
-		  	<tr>
-		  		<td style="padding-right:5px;">
-		        <%=tra("Token Gender:")%>  			
-		  		</td>
-					<td>
-			     <%=select_tag("#{rule_prefix}[definition][gender]", options_for_select(@rule.class.gender_options, @rule.definition[:gender]), :style => "width:150px")%>			
-					</td>
-		  	</tr>
-				<tr>
-					<td><%=tra("Conditions:") %></td>
-					<td>
-			      <%=select_tag("#{rule_prefix}[definition][part1]", tr8n_options_for_select(@rule.class.condition_options, @rule.definition[:part1]), :style => "width:150px")%> 
-						<%=text_field_tag("#{rule_prefix}[definition][value1]", @rule.humanize_values(@rule.definition[:value1]), :style => "width:150px")%>
+	            <%=hidden_field_tag("#{rule_prefix}[definition][operator]", 'and')%>
+	            <%=hidden_field_tag("#{rule_prefix}[definition][multipart]", @rule.definition[:multipart].to_s, :id => 'edit_rule_multipart')%>
+			
+			        <% multipart = (@rule.definition[:multipart].to_s == "true") %>
+			        <% rule_key = "case_#{@case_index}_rule_#{@rule_index}" %>
+			        <% more_link_style = 'display:none' if multipart %>
+			        <% less_link_style = 'display:none' unless multipart %>
+			
+			        <span id="add_condition_link">
+							  <%=link_to_function(tra('+ Add condition'), "Tr8n.Effects.show('rule_#{rule_key}_second_part'); Tr8n.Effects.hide('add_condition_link'); Tr8n.element('edit_rule_multipart').value='true';", :style => more_link_style)%>			
+						  </span>
+							
+						  <% second_part_style = 'display:none' unless multipart %>
+						  <div id="rule_<%=rule_key%>_second_part" style="padding-top:3px;<%= second_part_style %>">
+						    <%=select_tag("#{rule_prefix}[definition][part2]", tr8n_options_for_select(@rule.class.condition_options, @rule.definition[:part2]), :style => "width:150px")%>
+						    <%=text_field_tag("#{rule_prefix}[definition][value2]", @rule.humanize_values(@rule.definition[:value2]), :style => "width:150px")%>
+			          <%=link_to_function('- Remove condition', "Tr8n.Effects.hide('rule_#{rule_key}_second_part'); Tr8n.Effects.show('add_condition_link'); Tr8n.element('edit_rule_multipart').value='false';")%>      
+						  </div>
+						</td>
+					</tr>
+			    <tr>
+			      <td><%=tra("Operation:") %></td>
+			      <td>
+			         <%=select_tag("#{rule_prefix}[definition][operation]", tr8n_options_for_select(@rule.class.operation_options, @rule.definition[:operation]), :style => "width:150px")%>
+							 <%=text_field_tag("#{rule_prefix}[definition][operation_value]", @rule.humanize_values(@rule.definition[:operation_value]), :style => "width:150px")%>
+			      </td>
+			    </tr>
+			  </table>
+			
+			<% end %>
+			
+		</div>
+	</div>
 
-            <%=hidden_field_tag("#{rule_prefix}[definition][operator]", 'and')%>
-            <%=hidden_field_tag("#{rule_prefix}[definition][multipart]", @rule.definition[:multipart].to_s, :id => 'edit_rule_multipart')%>
-		
-		        <% multipart = (@rule.definition[:multipart].to_s == "true") %>
-		        <% rule_key = "case_#{@case_index}_rule_#{@rule_index}" %>
-		        <% more_link_style = 'display:none' if multipart %>
-		        <% less_link_style = 'display:none' unless multipart %>
-		
-		        <span id="add_condition_link">
-						  <%=link_to_function(tra('+ Add condition'), "Tr8n.Effects.show('rule_#{rule_key}_second_part'); Tr8n.Effects.hide('add_condition_link'); Tr8n.element('edit_rule_multipart').value='true';", :style => more_link_style)%>			
-					  </span>
-						
-					  <% second_part_style = 'display:none' unless multipart %>
-					  <div id="rule_<%=rule_key%>_second_part" style="padding-top:3px;<%= second_part_style %>">
-					    <%=select_tag("#{rule_prefix}[definition][part2]", tr8n_options_for_select(@rule.class.condition_options, @rule.definition[:part2]), :style => "width:150px")%>
-					    <%=text_field_tag("#{rule_prefix}[definition][value2]", @rule.humanize_values(@rule.definition[:value2]), :style => "width:150px")%>
-		          <%=link_to_function('- Remove condition', "Tr8n.Effects.hide('rule_#{rule_key}_second_part'); Tr8n.Effects.show('add_condition_link'); Tr8n.element('edit_rule_multipart').value='false';")%>      
-					  </div>
-					</td>
-				</tr>
-		    <tr>
-		      <td><%=tra("Operation:") %></td>
-		      <td>
-		         <%=select_tag("#{rule_prefix}[definition][operation]", tr8n_options_for_select(@rule.class.operation_options, @rule.definition[:operation]), :style => "width:150px")%>
-						 <%=text_field_tag("#{rule_prefix}[definition][operation_value]", @rule.humanize_values(@rule.definition[:operation_value]), :style => "width:150px")%>
-		      </td>
-		    </tr>
-		  </table>
-		
-		<% end %>
-		
-	  <div style="text-align:center;padding-top:20px;padding-bottom:10px;">
-	     <%=link_to_function("<span>#{trla(@new_rule ? "Add Rule" : "Update Rule", "Tr8n lightbox close button")}</span>", "tr8nLightbox.hide(); updateLanguageCaseRule();", :class => "tr8n_grey_button tr8n_pcb") %>
-	     <%=tra("or")%>
-	     <%=link_to_function(trla("Cancel", "Tr8n lightbox close button"), "tr8nLightbox.hide()") %>
-	  </div>
-		
+	<div class="ft">
+	    <button type="button" class="translator_btn translator_submit_btn" onClick="tr8nLightbox.hide(); updateLanguageCaseRule(); return false;">
+	        <span><%=trla(@new_rule ? "Add Rule" : "Update Rule", "Tr8n lightbox close button")%></span>
+	    </button>
+     <%=tra("or")%>
+     <%=link_to_function(trla("Cancel", "Tr8n lightbox close button"), "tr8nLightbox.hide()") %>
 	</div>
 </div>

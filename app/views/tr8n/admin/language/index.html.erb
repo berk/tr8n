@@ -3,7 +3,7 @@
 
 <%= tr8n_will_filter(@languages) %>
 
-<%=link_to_function("+ Add New Language", "tr8nLightbox.show('/tr8n/admin/language/lb_update', {height:350})")%>
+<%=link_to_function("+ Add New Language", "tr8nLightbox.show('/tr8n/admin/language/lb_update', {height:400})")%>
  | 
 <%=link_to_function("Calculate Completeness", 'calculateCompleteness()')%>
 <br>
@@ -56,7 +56,7 @@
 	  }, 'text-align:right;'],
 	  [:actions, lambda{|lang|
 	     html = [] 
-	     html << link_to_function("Update", "tr8nLightbox.show('/tr8n/admin/language/lb_update?lang_id=#{lang.id}', {height:350})")
+	     html << link_to_function("Update", "tr8nLightbox.show('/tr8n/admin/language/lb_update?lang_id=#{lang.id}', {height:400})")
 	     unless lang.default?
 	      if lang.enabled?
 	        html << link_to("Disable", :action => :disable, :lang_id => lang.id)

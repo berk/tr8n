@@ -1,9 +1,17 @@
+<div class="inner">
+    <div class="hd">
+        <div style="float:right;">
+            <%=link_to_function(image_tag("/tr8n/images/close.gif"), "tr8nLightbox.hide();") %>
+        </div>
+        Merging Translation Keys
+    </div>
+    <div class="bd">
+
 <% form_for(:translation_key, @key, :url => {:action => :merge}, :html => {:id => 'tr8n_form', :method => :post, :class => "tr8n"}) do |form| %>
   <%= form.hidden_field :id %>
   <%= hidden_field_tag :keys, @keys.collect{|key| key.id}.join(',') %>
   <%= hidden_field_tag :source_url, request.env['HTTP_REFERER'] %>
   
-  <h2>Merging Translation Keys</h2>
 	<div style="background-color:#f1f4fa; padding:5px; max-height:120px; overflow:auto; margin-bottom: 10px; border: 1px solid #ccc;">
 		<table style="width:100%">
 			<% @keys.each_with_index do |key, index| %> 
@@ -37,7 +45,11 @@
       </tr>
   </table>
   
-  <div><i>Note: merging translation keys will join all of the translations for each language and unlock the merged key.</i></div>
+  <div><em>Note: merging translation keys will join all of the translations for each language and unlock the merged key.</em></div>
 
-  <%= render :partial => "/tr8n/admin/common/lightbox_buttons" %>
 <% end %>
+    </div>
+    <div class="ft">
+        <%= render :partial => "/tr8n/admin/common/lightbox_buttons" %>
+    </div>
+</div>

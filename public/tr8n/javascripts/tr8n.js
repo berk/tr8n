@@ -587,12 +587,13 @@ Tr8n.Lightbox.prototype = {
 
   show: function(url, opts) {
     var self = this;
+		opts = opts || {};
     if(tr8nTranslator) tr8nTranslator.hide();
     if(tr8nLanguageSelector) tr8nLanguageSelector.hide();
     if(tr8nLanguageCaseManager) tr8nLanguageCaseManager.hide();
     Tr8n.Utils.hideFlash();
 
-    this.container.innerHTML = "<div style='font-size:18px;text-align:left;padding:10px;'><img src='/tr8n/images/spinner.gif' style='vertical-align:middle'> Loading...</div>";
+    this.container.innerHTML = "<div class='inner' style='font-size:18px;text-align:left;padding:10px;'><img src='/tr8n/images/spinner.gif' style='vertical-align:middle'> Loading...</div>";
     
 		this.overlay.style.display  = "block";
 
@@ -600,7 +601,7 @@ Tr8n.Lightbox.prototype = {
 		opts["height"] = opts["height"] || 520;
 
     this.container.style.width  = opts["width"] + 'px';
-    this.container.style.height  = opts["height"] + 'px';
+    this.container.style.height = opts["height"] + 'px';
     this.container.style.marginLeft  = -opts["width"]/2 + 'px';
     this.container.style.marginTop  = -opts["height"]/2 + 'px';
 		this.container.style.display  = "block";
