@@ -6,7 +6,7 @@
 	  <div style="font-size:20px;font-weight:bold;padding-bottom:20px;"><%=tra("Relationship Path Evaluation Tool")%></div>
 			<div style="margin-bottom:10px;">
 	      <div style="font-size:12px;padding-bottom:5px;"><%=tra("Relationship path in TPS notation:")%></div>
-	      <%=text_field_tag(:etps, params[:etps], {:id => :relationship_key, :style => "width:90%;font-size:24px", :id => "etps", :onKeyUp => "etpsKeyUp()"})%> &nbsp; 
+	      <%=text_field_tag(:etps, params[:etps], {:id => :relationship_key, :style => "width:90%;font-size:24px", :id => "etps", :onKeyUp => "etpsKeyUp(event)"})%> &nbsp; 
 	      <button type="button" class="translator_btn translator_small_btn" onClick="evaluateRelationshipPath(); return false;">
 	          <span><%=tra("Evaluate")%></span>
 	      </button>
@@ -14,7 +14,7 @@
 			
       <div style="margin-bottom:10px;">
 	      <div style="font-size:12px;padding-bottom:5px;"><%=tra("Translation:")%></div>
-				<div id="translation" style="border:1px solid #ccc; background-color: #eee; min-height:20px; padding:10px; font-weight:bold;">
+				<div id="translation" style="border:1px solid #ccc; background-color: #eee; min-height:20px; padding:10px; font-weight:bold; font-size:14px;">
         </div>
    		</div>
   </div>
@@ -26,7 +26,7 @@
            <%=tra("Relationship Key")%>
          </td>
          <td style="width:70%;padding:5px; font-size:16px; color:grey; " colspan="2">
-           <%=tra("Top {language} Translations", nil, :language => tr8n_current_language.native_name) %>
+           <%=tra("Top {language} Translation", nil, :language => tr8n_current_language.native_name) %>
          </td>
       </tr>  
       <% @relationship_keys.each do |rk| %>
@@ -37,22 +37,14 @@
               <div style="float:right"><%=image_tag("/tr8n/images/lock.png", :style=>"width:12px", :title => trla("This relationship is locked"))%></div>
             <% end %>
             <div style="font-size:18px;font-family:Arial;">
-             <%=link_to(rk.label, :controller => '/tr8n/phrases', :action => :view, :translation_key_id => rk.id)%>
+             <%=link_to_function(rk.label, "Tr8n.element('etps').value='#{rk.label}';")%>
             </div>
             <div style="color:grey;font-size:10px;padding-top:3px;"><%=rk.description%></div>
           </td>
-          <td style="padding:5px; vertical-align:top">
+          <td style="padding:5px; vertical-align:top; font-size:16px;">
             <div id="tr8n_translator_votes_for_<%=rk.id%>">
             <% translations = rk.translations_for(tr8n_current_language) %>
-            <% if translations.empty? %>
-              <%= tra("There are no translations for this phrase.") %> 
-              <% unless rk.locked? %>
-                <%= tra("Be the first one to [link: translate it].", "", 
-                        :link => lambda{|str| link_to(str, :controller => "/tr8n/phrases", :action => :view, :translation_key_id => rk.id)}  ) %>
-              <% end %>       
-            <% else %>   
-              <%= render :partial => "/tr8n/common/translation_votes", :locals => {:translation_key => rk, :translations => translations[0..4]} %>
-            <% end %> 
+						<%= translations.first.label %>
             </div>  
           </td>
         </tr>
@@ -70,9 +62,10 @@
 
 
 <script>
-	function etpsKeyUp() {
+	function etpsKeyUp(event) {
 	   if (event.keyCode == 13) {
 		 	  evaluateRelationshipPath();
+				return false;
 		 }
 	}
 	

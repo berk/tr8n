@@ -123,6 +123,25 @@ class Tr8n::Config
       Tr8n::Glossary.create(:keyword => keyword, :description => description)
     end    
   end
+
+  def self.init_language_cases
+    puts "Initializing default language cases..."
+    Tr8n::LanguageCase.delete_all
+    
+    default_language_cases.each do |locale, cases|
+      language = Tr8n::Language.for(locale)
+      cases.keys.sort.each do |lkey|
+        lcase = cases[lkey]
+        rules = lcase.delete(:rules)
+        language_case = Tr8n::LanguageCase.create(lcase.merge(:language => language, :translator => system_translator))
+        next if rules.blank?
+        rules.keys.sort.each_with_index do |lrkey, index|
+          lcrule = rules[lrkey]
+          Tr8n::LanguageCaseRule.create(:language_case => language_case, :language => language, :translator => system_translator, :position => index, :definition => lcrule)
+        end
+      end
+    end    
+  end
   
   def self.root
     Rails.root
@@ -627,10 +646,8 @@ class Tr8n::Config
     load_default_rules("value", locale)
   end
 
-  def self.default_cases_for(locale = default_locale)
-    @default_cases ||= load_yml("/config/tr8n/rules/default_cases.yml", nil)
-    return [] unless @default_cases[locale.to_s]
-    @default_cases[locale.to_s].values
+  def self.default_language_cases
+    @default_language_cases ||= load_yml("/config/tr8n/rules/default_language_cases.yml", nil)
   end
 
   #########################################################
@@ -735,7 +752,6 @@ class Tr8n::Config
         labels = [labels].flatten # there could be a few translation variations
         labels.each do |lbl|
           trn = rkey.add_translation(lbl, nil, language, system_translator)
-          trn.vote!(system_translator, 1)
         end
       end
     end
@@ -750,7 +766,13 @@ class Tr8n::Config
 
     Tr8n::ConfigurationKey.delete_all
     default_configuration_keys.each do |key, value|
-      Tr8n::ConfigurationKey.find_or_create(key, value[:label], value[:description])
+      rkey = Tr8n::ConfigurationKey.find_or_create(key, value[:label], value[:description])
+      translations = value[:translations] || {}
+      translations.each do |locale, lbl|
+        language = Tr8n::Language.for(locale)
+        next unless language
+        rkey.add_translation(lbl, nil, language, system_translator)
+      end
     end
   end
   

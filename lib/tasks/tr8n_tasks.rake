@@ -109,43 +109,6 @@ namespace :tr8n do
     end
   end
   
-  # for old Geni languages only
-  task :fix_languages => :environment do
-    {"ay-BO"  => "ay",
-    "en-CAN"  => "en-CA",
-    "eo-EO"   => "eo",
-    "fo-FO"   => "fo",
-    "fr-CAN"  => "fr-CA",
-    "gn-PY"   => "gn",
-    "gu-IN"   => "gu",
-    "iw"      => "he",
-    "jv-ID"   => "jw",
-    "kz"      => "kk",
-    "kl"      => "tlh",
-    "mg-MG"   => "mg",
-    "mr-IN"   => "mr",
-    "ps-AF"   => "ps",
-    "qu-PE"   => "qu",
-    "rm-CH"   => "rm",
-    "sa-IN"   => "sa",
-    "ta-IN"   => "ta",
-    "xh-ZA"   => "xh",
-    "zu-ZA"   => "zu"}.each do |old_locale, new_locale|
-      lang = Tr8n::Language.for(old_locale)
-      next unless lang
-      lang.locale = new_locale
-      lang.save
-      
-      # FOR GENI ONLY - REMOVE AFTER USE
-      lang.language_users.each do |luser|
-        next unless luser.user
-        next unless luser.user.language == old_locale
-        luser.user.language = new_locale 
-        luser.user.save
-      end
-    end
-  end
-  
   task :verify_keys => :environment do
     used_keys = {}
     
@@ -232,6 +195,11 @@ namespace :tr8n do
     Tr8n::IpLocation.import_from_file('config/tr8n/data/ip_locations.csv', :verbose => true)
   end
   
+  desc 'imports language cases'
+  task :import_language_cases => :environment do
+    Tr8n::Config.init_language_cases
+  end
+
   desc 'imports relationship keys'
   task :import_relationship_keys => :environment do
     Tr8n::Config.init_relationship_keys
