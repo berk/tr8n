@@ -111,6 +111,9 @@ class Tr8n::RelationshipKey < Tr8n::TranslationKey
     false
   end
 
+  def sort_key
+    label
+  end
   ###############################################################
   ## Search Related Stuff
   ###############################################################

@@ -25,7 +25,7 @@ class Tr8n::RelationshipsController < Tr8n::BaseController
 
   def index
     conditions = Tr8n::RelationshipKey.search_conditions_for(params)
-    @relationship_keys = Tr8n::RelationshipKey.paginate(:per_page => per_page, :page => page, :conditions => conditions, :order => "label asc") 
+    @relationship_keys = Tr8n::RelationshipKey.paginate(:per_page => per_page, :page => page, :conditions => conditions, :order => "label asc")
   end
   
   def new
@@ -50,7 +50,8 @@ class Tr8n::RelationshipsController < Tr8n::BaseController
   end
   
   def path
-    
+    @relationship_keys = Tr8n::RelationshipKey.with_valid_translations_for_locale
+    @relationship_keys = @relationship_keys.sort_by(&:sort_key).reverse
   end
   
   def eval_path
