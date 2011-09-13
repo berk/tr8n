@@ -83,7 +83,7 @@ module Tr8n::HelperMethods
   end
 
   def tr8n_language_selector_tag(opts = {})
-    opts[:lightbox] =  opts[:lightbox].nil? ? false : opts[:lightbox]
+    opts[:lightbox] ||= false
     opts[:style] ||= "color:#1166bb;"
     opts[:show_arrow] ||= true
     opts[:arrow_style] ||= "font-size:8px;"
