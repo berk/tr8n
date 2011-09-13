@@ -3,9 +3,9 @@
   <%= render :partial => "/tr8n/common/header" %>
 	
   <div class="section_box" style="margin-bottom:10px; background-color:#EFF8FF; margin-top:0px;">
-	  <div style="font-size:20px;font-weight:bold;padding-bottom:15px;"><%=tra("Test Relationship Path")%></div>
+	  <div style="font-size:20px;font-weight:bold;padding-bottom:20px;"><%=tra("Relationship Path Evaluation Tool")%></div>
 			<div style="margin-bottom:10px;">
-	      <div style="font-size:12px;padding-bottom:5px;"><%=tra("Relationship path in eTPS notation:")%></div>
+	      <div style="font-size:12px;padding-bottom:5px;"><%=tra("Relationship path in TPS notation:")%></div>
 	      <%=text_field_tag(:etps, params[:etps], {:id => :relationship_key, :style => "width:90%;font-size:24px", :id => "etps", :onKeyUp => "etpsKeyUp()"})%> &nbsp; 
 	      <button type="button" class="translator_btn translator_small_btn" onClick="evaluateRelationshipPath(); return false;">
 	          <span><%=tra("Evaluate")%></span>
@@ -14,7 +14,7 @@
 			
       <div style="margin-bottom:10px;">
 	      <div style="font-size:12px;padding-bottom:5px;"><%=tra("Translation:")%></div>
-				<div id="translation" style="border:1px solid #ccc; background-color: #eee; min-height:20px; padding:10px;">
+				<div id="translation" style="border:1px solid #ccc; background-color: #eee; min-height:20px; padding:10px; font-weight:bold;">
         </div>
    		</div>
   </div>
