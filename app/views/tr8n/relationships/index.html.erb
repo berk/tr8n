@@ -61,7 +61,12 @@
 						<div style="font-size:18px;font-family:Arial;">
 	           <%=link_to(rk.label, :controller => '/tr8n/phrases', :action => :view, :translation_key_id => rk.id)%>
 						</div>
-	          <div style="color:grey;font-size:10px;padding-top:3px;"><%=rk.description%></div>
+						<% unless rk.default_translation.blank? %>
+						  <div style="color:grey;font-size:12px;padding-top:3px;font-weight:bold;"><%=rk.default_translation%></div>
+						<% end %>
+						<% unless rk.default_translation == rk.description%>
+              <div style="color:grey;font-size:10px;padding-top:3px;"><%=rk.description%></div>
+						<% end %>
 	        </td>
 	        <td style="padding:5px; vertical-align:top">
 	          <div id="tr8n_translator_votes_for_<%=rk.id%>">

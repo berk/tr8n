@@ -16,9 +16,22 @@
       <%=image_tag("/tr8n/images/right_quote.png", :style=>"text-align:bottom;padding-top:5px;") %>
   </div>
 
-  <% unless @translation_key.description.blank? %>
-    <div style="color:grey;font-size:12px;padding-left:10px;padding-top:1px;padding-bottom:1px;border-left:solid 1px #ccc;margin-left:10px;">
-      <%=@translation_key.description %>
-    </div>
-  <% end %>
+  <% if @translation_key.is_a?(Tr8n::RelationshipKey) %>
+      <% unless @translation_key.default_translation.blank? %>
+        <div style="color:grey;font-size:14px;padding-left:10px;padding-top:1px;padding-bottom:1px;border-left:solid 1px #ccc;margin-left:10px;font-weight:bold;">
+  				<%=@translation_key.default_translation%>
+				</div>
+      <% end %>
+      <% unless @translation_key.default_translation == @translation_key.description%>
+        <div style="color:grey;font-size:12px;padding-left:10px;padding-top:1px;padding-bottom:1px;border-left:solid 1px #ccc;margin-left:10px;">
+				  <%=@translation_key.description%>
+				</div>
+      <% end %>
+  <% else %>
+	  <% unless @translation_key.description.blank? %>
+	    <div style="color:grey;font-size:12px;padding-left:10px;padding-top:1px;padding-bottom:1px;border-left:solid 1px #ccc;margin-left:10px;">
+	      <%=@translation_key.description %>
+	    </div>
+	  <% end %>
+	<% end %>	
 </div>

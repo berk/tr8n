@@ -82,6 +82,12 @@ class Tr8n::RelationshipKey < Tr8n::TranslationKey
     decorate_translation(language, translated_label, translation != nil, options)  
   end
 
+  def default_translation
+    @default_translation ||= begin
+      trn = translate(Tr8n::Config.default_language)
+      trn == key ? "" : trn
+    end  
+  end
 
   ###############################################################
   ## Feature Related Stuff
