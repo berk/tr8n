@@ -130,6 +130,7 @@ class Tr8n::Config
     
     default_language_cases.each do |locale, cases|
       language = Tr8n::Language.for(locale)
+      next unless language
       cases.keys.sort.each do |lkey|
         lcase = cases[lkey]
         rules = lcase.delete(:rules)
