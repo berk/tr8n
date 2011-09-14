@@ -3,17 +3,36 @@
     <%= tr8n_help_icon_tag %>
   </div>
   
-  <div class="quiet small"><%=trla("Original Phrase in {language}", nil, :language => @translation_key.language.native_name)%></div>
-  <div class="quote">
-    <%=image_tag("/tr8n/images/left_quote.png") %>
-    <%=@translation_key.sanitized_label %>
-    <%=image_tag("/tr8n/images/right_quote.png") %>
-  </div>
-  <% unless @translation_key.description.blank? %>
-    <div class="desc">
-      <%=@translation_key.description %>
+	<% if @translation_key.is_a?(Tr8n::RelationshipKey) %>
+    <div class="quiet small"><%=trla("Relationship Key")%></div>
+    <div class="quote">
+      <%=image_tag("/tr8n/images/left_quote.png") %>
+      <%=@translation_key.sanitized_label %>
+      <%=image_tag("/tr8n/images/right_quote.png") %>
     </div>
-  <% end %>
+    <% unless @translation_key.default_translation.blank? %>
+      <div class="desc" style="font-weight:bold;">
+        <%=@translation_key.default_translation%>
+      </div>
+    <% end %>
+    <% unless @translation_key.default_translation == @translation_key.description %>
+      <div class="desc">
+        <%=@translation_key.description %>
+      </div>
+    <% end %>
+	<% else %>
+	  <div class="quiet small"><%=trla("Original Phrase in {language}", nil, :language => @translation_key.language.native_name)%></div>
+	  <div class="quote">
+	    <%=image_tag("/tr8n/images/left_quote.png") %>
+	    <%=@translation_key.sanitized_label %>
+	    <%=image_tag("/tr8n/images/right_quote.png") %>
+	  </div>
+	  <% unless @translation_key.description.blank? %>
+	    <div class="desc">
+	      <%=@translation_key.description %>
+	    </div>
+	  <% end %>
+	<% end %>
 </div>
 
 <%=tr8n_spinner_tag("tr8n_translator_spinner", "Translating...")%>

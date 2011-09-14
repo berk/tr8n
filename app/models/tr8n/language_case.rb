@@ -69,42 +69,54 @@ class Tr8n::LanguageCase < ActiveRecord::Base
   end
 
   def apply(object, value, options)
+    # parse out html tags and preserve them in a list 
     html_tag_expression = /<\/?[^>]*>/
     html_tokens = value.scan(html_tag_expression).uniq
     sanitized_value = value.gsub(html_tag_expression, "")
-    
+
     if application == 'phrase'
       words = [sanitized_value]
     else  
-      words = sanitized_value.split(" ").uniq
+      words = sanitized_value.split(/[\s\/\\]/).uniq
     end
-    
-    # replace html tokens with temporary placeholders
+
+    # replace html tokens with temporary placeholders {$h1}
     html_tokens.each_with_index do |html_token, index|
-      value = value.gsub(html_token, "{$#{index}}")
+      value = value.gsub(html_token, "{$h#{index}}")
+    end
+    # replace words with temporary placeholders {$w1}
+    words.each_with_index do |word, index|
+      value = value.gsub(word, "{$w#{index}}")
     end
     
-#    pp words
+#    pp value, words
+    transformed_words = []
     words.each do |word|
+      # check special cases
       lcvm = Tr8n::LanguageCaseValueMap.by_language_and_keyword(language, word)
       
       if lcvm
         # first see if there is an exception for the value
         map_case_value = lcvm.value_for(object, keyword)
-        case_value = map_case_value unless map_case_value.blank?
+        case_value = map_case_value.blank? ? word : map_case_value
       else
         # try evaluating the rules
         case_rule = evaluate_rules(object, word)
 #        pp case_rule, word
-        case_value = case_rule.apply(word) if case_rule  
+        case_value = case_rule ? case_rule.apply(word) : word 
       end
 
-      value = value.gsub(word, decorate_language_case(word, case_value || word, case_rule, options))
+      transformed_words << decorate_language_case(word, case_value || word, case_rule, options)
+    end
+
+    # replace back the temporary placeholders with the html tokens  
+    transformed_words.each_with_index do |word, index|
+      value = value.gsub("{$w#{index}}", word)
     end
     
     # replace back the temporary placeholders with the html tokens  
     html_tokens.each_with_index do |html_token, index|
-      value = value.gsub("{$#{index}}", html_token)
+      value = value.gsub("{$h#{index}}", html_token)
     end
      
     value

@@ -30,9 +30,9 @@
 	  </div>
 	  <%
 	    actions = []
-      actions << link_to(tr("+ Add new relationship key"), :action => :new)
-      actions << link_to("Configure relationship path key", :controller => "/tr8n/phrases", :action => :view, :translation_key_id => Tr8n::ConfigurationKey.for_key("relationship_path"))
-      actions << link_to(tr("Test relationship paths"), :action => :path)
+      actions << link_to(tra("+ Add new relationship key"), :action => :new)
+      actions << link_to(tra("Configure relationship path key"), :controller => "/tr8n/phrases", :action => :view, :translation_key_id => Tr8n::ConfigurationKey.for_key("relationship_path"))
+      actions << link_to(tra("Test relationship paths"), :action => :path)
     %>
 	  <%= actions.join(' &nbsp;|&nbsp; ') %>  
 	</div>		
