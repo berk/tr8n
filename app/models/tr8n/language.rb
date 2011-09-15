@@ -58,7 +58,7 @@ class Tr8n::Language < ActiveRecord::Base
 
   def reset!
     reset_language_rules!
-    reset_language_cases!
+#    reset_language_cases!
   end
   
   def reset_language_rules!
@@ -71,11 +71,11 @@ class Tr8n::Language < ActiveRecord::Base
   end
   
   def reset_language_cases!
-    cases.delete_all
-    Tr8n::Config.default_cases_for(locale).each do |lcase|
-# need to fix default lcase rules      
-#      Tr8n::LanguageCase.create(lcase.merge(:language => self))
-    end
+#    cases.delete_all
+#    Tr8n::Config.default_cases_for(locale).each do |lcase|
+## need to fix default lcase rules      
+##      Tr8n::LanguageCase.create(lcase.merge(:language => self))
+#    end
   end
   
   def current?
