@@ -18,7 +18,7 @@
           <%= render(:partial => "tokens") %>
 			<% end %>		
 	
-			<% if Tr8n::Config.enable_google_suggestions? and tr8n_current_language.suggestible? and @translation_key.suggestions? %>  
+			<% if Tr8n::Config.enable_google_suggestions? and tr8n_current_language.suggestible? and not @translation_key.suggestion_label.blank? %>  
 				<div id="tr8n_google_suggestion_container_<%=@translation_key.id%>" style="display:none; padding-bottom:10px;">
 				    <div class="section_title">
 				        <%=trla("Suggested Translation")%>
@@ -30,13 +30,12 @@
 				    </a>
 				    <%=image_tag("/tr8n/images/right_quote.png", :style=>"text-align:bottom;padding-top:5px;") %>
 				    
-            <% sanitized_label = @translation_key.tokenless_label.gsub('"', '\"') %>
 				    <script type="text/javascript">
 					    addEvent(window, "load", function(event) {
-                 suggestTranslation("<%=@translation_key.id %>", "<%=sanitized_label %>", "<%=@translation_key.suggestion_tokens.join(',')%>", "<%=@translation_key.language.google_key%>", "<%=tr8n_current_language.google_key%>");
+                 suggestTranslation("<%=@translation_key.id %>", "<%=@translation_key.suggestion_label %>", "<%=@translation_key.suggestion_tokens.join(',')%>", "<%=@translation_key.language.google_key%>", "<%=tr8n_current_language.google_key%>");
 					    });
 				    </script>
-				  
+
 				    <div style="color:grey; font-size:12px; padding-top:10px;">
 				       <%=trla("Click on the suggested translation to insert it into the label")%>
 				    </div>

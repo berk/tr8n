@@ -77,7 +77,7 @@
 								
             <% end %> 
 						
-		        <% if Tr8n::Config.enable_google_suggestions? and tr8n_current_language.suggestible? %>
+		        <% if Tr8n::Config.enable_google_suggestions? and tr8n_current_language.suggestible? and not @translation_key.suggestion_label.blank? %>
 		        <div id="tr8n_google_suggestion_section" style="display:none; padding-top:10px;"> 
 		            <div class="small_section_title" style="color: #999; font-size: 10px;">
 		               <strong><%=trla("Suggested Translation")%></strong>
@@ -90,9 +90,8 @@
 		                </a>
 		                <%=image_tag("/tr8n/images/right_quote.png", :style=>"text-align:bottom;padding-top:5px;") %>
 		            
-		                <% sanitized_label = @translation_key.tokenless_label.gsub('"', '\"') %>
 		                <script type="text/javascript">
-		                   tr8nTranslator.suggestTranslation("<%=@translation_key.id %>", "<%=sanitized_label %>", "<%=@translation_key.suggestion_tokens.join(',')%>", "<%=@translation_key.language.google_key%>", "<%=tr8n_current_language.google_key%>");
+		                   tr8nTranslator.suggestTranslation("<%=@translation_key.id %>", "<%=@translation_key.suggestion_label %>", "<%=@translation_key.suggestion_tokens.join(',')%>", "<%=@translation_key.language.google_key%>", "<%=tr8n_current_language.google_key%>");
 		                </script>
 		           </div>
 		        </div>   

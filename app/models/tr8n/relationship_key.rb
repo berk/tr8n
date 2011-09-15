@@ -101,8 +101,8 @@ class Tr8n::RelationshipKey < Tr8n::TranslationKey
     '/relationships/help'
   end
 
-  def suggestions?
-    false
+  def suggestion_label
+    default_translation.gsub('"', '\"')
   end
 
   def rules?

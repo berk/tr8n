@@ -149,8 +149,9 @@ class Tr8n::Translation < ActiveRecord::Base
     trans = find(:first, 
       :conditions => ["translation_key_id = ? and language_id = ? and translator_id = ? and rules is null", 
                        translation_key.id, language.id, translator.id], :order => "rank desc")
-    trans ||= new(:translation_key => translation_key, :language => language, :translator => translator, :label => translation_key.sanitized_label)
-    trans  
+    return trans if trans
+    label = translation_key.default_translation if translation_key.is_a?(Tr8n::RelationshipKey)
+    new(:translation_key => translation_key, :language => language, :translator => translator, :label => label || translation_key.sanitized_label)
   end
 
   def blank?

@@ -517,8 +517,8 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     '/tr8n/help'
   end
   
-  def suggestions?
-    true 
+  def suggestion_label
+    tokenless_label.gsub('"', '\"')
   end
 
   def rules?
