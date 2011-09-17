@@ -22,6 +22,10 @@
 	  <%=render(:partial => "language_cases", :locals => {:mode => :view}) %>
 	<% end %>	
 	
+  <% if Tr8n::Config.enable_relationships? %>
+    <%=render(:partial => "relationships", :locals => {:mode => :view}) %>
+  <% end %>	
+	
 	<script>
 	  function switchSectionMode(section, mode) {
 	    Tr8n.Utils.update(section + '_container', '/tr8n/language/update_language_section', {

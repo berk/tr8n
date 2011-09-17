@@ -29,18 +29,98 @@
       <div style="padding-top:5px;padding-bottom:10px;font-size:12px;">
           <%=tra("Relationships are connections between persons by blood or marriage.") %> 
           <%=tra("This section allows to specify the reduction rules for chained relationships.") %>
-					
-					<div style="padding-top:10px;">
-	          <%=tra("For example, relation resulting from the following chain [bold: ['mother', 'father', 'brother', 'wife']] will result in '[bold: mother's father's brother's wife]' in English using the following [bold: left-to-right] reduction rule: '[bold: {rule}]'.", "", :rule => "{left::pos} {right}")%> 
-	          <%=tra("Same relationship chain in Russian will result in '[bold: жена брата отца матери]' using the following [bold: right-to-left] reduction rule: '[bold: {rule}]'.", "", :rule => "{left} {right::pos}")%> 
-  					<%=tra("Keep in mind, that you must specify language case rules for possessive case in order to get the words in the right form.")%>
-          </div>
-					
       </div>
     	
       <div style="padding-top:10px;">
-			 <%=link_to("Click here to define the reduction rules for the relationship path.", :controller => "/tr8n/phrases", :action => :view, :translation_key_id => Tr8n::ConfigurationKey.for_key("relationship_path"))%>
+			  <%=tra("Relationships will most of the time be passed in a sentence, like the following: '[bold: {example}]'.", "", :example => "{user} is {rel}.")%>
+				<%=tra("Relationship tokens will always have gender associated with them, so you can make translations context based on the token's gender.")%> 
+			</div>  
+			
+			<div style="font-weight:bold;padding-top:10px;border-bottom:1px dotted #ccc;font-size:12px;">
+			   <span style="float:right;color:grey"><%=tra("example:")%> "Tina is your mother."</span>
+			   <%=tra("Second Person Relationship Translations For Single Phrase Relationships")%>
+			</div>
+			<div style="padding-top:10px;">
+				<%=tra("When relationship has a single phrase translation, like [bold: 'mother', 'grandfather' or 'brother-in-law'] and the relationship is evaluated towards the viewing user, we will substitute the {rel} token with a translation derived from the following translation key: '[bold: {key}]'. ", "", :rel => "{rel}", :key => "your {rel}")%>
+				<%=tra("For example, if the user is [bold: your mother] and the phrase is '[bold: {example}]', then using the above key we will get: [bold: 'MOM is your mother.'], where MOM is your mom's name.", "", :example => "{user} is {rel}.")%>
+				<br><br>
+        <%= link_to(tra("Click here to translate the phrase '[bold: {key}]' into your language.", "", :key => Tr8n::ConfigurationKey.for_key("rel_second_person").label), :controller => "/tr8n/phrases", :action => :view, :translation_key_id => Tr8n::ConfigurationKey.for_key("rel_second_person")) %>
+      </div>			   
+
+      <div style="font-weight:bold;padding-top:10px;border-bottom:1px dotted #ccc;font-size:12px;">
+         <span style="float:right;color:grey"><%=tra("example:")%> "Tina is your mother's sister's daughter."</span>
+         <%=tra("Second Person Relationship Translations For Chained Relationships")%>
       </div>
+			
+      <div style="padding-top:10px;">
+        <%=tra("When relationship has multiple phrases, like [bold:\"mother's brother\" or \"granddaughter's husband's sister\"] and the relationship is evaluated towards the viewing user, we will substitute the {rel} token with a translation derived from the following translation key: '[bold: {key}]'. ", "", :rel => "{rel}", :key => "your {rel1::pos} {rel2}")%>
+        <%=tra("For example, if the user is [bold: your mother's brother] and the phrase is '[bold: {example}]', then using the above key we will get: [bold: 'BROTHER is your mother's brother.'], where BROTHER is your mother's brother name.", "", :example => "{user} is {rel}.")%>
+        <br><br>
+				<%=tra("Notice that we used Possessive Langauge Case (::pos) in order to get 's correctly into the realtionship path.")%>
+				<br><br>
+				<%=tra("In some languages, like Russian and Spanish, we may want to reduce the relationship in the reversed order, to get something like: 'brother of your mother'.")%>
+				<%=tra("To reduce realtionships in the opposite direction, you can translate the phrase [bold: {key1}] to be: [bold: {key2}] and optionally make the translations be gender dependent on either rel token.", "", :key1 => "your {rel1} {rel2}", :key2 => "{rel2} your {rel1::pos}")%>
+
+				<br><br>
+        <%= link_to(tra("Click here to translate the phrase '[bold: {key}]' into your language.", "", :key => Tr8n::ConfigurationKey.for_key("combined_rel_second_person").label), :controller => "/tr8n/phrases", :action => :view, :translation_key_id => Tr8n::ConfigurationKey.for_key("combined_rel_second_person")) %>
+				<br><br>
+				
+				<%=tra("For longer relationship chains, where there are numerous steps/phrases in the path, we need one more special key to be translated into your language: [bold: key].", "", :key => "{rel1:gender} {rel2:gender}")%>
+				<%=tra("This key is very similar to one above, but it does not contain the 'your' word.")%> <%=tra("Ultimately we will use this key to reduce all of the steps in the relationship up until the last step, where we will use the key above.")%>
+
+        <br><br>
+        <%= link_to(tra("Click here to translate the phrase '[bold: {key}]' into your language.", "", :key => Tr8n::ConfigurationKey.for_key("combined_rel").label), :controller => "/tr8n/phrases", :action => :view, :translation_key_id => Tr8n::ConfigurationKey.for_key("combined_rel")) %>
+      </div>         
+
+      <div style="font-weight:bold;padding-top:10px;border-bottom:1px dotted #ccc;font-size:12px;">
+         <span style="float:right;color:grey"><%=tra("example:")%> "Alex is his brother."</span>
+         <%=tra("Third Person Relationship Translations For Single Phrase Relationships")%>
+      </div>
+      <div style="padding-top:10px;">
+        <%=tra("This is very similar to the second person relationship translation for a single phrase relationships, but instead of [bold: {key1}] we use [bold: {key2}].", "", :key1 => "your {rel}", :key2 => "{user|his,her} {rel:gender}")%>
+        <%=tra("For example, if the user we are refferring to is a male and relationship is [bold: his mother] and the phrase is '[bold: {example}]', then using the above key we will get: [bold: 'MOM is his mother.'], where MOM is his mom's name.", "", :example => "{actor} is {rel}.")%>
+				<%=tra("This key has an implied user object that you can use to translate the phrase using gender context rules.")%>
+        <br><br>
+        <%= link_to(tra("Click here to translate the phrase '[bold: {key}]' into your language.", "", :key => Tr8n::ConfigurationKey.for_key("rel_third_person").label), :controller => "/tr8n/phrases", :action => :view, :translation_key_id => Tr8n::ConfigurationKey.for_key("rel_third_person")) %>
+      </div>         
+
+      <div style="font-weight:bold;padding-top:10px;border-bottom:1px dotted #ccc;font-size:12px;">
+         <span style="float:right;color:grey"><%=tra("example:")%> "Alex is his brother's wife's son."</span>
+         <%=tra("Third Person Relationship Translations For Chained Relationships")%>
+      </div>
+      <div style="padding-top:10px;">
+        <%=tra("This is again very similar to the second person relationship translation for chained relationships, but instead of [bold: {key1}] we use [bold: {key2}].", "", :key1 => "your {rel}", :key2 => "{user|his,her} {rel1:gender::pos} {rel2:gender}")%>
+        <br><br>
+        <%= link_to(tra("Click here to translate the phrase '[bold: {key}]' into your language.", "", :key => Tr8n::ConfigurationKey.for_key("combined_rel_third_person").label), :controller => "/tr8n/phrases", :action => :view, :translation_key_id => Tr8n::ConfigurationKey.for_key("combined_rel_third_person")) %>
+        <br><br>
+        <%=tra("Similarly to the previous examples, all relationship in the chain up until the last two steps will be evaluated by the following key: {key}.", "", :key => "{rel1:gender} {rel2:gender}")%>
+        <br><br>
+        <%= link_to(tra("Click here to translate the phrase '[bold: {key}]' into your language.", "", :key => Tr8n::ConfigurationKey.for_key("combined_rel").label), :controller => "/tr8n/phrases", :action => :view, :translation_key_id => Tr8n::ConfigurationKey.for_key("combined_rel")) %>
+      </div>         
+
+      <div style="font-weight:bold;padding-top:10px;border-bottom:1px dotted #ccc;font-size:12px;">
+         <span style="float:right;color:grey"><%=tra("example:")%> "Анна это жена дяди брата вашего отца."</span>
+         <%=tra("Complete example in Russian Language")%>
+      </div>
+      <div style="padding-top:10px;">
+			   <%=tra("Russian language combines a few concepts together: it reduces relationships from right to left and uses language cases to properly construct the phrases in the path.")%><br>
+				 <%=tra("For this example we will make our user [bold: {name}] and the relationship path [bold: {path}].", "", :name => "Анна", :path => "[mother, brother, uncle, wife]")%> 
+				 <%=tra("This path can be reduced even further, but we will use it as is for this example.")%><br><br>
+				 <%=tra("In English, the phrase [bold: \"{example}\"] would simply be reduced to: [bold: \"{value}\"].", "", :example => "{user} is {rel}.", :value => "Anna is your mother's brother's uncle's wife.")%><br>
+				 <%=tra("In Russian, we want this to sound like: [bold: \"{value1}\"] or Russian translation: [bold: \"{value2}\"]", "", :value1 => "Anna is wife of uncle of brother of your mother.", :value2 => "Анна это жена дяди брата вашего отца.")%><br><br>
+				 <%=tra("Let's break it apart and start with the following phrase: [bold: '{example}' ]", "", :example => "{user} is {rel}.")%> 
+				 <br><br>
+				 <%=tra("1. This phrase will be translated into: [bold: '{rus}'].", "", :rus => "{user} это {rel}.")%>
+				 <br><br>
+				 <%=tra("2. Now we will translate the key '[bold: {key1}]' to be '[bold: {key2}]' when rel1 is а male and '[bold: {key3}]' when rel1 is а female.", "", :key1 => "your {rel1} {rel2}", :key2 => "{rel2} вашего {rel1::pos}", :key3 => "{rel2} вашей {rel1::pos}")%>
+				 <br><br>
+				 <%=tra("3. The key '[bold: {key1}]' also needs to be translated to '[bold: {key2}]' for simple recursive reductions.", "", :key1 => "{rel1} {rel2}", :key2 => "{rel2} {rel1::pos}")%>
+				 <br><br>
+				 <%=tra("And now we are done!")%> <%=tra("When the original key '[bold: {key1}]' is evaluated it will be reduced to '[bold: {key2}]'", "", :key1 => "{user} is {rel}.", :key2 => "Анна это жена дяди брата вашего отца.")%>
+				 
+				 
+      </div>
+			
 			
     </div>
   <% end %>  
