@@ -105,7 +105,7 @@ class Tr8n::Config
   end
 
   def self.init_default_languages
-    puts "Initializing default languages..."
+    puts "Initializing default languages..." unless env.test?
     default_languages.each do |locale, info|
       puts ">> Initializing #{info[:english_name]}..."
       lang = Tr8n::Language.find_or_create(locale, info[:english_name])
@@ -118,14 +118,14 @@ class Tr8n::Config
   end
 
   def self.init_glossary
-    puts "Initializing default glossary..."
+    puts "Initializing default glossary..." unless env.test?
     default_glossary.each do |keyword, description|
       Tr8n::Glossary.create(:keyword => keyword, :description => description)
     end    
   end
 
   def self.init_language_cases
-    puts "Initializing default language cases..."
+    puts "Initializing default language cases..." unless env.test?
     Tr8n::LanguageCase.delete_all
     
     default_language_cases.each do |locale, cases|
@@ -738,7 +738,7 @@ class Tr8n::Config
   end
   
   def self.init_relationship_keys
-    puts "Initializing default relationship keys..."
+    puts "Initializing default relationship keys..." unless env.test?
 
     Tr8n::RelationshipKey.delete_all
     
@@ -763,7 +763,7 @@ class Tr8n::Config
   end
   
   def self.init_configuration_keys
-    puts "Initializing default configuration keys..."
+    puts "Initializing default configuration keys..." unless env.test?
 
     Tr8n::ConfigurationKey.delete_all
     default_configuration_keys.each do |key, value|

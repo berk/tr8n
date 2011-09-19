@@ -398,18 +398,22 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     Tr8n::TranslationKey.new(:label => label.to_s).substitute_tokens(label.to_s, tokens, options, language)
   end
 
+  def allowed_token?(token)
+    tokenized_label.allowed_token?(token)
+  end
+  
   def substitute_tokens(translated_label, token_values, options = {}, language = Tr8n::Config.current_language)
     processed_label = translated_label.to_s.clone
-
+    
     # substitute all data tokens
     Tr8n::TokenizedLabel.new(processed_label).data_tokens.each do |token|
-      next unless tokenized_label.allowed_token?(token)
+      next unless allowed_token?(token)
       processed_label = token.substitute(processed_label, token_values, options, language) 
     end
 
     # substitute all decoration tokens
     Tr8n::TokenizedLabel.new(processed_label).decoration_tokens.each do |token|
-      next unless tokenized_label.allowed_token?(token)
+      next unless allowed_token?(token)
       processed_label = token.substitute(processed_label, token_values, options, language) 
     end
     

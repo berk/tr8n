@@ -69,7 +69,7 @@ class Tr8n::LanguageCase < ActiveRecord::Base
   end
 
   def apply(object, value, options)
-    # parse out html tags and preserve them in a list 
+    # parse out html tags and preserve them in a list
     html_tag_expression = /<\/?[^>]*>/
     html_tokens = value.scan(html_tag_expression).uniq
     sanitized_value = value.gsub(html_tag_expression, "")
