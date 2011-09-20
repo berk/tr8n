@@ -37,7 +37,8 @@ class Tr8n::TranslatorLog < ActiveRecord::Base
   :deleted_language_rule, :added_language_rule, :updated_language_rule, 
   :deleted_language_case, :added_language_case, :updated_language_case, 
   :used_abusive_language, :added_translation, :updated_translation, :deleted_translation, 
-  :voted_on_translation, :locked_translation_key, :unlocked_translation_key, :got_new_level]
+  :voted_on_translation, :locked_translation_key, :unlocked_translation_key, :got_new_level,
+  :added_relationship_key]
   
   
   def self.log_admin(translator, action, user, reason = "n/a", reference = nil)

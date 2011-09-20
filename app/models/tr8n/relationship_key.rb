@@ -35,6 +35,10 @@ class Tr8n::RelationshipKey < Tr8n::TranslationKey
     end
   end
 
+  def self.validate(key)
+    true
+  end
+  
   def after_save
     Tr8n::Cache.delete("relationship_key_#{key}")
   end
@@ -88,14 +92,19 @@ class Tr8n::RelationshipKey < Tr8n::TranslationKey
 
   def default_translation
     @default_translation ||= begin
-      trn = translate(Tr8n::Config.default_language)
-      trn == key ? "" : trn
+      trn = valid_translations_for(Tr8n::Config.default_language).first
+      trn.nil? ? "" : trn.label
     end  
   end
 
   ###############################################################
   ## Feature Related Stuff
   ###############################################################
+
+  def locked?(language = Tr8n::Config.current_language)
+    return !Tr8n::Config.current_user_is_admin? if language.default?
+    lock_for(language).locked?
+  end
 
   def self.title
     "Relationship Key".translate

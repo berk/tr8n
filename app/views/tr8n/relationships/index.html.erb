@@ -30,7 +30,7 @@
 	  </div>
 	  <%
 	    actions = []
-      actions << link_to(tra("+ Add new relationship key"), :action => :new)
+      actions << link_to(tra("+ Add new relationship key"), :action => :new) if Tr8n::Config.current_user_is_manager?
       actions << link_to(tra("Test relationship paths"), :action => :path)
     %>
 	  <%= actions.join(' &nbsp;|&nbsp; ') %>  
@@ -71,9 +71,9 @@
 	          <div id="tr8n_translator_votes_for_<%=rk.id%>">
 	          <% translations = rk.translations_for(tr8n_current_language) %>
 				    <% if translations.empty? %>
-	            <%= tra("There are no translations for this phrase.") %> 
+	            <%= tra("There are no translations for this relationship.") %> 
 							<% unless rk.locked? %>
-		            <%= tra("Be the first one to [link: translate it].", "", 
+		            <%= tra("[link: Be the first one to translate it], but only if it does exist in your language.", "", 
 		                    :link => lambda{|str| link_to(str, :controller => "/tr8n/phrases", :action => :view, :translation_key_id => rk.id)}  ) %>
 							<% end %>				
 				    <% else %>   

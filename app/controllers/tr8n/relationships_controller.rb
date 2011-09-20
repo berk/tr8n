@@ -30,19 +30,37 @@ class Tr8n::RelationshipsController < Tr8n::BaseController
   
   def new
     if request.post?
-      @relationship_key = Tr8n::RelationshipKey.find_or_create(params[:key], params[:key], params[:description])
-      
-      if params[:translation].blank?
-        return trfe("Translation must be provided")
+      return trfe("Relationship key must be provided") if params[:key].blank?
+      return trfe("Translation must be provided") if params[:translation].blank?
+
+      @relationship_key = Tr8n::RelationshipKey.for_key(params[:key])
+      new_key = false
+      unless @relationship_key
+        begin 
+          valid_key = Tr8n::RelationshipKey.validate(params[:key])
+        rescue
+          valid_key = false
+        end
+        
+        return trfe("The relationship key you provided is invalid. Please refer to the [link: help section] to see the proper syntax for relationship keys.", "", :link => ["/tr8n/help"]) unless valid_key
+        
+        @relationship_key = Tr8n::RelationshipKey.find_or_create(params[:key], params[:key], params[:description])
+        Tr8n::TranslatorLog.log(Tr8n::Config.current_translator, :added_relationship_key)
+        new_key = true
       end
       
-      trn = Tr8n::Translation.create( :translation_key => @relationship_key, 
-                                      :label => params[:translation],
-                                      :language => Tr8n::Config.current_language,
-                                      :translator => Tr8n::Config.current_translator)
-      trn.vote!(Tr8n::Config.current_translator, 1)
+      begin 
+        @relationship_key.add_translation(params[:translation])
+      rescue Tr8n::Exception => ex
+        return trfe(ex.message)
+      end
       
-      trfn("Relatinship key has been registered")
+      if new_key      
+        trfn("Relationship key has been registered.")
+      else
+        trfn("Relationship key has been updated.")
+      end
+    
       return redirect_to(:controller => "/tr8n/phrases", :action => :view, :translation_key_id => @relationship_key.id)
     end
   
@@ -61,13 +79,6 @@ class Tr8n::RelationshipsController < Tr8n::BaseController
   rescue Exception => ex 
     pp ex, ex.backtrace
     render :text => "Failed to evaluate relationship path with error: #{ex.message}"
-  end
-  
-  def configure
-    
-  end
-
-  def help
   end
 
 end
