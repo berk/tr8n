@@ -1,127 +1,95 @@
 <% @page_title = controller.action_name.titleize.gsub("_"," ") %>
+<% @version = 1 %>
 
-<%= render :partial => "/tr8n/common/header" %>
+<%
+  sections = [
+    {:title => "Introduction", :sections => [
+        {:title => "Welcome", :action => :index},
+    ]}, 
+    {:title => "Translation Basics", :sections => [
+        {:title => "Creating Translations", :action => :creating_translations},
+        {:title => "Voting on Translations", :action => :voting_on_translations},
+        {:title => "Understanding Ranks", :action => :ranks},
+    ]}, 
+    {:title => "Translator Tools", :sections => [
+        {:title => "Language Selector", :action => :language_selector},
+        {:title => "Inline Translator", :action => :inline_translator},
+        {:title => "Advanced Tools", :action => :advanced_tools, :sections => [
+          {:title => "Management", :action => :management},
+          {:title => "Dashboard", :action => :dashboard},
+          {:title => "Site Map", :action => :site_map},
+          {:title => "Phrases", :action => :phrases},
+          {:title => "Relationships", :action => :relationships},
+          {:title => "Translations", :action => :translations},
+          {:title => "Awards", :action => :awards},
+          {:title => "Discussions", :action => :discussions},
+          {:title => "Help", :action => :help},
+        ]},
+    ]}, 
+    {:title => "Relationships", :sections => [
+        {:title => "Tree Position System", :action => :tps},
+        {:title => "Relationship Keys & Paths", :action => :relationship_keys},
+    ]}, 
+  ]
+%>
 
 
 <style>
+.documentation_sidebar {
+  font: 11px Arial,Helvetica,sans-serif;
+}
 
-  h1.tr8n             { font-size:18px;border-bottom:1px solid #ccc;margin-bottom:10px; }
-  h2.tr8n             { margin-bottom: 10px; }
-  h3.tr8n             { margin-bottom: 10px; }
+.navigation_header {
+  font: 12px Arial,Helvetica,sans-serif;
+  font-weight: bold;
+  padding-left: 3px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  text-transform: uppercase;
+	color: #888888 !important;
+}
 
-  p                   { margin-bottom: 20px; }
-  
-  #tr8n_help_title    { margin-bottom:20px; }
-  
-  #tr8n_sidebar       { margin-top:20px;margin-right:40px;width:250px;font-size:12px;float:left;border:dotted 1px #ccc;background-color:#f1f4f9;padding:8px; }
-  
-  #tr8n_sidebar li    { margin:0.3em; padding-left:0px;}
-	ol                  { margin:0.4em; padding-left:0px;}
-  ol.tr8n_primary     { maring-left:0px; padding-left:10px;list-style-type:upper-roman; }
-  ol.tr8n_secondary   { maring-left:0px; padding-left:10px;list-style-type:decimal; }
-  ol.tr8n_tertiary    { maring-left:0px; padding-left:10px;list-style-type:lower-alpha; }
-  ol.tr8n_quaternary  { maring-left:0px; padding-left:10px;list-style-type:decimal; }
-  ol.tr8n_quinternary { maring-left:0px; padding-left:10px;list-style-type:lower-roman; }
-  
-  #tr8n_help_content      { float:left;margin-top:30px;width:600px;font-size:12px; }
-  
-  #tr8n_help_content h1   { margin-bottom:0.75em; }
-  #tr8n_help_content ul   { margin:2em;padding-left:15;list-style-type:disc; }
-  
-  a.tr8n_selected      { color:Black !important;font-weight:bold; }
+.section_link {
+	padding:3px;
+}
 
+.section_link a {
+	text-decoration:none;
+}
+	
+.section_link a:hover {
+  text-decoration:none;
+}
+
+.section_link:hover {
+	background: #eee;
+}
+
+.section_link.selected {
+  background: #4096EE;
+	color:white;
+}
+
+.section_link.selected a {
+  color:white;
+}
 </style>
 
-<%# Note: Section titles must be unique. %>
+<% form_tag({}, :id => "version_form", :method => :get) do %>
+<%=hidden_field_tag(:path, params[:path])%>
+<div class="documentation_sidebar">
+	
+	<% sections.each do |sec| %>
+    <div class="navigation_header"><%=tr(sec[:title])%></div>
+		<% (sec[:sections] || []).each do |sec1| %>
+      <div class="section_link <%="selected" if @controller.action_name == sec1[:action].to_s %>"><%=link_to(tr(sec1[:title]), :action => sec1[:action])%></div>
+			<% if sec1[:sections] %>
+		    <% sec1[:sections].each do |sec2| %>
+	  	      <div style="padding-left:15px;" class="section_link <%="selected" if @controller.action_name == sec2[:action].to_s %>"><%=link_to(tr(sec2[:title]), :action => sec2[:action])%></div>
+		    <% end %> 
+			<% end %> 
+		<% end %>	
+	<% end %>
 
-  <div id="tr8n_sidebar">
-    <ol class="tr8n_primary">
-      <li><%= tr8n_help_link("Introduction", { :filename => "index" }) %></li>
-          <ol class="tr8n_secondary">
-            <li><%= tr8n_help_link("Creating Translations") %>
-                <ol class="tr8n_tertiary">
-                  <li><%= tr8n_help_link("Translation Context Rules") %></li>
-                </ol>
-            </li>
-            <li><%= tr8n_help_link("Voting on Translations") %></li>
-            <li><%= tr8n_help_link("Rank") %>
-                <ol class="tr8n_tertiary">
-                  <li><%= tr8n_help_link("User Rank") %></li>
-                  <li><%= tr8n_help_link("Translation Rank") %></li>
-                </ol>
-            </li>
-          </ol>
-      </li>
-      <li><%= tr8n_help_link("Language Selector") %>
-          <ol class="tr8n_secondary">
-            <li><%= tr8n_help_link("Your Languages") %></li>
-            <li><%= tr8n_help_link("Other Languages") %></li>
-            <li><%= tr8n_help_link("Inline Translations") %></li>
-            <li><%= tr8n_help_link("Translation Tools") %></li>
-            <li><%= tr8n_help_link("Manage Language") %></li>
-          </ol>
-      </li>
-      <li><%= tr8n_help_link("Translating Inline") %>
-          <ol class="tr8n_secondary">
-            <li><%= tr8n_help_link("Phrases Without Translations") %>
-              <ol class="tr8n_tertiary">
-                  <li><%= tr8n_help_link("Original Phrase") %></li>
-                  <li><%= tr8n_help_link("Enter Translation") %>
-                      <ol class="tr8n_quaternary">
-                          <li><%= tr8n_help_link("Generate Context Rules") %></li>
-                          <li><%= tr8n_help_link("Translation Tokens") %></li>
-                          <li><%= tr8n_help_link("Suggested Translation") %></li>
-                      </ol>
-                  </li>
-              </ol>
-            </li>
-            <li><%= tr8n_help_link("Phrases With Translations") %></li>
-          </ol>
-      </li>
-      <li><%= tr8n_help_link("Using Translation Tools") %>
-          <ol class="tr8n_secondary">
-            <li><%= tr8n_help_link("Manage") %>
-              <ol class="tr8n_tertiary">
-                  <li><%= tr8n_help_link("Basic Information") %>
-                      <ol class="tr8n_quaternary">
-                          <li><%= tr8n_help_link("Native Name") %></li>
-                          <li><%= tr8n_help_link("Direction") %></li>
-                          <li><%= tr8n_help_link("Fallback Language") %></li>
-                      </ol>
-                  </li>
-                  <li><%= tr8n_help_link("Prohibited Words") %></li>
-                  <li><%= tr8n_help_link("Context Rules") %></li>
-              </ol>
-            </li>
-            <li><%= tr8n_help_link("Dashboard") %>
-              <ol class="tr8n_tertiary">
-                  <li><%= tr8n_help_link("Your Dashboard") %></li>
-                  <li><%= tr8n_help_link("Language Dashboard") %>
-                      <ol class="tr8n_quaternary">
-                          <li><%= tr8n_help_link("Language Statistics") %>
-                              <ol class="tr8n_quinternary">
-                                  <li><%= tr8n_help_link("Language Phrases") %></li>
-                                  <li><%= tr8n_help_link("Your Translations") %></li>
-                              </ol>
-                          </li>
-                          <li><%= tr8n_help_link("Recent Discussions") %></li>
-                          <li><%= tr8n_help_link("Recent Translations") %></li>
-                          <li><%= tr8n_help_link("Recent Translation Votes") %></li>
-                      </ol>
-                  </li>
-              </ol>
-            </li>
-            <li><%= tr8n_help_link("Site Map") %>
-              <ol class="tr8n_tertiary">
-                  <li><%= tr8n_help_link("Site Sections") %></li>
-                  <li><%= tr8n_help_link("Other Translatable Resources") %></li>
-              </ol>
-            </li>
-            <li><%= tr8n_help_link("Phrases") %></li>
-            <li><%= tr8n_help_link("Translations") %></li>
-            <li><%= tr8n_help_link("Awards") %></li>
-            <li><%= tr8n_help_link("Discussions") %></li>
-          </ol>
-      </li>
-    </ol>
-  </div>
+</div>
+<% end %>

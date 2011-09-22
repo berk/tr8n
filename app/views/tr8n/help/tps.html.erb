@@ -1,0 +1,154 @@
+<%= render :partial => "header" %>
+
+<div class="documentation_section_title">
+  <%= tr("Tree Position System (TPS)") %>
+</div>
+
+<div class="documentation_section">
+	<p>
+    TPS is the numerical notation Geni uses for describing genealogical relationships. TPS allows us to define a sort of algebra of genealogy, which among other things allows us to quickly search for paths among people in a tree, add paths together, and even translate relationship paths into any language. 
+  </p>
+	
+	<p>In it's most basic form, a TPS coordinate consists of two numbers, separated by a comma. The first number indicates how many generations to ascend, and the second number indicates how many generations to descend after we are finished ascending.</p>
+	
+	<p>For example, 2,2 is a valid TPS coordinate that describes the relationship between me and my cousin. To get from me to my cousin in our family tree, I have to ascend two generations to our grandparents (our nearest common ancestors) and then descend two generations. Of course there are other paths between us that involve ascending past our grandparents, but this is the shortest path between us.</p>
+	
+	<p>
+	 <%=image_tag("/tr8n/images/help/cousin.png")%>
+	</p>
+	
+	<h2>Simple Relationships</h2>
+	<p>Any TPS coordinate with only two numbers will always describe a blood relative. Here are a few more examples:</p>
+	<div class="snippet">
+		<ul>
+			<li>1,0 - parent</li>
+			<li>0,1 - child</li>
+			<li>1,1 - sibling</li>
+			<li>0,2 - grandchild</li>
+			<li>2,0 - grandparent</li>
+			<li>2,1 - aunt/uncle</li>
+			<li>1,2 - niece/nephew</li>
+			<li>0,0 - yourself</li>
+			<li>4,4 - third cousin</li>
+		</ul>
+	</div>
+	
+	<h2>Inverse Relationships</h2>
+	<p>Notice in the examples above that a TPS coordinate is invertible by reversing the coordinates. For example, the inverse of parent is child, the inverse of grandparent is grandchild, and the inverse of aunt/uncle is niece/nephew.</p>
+	
+	<h2>Compound Relationships</h2>
+	<p>So far we have only looked at TPS coordinates for blood relations. What about relationships that cross a marriage?</p>
+	<p>Marriage crossings are denoted by separating simple TPS coordinates with a colon.</p>
+
+  <div class="snippet">
+    <ul>
+    	<li>0,0 : 0,0 - spouse</li>
+      <li>1,0 : 0,0 - stepparent</li>
+      <li>0,0 : 0,1 - stepchild</li>
+      <li>1,0 : 0,1 - stepsibling</li>
+      <li>2,2 : 0,0 - cousin's spouse</li>
+      <li>2,1 : 0,0 - uncle/aunt</li>
+      <li>0,0 : 1,0 - mother/father-in-law</li>
+      <li>0,1 : 0,0 - son/daughter-in-law</li>
+      <li>0,0 : 1,1 - sister/brother-in-law</li>
+      <li>1,1 : 0,0 - sister/brother-in-law</li>
+    </ul>
+	</div>		
+
+  <p>We can also denote relationships that cross multiple marriages.</p>
+  <div class="snippet">
+    <ul>
+    	<li>0,0 : 1,1 : 0,0 - spouse's siblings's spouse (a.k.a. brother/sister-in-law)</li>
+			<li>1,1 : 1,1 : 0,0 - sibling's spouse's sibling's spouse</li>
+			<li>0,2 : 2,2 : 1,0 - grandchild's spouse's cousin's spouse's parent (phew!)</li>
+    </ul>
+	</div>	
+	
+	<h2>Unmarried couples</h2>
+	<p>TPS can differentiate between couples that are currently married and those who are not, either because of divorce, or because they are unmarried partners. To indicate this, we use a period as the separator instead of a colon. Note that this is important for translation because of step and inlaw relations. E.g. your partner's child is not considered your stepchild and your sibling's partner is not considered your sister/brother-in-law.</p>
+  <div class="snippet">
+    <ul>
+    	<li>0,0 . 0,0 - ex-spouse/unmarried-partner/fiance</li>
+			<li>0,0 . 0,1 - partner's child.</li>
+			<li>1,1 . 0,0 - siblings's partner</li>
+    </ul>
+  </div>  
+	
+  <h2>Half-siblings and half-cousins and half-uncles, oh my!</h2>
+	<p>Half-siblings share only one parent rather than both parents. In addition, any other relationship with two non-zero coordinates (both an ascension and a descension) can pass though a half-sibling relationship. To express relationships like this with TPS, we separate the coordinates with a tick mark instead of a comma.</p>	
+  <div class="snippet">
+    <ul>
+    	<li>1'1 - half-sibling</li>
+			<li>2'2 - half-cousin</li>
+			<li>2'1 - half-uncle/aunt</li>
+			<li>3'1 - half-great-uncle/great-aunt</li>
+    </ul>
+  </div>  
+	
+  <p>
+   <%=image_tag("/tr8n/images/help/half-cousin.png")%>
+  </p>
+	
+  <h2>Genders in Relationships</h2>
+	<p>The concepts described so far are sufficient for most of what we use TPS for at Geni. However, in order to use TPS for translation, we need a few more constructs. Specifically, we need to deal with gender and birth order.</p>
+	
+	<h3>Specifying Gender</h3>
+	<p>All of the examples we have seen so far do not specify a gender for any profiles in the relationship path. This is almost always necessary for translation though. To specify the gender of the final profile, just add a m for male or an f for female after the last non-zero coordinate.</p>
+  <div class="snippet">
+    <ul>
+    	<li>1,1m - brother</li>
+      <li>1,1f - sister</li>
+      <li>1m,0 - father</li>
+      <li>1f,0 - mother</li>
+      <li>0,1f - daughter</li>
+      <li>0,1m - son</li>
+      <li>2m,0 - grandfather</li>
+      <li>2f,0 - grandmother</li>
+      <li>2,1m - uncle</li>
+			<li>2,1m - aunt</li>
+    </ul>
+  </div>  
+
+  <h3>Specifying Gender along the Path</h3>
+  <p>For English, it is sufficient to only specify the gender of the final profile in the path, but for many languages, the translation depends on the genders of profiles along the path. For example, in the Hindu family tree, mother's parents have a different name than father's parents. This is handled in TPS by inserting the gender in the middle of the path between numbers specifying the number of intervening people.</p>
+  <div class="snippet">
+    <ul>
+    	<li>1m1m,0 - Dada (father's father)</li>
+      <li>1m1f,0 - Dadi (father's mother)</li>
+      <li>1f1m,0 - Nana (mother's father)</li>
+      <li>1f1f,0 - Nani (mother's mother)</li>
+    </ul>
+  </div>  
+	
+  <p>Notice in these examples that you can remove the gender specifiers and add the remaining numbers together to get the simple, genderless TPS.</p>
+	<p>There are conceivably also cases where the gender of the first profile in the path is used for translation. In this case, the TPS coordinate should begin with a gender specifier.</p>	
+  <div class="snippet">
+    <ul>
+    	<li>m0,0 - yourself (male)</li>
+			<li>f0,0 - yourself (female)</li>
+    </ul>
+  </div>  
+	
+	<p>In the same way, a gender specifier immediately after a marriage crossing can be used to specify the gender of the spouse.</p>
+  <div class="snippet">
+    <ul>
+    	<li>0,0 : f0,0 - wife</li>
+			<li>0,0 : m0,0 - husband</li>
+    </ul>
+  </div>  
+	
+	<h3>Specifying Birth Order</h3>
+	<p>Whenever a path ascends and then descends again, that means it goes through a sibling relationship. In some languages, the relative ages of the siblings determines the relationship name. To facilitate translation into these languages, TPS allows you to specify the relative age (older or younger) by replacing the comma separator with a < for older or > for younger. Using the Hindu family tree as an example again:</p>
+  <div class="snippet">
+    <ul>
+      <li>1m1>1m - Chacha (father's younger brother)</li>
+      <li>1m1<1m - Tauji  (father's older brother)</li>
+			<li>1m1,1f - Bua    (father's sister)</li>
+			<li>1f1,1f - Mausi  (mother's sister)</li>
+			<li>1f1,1m - Mama   (mother's brother)</li>
+    </ul>
+  </div>  
+	
+</div>
+
+<%= render :partial => "footer" %>
