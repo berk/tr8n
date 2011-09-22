@@ -3,7 +3,7 @@
   <%= render :partial => "/tr8n/common/header" %>
 	
   <div class="section_box" style="margin-bottom:10px; background-color:#EFF8FF; margin-top:0px;">
-	  <div style="float:right;"><%=tr8n_help_icon_tag%></div> 
+	  <div style="float:right;"><%=tr8n_help_icon_tag("relationship_keys")%></div> 
 	  <div style="font-size:20px;font-weight:bold;"><%=tra("Add New Relationship Key")%></div>
   </div>
 		
@@ -14,10 +14,10 @@
       <%=text_field_tag(:key, params[:key], {:id => :relationship_key, :style => "width:99%;font-size:24px", :onKeyUp => ""})%><br>
 			
       <div style="font-size:12px;padding-bottom:5px;padding-top:5px;"><%=tra("Description")%> <span style="color:grey"> - optional, but recommended</span></div>
-      <%=text_field_tag(:description, params[:description], {:style => "width:99%;font-size:12px;height:14px"})%><br>
+      <%=text_field_tag(:description, params[:description], {:style => "width:99%;font-size:24px"})%><br>
 			
       <div style="font-size:12px;padding-bottom:5px;padding-top:5px;"><%=tra("{language} Translation", nil, :language => tr8n_current_language.native_name)%></div>
-      <%=text_field_tag(:translation, params[:translation], {:style => "width:99%;font-size:12px;height:14px"})%><br>
+      <%=text_field_tag(:translation, params[:translation], {:style => "width:99%;font-size:24px"})%><br>
     <% end %>
   
 	   <div style="text-align:center; padding-top:30px; padding-bottom:10px;">

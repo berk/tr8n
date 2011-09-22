@@ -58,7 +58,7 @@
     <%= trla("If you don't like any of the translations for this phrase, [link: add your own translation].", "",
           :link => lambda{|str| link_to_function(str, "addTranslation()")}) %>
 
-    <% if @translation_key.permutatable? %>
+    <% if @translation_key.permutatable? and @translation_key.rules? %>
         <%=trla("If this translation depends on a {token} or a gender of the viewing user, then [link: generate context rules for this phrase].", "",
               :token => "{token}",
               :link => lambda{|str| link_to_function(str, "addContextRules()")}) %>

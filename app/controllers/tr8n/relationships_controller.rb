@@ -31,40 +31,37 @@ class Tr8n::RelationshipsController < Tr8n::BaseController
   def new
     if request.post?
       return trfe("Relationship key must be provided") if params[:key].blank?
-      return trfe("Translation must be provided") if params[:translation].blank?
 
-      @relationship_key = Tr8n::RelationshipKey.for_key(params[:key])
+      @key =  Tr8n::RelationshipKey.normalize_key(params[:key])
+      @relationship_key = Tr8n::RelationshipKey.for_key(@key)
+
+      return trfe("Translation must be provided") if params[:translation].blank?
+      
       new_key = false
       unless @relationship_key
-        begin 
-          valid_key = Tr8n::RelationshipKey.validate(params[:key])
-        rescue
-          valid_key = false
-        end
-        
-        return trfe("The relationship key you provided is invalid. Please refer to the [link: help section] to see the proper syntax for relationship keys.", "", :link => ["/tr8n/help"]) unless valid_key
-        
-        @relationship_key = Tr8n::RelationshipKey.find_or_create(params[:key], params[:key], params[:description])
+        @relationship_key = Tr8n::RelationshipKey.find_or_create(@key, params[:key], params[:description])
         Tr8n::TranslatorLog.log(Tr8n::Config.current_translator, :added_relationship_key)
         new_key = true
       end
-      
-      begin 
-        @relationship_key.add_translation(params[:translation])
-      rescue Tr8n::Exception => ex
-        return trfe(ex.message)
-      end
+    
+      @relationship_key.add_translation(params[:translation])
       
       if new_key      
         trfn("Relationship key has been registered.")
       else
-        trfn("Relationship key has been updated.")
+        trfn("Relationship key {key} already exist. Your translation has been added to the key.", "", :key => @relationship_key.key)
       end
     
       return redirect_to(:controller => "/tr8n/phrases", :action => :view, :translation_key_id => @relationship_key.id)
     end
   
     @relationship_key = Tr8n::RelationshipKey.new
+  rescue Exception => ex
+    if ex.is_a?(Tr8n::Exception)
+      trfe(ex.message)
+    else  
+      trfe("The relationship key you provided is invalid. Please refer to the [link: help section] to see the proper syntax for relationship keys.", "", :link => ["/tr8n/help/relationship_keys"])
+    end
   end
   
   def path

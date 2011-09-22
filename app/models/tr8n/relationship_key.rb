@@ -23,6 +23,10 @@
 
 class Tr8n::RelationshipKey < Tr8n::TranslationKey
 
+  def self.normalize_key(label)
+    label.gsub(" ", "").downcase
+  end
+
   def self.find_or_create(key, label = nil, description = nil, options = {})
     Tr8n::Cache.fetch("relationship_key_#{key}") do
         find_by_key(key) || create(:key => key, :label => label || key, :description => description, :level => 0, :admin => false)
