@@ -110,7 +110,21 @@
   </div>  
 
   <h3>Specifying Gender along the Path</h3>
-  <p>For English, it is sufficient to only specify the gender of the final profile in the path, but for many languages, the translation depends on the genders of profiles along the path. For example, in the Hindu family tree, mother's parents have a different name than father's parents. This is handled in TPS by inserting the gender in the middle of the path between numbers specifying the number of intervening people.</p>
+  <p>For English, it is sufficient to only specify the gender of the final profile in the path, but for many languages, the translation depends on the genders of profiles along the path. 
+	For example, in the Hindu family tree, mother's parents have a different name than father's parents. 
+	</p>
+	
+	<p>
+	 <%=image_tag("/tr8n/images/help/hindu_family_tree.jpg", :style=>"width:700px;")%>
+	 
+	 <div style="font-size:10px;">
+	 Source: <%=link_to("http://en.wikipedia.org/wiki/Hindu_Family_Tree", "http://en.wikipedia.org/wiki/Hindu_Family_Tree")%>
+	 </div>
+	</p>
+	
+	
+	<p>This is handled in TPS by inserting the gender in the middle of the path between numbers specifying the number of intervening people.</p>
+	
   <div class="snippet">
     <ul>
     	<li>1m1m,0 - Dada (father's father)</li>
