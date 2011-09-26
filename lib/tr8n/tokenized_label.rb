@@ -32,6 +32,14 @@ class Tr8n::TokenizedLabel
     @label
   end
 
+  def register_token(token)
+    if token.kind_of?(Tr8n::Tokens::DecorationToken)
+      decoration_tokens << token
+    else
+      data_tokens << token
+    end
+  end
+
   # scans for all token types    
   def data_tokens
     @data_tokens ||= Tr8n::Token.register_data_tokens(label)

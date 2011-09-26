@@ -24,7 +24,7 @@
 class Tr8n::TranslationVote < ActiveRecord::Base
   set_table_name :tr8n_translation_votes
   
-  belongs_to :translation,  :class_name => "Tr8n::Translation",  :dependent => :destroy
+  belongs_to :translation,  :class_name => "Tr8n::Translation"
   belongs_to :translator,   :class_name => "Tr8n::Translator"
     
   def self.find_or_create(translation, translator)

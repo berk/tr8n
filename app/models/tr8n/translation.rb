@@ -204,7 +204,7 @@ class Tr8n::Translation < ActiveRecord::Base
   end
   
   def clear_cache
-    Tr8n::Cache.delete("translations_#{language.locale}_#{translation_key.key}")
+    Tr8n::Cache.delete("translations_#{language.locale}_#{translation_key.key}") if language and translation_key
   end
   
   def after_save
@@ -214,7 +214,7 @@ class Tr8n::Translation < ActiveRecord::Base
 
   def after_destroy
     clear_cache
-    translation_key.update_translation_count!
+    translation_key.update_translation_count! if translation_key
   end
   
   ###############################################################

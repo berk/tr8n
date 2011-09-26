@@ -209,5 +209,18 @@ namespace :tr8n do
   task :import_configuration_keys => :environment do
     Tr8n::Config.init_configuration_keys
   end
+
+  desc 'delete translations without keys'
+  task :delete_orphan_translations => :environment do
+    trns = Tr8n::Translation.find(:all, :conditions => "translation_key_id not in (select tr8n_translation_keys.id from tr8n_translation_keys)")
+    puts "Deleting #{trns.count} translations..."
+    
+    trns.each do |trn|
+      trn.destroy
+    end
+    
+    puts "Done."
+  end
+    
   
 end

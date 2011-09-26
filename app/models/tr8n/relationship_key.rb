@@ -39,10 +39,6 @@ class Tr8n::RelationshipKey < Tr8n::TranslationKey
     end
   end
 
-  def self.validate(key)
-    true
-  end
-  
   def after_save
     Tr8n::Cache.delete("relationship_key_#{key}")
   end
@@ -122,9 +118,9 @@ class Tr8n::RelationshipKey < Tr8n::TranslationKey
     default_translation.gsub('"', '\"')
   end
 
-  def rules?
-    false
-  end
+#  def rules?
+#    false
+#  end
 
   def dictionary?
     false
@@ -137,6 +133,7 @@ class Tr8n::RelationshipKey < Tr8n::TranslationKey
   def sort_key
     label
   end
+  
   ###############################################################
   ## Search Related Stuff
   ###############################################################
