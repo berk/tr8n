@@ -7,7 +7,7 @@
         <%=link_to(trla("view all"), {:controller => "/tr8n/phrases", :action => :view, :translation_key_id => @translation_key.id, :anchor => "translations"}) %>
 				|
 				<% 
-           comments_size = @translation_key.comments.size
+           comments_size = @translation_key.comments(Tr8n::Config.current_language).size
            link_title = (comments_size > 0) ? "view comments (#{comments_size})" : "add comments"
         %>
         <%=link_to(trla(link_title), {:controller => "/tr8n/phrases", :action => :view, :translation_key_id => @translation_key.id, :anchor => "comments"}) %>

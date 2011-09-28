@@ -43,7 +43,7 @@ module ApplicationHelper
     
     translations = []
     Tr8n::TranslationKey.find(:all, :conditions => conditions).each_with_index do |tkey, index|
-      trn = tkey.translate(Tr8n::Config.current_language, {}, {:api => true})
+      trn = tkey.translate(Tr8n::Config.current_language, {}, {:api => true, :viewing_translator => Tr8n::Config.current_translator})
       translations << trn 
     end
     
@@ -79,9 +79,9 @@ module ApplicationHelper
 #     pp [source, options[:source], url]
     
     unless Tr8n::Config.enabled?
-      return Tr8n::TranslationKey.substitute_tokens(label, tokens, options)
+      return Tr8n::TranslationKey.substitute_tokens(label, tokens, options, Tr8n::Config.current_language)
     end
-    
+    options[:viewing_translator] = Tr8n::Config.current_translator
     Tr8n::Config.current_language.translate(label, desc, tokens, options)
   end
 
@@ -353,7 +353,7 @@ module ApplicationHelper
   def tr8n_select_month(date, options = {}, html_options = {})
     month_names = options[:use_short_month] ? Tr8n::Config.default_abbr_month_names : Tr8n::Config.default_month_names
     select_month(date, options.merge(
-      :use_month_names => month_names.collect{|month_name| Tr8n::Language.translate(month_name, options[:description] || "Month name")} 
+      :use_month_names => month_names.collect{|month_name| Tr8n::Config.current_language.translate(month_name, options[:description] || "Month name", {}, {:viewing_translator => Tr8n::Config.current_translator})} 
     ), html_options)
   end
 

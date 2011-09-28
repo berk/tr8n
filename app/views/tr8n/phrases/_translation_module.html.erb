@@ -14,7 +14,7 @@
 		    <%= f.text_area(:label, :id => "tr8n_translation_label_#{@translation_key.id}", :style=>"width:99%;height:60px;border:1px solid #ccc;background-color:white;padding:3px;", :class => "keyboardInput" ) %>
 		  </div>
 			
-		  <% if @translation_key.rules? %>
+		  <% if @translation_key.rules?(Tr8n::Config.current_language) %>
           <%= render(:partial => "tokens") %>
 			<% end %>		
 	

@@ -30,8 +30,4 @@ class Tr8n::TranslationKeyComment < ActiveRecord::Base
   
   alias :key :translation_key
 
-  def toHTML
-    return "" unless message
-    message.gsub("\n", "<br>")
-  end
 end

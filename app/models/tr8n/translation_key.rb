@@ -39,7 +39,6 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   alias :key_sources  :translation_key_sources
   alias :sources      :translation_sources
   alias :domains      :translation_domains
-  alias :comments     :translation_key_comments
   
   def self.find_or_create(label, desc = "", options = {})
     key = generate_key(label, desc)
@@ -145,8 +144,8 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   end
   
   # comments are left for a specific language
-  def comments(language = Tr8n::Config.current_language)
-    Tr8n::TranslationKeyComment.find(:all, :conditions => ["language_id = ? and translation_key_id = ?", language.id, self.id])
+  def comments(language)
+    translation_key_comments.where(:language_id => language)
   end
   
   delegate :tokens, :tokens?, :to => :tokenized_label
@@ -156,7 +155,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   delegate :sanitized_label, :tokenless_label, :suggestion_tokens, :words, :to => :tokenized_label
 
   # returns only the tokens that depend on one or more rules of the language, if any defined for the language
-  def language_rules_dependant_tokens(language = Tr8n::Config.current_language)
+  def language_rules_dependant_tokens(language)
     toks = []
     included_token_hash = {}
 
@@ -177,7 +176,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   end
 
   # determines whether the key can have rules generated for the language
-  def permutatable?(language = Tr8n::Config.current_language)
+  def permutatable?(language)
     language_rules_dependant_tokens(language).any?
   end
 
@@ -193,11 +192,11 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     Tr8n::TranslationKeyLock.for(self, language)
   end
   
-  def lock!(language = Tr8n::Config.current_language, translator = Tr8n::Config.current_translator)
+  def lock!(language, translator)
     lock_for(language).lock!(translator)
   end
 
-  def unlock!(language = Tr8n::Config.current_language, translator = Tr8n::Config.current_translator)
+  def unlock!(language, translator)
     lock_for(language).unlock!(translator)
   end
 
@@ -207,25 +206,16 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     end
   end
   
-  def locked?(language = Tr8n::Config.current_language)
+  def locked?(language)
     lock_for(language).locked?
   end
 
-  def unlocked?(language = Tr8n::Config.current_language)
-    not locked?(language)
+  def unlocked?(language)
+    !locked?(language)
   end
 
-  def followed?(translator = Tr8n::Config.current_translator)
+  def followed?(translator)
     Tr8n::TranslatorFollowing.following_for(translator, self)
-  end
-    
-  def add_translation(label, rules = nil, language = Tr8n::Config.current_language, translator = Tr8n::Config.current_translator)
-    raise Tr8n::Exception.new("The sentence contains dirty words") unless language.clean_sentence?(label)
-    
-    translation = Tr8n::Translation.create(:translation_key => self, :language => language, 
-                                           :translator => translator, :label => label, :rules => rules)
-    translation.vote!(translator, 1)
-    translation
   end
 
   # returns all translations for the key, language and minimal rank
@@ -379,32 +369,32 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     [language, nil]
   end
   
-  def translate(language = Tr8n::Config.current_language, token_values = {}, options = {})
+  def translate(language, token_values = {}, options = {})
     return find_all_valid_translations(valid_translations_for(language)) if options[:api]
     
     if Tr8n::Config.disabled? or language.default?
       return substitute_tokens(label, token_values, options.merge(:fallback => false), language).html_safe
     end
     
-    if Tr8n::Config.enable_translator_language? and Tr8n::Config.current_user_is_translator?
-      translation_language, translation = find_first_valid_translation_for_translator(language, Tr8n::Config.current_translator, token_values)
+    if Tr8n::Config.enable_translator_language? and !options[:viewing_translator].nil?
+      translation_language, translation = find_first_valid_translation_for_translator(language, options[:viewing_translator], token_values)
     else  
       translation_language, translation = find_first_valid_translation_for_language(language, token_values)
     end
     
     # if you want to present the label in it's sanitized form - for the phrase list
     if options[:default_language] 
-      return decorate_translation(language, sanitized_label, translation != nil, options).html_safe
+      return decorate_translation(language, sanitized_label, translator, translation != nil, options).html_safe
     end
     
     if translation
       translated_label = substitute_tokens(translation.label, token_values, options, language)
-      return decorate_translation(language, translated_label, translation != nil, options.merge(:fallback => (translation_language != language))).html_safe
+      return decorate_translation(language, translated_label, options[:viewing_translator], translation != nil, options.merge(:fallback => (translation_language != language))).html_safe
     end
 
     # no translation found  
     translated_label = substitute_tokens(label, token_values, options, Tr8n::Config.default_language)
-    decorate_translation(language, translated_label, translation != nil, options).html_safe  
+    decorate_translation(language, translated_label, options[:viewing_translator], translation != nil, options).html_safe  
   end
 
   ###############################################################
@@ -417,7 +407,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     Tr8n::TranslationKey.new(:label => label.to_s).substitute_tokens(label.to_s, tokens, options, language)
   end
 
-  def substitute_tokens(translated_label, token_values, options = {}, language = Tr8n::Config.current_language)
+  def substitute_tokens(translated_label, token_values, options = {}, language)
     processed_label = translated_label.to_s.clone
 
     # substitute all data tokens
@@ -434,44 +424,20 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     
     processed_label
   end
-  
-  def default_decoration(language = Tr8n::Config.current_language, options = {})
-    return label if Tr8n::Config.current_user_is_guest?
-    return label unless Tr8n::Config.current_user_is_translator?
-    return label unless translator_permitted_to_translate?
-    return label if locked?(language)
 
-    classes = ['tr8n_translatable']
-
-    if valid_translations_for(language).any?
-      classes << 'tr8n_translated'
-    else
-      classes << 'tr8n_not_translated'
-    end
-
-    html = "<tr8n class='#{classes.join(' ')}' translation_key_id='#{id}'>"
-    html << sanitized_label
-    html << "</tr8n>"
-    html.html_safe    
-  end
-  
   def level
     return 0 if super.nil?
     super
   end
   
-  def translator_permitted_to_translate?(translator = Tr8n::Config.current_translator)
-    translator.level >= level
+  def translator_permitted_to_translate?(translator)
+    translator.present? && translator.level >= level
   end
-  
-  def decorate_translation(language, translated_label, translated = true, options = {})
-    return translated_label if options[:skip_decorations]
-    return translated_label if Tr8n::Config.current_user_is_guest?
-    return translated_label unless Tr8n::Config.current_user_is_translator?
-    return translated_label unless Tr8n::Config.current_translator.enable_inline_translations?
-    return translated_label unless translator_permitted_to_translate?
-    return translated_label if locked?(language)
-    return translated_label if self.language == language
+
+  def decorate_translation(language, translated_label, translator, translated = true, options = {})
+    return translated_label if !translator_permitted_to_translate?(translator) ||
+                               locked?(language) ||
+                               self.language == language
 
     classes = ['tr8n_translatable']
     
@@ -488,7 +454,22 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     html << "</tr8n>"
     html
   end
-      
+
+  def default_decoration(language)
+    classes = ['tr8n_translatable']
+
+    if valid_translations_for(language).any?
+      classes << 'tr8n_translated'
+    else
+      classes << 'tr8n_not_translated'
+    end
+
+    html = "<tr8n class='#{classes.join(' ')}' translation_key_id='#{id}'>"
+    html << sanitized_label
+    html << "</tr8n>"
+    html.html_safe
+  end
+
   def verify!(time = Time.now)
     update_attributes(:verified_at => time)
   end
@@ -511,16 +492,12 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     Tr8n::Cache.delete("translation_key_#{key}")
   end
 
-  def add_translation(label, rules = nil, lang = Tr8n::Config.current_language, translator = Tr8n::Config.current_translator) 
-    Tr8n::Translation.create(:translation_key => self, :label => label, :language => lang, :translator => translator)
-  end
-
   ###############################################################
   ## Feature Related Stuff
   ###############################################################
   
-  def self.title
-    "Original Phrase in {language}".translate(nil, :language => Tr8n::Config.current_language.native_name)
+  def self.title(language)
+    "Original Phrase in {language}".translate(nil, :language => language.native_name)
   end
   
   def self.help_url
@@ -531,8 +508,8 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     true 
   end
 
-  def rules?
-    translation_tokens? or Tr8n::Config.current_language.has_rules?
+  def rules?(language)
+    translation_tokens? or language.has_rules?
   end
   
   def dictionary?
@@ -567,8 +544,8 @@ class Tr8n::TranslationKey < ActiveRecord::Base
       ["unlocked only", "unlocked"]]
   end
   
-  def self.search_conditions_for(params)
-    conditions = ["tr8n_translation_keys.locale <> ? and (level is null or level <= ?)", Tr8n::Config.current_language.locale, Tr8n::Config.current_translator.level]
+  def self.search_conditions_for(params, language, translator)
+    conditions = ["tr8n_translation_keys.locale <> ? and (level is null or level <= ?)", language.locale, translator]
     
     if Tr8n::Config.enable_caching?
       conditions[0] << " and verified_at is not null"
@@ -583,40 +560,40 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     # for with and approved, allow user to specify the kinds
     if params[:phrase_type] == "with"
       conditions[0] << " and tr8n_translation_keys.id in (select tr8n_translations.translation_key_id from tr8n_translations where tr8n_translations.language_id = ?) "
-      conditions << Tr8n::Config.current_language.id
+      conditions << language.id
       
       # if approved, ensure that translation key is locked
       if params[:phrase_status] == "approved" 
         conditions[0] << " and tr8n_translation_keys.id in (select tr8n_translation_key_locks.translation_key_id from tr8n_translation_key_locks where tr8n_translation_key_locks.language_id = ? and tr8n_translation_key_locks.locked = ?) "
-        conditions << Tr8n::Config.current_language.id
+        conditions << language.id
         conditions << true
       
         # if approved, ensure that translation key does not have a lock or unlocked
       elsif params[:phrase_status] == "pending" 
         conditions[0] << " and tr8n_translation_keys.id not in (select tr8n_translation_key_locks.translation_key_id from tr8n_translation_key_locks where tr8n_translation_key_locks.language_id = ? and tr8n_translation_key_locks.locked = ?) "
-        conditions << Tr8n::Config.current_language.id
+        conditions << language.id
         conditions << true
       end
             
     elsif params[:phrase_type] == "without"
       conditions[0] << " and tr8n_translation_keys.id not in (select tr8n_translations.translation_key_id from tr8n_translations where tr8n_translations.language_id = ?)"
-      conditions << Tr8n::Config.current_language.id
+      conditions << language.id
       
     elsif params[:phrase_type] == "followed"
       conditions[0] << " and tr8n_translation_keys.id in (select tr8n_translator_following.object_id from tr8n_translator_following where tr8n_translator_following.translator_id = ? and tr8n_translator_following.object_type = ?)"
       
-      conditions << Tr8n::Config.current_translator.id
+      conditions << translator.id
       conditions << 'Tr8n::TranslationKey'
     end
     
     if params[:phrase_lock] == "locked"
       conditions[0] << " and tr8n_translation_keys.id in (select tr8n_translation_key_locks.translation_key_id from tr8n_translation_key_locks where tr8n_translation_key_locks.language_id = ? and tr8n_translation_key_locks.locked = ?) "
-      conditions << Tr8n::Config.current_language.id
+      conditions << language.id
       conditions << true
       
     elsif params[:phrase_lock] == "unlocked"  
       conditions[0] << " and tr8n_translation_keys.id not in (select tr8n_translation_key_locks.translation_key_id from tr8n_translation_key_locks where tr8n_translation_key_locks.language_id = ? and tr8n_translation_key_locks.locked = ?) "
-      conditions << Tr8n::Config.current_language.id
+      conditions << language.id
       conditions << true
     end
     

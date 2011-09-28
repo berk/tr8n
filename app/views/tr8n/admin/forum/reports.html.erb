@@ -32,7 +32,7 @@
 
     [:language_forum_message_id, lambda{|report|
       if report.message
-        report.message.toHTML 
+        simple_format(report.message)
       else
          "Deleted Message"    
       end  

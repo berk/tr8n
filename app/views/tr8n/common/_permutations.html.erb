@@ -1,5 +1,5 @@
 <% if tr8n_current_language.rule_classes.size > 0 %>
-	<% @dependant_tokens = @translation_key.language_rules_dependant_tokens %>
+	<% @dependant_tokens = @translation_key.language_rules_dependant_tokens(Tr8n::Config.current_language) %>
 	<% td_width = (95/(tr8n_current_language.rule_classes.size))  %>  
 	
 	<table style="width:100%;">

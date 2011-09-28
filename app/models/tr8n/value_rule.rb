@@ -39,7 +39,7 @@ class Tr8n::ValueRule < Tr8n::LanguageRule
     Tr8n::Config.rules_engine[:value_rule][:token_suffixes]
   end
 
-  def self.default_rules_for(language = Tr8n::Config.current_language)
+  def self.default_rules_for(language)
     Tr8n::Config.default_value_rules(language.locale)
   end
   

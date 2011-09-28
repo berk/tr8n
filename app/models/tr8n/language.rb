@@ -80,10 +80,6 @@ class Tr8n::Language < ActiveRecord::Base
     end
   end
   
-  def current?
-    self.locale == Tr8n::Config.current_language.locale
-  end
-  
   def default?
     self.locale == Tr8n::Config.default_locale
   end
@@ -187,8 +183,7 @@ class Tr8n::Language < ActiveRecord::Base
     # raise Tr8n::Exception.new("The label is blank") if label.blank?
     raise Tr8n::Exception.new("The label is being translated twice") if label.tr8n_translated?
 
-    return Tr8n::TranslationKey.substitute_tokens(label, tokens, options).tr8n_translated unless Tr8n::Config.enabled?
-    return Tr8n::TranslationKey.substitute_tokens(label, tokens, options).tr8n_translated if Tr8n::Config.current_language.default?
+    return Tr8n::TranslationKey.substitute_tokens(label, tokens, options, Tr8n::Config.current_language).tr8n_translated if Tr8n::Config.enabled? || !Tr8n::Config.current_language.default?
 
     options.delete(:source) unless Tr8n::Config.enable_key_source_tracking?
     Tr8n::Config.current_language.translate(label, desc, tokens, options).tr8n_translated
@@ -198,11 +193,17 @@ class Tr8n::Language < ActiveRecord::Base
     # raise Tr8n::Exception.new("The label is blank") if label.blank?
     raise Tr8n::Exception.new("The label is being translated twice") if label.tr8n_translated?
 
-    return Tr8n::TranslationKey.substitute_tokens(label, tokens, options, self).tr8n_translated unless Tr8n::Config.enabled?
-    return Tr8n::TranslationKey.substitute_tokens(label, tokens, options, self).tr8n_translated if default?
+    return Tr8n::TranslationKey.substitute_tokens(label, tokens, options, self).tr8n_translated if !Tr8n::Config.enabled? || default?
 
     translation_key = Tr8n::TranslationKey.find_or_create(label, desc, options)
-    translation_key.translate(self, tokens.merge(:viewing_user => Tr8n::Config.current_user), options).tr8n_translated
+
+    unless options.keys.include? :skip_decorations
+      viewing_translator  = options[:viewing_translator]
+      Thread.current[:expl_skip_decoration] = true
+      options[:skip_decorations] = self.default? || !(viewing_translator && viewing_translator.enable_inline_translations?)
+    end
+
+    translation_key.translate(self, tokens, options).tr8n_translated
   end
   alias :tr :translate
 
@@ -315,7 +316,7 @@ class Tr8n::Language < ActiveRecord::Base
     @recently_updated_translations ||= Tr8n::Translation.find(:all, :conditions => ["language_id = ?", self.id], :order => "updated_at desc", :limit => 5)    
   end
   
-  def recently_updated_votes(translator = Tr8n::Config.current_translator)
+  def recently_updated_votes(translator)
     @recently_updated_votes ||= Tr8n::TranslationVote.find(:all, :conditions => ["translation_id in (select tr8n_translations.id from tr8n_translations where tr8n_translations.language_id = ? and tr8n_translations.translator_id = ?)", self.id, translator.id], :order => "updated_at desc", :limit => 5)    
   end
   

@@ -1,14 +1,14 @@
-<% style = @translation_key.locked? ? "background-color:#ECFFEF; border: 1px solid #50B74F;" : "background-color:#FDFDDF; border: 1px solid #DDCF6F;" %>
+<% style = @translation_key.locked?(Tr8n::Config.current_language) ? "background-color:#ECFFEF; border: 1px solid #50B74F;" : "background-color:#FDFDDF; border: 1px solid #DDCF6F;" %>
 <div class="section_box" style="margin-bottom:5px;<%=style%>;">
   <div style="float:right; font-size:12px; padding-right:3px;">
-    <% if @translation_key.locked? %>
+    <% if @translation_key.locked?(Tr8n::Config.current_language) %>
       <%=image_tag("/tr8n/images/lock.png", :style=>"vertical-align:bottom;", :title => trla("This phrase is locked.")) %>
     <% else %>  
       <%=image_tag("/tr8n/images/lock_open.png", :style=>"vertical-align:bottom;", :title => trla("This phrase is unlocked.")) %>
     <% end %>
   </div>
 	
-  <div style="color:grey;font-size:20px;padding-bottom:10px;"><%=@translation_key.class.title%></div>
+  <div style="color:grey;font-size:20px;padding-bottom:10px;"><%=@translation_key.class.title(Tr8n::Config.current_language)%></div>
   
   <div style="padding-top:5px;padding-bottom:10px;font-size:14px">
       <%=image_tag("/tr8n/images/left_quote.png", :style=>"text-align:bottom;padding-bottom:5px;") %>

@@ -69,7 +69,7 @@ class Tr8n::Api::V1::LanguageController < Tr8n::Api::V1::BaseController
       
       translations = []
       Tr8n::TranslationKey.find(:all, :conditions => conditions).each_with_index do |tkey, index|
-        trn = tkey.translate(language, {}, {:api => true})
+        trn = tkey.translate(language, {}, {:api => true, :viewing_translator => Tr8n::Config.current_translator})
         translations << trn 
       end
       
@@ -101,7 +101,7 @@ private
   
   def translate_phrase(language, phrase, opts = {})
     return "" if phrase[:label].strip.blank?
-    language.translate(phrase[:label], phrase[:description], {}, {:api => true, :source => opts[:source]})
+    language.translate(phrase[:label], phrase[:description], {}, {:api => true, :source => opts[:source], :viewing_translator => Tr8n::Config.current_translator})
   end
   
 end

@@ -1,4 +1,4 @@
-<% if @translation_key.tokens? or @translation_key.permutatable? %>
+<% if @translation_key.tokens? or @translation_key.permutatable?(Tr8n::Config.current_language) %>
 
 <div id="translation_tokens" style="padding-bottom:5px; font-size:12px;">
   <div class="section_title">
@@ -57,7 +57,7 @@
     </div>
   <% end %> 
 
-  <% if @translation_key.permutatable? %>
+  <% if @translation_key.permutatable?(Tr8n::Config.current_language) %>
     <div id="rules_trigger" style="font-size:12px; font-weight:normal;">
       <% 
          if @translation_key.translation_tokens? 
@@ -84,7 +84,7 @@
 					    <td style="width:88%; font-size:10px; font-weight:bold; padding:5px;"><%=trla('Context Rule', 'Tr8n translation rules header')%></td>        
 					  </tr>
 					
-						<% @translation_key.language_rules_dependant_tokens.each_with_index do |token, index| %>
+						<% @translation_key.language_rules_dependant_tokens(Tr8n::Config.current_language).each_with_index do |token, index| %>
 						  <% 
 		            rule_options = []
 		            tr8n_current_language.rule_classes.each do |rule_class| 
