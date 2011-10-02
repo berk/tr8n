@@ -1,3 +1,9 @@
+.bundle/
+log/*.log
+pkg/
+test/dummy/db/*.sqlite3
+test/dummy/log/*.log
+test/dummy/tmp/
 db/schema.rb*
 tmp/*
 log/*
@@ -9,6 +15,3 @@ log/*
 .dotest*
 Thumbs.db
 .tmp*
-db/development.sqlite3
-db/test.sqlite3
-pkg

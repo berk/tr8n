@@ -21,27 +21,27 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-Rails.application.routes.draw do 
+Tr8n::Engine.routes.draw do
   [:awards, :chart, :dashboard, :forum, :glossary, :help, :language_cases,
    :language, :phrases, :translations, :translator, :home, :login].each do |ctrl|
-    match "/tr8n/#{ctrl}(/:action)", :controller => "tr8n/#{ctrl}"
+    match "#{ctrl}(/:action)", :controller => "#{ctrl}"
   end
-
+  
   [:chart, :clientsdk, :forum, :glossary, :language, :translation, 
    :translation_key, :translator, :domain].each do |ctrl|
-    match "/tr8n/admin/#{ctrl}(/:action)", :controller => "tr8n/admin/#{ctrl}"
+    match "admin/#{ctrl}(/:action)", :controller => "admin/#{ctrl}"
   end
   
   [:language, :translation, :translator].each do |ctrl|
-    match "/tr8n/api/v1/#{ctrl}(/:action)", :controller => "tr8n/api/v1/#{ctrl}"
+    match "api/v1/#{ctrl}(/:action)", :controller => "api/v1/#{ctrl}"
   end
-
+  
   namespace :tr8n do
     root :to => "home#index"
     namespace :admin do
       root :to => "language#index"
     end
   end
-
-  root :to => "tr8n/home#index"
+  
+  root :to => "home#index"
 end

@@ -2,8 +2,9 @@
 
 	<%= tr8n_splash_screen_tag %>
 
-  <%=stylesheet_link_tag("/tr8n/stylesheets/tr8n.css") -%>
-  <%=javascript_include_tag("/tr8n/javascripts/tr8n.js") -%>
+  <%=stylesheet_link_tag("tr8n/tr8n.css") -%>
+  <%=javascript_include_tag("tr8n/tr8n.js") -%>
+
   <script type="text/javascript">
      initializeTr8n();
   </script>
@@ -23,12 +24,12 @@
 	  <script> 
 		  VKI_default_layout = "<%=Tr8n::KeyboardMapping.current_1_36%>";
 		</script> 	  
-    <%=javascript_include_tag("/tr8n/javascripts/keyboard_1_36.js", :charset => "UTF-8") -%>
-    <%=stylesheet_link_tag("/tr8n/stylesheets/keyboard_1_36.css") -%>
+    <%=javascript_include_tag("tr8n/keyboard_1_36.js", :charset => "UTF-8") -%>
+    <%=stylesheet_link_tag("tr8n/keyboard_1_36.css") -%>
   <% end %>  
 
   <% if Tr8n::Config.enable_keyboard_shortcuts? %>  
-    <%=javascript_include_tag("/tr8n/javascripts/shortcut.js", :charset => "UTF-8") -%>
+    <%=javascript_include_tag("tr8n/shortcut.js", :charset => "UTF-8") -%>
     <script type="text/javascript">
        <% Tr8n::Config.default_shortcuts.each do |key, data| %>     	
 				  shortcut.add("<%=key%>", function() {

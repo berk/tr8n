@@ -21,8 +21,8 @@
 							  <table> 
 								  <tr>
 								  	<td style="vertical-align:middle;width:1%;white-space:nowrap;padding-right:3px;">
-										  <%=link_to_function(image_tag("/tr8n/images/add.png"), "addLanguageRule('#{dependency}','#{index+1}')")%>
-			                <%=link_to_function(image_tag("/tr8n/images/delete.png"), "deleteLanguageRule('#{dependency}','#{index}')")%>
+										  <%=link_to_function(image_tag("tr8n/add.png"), "addLanguageRule('#{dependency}','#{index+1}')")%>
+			                <%=link_to_function(image_tag("tr8n/delete.png"), "deleteLanguageRule('#{dependency}','#{index}')")%>
 										</td>	
 								    <td style="vertical-align:middle;text-align:left;">  
 								      <% rule.definition ||= {} %>

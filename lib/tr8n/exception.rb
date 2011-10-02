@@ -21,6 +21,8 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-class Tr8n::Exception < StandardError
+module Tr8n
+  class Exception < StandardError
 
+  end
 end

@@ -23,6 +23,7 @@
 
 class Tr8n::Language < ActiveRecord::Base
   set_table_name :tr8n_languages
+  
   after_save      :clear_cache
   after_destroy   :clear_cache
 

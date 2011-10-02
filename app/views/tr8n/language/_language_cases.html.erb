@@ -13,7 +13,7 @@
   <%=render(:partial => "header", :locals => {:section => "language_cases", :label => "Language Cases", :description => "", :mode => mode})%>
   
   <%= form_for(tr8n_current_language, :as => :language, :url => {:action => :index}, :html => {:id => 'language_cases_form', :method => :post}) do |f| %>
-    <div id="language_cases_content" class="section_box colored">
+    <div id="language_cases_content" class="section grey">
       <div style="float:right; padding-right:5px;">
           <%=tr8n_help_icon_tag %>
       </div>
@@ -156,7 +156,7 @@
     edit_rule_index = position;
     edit_case_action = form_hash['case_action'];
     
-    tr8nLightbox.show('/tr8n/language/lb_language_case_rule?' + Tr8n.Utils.toQueryParams(form_hash), {width:600, height:270});
+    tr8nLightbox.show('/tr8n/language/lb_language_case_rule?' + Tr8n.Utils.toQueryParams(form_hash), {width:600, height:300});
   }
 
   function updateLanguageCaseRule() {

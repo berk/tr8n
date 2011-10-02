@@ -22,17 +22,6 @@
 #++
 
 namespace :tr8n do
-  desc "Sync config and db migrations for tr8n plugin."
-  task :sync do
-    system "rsync -ruv vendor/plugins/tr8n/config/tr8n ./config"
-    system "rsync -ruv vendor/plugins/tr8n/db/migrate ./db"
-  end
-
-  desc "Sync db migrations for tr8n plugin."
-  task :sync_db do
-    system "rsync -ruv vendor/plugins/tr8n/db/migrate ./db"
-  end
-  
   desc "Initializes all of the tables with default data"
   task :init => :environment do
     raise "This action is prohibited in this environment" if ['production', 'stage', 'staging'].include?(Rails.env) and env('force') != 'true'

@@ -2,7 +2,7 @@
   <%=render(:partial => "header", :locals => {:section => "basic_info", :label => "Translator Details", :description => "Translator details section title", :mode => mode})%>
   
   <%= form_for(tr8n_current_translator, :as => :translator, :url => {:action => :index}, :html => {:id => 'basic_info_form', :method => :post}) do |f| %>
-    <div class="section_box colored">
+    <div class="section grey">
       <div style="float:right; padding-right:5px;">
           <%=tr8n_help_icon_tag %>
       </div>

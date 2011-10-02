@@ -28,23 +28,20 @@ class Tr8n::PhrasesController < Tr8n::BaseController
   before_filter :init_sitemap_section, :except => [:translate, :vote]
   
   def index
-    conditions = Tr8n::TranslationKey.search_conditions_for(params)
+    @translation_keys = Tr8n::TranslationKey.for_params(params)
    
     unless params[:section_key].blank?
       source_names = sitemap_sources_for(@section_key)
-      sources = Tr8n::TranslationSource.find(:all, :conditions => ["source in (?)", source_names])
-      source_ids = sources.collect{|source| source.id}
+      source_ids = Tr8n::TranslationSource.where("source in (?)", source_names).collect{|source| source.id}
       
       if source_ids.empty?
-        conditions = ["1=2"]
+        @translation_keys = @translation_keys.where("1=2")
       else  
-        conditions[0] << " and " unless conditions[0].blank?
-        conditions[0] << "(id in (select distinct(translation_key_id) from tr8n_translation_key_sources where translation_source_id in (?)))"
-        conditions << source_ids.uniq
+        @translation_keys = @translation_keys.where("(id in (select distinct(translation_key_id) from tr8n_translation_key_sources where translation_source_id in (?)))", source_ids.uniq)
       end
     end
     
-    @translation_keys = Tr8n::TranslationKey.paginate(:per_page => per_page, :page => page, :conditions => conditions, :order => "label asc")    
+    @translation_keys = @translation_keys.order("label asc").page(page).per(per_page)
   end
   
   def view
@@ -62,17 +59,10 @@ class Tr8n::PhrasesController < Tr8n::BaseController
     @translation = Tr8n::Translation.new(:translation_key => @translation_key, :language => tr8n_current_language, :translator => tr8n_current_translator)
     @rules = {}
     
-    conditions = Tr8n::Translation.search_conditions_for(params)
-    
-    conditions[0] << " and " unless conditions[0].blank?
-    conditions[0] << "tr8n_translations.language_id = ? and tr8n_translations.translation_key_id = ?"
-    conditions << tr8n_current_language.id
-    conditions << @translation_key.id
-    
-    @translations = Tr8n::Translation.find(:all, :conditions => conditions, :order => "rank desc, created_at desc")
-    @comments = Tr8n::TranslationKeyComment.paginate(:page => page, :per_page => per_page, 
-                      :conditions => ["language_id = ? and translation_key_id = ?", tr8n_current_language.id, @translation_key.id], 
-                      :order => "created_at desc")
+    @translations = Tr8n::Translation.for_params(params)
+    @translations = @translations.where("tr8n_translations.language_id = ? and tr8n_translations.translation_key_id = ?", tr8n_current_language.id,  @translation_key.id)
+    @translations = @translations.order("rank desc, created_at desc")
+    @comments = Tr8n::TranslationKeyComment.where("language_id = ? and translation_key_id = ?", tr8n_current_language.id, @translation_key.id).order("created_at desc").page(page).per(per_page)
     
     @grouping = {}
     if params[:grouped_by] != "nothing"

@@ -21,12 +21,13 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-class Tr8n::DashboardController < Tr8n::BaseController
+module Tr8n
+  class DashboardController < Tr8n::BaseController
 
-  before_filter :validate_current_translator
+    before_filter :validate_current_translator
   
-  def index
-
-  end
+    def index
+    end
     
+  end
 end

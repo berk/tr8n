@@ -10,16 +10,18 @@
 	</div>
 	
 	<div id="forum_content_<%=lang.id%>" style="display:none">
-		<table style="width:100%; background-color:white; border:1px dotted #ccc;">
-		  <% lang.recently_added_forum_messages.each do |message| %>
-		    <% style = (message == lang.recently_added_forum_messages.last ? "" : "border-bottom:1px dotted #ccc;" ) %>  
-		    <tr style="<%=style%>">
-	        <%= render :partial => "/tr8n/forum/message", :locals => {:message => message} %>
-					<td style="text-align:right; padding-right:5px;">
-						<%=link_to(tra("view", 'Link to view a forum message'), :controller => "/tr8n/forum", :action => :topic, :locale => lang.locale, :topic_id => message.topic.id)%>
-					</td> 
-		    </tr>
-		  <% end %>
-		</table>
+		<div class="section">
+			<table style="width:100%;">
+			  <% lang.recently_added_forum_messages.each do |message| %>
+			    <% style = (message == lang.recently_added_forum_messages.last ? "" : "border-bottom:1px dotted #ccc;" ) %>  
+			    <tr style="<%=style%>">
+		        <%= render :partial => "/tr8n/forum/message", :locals => {:message => message} %>
+						<td style="text-align:right; padding-right:5px;">
+							<%=link_to(tra("view", 'Link to view a forum message'), :controller => "/tr8n/forum", :action => :topic, :locale => lang.locale, :topic_id => message.topic.id)%>
+						</td> 
+			    </tr>
+			  <% end %>
+			</table>
+		</div>
 	</div>
 <% end %>

@@ -10,18 +10,18 @@
 	    		<tr>
 	    			<td style="width:1%; padding-right:10px;text-align:left;white-space:nowrap;">
 		          <% if rule_index == 0 %>
-		             <%=image_tag('/tr8n/images/arrow_up_grey.png') %>
+		             <%=image_tag('tr8n/arrow_up_grey.png') %>
 		          <% else %>
-		             <%=link_to_function(image_tag('/tr8n/images/arrow_up.png'), "moveLanguageCaseRule('#{case_index}', '#{rule_index}', 'up')") %>
+		             <%=link_to_function(image_tag('tr8n/arrow_up.png'), "moveLanguageCaseRule('#{case_index}', '#{rule_index}', 'up')") %>
 		          <% end %> 
 		          
 		          <% if rule_index == lcase.language_case_rules.size - 1 %>
-		             <%=image_tag('/tr8n/images/arrow_down_grey.png') %>
+		             <%=image_tag('tr8n/arrow_down_grey.png') %>
 		          <% else %>
-		             <%=link_to_function(image_tag('/tr8n/images/arrow_down.png'), "moveLanguageCaseRule('#{case_index}', '#{rule_index}', 'down')") %>
+		             <%=link_to_function(image_tag('tr8n/arrow_down.png'), "moveLanguageCaseRule('#{case_index}', '#{rule_index}', 'down')") %>
 		          <% end %>
 		          
-		          <%=link_to_function(image_tag("/tr8n/images/add.png"), "addLanguageCaseRule('#{case_index}', '#{rule_index+1}')", :id => "language_case_edit_link_#{rule_index}")%>
+		          <%=link_to_function(image_tag("tr8n/add.png"), "addLanguageCaseRule('#{case_index}', '#{rule_index+1}')", :id => "language_case_edit_link_#{rule_index}")%>
 	    			</td>
 						<td style="text-align:left;vertical-align:middle;color:#444;">
 			        <span style="font-weight:bold;color:black;"><%=rule_index+1%>.</span> <%=rule.description %>
@@ -40,8 +40,8 @@
 			        <%=hidden_field_tag("#{rule_prefix}[definition][operation_value]", rule.definition[:operation_value])%>
 						</td>
 						<td style="width:1%; text-align:right;white-space:nowrap;">
-		          <%=link_to_function(image_tag("/tr8n/images/pencil.png"), "editLanguageCaseRule('#{case_index}', '#{rule_index}')", :id => "language_case_edit_link_#{rule_index}")%>
-		          <%=link_to_function(image_tag("/tr8n/images/cross.png"), "deleteLanguageCaseRule('#{case_index}', '#{rule_index}')")%>
+		          <%=link_to_function(image_tag("tr8n/pencil.png"), "editLanguageCaseRule('#{case_index}', '#{rule_index}')", :id => "language_case_edit_link_#{rule_index}")%>
+		          <%=link_to_function(image_tag("tr8n/cross.png"), "deleteLanguageCaseRule('#{case_index}', '#{rule_index}')")%>
 						</td>
 	    		</tr>
 	    	</table>

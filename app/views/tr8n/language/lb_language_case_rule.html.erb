@@ -1,37 +1,41 @@
-<%= tr8n_with_options_tag(:default_locale => 'en-US', :admin => true) do %>
-	<style>
-	  .lightbox {
-	    background-color: white;
-	  }
-	  .title {
-	    padding: 5px;
-	    text-align: left;
-	    font-size: 14px;
-	    font-weight: bold;
-	  }
-	  .buttons {
-	    text-align: center;
-	  }
-	  .content {
-	    border: 1px dotted #ccc;
-	    background-color: #f8f7f6;
-	    padding:5px;
-	    padding-bottom: 10px;
-	  }
-	  .content td {
-	    vertical-align: middle;
-	    padding: 3px;
-	  }
-	</style>
+<style>
+  .lightbox {
+    background-color: white;
+  }
+  .title {
+    padding: 5px;
+    text-align: left;
+    font-size: 14px;
+    font-weight: bold;
+  }
+  .buttons {
+    text-align: center;
+  }
+  .content {
+  }
+  .content td {
+    vertical-align: middle;
+    padding: 3px;
+  }
+</style>
+
+<div class="inner">
+	<div class="hd">
+		<div style="float:right;">
+			<%=link_to_function(image_tag("tr8n/close.gif"), "tr8nLightbox.hide()") %>
+		</div>
+	  <div style="font-size:14px; font-weight:bold;">
+	     <%= @case.native_name.blank? ? 'New Language Case' : @case.native_name %>
+	     <br>
+	     <span style="color:grey; font-size:10px;">(::<%= @case.keyword %>) <%= @case.description %> </span>
+	  </div>
+	</div>	
 	
-	<div class="lightbox">
+	<div class="bd">
 	  <%= form_tag({}, {:id => :language_case_rule_form}) do %>
+		  
 		  <% rule_prefix = "edit_rule" %>
-		  <div style="padding:5px; border: 1px dotted #ccc; margin-bottom:10px; font-size:14px; background-color:#f1f4fa; font-weight:bold;">
-			   <%= @case.native_name.blank? ? 'New Language Case' : @case.native_name %>
-	       <br>
-	       <span style="color:grey; font-size:10px;">(::<%= @case.keyword %>) <%= @case.description %> </span>
-		  </div>
+		
 		
 		  <%=hidden_field_tag("#{rule_prefix}[position]", @rule_index)%>
 		
@@ -81,14 +85,16 @@
 			    </tr>
 			  </table>
 			
-		  <% end %>
-			
-		  <div style="text-align:center;padding-top:20px;padding-bottom:10px;">
-		     <%=link_to_function("<span>#{trla(@new_rule ? "Add Rule" : "Update Rule", "Tr8n lightbox close button")}</span>".html_safe, "tr8nLightbox.hide(); updateLanguageCaseRule();", :class => "tr8n_grey_button tr8n_pcb") %>
-		     <%=tra("or")%>
-		     <%=link_to_function(trla("Cancel", "Tr8n lightbox close button"), "tr8nLightbox.hide()") %>
-		  </div>
+			<% end %>
 			
 		</div>
 	</div>
-<% end %>
+
+	<div class="ft">
+	    <button type="button" class="translator_btn translator_submit_btn" onClick="tr8nLightbox.hide(); updateLanguageCaseRule(); return false;">
+	        <span><%=trla(@new_rule ? "Add Rule" : "Update Rule", "Tr8n lightbox close button")%></span>
+	    </button>
+     <%=tra("or")%>
+     <%=link_to_function(trla("Cancel", "Tr8n lightbox close button"), "tr8nLightbox.hide()") %>
+	</div>
+</div>

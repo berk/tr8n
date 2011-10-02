@@ -29,11 +29,9 @@ class Tr8n::AwardsController < Tr8n::BaseController
     params[:mode] = "all" if tr8n_current_language.default?
     
     if params[:mode] == "all"
-      @translator_metrics = Tr8n::TranslatorMetric.find(:all, :conditions => ["language_id is null"], 
-                  :order => "total_translations desc, total_votes desc", :limit => 23)
+      @translator_metrics = Tr8n::TranslatorMetric.where("language_id is null").order("total_translations desc, total_votes desc").limit(25)
     else
-      @translator_metrics = Tr8n::TranslatorMetric.find(:all, :conditions => ["language_id = ?", tr8n_current_language.id], 
-                  :order => "total_translations desc, total_votes desc", :limit => 23)
+      @translator_metrics = Tr8n::TranslatorMetric.where("language_id = ?", tr8n_current_language.id).order("total_translations desc, total_votes desc").limit(25)
     end
     
     @leaders = @translator_metrics[0..2]

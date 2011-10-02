@@ -5,32 +5,25 @@
 		<a name="comments">&nbsp;</a>
 	</div>
 
-	<div class="section_box" id="comments_content">
-		<% if @comments.any? %>
-		  <div style="margin-bottom:5px; padding-bottom:2px; border-bottom:1px solid #ccc; ">
-		    <table style="width:100%;">
-		      <tr>
-		        <td align='left'><%= page_entries_info(@comments, {:entry_name => "comment", :skip_decorations => true}) %></td>
-		        <td style="text-align:right"><%= will_paginate(@comments, :style=>"text-align:right", :skip_decorations => true) %></td>
-		      </tr>
-		    </table>
-		  </div>
-	
-		  <table style="width:100%; ">
-		    <% @comments.each do |comment| %>
-		      <%
-		        style = (comment == @comments.last ? "" : "border-bottom:1px dotted #ccc;" )
-		      %>  
-		      <tr style="<%=style%>">
-		        <%= render :partial => "comment", :locals => {:comment => comment} %> 
-		      </tr>
-		    <% end %>
-		  </table>
-		<% else %>
-		  <div style="font-size:12px;">
-		    <%=tra("This phrase has no comments.")%>
-			</div>	
-    <% end %>		
+	<div class="section" id="comments_content">
+		<div style="margin-bottom:10px;">
+			<% if @comments.any? %>
+				<%=tr8n_paginator_tag(@comments, "comment")%>
+			
+			  <table style="width:100%; ">
+			    <% @comments.each do |comment| %>
+			      <%
+			        style = (comment == @comments.last ? "" : "border-bottom:1px dotted #ccc;" )
+			      %>  
+			      <tr style="<%=style%>">
+			        <%= render :partial => "comment", :locals => {:comment => comment} %> 
+			      </tr>
+			    <% end %>
+			  </table>
+			<% else %>
+			    <%=tra("This phrase has no comments.")%>
+	    <% end %>		
+		</div>
 	  <%= render :partial => "new_comment" %>  
 	</div>
 </div>

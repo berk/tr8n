@@ -23,9 +23,9 @@
 
 class Tr8n::LanguageRuleFilter < Tr8n::BaseFilter
   
-  def inner_joins
-    [["Tr8n::Language", :language_id], ["Tr8n::Translator", :translator_id]]
-  end
+  # def inner_joins
+  #   [["Tr8n::Language", :language_id], ["Tr8n::Translator", :translator_id]]
+  # end
 
   def definition
     defs = super  
@@ -40,6 +40,10 @@ class Tr8n::LanguageRuleFilter < Tr8n::BaseFilter
     end
 
     return super
+  end
+
+  def inner_joins
+    [:language, :translator]
   end
 
 end

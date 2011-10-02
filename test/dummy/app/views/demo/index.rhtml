@@ -1,0 +1,108 @@
+<style>
+	.code {
+		border: 1px dotted #ccc; 
+		background-color: #f4f5f6;
+		margin-bottom:10px;
+		padding:10px;
+	}
+	
+	.example {
+		border: 1px dotted #ccc; 
+		background-color: #f5f1f1;
+		margin-bottom:10px;
+		padding:10px;
+	}
+	
+	.note {
+		font-style: italic;
+	}
+	
+	hr {
+		margin-top:10px;
+	}
+</style>
+<div class="content_bd">
+	
+	<h3>Here are some of the examples from the La Ruby Meetup presentation:</h3>
+	<p style="color:#444;">
+		To try them out, register as a translator and enable inline translation in a language of your preference. 
+		The first line shows the code used for the tr tag. The second line is the translatable sentence that you can play with.
+	</p>
+	<p>
+		Presentation slides can be downloaded here:
+		<%=link_to("slides.pdf", "/presentation/slides.pdf" )%>
+	</p>
+		
+	<hr>
+	<p class="note">Simple phrase example.</p>
+
+	<div class="code">
+		tr("Hello World") 
+	</div>
+	
+	<div class="example">
+		<%= tr("Hello World") %>
+	</div>
+
+	<hr>
+	<p class="note">Uses simple data token.</p>
+
+	<div class="code">
+		tr("Welcome {user}!", '', :user => User.new(:first_name => 'Jack', :last_name => 'Bauer', :gender => 'male'))
+	</div>
+	
+	<div class="example">
+		<%= tr("Welcome {user}!", '', :user => User.new(:first_name => 'Jack', :last_name => 'Bauer', :gender => 'male')) %>
+	</div>
+
+	<hr>
+	<p class="note">Uses decoration token.</p>
+
+	<div class="code">
+		tr("Hello [italic: World]")
+	</div>
+	
+	<div class="example">
+		<%= tr("Hello [italic: World]") %>
+	</div>
+
+
+	<hr>
+	<p class="note">Uses transform token.</p>
+
+	<div class="code">
+		tr("You have {count||message}", 'Inbox message', :count => 5) 
+	</div>
+	
+	<div class="example">
+		<%= tr("You have {count||message}", 'Inbox message', :count => 5) %>
+	</div>
+
+	<hr>
+	<p class="note">Uses transform token inside of decoration token.</p>
+
+	<div class="code">
+		tr("You have [bold: {count||message}]", 'Inbox message', :count => 1)
+	</div>
+	
+	<div class="example">
+		<%= tr("You have [bold: {count||message}]", 'Inbox message', :count => 1) %>
+	</div>
+
+	<hr>
+	<p class="note">Uses gender dependent tokens. You can try out different varions of gender context rules and see your results.</p>
+
+	<div class="code">
+		tr("{actor} gave a present to {target}", 'Newsfeed story', :actor => User.new(:first_name => 'Michael', :gender => 'male'), :target => User.new(:first_name => 'Anna', :gender => 'female'))
+		<br><br>
+		tr("{actor} gave a present to {target}", 'Newsfeed story', :actor => User.new(:first_name => 'Anna', :gender => 'female'), :target => User.new(:first_name => 'Michael', :gender => 'male'))
+	</div>
+	
+	<div class="example">
+		<%= tr("{actor} gave a present to {target}", 'Newsfeed story', :actor => User.new(:first_name => 'Michael', :gender => 'male'), :target => User.new(:first_name => 'Anna', :gender => 'female')) %>
+		<br><br>
+		<%= tr("{actor} gave a present to {target}", 'Newsfeed story', :actor => User.new(:first_name => 'Anna', :gender => 'female'), :target => User.new(:first_name => 'Michael', :gender => 'male')) %>
+	</div>
+
+	
+</div>

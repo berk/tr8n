@@ -1,0 +1,19 @@
+#############################################################################
+#
+# Tr8n Default List Rules
+# 
+# Definition:
+#   operator:     contains
+#   value1:       one_element, at_least_two_elements
+#
+# Important! If your site supports user genders, use Tr8n::GenderListRule instead
+#
+#############################################################################
+
+en-US:
+  rule1: 
+    operator: contains
+    value:    one_element
+  rule2: 
+    operator: contains
+    value:    at_least_two_elements

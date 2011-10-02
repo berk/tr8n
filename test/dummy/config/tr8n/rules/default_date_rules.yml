@@ -1,0 +1,20 @@
+#############################################################################
+#
+# Tr8n Default Date Rules
+#
+# Definition:
+#   operator:     is_in
+#   value1:       past, future, present
+#
+#############################################################################
+
+en-US: 
+  rule1:
+    operator:   is_in
+    value:      past
+  rule2:
+    operator:   is_in 
+    value:      future
+  rule3:
+    operator:   is_in 
+    value:      present

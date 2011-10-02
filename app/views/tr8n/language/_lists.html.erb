@@ -1,5 +1,5 @@
 <% if @user_languages and not @user_languages.empty? %>
-  <div style="color:grey; font-size:11px; border-bottom: 1px solid #ccc;"><%=trl("Your Languages")%></div>
+  <div style="color:grey; font-size:11px;"><%=trl("Your Languages")%></div>
   <div class="inner" style="max-height:53px; overflow: auto; margin-bottom:5px;">
       <ul class="language_list">
       <% @user_languages.each do |user_language|%>
@@ -12,7 +12,7 @@
 							<% else %>
 	               <%= "#{language.completeness || 0}%" if Tr8n::Config.enable_language_stats?%>
                  <% unless user_language.manager? %>
-	                 <%=link_to_function(image_tag("/tr8n/images/close.gif", :style=>"width:5px; padding-right:3px; padding-left:3px;"), "tr8nLanguageSelector.removeLanguage('#{language.id}');") %>
+	                 <%=link_to_function(image_tag("tr8n/close.gif", :style=>"width:5px; padding-right:3px; padding-left:3px;"), "tr8nLanguageSelector.removeLanguage('#{language.id}');") %>
  								 <% end %>
 		          <% end %>
     			  </span>
@@ -30,7 +30,7 @@
     </ul>      
   </div>
   
-  <div style="font-size:11px; border-bottom: 1px solid #ccc;">
+  <div style="font-size:11px;">
 	   <%=tr8n_toggler_tag("tr8n_languages_list", "<span style='color:grey;'>#{trl("Other Languages")}</span>", (@user_languages.size <= 1) )%>
 	</div>
 <% end %>

@@ -3,7 +3,7 @@
 	<a name="reply_message">&nbsp;</a>
 </div>
 
-<div class="section_box colored">
+<div class="section grey">
   <%= form_tag({:action => :topic}, {:method => :post, :id => "forum_topic_form"}) do %>
     <%=hidden_field_tag(:topic_id, @topic.id)%>
     

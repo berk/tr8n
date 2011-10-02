@@ -31,4 +31,8 @@ class Tr8n::LanguageForumMessageFilter < Tr8n::BaseFilter
     "created_today"
   end
   
+  def inner_joins
+    [:language, :language_forum_topic, :translator]
+  end
+  
 end

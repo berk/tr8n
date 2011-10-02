@@ -42,11 +42,10 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   alias :comments     :translation_key_comments
   
   def self.find_or_create(label, desc = "", options = {})
-    key = generate_key(label, desc)
+    key = generate_key(label, desc).to_s
     
-    # translation keys don't ever change, so no real reason to invalidate them  
     tkey = Tr8n::Cache.fetch("translation_key_#{key}") do 
-      existing_key = find_by_key(key) 
+      existing_key = where(:key => key).first
       
       unless existing_key
         if options[:api] and (not Tr8n::Config.api[:allow_key_registration])
@@ -63,7 +62,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
       locale = options[:locale] || Tr8n::Config.block_options[:default_locale] || Tr8n::Config.default_locale
       
       existing_key ||= begin
-        new_tkey = create(:key => key, 
+        new_tkey = create(:key => key.to_s, 
                           :label => label, 
                           :description => desc, 
                           :locale => locale,
@@ -81,9 +80,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
       update_default_locale(existing_key, options)
       
       # mark each key as verified - but only if caching is enabled
-      if Tr8n::Config.enable_caching?
-        existing_key.update_attributes(:verified_at => Time.now)
-      end  
+      existing_key.update_attributes(:verified_at => Time.now) if Tr8n::Config.enable_caching?
       existing_key
     end
     
@@ -125,15 +122,15 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   end
   
   def self.generate_key(label, desc = "")
-    Digest::MD5.hexdigest("#{label};;;#{desc}")
+    # TODO: there is something iffy going on with the strings from the hash
+    # without the extra ~ = the strings are not seen in the sqlite database - wtf?
+    "#{Digest::MD5.hexdigest("#{label};;;#{desc}")}~"[0..-2]
   end
 
   def reset_key!
     # remove old key from cache
     Tr8n::Cache.delete("translation_key_#{key}")
-    
-    self.key = self.class.generate_key(label, description)
-    save
+    self.update_attributes(:key => self.class.generate_key(label, description))
   end
   
   def language
@@ -143,17 +140,17 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   def tokenized_label
     @tokenized_label ||= Tr8n::TokenizedLabel.new(label)
   end
-  
-  # comments are left for a specific language
-  def comments(language = Tr8n::Config.current_language)
-    Tr8n::TranslationKeyComment.find(:all, :conditions => ["language_id = ? and translation_key_id = ?", language.id, self.id])
-  end
-  
+
   delegate :tokens, :tokens?, :to => :tokenized_label
   delegate :data_tokens, :data_tokens?, :to => :tokenized_label
   delegate :decoration_tokens, :decoration_tokens?, :to => :tokenized_label
   delegate :translation_tokens, :translation_tokens?, :to => :tokenized_label
   delegate :sanitized_label, :tokenless_label, :suggestion_tokens, :words, :to => :tokenized_label
+
+  # comments are left for a specific language
+  def comments(language = Tr8n::Config.current_language)
+    Tr8n::TranslationKeyComment.where("language_id = ? and translation_key_id = ?", language.id, self.id)
+  end
 
   # returns only the tokens that depend on one or more rules of the language, if any defined for the language
   def language_rules_dependant_tokens(language = Tr8n::Config.current_language)
@@ -182,7 +179,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   end
 
   def glossary
-    @glossary ||= Tr8n::Glossary.find(:all, :conditions => ["keyword in (?)", words], :order => "keyword asc")
+    @glossary ||= Tr8n::Glossary.where("keyword in (?)", words).order("keyword asc")
   end
   
   def glossary?
@@ -230,14 +227,9 @@ class Tr8n::TranslationKey < ActiveRecord::Base
 
   # returns all translations for the key, language and minimal rank
   def translations_for(language, rank = nil)
-    conditions = ["translation_key_id = ? and language_id = ?", self.id, language.id]
-    
-    if rank
-      conditions[0] << " and rank >= ?"
-      conditions << rank
-    end
-
-    Tr8n::Translation.find(:all, :conditions => conditions, :order => "rank desc")
+    translations = Tr8n::Translation.where("translation_key_id = ? and language_id = ?", self.id, language.id)
+    translations = translations.where("rank >= ?", rank) if rank
+    translations.order("rank desc")
   end
 
   # used by the inline popup dialog, we don't want to show blocked translations
@@ -247,7 +239,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   
   # returns only the translations that meet the minimum rank
   def valid_translations_for(language)
-    Tr8n::Cache.fetch("translations_#{language.locale}_#{self.key}") do
+    Tr8n::Cache.fetch("translations_#{language.locale}_#{key}") do
       translations_for(language, Tr8n::Config.translation_threshold)
     end
   end
@@ -304,7 +296,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   end
 
   def self.random
-    find(:first, :offset => rand(count - 1))
+    self.limit(1).offset(count-1)
   end
 
   # returns back grouped by context - used by API
@@ -567,59 +559,44 @@ class Tr8n::TranslationKey < ActiveRecord::Base
       ["unlocked only", "unlocked"]]
   end
   
-  def self.search_conditions_for(params)
-    conditions = ["tr8n_translation_keys.locale <> ? and (level is null or level <= ?)", Tr8n::Config.current_language.locale, Tr8n::Config.current_translator.level]
+  def self.for_params(params)
+    results = self.where("tr8n_translation_keys.locale <> ? and (level is null or level <= ?)", Tr8n::Config.current_language.locale, Tr8n::Config.current_translator.level)
     
     if Tr8n::Config.enable_caching?
-      conditions[0] << " and verified_at is not null"
+      results = results.where("verified_at is not null")
     end  
     
     unless params[:search].blank?
-      conditions[0] << " and (tr8n_translation_keys.label like ? or tr8n_translation_keys.description like ?)" 
-      conditions << "%#{params[:search]}%"
-      conditions << "%#{params[:search]}%"  
+      results = results.where("(tr8n_translation_keys.label like ? or tr8n_translation_keys.description like ?)", "%#{params[:search]}%", "%#{params[:search]}%")
     end
 
     # for with and approved, allow user to specify the kinds
     if params[:phrase_type] == "with"
-      conditions[0] << " and tr8n_translation_keys.id in (select tr8n_translations.translation_key_id from tr8n_translations where tr8n_translations.language_id = ?) "
-      conditions << Tr8n::Config.current_language.id
+      results = results.where("tr8n_translation_keys.id in (select tr8n_translations.translation_key_id from tr8n_translations where tr8n_translations.language_id = ?)", Tr8n::Config.current_language.id)
       
       # if approved, ensure that translation key is locked
       if params[:phrase_status] == "approved" 
-        conditions[0] << " and tr8n_translation_keys.id in (select tr8n_translation_key_locks.translation_key_id from tr8n_translation_key_locks where tr8n_translation_key_locks.language_id = ? and tr8n_translation_key_locks.locked = ?) "
-        conditions << Tr8n::Config.current_language.id
-        conditions << true
+        results = results.where("tr8n_translation_keys.id in (select tr8n_translation_key_locks.translation_key_id from tr8n_translation_key_locks where tr8n_translation_key_locks.language_id = ? and tr8n_translation_key_locks.locked = ?)", Tr8n::Config.current_language.id, true)
       
         # if approved, ensure that translation key does not have a lock or unlocked
       elsif params[:phrase_status] == "pending" 
-        conditions[0] << " and tr8n_translation_keys.id not in (select tr8n_translation_key_locks.translation_key_id from tr8n_translation_key_locks where tr8n_translation_key_locks.language_id = ? and tr8n_translation_key_locks.locked = ?) "
-        conditions << Tr8n::Config.current_language.id
-        conditions << true
+        results = results.where("tr8n_translation_keys.id not in (select tr8n_translation_key_locks.translation_key_id from tr8n_translation_key_locks where tr8n_translation_key_locks.language_id = ? and tr8n_translation_key_locks.locked = ?)", Tr8n::Config.current_language.id, true)
       end
             
     elsif params[:phrase_type] == "without"
-      conditions[0] << " and tr8n_translation_keys.id not in (select tr8n_translations.translation_key_id from tr8n_translations where tr8n_translations.language_id = ?)"
-      conditions << Tr8n::Config.current_language.id
+      results = results.where("tr8n_translation_keys.id not in (select tr8n_translations.translation_key_id from tr8n_translations where tr8n_translations.language_id = ?)", Tr8n::Config.current_language.id)
       
     elsif params[:phrase_type] == "followed"
-      conditions[0] << " and tr8n_translation_keys.id in (select tr8n_translator_following.object_id from tr8n_translator_following where tr8n_translator_following.translator_id = ? and tr8n_translator_following.object_type = ?)"
-      
-      conditions << Tr8n::Config.current_translator.id
-      conditions << 'Tr8n::TranslationKey'
+      results = results.where("tr8n_translation_keys.id in (select tr8n_translator_following.object_id from tr8n_translator_following where tr8n_translator_following.translator_id = ? and tr8n_translator_following.object_type = ?)", Tr8n::Config.current_translator.id, 'Tr8n::TranslationKey')
     end
     
     if params[:phrase_lock] == "locked"
-      conditions[0] << " and tr8n_translation_keys.id in (select tr8n_translation_key_locks.translation_key_id from tr8n_translation_key_locks where tr8n_translation_key_locks.language_id = ? and tr8n_translation_key_locks.locked = ?) "
-      conditions << Tr8n::Config.current_language.id
-      conditions << true
+      results = results.where("tr8n_translation_keys.id in (select tr8n_translation_key_locks.translation_key_id from tr8n_translation_key_locks where tr8n_translation_key_locks.language_id = ? and tr8n_translation_key_locks.locked = ?)", Tr8n::Config.current_language.id, true)
       
     elsif params[:phrase_lock] == "unlocked"  
-      conditions[0] << " and tr8n_translation_keys.id not in (select tr8n_translation_key_locks.translation_key_id from tr8n_translation_key_locks where tr8n_translation_key_locks.language_id = ? and tr8n_translation_key_locks.locked = ?) "
-      conditions << Tr8n::Config.current_language.id
-      conditions << true
+      results = results.where("tr8n_translation_keys.id not in (select tr8n_translation_key_locks.translation_key_id from tr8n_translation_key_locks where tr8n_translation_key_locks.language_id = ? and tr8n_translation_key_locks.locked = ?)", Tr8n::Config.current_language.id, true)
     end
     
-    conditions
+    results
   end    
 end

@@ -43,4 +43,8 @@ class Tr8n::TranslatorFilter < Tr8n::BaseFilter
     "created_today"
   end
   
+  def inner_joins
+    [:user]
+  end
+  
 end

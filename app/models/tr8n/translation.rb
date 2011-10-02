@@ -246,54 +246,33 @@ class Tr8n::Translation < ActiveRecord::Base
      ["date", "date"]].collect{|option| [option.first.trl("Translation filter group by option"), option.last]}
   end
   
-  def self.search_conditions_for(params, language = Tr8n::Config.current_language)
-    conditions = ["language_id = ?", language.id]
-    
-    unless params[:search].blank?
-      conditions[0] << " and " unless conditions[0].blank?
-      conditions[0] << "label like ?" 
-      conditions << "%#{params[:search]}%"
-    end
-
+  def self.for_params(params, language = Tr8n::Config.current_language)
+    results = self.where("language_id = ?", language.id)
+    results = results.where("label like ?", "%#{params[:search]}%") unless params[:search].blank?
+  
     if params[:with_status] == "accepted"
-      conditions[0] << " and " unless conditions[0].blank?
-      conditions[0] << " rank >= ? "
-      conditions << Tr8n::Config.translation_threshold
+      results = results.where("rank >= ?", Tr8n::Config.translation_threshold)
     elsif params[:with_status] == "pending"
-      conditions[0] << " and " unless conditions[0].blank?
-      conditions[0] << " rank >= 0 and rank < ? "
-      conditions << Tr8n::Config.translation_threshold
+      results = results.where("rank >= 0 and rank < ?", Tr8n::Config.translation_threshold)
     elsif params[:with_status] == "rejected"
-      conditions[0] << " and " unless conditions[0].blank?
-      conditions[0] << " rank < 0 "
+      results = results.where("rank < 0")
     end
     
     if params[:submitted_by] == "me"
-      conditions[0] << " and " unless conditions[0].blank?
-      conditions[0] << " translator_id = ? "
-      conditions << Tr8n::Config.current_translator.id
+      results = results.where("translator_id = ?", Tr8n::Config.current_translator.id)
     end
     
     if params[:submitted_on] == "today"
       date = Date.today
-      conditions[0] << " and " unless conditions[0].blank?
-      conditions[0] << "created_at >= ? and created_at < ?" 
-      conditions << date
-      conditions << (date + 1.day)
+      results = results.where("created_at >= ? and created_at < ?", date, date + 1.day)
     elsif params[:submitted_on] == "yesterday"
       date = Date.today - 1.days
-      conditions[0] << " and " unless conditions[0].blank?
-      conditions[0] << "created_at >= ? and created_at < ?" 
-      conditions << date
-      conditions << (date + 1.day)
+      results = results.where("created_at >= ? and created_at < ?", date, date + 1.day)
     elsif params[:submitted_on] == "last_week"
       date = Date.today - 7.days
-      conditions[0] << " and " unless conditions[0].blank?
-      conditions[0] << "created_at >= ? and created_at < ?" 
-      conditions << date
-      conditions << Date.today
+      results = results.where("created_at >= ? and created_at < ?", date, Date.today)
     end    
-    conditions
+    results
   end 
     
 end

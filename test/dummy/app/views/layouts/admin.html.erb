@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+			<title><%=trl("Tr8n Translation Memory Server", "Application title")%></title>
+			<%= stylesheet_link_tag    "admin" %>
+			<%= javascript_include_tag "admin" %>
+			<%= csrf_meta_tag %>
+			<%= tr8n_scripts_tag %>
+        <style>
+            .page_fixed {
+                width: 100%;
+            }
+            
+            .page_body {
+                width: 100%;
+            }
+            
+            .wf_form {
+                width: 99.8%;
+            }
+            
+            .admin_category_item {
+                padding-bottom: 3px;
+                text-align: left;
+                width: 100%;
+                border-right: 0px solid #ccc;
+                background-color: #eceff5;
+            }
+            
+            .admin_category_item_selected {
+                text-align: left;
+                width: 100%;
+                padding: 0px;
+                border-top: 1px solid #ccc;
+                border-bottom: 1px solid #ccc;
+                border-left: 0;
+                border-right: 1px solid #feffef;
+                background-color: #FEFFEF;
+            }
+            
+            .admin_category_item_selected a {
+                color: black;
+            }
+        </style>
+    </head>
+		
+    <%
+		    admin_links = [
+			    ["Site Users", "/admin/users", "users"],
+			    ["Site Admins", "/admin/admins", "admins"],
+			    ["Tr8n Administration", "/tr8n/admin/language", "language"],
+        ] 
+    %>
+		
+    <body style="spacing:0px; padding:0px; margin:0px; background-color:#f5f5f5;">
+        <div class="document">
+            <%=render :partial => "/layouts/header" %>
+            <div class="page_fixed">
+                <div class="page_body">
+                    <div class="content_module">
+                        <div class="content_inner" style="padding: 10px;">
+                            <table style="width:100%" cellpadding="0px" cellspacing="5px">
+                                <tr>
+                                    <td style="background-color:#eceff5;vertical-align:top;width:180px;min-width:180px;font-size:12px; border-right:1px solid #ccc;">
+                                        <div style="font-size:16px;font-weight:bold;padding:10px; text-align:center">
+                                            Admin Options
+                                        </div>
+                                        <% admin_links.each do |admin| %>
+	                                        <% kls = "admin_category_item"
+	                                        ctrl_name = controller.controller_name
+	                                        ctrl_name = 'language' if request.url.index('/tr8n/')
+	                                        if admin[2] == ctrl_name
+	                                          kls = "admin_category_item_selected"
+	                                        end %>
+	                                        <div class='<%=kls%>'>
+	                                            <div style="padding:5px;">
+	                                                <%=link_to(admin[0], admin[1]) %>
+	                                            </div>
+	                                        </div>
+                                        <% end %>
+                                    </td>
+                                    <td valign="top" style="padding-left:10px;">
+                                        <%= yield %>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <%=render :partial =>"/layouts/footer" %>
+            </div>
+        </div>
+    </body>
+</html>

@@ -21,6 +21,8 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-class Tr8n::KeyRegistrationException < Tr8n::Exception
+module Tr8n
+  class KeyRegistrationException < Tr8n::Exception
 
+  end
 end

@@ -119,8 +119,7 @@ class Tr8n::TranslationsController < Tr8n::BaseController
 
   # list of translations    
   def index
-    conditions = Tr8n::Translation.search_conditions_for(params)
-    @translations = Tr8n::Translation.paginate(:per_page => per_page, :page => page, :conditions => conditions, :order => "created_at desc, rank desc")    
+    @translations = Tr8n::Translation.for_params(params).order("created_at desc, rank desc").page(page).per(per_page)
   end
 
   # ajax based method for updating individual translations

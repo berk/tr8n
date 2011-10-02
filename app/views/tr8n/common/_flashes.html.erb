@@ -1,35 +1,77 @@
 <style>
-.flash_error {
-  background-color: #ffeded;
-  border: 1px #f58a8a solid;
-  border-left:none;
-  border-right:none;
-  color:#b60e0e;
-  padding: 7px 10px;
-  margin:10px auto 20px auto;
-  font-weight:bold;
-}
-
 .flash_notice {
   background-color: #f1ffed;
   border: 1px #a3f58a solid;
-  border-left:none;
-  border-right:none;
-  color:#1e7b21;
+  color: #1e7b21;
   padding: 7px 10px;
-  margin:10px auto 20px auto;
+  margin-left:10px;
+  margin-right:10px;
   font-weight:bold;
-}  
+  border-radius: 5px 5px 5px 5px;
+  border-width: 1px 1px 2px 1px;
+	margin-bottom:10px;
+} 
+ 
+.flash_error {
+  background-color: #ffeded;
+  border: 1px #f58a8a solid;
+  color: #b60e0e;
+  padding: 7px 10px;
+  margin-left:10px;
+  margin-right:10px;
+  font-weight:bold;
+  border-radius: 5px 5px 5px 5px;
+  border-width: 1px 1px 2px 1px;
+	margin-bottom:10px;
+}
+
+.flash_warning {
+  border: 1px #f58a8a solid;
+  color: #b60e0e;
+  padding: 7px 10px;
+  margin-left:10px;
+  margin-right:10px;
+  font-weight:bold;
+  border-radius: 5px 5px 5px 5px;
+  border-width: 1px 1px 2px 1px;
+  border-color: #DDDD99;
+  background-color:LightYellow;
+	margin-bottom:10px;
+}
 </style>
 
+
 <% if flash[:trfn] %>
-  <div class="flash_notice"><%= flash[:trfn] %></div>
-	<% flash[:trfn] = nil %>
+   <div class="flash_notice" id="flash_notice">
+   	<div style="float:right">
+   		<%=link_to_function(image_tag("tr8n/close.gif"), "Tr8n.Effects.hide('flash_notice');") %>
+   	</div>
+   	<%= image_tag("tr8n/checkmark.png", :style=>"height:20px;margin-right:10px;")%> 
+   	<%= flash[:trfn] %>
+  </div>
+   <%flash[:trfn] = nil%>
 <% end %>
 
 <% if flash[:trfe] %>
-  <div class="flash_error"><%= flash[:trfe] %></div>
-	<% flash[:trfe] = nil %>
+   <div class="flash_error" id="flash_error">
+     <div style="float:right">
+       <%=link_to_function(image_tag("tr8n/close.gif"), "Tr8n.Effects.hide('flash_error');") %>
+     </div>
+     <%= image_tag("tr8n/error.png", :style=>"height:20px;margin-right:10px;")%> 
+   	<%= flash[:trfe] %>
+	</div>
+	<%flash[:trfe] = nil%>
+<% end %>
+
+<% if flash[:trfw] %>
+   <div class="flash_warning" id="flash_warning">
+     <div style="float:right">
+       <%=link_to_function(image_tag("tr8n/close.gif"), "Tr8n.Effects.hide('flash_warning');") %>
+     </div>
+		<%=image_tag("tr8n/warning.png", :style=>"height:25px;margin-right:10px") %> 
+   	<%= flash[:trfw] %>
+	</div>
+	<%flash[:trfw] = nil%>
 <% end %>
 
 <noscript>

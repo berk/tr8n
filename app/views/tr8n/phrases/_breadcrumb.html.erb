@@ -5,7 +5,7 @@
         >> <%=link_to(tra(section.label, section.description), :action => :index, :section_key => section.key) %>
 			<% end %>	
       <% if @translation_key %>
-      >> <%=link_to(@translation_key.label, :action => :view, :translation_key_id => @translation_key.id, :section_key => @section[:key]) %>
+      >> <%=link_to(@translation_key.label, :action => :view, :translation_key_id => @translation_key.id, :section_key => @section.key) %>
       <% end %>
   </div>
 <% end %>

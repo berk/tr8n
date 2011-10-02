@@ -27,4 +27,8 @@ class Tr8n::LanguageForumAbuseReportFilter < Tr8n::BaseFilter
     [["Tr8n::Language", :language_id], ["Tr8n::LanguageForumMessage", :language_forum_message_id], ["Tr8n::Translator", :translator_id]]
   end
   
+  def inner_joins
+    [:language, :language_forum_message, :translator]
+  end
+  
 end

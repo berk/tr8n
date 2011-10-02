@@ -2,7 +2,7 @@
 	<%= render :partial => "/tr8n/common/header" %>
 	<%= render :partial => "breadcrumb" %>
 	
-  <div class="section_box" style="margin-bottom:10px; background-color:#EFF8FF; margin-top:0px;">
+  <div class="section blue">
 	  <%= form_tag({:action => :index}, {:method => :get, :id => "translations_search_form"}) do %>
 	      <%=hidden_field_tag(:section_key, @section_key) %>
 			  <div style="float:right">
@@ -26,9 +26,9 @@
 	  <% end %>
 	</div>
 	
-	<div style="margin-top:10px; margin-bottom:10px; border: 1px dotted #ccc; padding:10px;">
+	<div class="section">
     <% if @translation_keys.any? %>
-      <%= render :partial => "/tr8n/common/paginator", :locals => {:objects => @translation_keys, :subject => 'phrase'} %>
+			<%= tr8n_paginator_tag(@translation_keys, 'phrase') %>	
     <% end %>
 	
 	  <table style="width:100%">
@@ -45,7 +45,7 @@
 	        <% color = tk.locked? ? "#ECFFEF" : "#FDFDDF" %>
 	        <td style="padding:5px; background: <%=color%>; ">
 	          <% if tk.locked? %>
-	            <div style="float:right"><%=image_tag("/tr8n/images/lock.png", :style=>"width:12px", :title => trla("This phrase is locked"))%></div>
+	            <div style="float:right"><%=image_tag("tr8n/lock.png", :style=>"width:12px", :title => trla("This phrase is locked"))%></div>
 	          <% end %>
 	          <%=link_to(tk.default_decoration, :action => :view, :translation_key_id => tk.id, :section_key => @section_key)%>
 	          <div style="color:grey;font-size:10px;padding-top:3px;"><%=tk.description%></div>

@@ -43,9 +43,9 @@
 						</td>
 						<td style="text-align:right;vertical-align:top;white-space:nowrap;">
 		          <% unless lcase.native_name.blank? %>  
-		            <%=link_to_function(image_tag("/tr8n/images/pencil.png"), "editLanguageCase('#{index}')", :id => "language_case_edit_link_#{index}")%>
+		            <%=link_to_function(image_tag("tr8n/pencil.png"), "editLanguageCase('#{index}')", :id => "language_case_edit_link_#{index}")%>
 		          <% end %>
-		          <%=link_to_function(image_tag("/tr8n/images/delete.png"), "deleteLanguageCase('#{index}')")%>							
+		          <%=link_to_function(image_tag("tr8n/delete.png"), "deleteLanguageCase('#{index}')")%>							
 						</td>
 	      	</tr>  
 	       </table>

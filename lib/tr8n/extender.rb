@@ -21,14 +21,16 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-module Tr8n::Extender
-  def extended(mod)
-    mod.send(:extend,  self::ClassMethods)
-    mod.send(:include, self::InstanceMethods)
-  end
+module Tr8n
+  module Extender
+    def extended(mod)
+      mod.send(:extend,  self::ClassMethods)
+      mod.send(:include, self::InstanceMethods)
+    end
 
-  def included(mod)
-    mod.send(:extend,  self::ClassMethods)
-    mod.send(:include, self::InstanceMethods)
+    def included(mod)
+      mod.send(:extend,  self::ClassMethods)
+      mod.send(:include, self::InstanceMethods)
+    end
   end
 end

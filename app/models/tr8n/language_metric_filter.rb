@@ -60,4 +60,8 @@ class Tr8n::LanguageMetricFilter < Tr8n::BaseFilter
     end   
   end
 
+  def inner_joins
+    [:language]
+  end
+
 end

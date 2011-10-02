@@ -1,4 +1,4 @@
-<div id="permutations_module" class="section_box colored" style="display:none">
+<div id="permutations_module" class="section grey" style="display:none">
 	<%= form_for(@translation, :as => :translation, :url => {:controller => "/tr8n/translations", :action => :permutate}, :html => {:id => 'permutation_form', :method => :post}) do |f| %>
 	    <%= hidden_field_tag(:translation_key_id, @translation_key.id) %>
 	    <%= hidden_field_tag(:source_url, @source_url) %>
@@ -14,7 +14,7 @@
        <%=trla("For example, if the translation depends on the gender of the viewing user, select the gender context for the viewing_user token.")%>
       </div>
 
-      <div style="padding:15px; border: 1px dotted #ccc; background:#EFF8FF;" >
+      <div class="section blue" style="" >
         <%=render :partial => "/tr8n/common/permutations" %>
       </div>
 

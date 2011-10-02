@@ -1,0 +1,10 @@
+<div class="section_title">Site Users</div>
+
+<%= will_filter_tag(@users) %>
+
+<%= will_filter_table_tag(@users, :columns => [:id, :email, 
+		:first_name, :last_name, :gender, :locale,
+		[:admin, lambda{|user| user.admin?}],
+		:created_at,
+		[:actions, lambda{|user| user.admin? ? link_to('demote', :action => :demote, :user_id => user.id) : link_to('promote', :action => :promote, :user_id => user.id)}] 
+	]) %>

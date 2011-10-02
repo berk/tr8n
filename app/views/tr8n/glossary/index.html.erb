@@ -2,7 +2,7 @@
 
 	<%= render :partial => "/tr8n/common/header" %>
 	
-	<div class="section_box" style="margin-bottom:10px; background-color:#EFF8FF; margin-top:0px;">
+	<div class="section blue">
 	  <%= form_tag({:action => :index}, {:method => :get, :id => "glossary_search_form"}) do %>
        <div style="float:right">
             <button type="submit" class="translator_btn translator_small_btn" onClick="Tr8n.Effects.submit('glossary_search_form'); return false;">
@@ -14,7 +14,7 @@
 	  <% end %>
 	</div>
 	
-	<div class="section_box">
+	<div class="section">
 	  <%= render :partial => "/tr8n/common/paginator", :locals => {:objects => @terms, :subject => 'term'} %>
 	
 	  <table style="width:100%">

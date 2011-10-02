@@ -1,35 +1,39 @@
-<h2>Translation Key Caller</h2>
-<table class="admin_table">
-    <tr>
-        <th>
-            Label:
-        </th>
-        <td>
-            <%=@key_source.key.label%>
-        </td>
-    </tr>
-    <tr>
-        <th valign="top">
-            Description:
-        </th>
-        <td>
-            <%=@key_source.key.description%>
-        </td>
-    </tr>
-    <tr>
-        <th>
-            Source:
-        </th>
-        <td>
-            <%=@key_source.source.source%>
-        </td>
-    </tr>
-</table>
-
-<div style="height:400px; overflow:auto;">
-	<%=@caller.join("<br>")%>
-</div>
-
-<div style="text-align:center;padding-top:10px; font-size:10px;">
-   <%=link_to_function("<span>close</span>", "tr8nLightbox.hide()", :class => "tr8n_grey_button tr8n_pcb") %>
+<div class="inner">
+    <div class="hd">
+        <div style="float:right;">
+            <%=link_to_function(image_tag("tr8n/close.gif"), "tr8nLightbox.hide();") %>
+        </div>
+        Translation Key Caller
+    </div>
+    <div class="bd">
+        <table class="admin_table">
+            <tr>
+                <th>
+                    Label:
+                </th>
+                <td>
+                    <%=@key_source.key.label %>
+                </td>
+            </tr>
+            <tr>
+                <th valign="top">
+                    Description:
+                </th>
+                <td>
+                    <%=@key_source.key.description %>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    Source:
+                </th>
+                <td>
+                    <%=@key_source.source.source %>
+                </td>
+            </tr>
+        </table>
+        <div style="height:400px; overflow:auto;">
+            <%=@caller.join("<br>") %>
+        </div>
+    </div>
 </div>

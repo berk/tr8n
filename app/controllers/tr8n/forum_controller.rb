@@ -26,7 +26,7 @@ class Tr8n::ForumController < Tr8n::BaseController
   before_filter :validate_current_translator
   
   def index
-    @topics = Tr8n::LanguageForumTopic.paginate(:all, :conditions => ["language_id = ?", tr8n_current_language.id], :page => page, :per_page => per_page, :order => "created_at desc")
+    @topics = Tr8n::LanguageForumTopic.where(:language_id => tr8n_current_language.id).order("created_at desc").page(page).per(per_page)
   end
 
   def topic
@@ -48,7 +48,7 @@ class Tr8n::ForumController < Tr8n::BaseController
         params[:page] += 1 unless (@topic.post_count % per_page.to_i == 0) 
       end
 
-      @messages = Tr8n::LanguageForumMessage.paginate(:all, :conditions => ["language_forum_topic_id = ?", @topic.id], :page => page, :per_page => per_page, :order => "created_at asc")
+      @messages = Tr8n::LanguageForumMessage.where(:language_forum_topic_id => @topic.id).order("created_at asc").page(page).per(per_page)
     end
   end
 

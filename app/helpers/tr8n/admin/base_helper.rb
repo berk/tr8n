@@ -24,7 +24,7 @@
 module Tr8n::Admin::BaseHelper
 
   def tr8n_will_filter(results)
-    will_filter(results)
+    will_filter_tag(results)
   end
 
   def tr8n_will_paginate(collection = nil, options = {})

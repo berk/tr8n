@@ -40,5 +40,9 @@ module Tr8n::BaseHelper
   def trla(label, desc = "", tokens = {}, options = {})
     tra(label, desc, tokens, options.merge(:skip_decorations => true))
   end
-
+  
+  def tr8n_paginator_tag(results, subject)  
+    render :partial => "/tr8n/common/paginator", :locals => {:objects => results, :subject => subject}
+  end
+  
 end

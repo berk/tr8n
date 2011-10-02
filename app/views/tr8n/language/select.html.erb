@@ -1,9 +1,9 @@
 <%= tr8n_with_options_tag(:default_locale => 'en-US', :admin => true) do %>
 	<div class="head">
 	  <div class="action">
-	    <%=link_to_function(image_tag("/tr8n/images/close.gif", :style => "border:0px; padding:5px;", :alt=>trla("Close")), "tr8nLanguageSelector.hide()")%>
+	    <%=link_to_function(image_tag("tr8n/close.gif", :style => "border:0px; padding:5px;", :alt=>trla("Close")), "tr8nLanguageSelector.hide()")%>
 	  </div>
-	  <div style="padding-top:3px"><%=trla("Select a Language")%></div>
+	  <div style="padding-top:3px"><%=trla("Select you language")%></div>
 	</div>
 	
 	<div id="tr8n_language_lists" style="margin-top:2px;">    
@@ -58,7 +58,7 @@
 	  	<tr>
 	  		<td style="vertical-align:middle"><%=tr8n_help_icon_tag %></td>
 				<td style="font-size:10px; font-family:arial; vertical-align:middle">&nbsp;
-	        <%=trla("Click this icon to view [link: translation help] in a new window.", "", :link => lambda{|value| link_to(value, "tr8n/help")})%>
+	        <%=trla("Click this icon to view [link: translation help] in a new window.", "", :link => lambda{|value| link_to(value, "/tr8n/help")})%>
 				</td>
 	  	</tr>
 	  </table>

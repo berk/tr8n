@@ -1,18 +1,27 @@
-<%= form_for(@translator, :as => :translator, :url => {:action => :register}, :html => {:id => 'tr8n_form', :method => :post, :class => "tr8n"}) do |form| %>
-  <%= form.hidden_field :id %>
-  <%= hidden_field_tag :source_url, request.env['HTTP_REFERER'] %>
-  
-  <h2>User Translator Registration</h2>
-  <table class="admin_table">
-      <tr>
-          <th>
-              <%= Tr8n::Config.site_info[:user_info][:class_name] %> Id:
-          </th>
-          <td>
-              <%= form.text_field :user_id, :style=>"width:100%;" %>
-          </td>
-      </tr>
-  </table>
-
-  <%= render :partial => "/tr8n/admin/common/lightbox_buttons" %>
-<% end %>
+<div class="inner">
+    <div class="hd">
+        <div style="float:right;">
+            <%=link_to_function(image_tag("tr8n/close.gif"), "tr8nLightbox.hide();") %>
+        </div>
+        User Translator Registration
+    </div>
+    <div class="bd">
+        <%= form_for(@translator, :as => :translator, :url => {:action => :register}, :html => {:id => 'tr8n_form', :method => :post, :class => "tr8n"}) do |form| %>
+        <%= form.hidden_field :id %>
+        <%= hidden_field_tag :source_url, request.env['HTTP_REFERER'] %>
+        <table class="admin_table">
+            <tr>
+                <th>
+                    <%= Tr8n::Config.site_info[:user_info][:class_name] %>Id:
+                </th>
+                <td>
+                    <%= form.text_field :user_id, :style=>"width:99%;" %>
+                </td>
+            </tr>
+        </table>
+        <% end %>
+    </div>
+    <div class="ft">
+      <%= render :partial => "/tr8n/admin/common/lightbox_buttons" %>     
+    </div>
+</div>
