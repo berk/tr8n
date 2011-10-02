@@ -1,12 +1,12 @@
 = Welcome to Tr8n Translation Engine
 
-Tr8n Translation Engine is a Rails Engine Gem that provides a framework for crowd-sourced translation and management of any content 
-for any Rails based application. The power of the engine comes from its simple and friendly user interface that allows site users 
-to rapidly translate the site into hundreds of languages. The flexible and robust rules engine that powers tr8n allows for any combination 
-of language specific rules in any translatable sentence. Users can provide information on what sentences depend on gender rules, 
-number rules or other rules configured for each language. The language specific context and case rules can be registered and managed for any language in 
-the advanced user interface. The engine provides a set of powerful administration tools that allow admins to manage any aspect of the engine; 
-enabling and disabling its features and monitoring translation progress.
+Tr8n Translation Engine is a Rails Engine Plugin/Gem that provides a framework for crowd-sourced translation of any Rails based application. 
+The power of the engine comes from its simple and friendly user interface that allows site users to rapidly translate the site into hundreds 
+of languages. The flexible and robust rules engine that powers Tr8n allows for any combination of language specific rules in any translatable 
+sentence. Users can provide information on what sentences depend on gender rules, number rules or other rules configured for each language. 
+The language specific context and case rules can be registered and managed for any language in the advanced user interface. The engine 
+provides a set of powerful administration tools that allow admins to manage any aspect of the engine; enabling and disabling its features 
+and monitoring translation progress.
 
 The Tr8n engine itself is based on a very robust and flexible pluggable architecture where rule types and the syntax of the "tr" tokens 
 can be configured or extended for any application deployment.
@@ -41,35 +41,43 @@ http://wiki.tr8n.org/index.php?title=Tr8n_Languages
 
 Add the following gems to your Gemfile: 
 
-  gem "will_paginate", "~> 3.0.pre2"
-  gem 'will_filter', "~> 3.0.0" 
-  gem 'tr8n', "~> 3.0.0" 
-
+  gem 'kaminari'
+  gem 'will_filter', "~> 3.1.2" 
+  gem 'tr8n', "~> 3.1.1" 
+  gem 'sass'
+	gem 'coffee-script'
+	
 And run:
 
-  $ bundle install
+  $ bundle
+
+At the top of your routes.rb file, add the following line:
+
+  mount WillFilter::Engine => "/will_filter"
+  mount Tr8n::Engine => "/tr8n"
 
 To configure and initialize tr8n engine, run the following commands: 
 
-  $ rails generate will_filter  
-  $ rails generate tr8n  
-  $ rake db:migrate 
-  $ rake tr8n:init 
-  $ rails server 
+	  $ rails generate will_filter  
+	  $ rails generate tr8n  
+	  $ rake db:migrate 
+	  $ rake tr8n:init 
+	  $ rails s 
 
 Open your browser and point to:
 
-http://localhost:3000/tr8n
+  http://localhost:3000/tr8n
+
 
 = Integration Instructions
 
-The best way to get going with Tr8n is to run the sample application and follow the instructions and documentation in the app:
+The best way to get going with Tr8n is to run the sample application that comes with Tr8n and follow the instructions and documentation in the app:
 
-  $ git clone -b rails3 git://github.com/berk/tr8n_examples.git
-  $ cd tr8n_examples
+  $ git clone git://github.com/berk/tr8n.git
+  $ cd tr8n/test/dummy
   $ rake db:migrate
   $ rake tr8n:init
-  $ rails server
+  $ rails s
 
 Open your browser and point to:
 
@@ -83,17 +91,38 @@ http://bit.ly/e9QhFY
 
 Below are a few screenshots of what tr8n looks like:
 
-http://wiki.tr8n.org/images/b/b7/Tr8n_screenshot_1.png
+Tr8n Language Selector (in a lightbox)
 
-http://wiki.tr8n.org/images/5/55/Tr8n_screenshot_2.png
+http://wiki.tr8n.org/images/e/e8/Tr8n1.png
 
-http://wiki.tr8n.org/images/3/3c/Tr8n_screenshot_3.png
+Tr8n Translation Interface
 
-http://wiki.tr8n.org/images/7/7b/Tr8n_screenshot_4.png
+http://wiki.tr8n.org/images/4/4d/Tr8n2.png
 
-http://wiki.tr8n.org/images/9/91/Tr8n_screenshot_5.png
+Tr8n Translation Votes Interface
 
-http://wiki.tr8n.org/images/8/8b/Tr8n_screenshot_6.png
+http://wiki.tr8n.org/images/c/ce/Tr8n3.png
+
+Tr8n Language Selector (as a dropdown)
+
+http://wiki.tr8n.org/images/6/64/Tr8n4.png
+
+Tr8n Translation Interface (with a keyboard)
+
+http://wiki.tr8n.org/images/4/47/Tr8n6.png
+
+Tr8n Translation Tools
+
+http://wiki.tr8n.org/images/0/02/Tr8n8.png
+
+Tr8n Translator Dashboard
+
+http://wiki.tr8n.org/images/7/7c/Tr8n5.png
+
+Tr8n Translation Admin Tools
+
+http://wiki.tr8n.org/images/4/44/Tr8n7.png
+
 
 = External Links
 
