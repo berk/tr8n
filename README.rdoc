@@ -1,9 +1,9 @@
 = Welcome to Tr8n Translation Engine
 
 Tr8n Translation Engine is a Rails Engine Plugin/Gem that provides a framework for crowd-sourced translation of any Rails based application. 
-The power of the engine comes from its simple and friendly user interface that allows site users to rapidly translate the site into hundreds 
-of languages. The flexible and robust rules engine that powers Tr8n allows for any combination of language specific rules in any translatable 
-sentence. Users can provide information on what sentences depend on gender rules, number rules or other rules configured for each language. 
+The power of the engine comes from its simple and friendly user interface that allows site users as well as professional translators to rapidly 
+translate the site into hundreds of languages. The flexible and robust rules engine that powers Tr8n allows for any combination of language 
+specific rules in any translatable sentence. Users can provide information on what sentences depend on gender rules, number rules or other rules configured for each language. 
 The language specific context and case rules can be registered and managed for any language in the advanced user interface. The engine 
 provides a set of powerful administration tools that allow admins to manage any aspect of the engine; enabling and disabling its features 
 and monitoring translation progress.
@@ -45,24 +45,26 @@ Add the following gems to your Gemfile:
   gem 'will_filter', "~> 3.1.2" 
   gem 'tr8n', "~> 3.1.1" 
   gem 'sass'
-	gem 'coffee-script'
+  gem 'coffee-script'
+
 	
 And run:
 
   $ bundle
 
-At the top of your routes.rb file, add the following line:
+At the top of your routes.rb file, add the following lines:
 
   mount WillFilter::Engine => "/will_filter"
   mount Tr8n::Engine => "/tr8n"
 
 To configure and initialize tr8n engine, run the following commands: 
 
-	  $ rails generate will_filter  
-	  $ rails generate tr8n  
-	  $ rake db:migrate 
-	  $ rake tr8n:init 
-	  $ rails s 
+  $ rails generate will_filter
+  $ rails generate tr8n
+  $ rake db:migrate
+  $ rake tr8n:init
+  $ rails s
+
 
 Open your browser and point to:
 
