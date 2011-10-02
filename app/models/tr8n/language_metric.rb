@@ -47,7 +47,7 @@ class Tr8n::LanguageMetric < ActiveRecord::Base
   
   def self.calculate_language_metrics
     last_daily_metric = Tr8n::DailyLanguageMetric.find(:first, :conditions => "metric_date is not null", :order => "metric_date desc")
-    metric_date = last_daily_metric.nil? ? Date.new(2010, 5, 1) : last_daily_metric.metric_date
+    metric_date = last_daily_metric.nil? ? Date.new(2011, 10, 1) : last_daily_metric.metric_date
 
     Tr8n::Language.enabled_languages.each do |lang|
       Tr8n::Logger.debug("Processing #{lang.english_name} language...")
