@@ -57,7 +57,7 @@ At the top of your routes.rb file, add the following lines:
   mount WillFilter::Engine => "/will_filter"
   mount Tr8n::Engine => "/tr8n"
 
-To configure and initialize tr8n engine, run the following commands: 
+To configure and initialize Tr8n engine, run the following commands: 
 
   $ rails generate will_filter
   $ rails generate tr8n
@@ -83,45 +83,42 @@ The best way to get going with Tr8n is to run the sample application that comes 
 
 Open your browser and point to:
 
-http://localhost:3000
+  http://localhost:3000
 
-Live Tr8n sample application is running here:
-
-http://bit.ly/e9QhFY 
 
 = Tr8n Screenshots
 
-Below are a few screenshots of what tr8n looks like:
+Below are a few screenshots of what Tr8n looks like:
 
-Tr8n Language Selector (in a lightbox)
+== Tr8n Language Selector (in a lightbox)
 
 http://wiki.tr8n.org/images/e/e8/Tr8n1.png
 
-Tr8n Translation Interface
+== Tr8n Translation Interface
 
 http://wiki.tr8n.org/images/4/4d/Tr8n2.png
 
-Tr8n Translation Votes Interface
+== Tr8n Translation Votes Interface
 
 http://wiki.tr8n.org/images/c/ce/Tr8n3.png
 
-Tr8n Language Selector (as a dropdown)
+== Tr8n Language Selector (as a dropdown)
 
 http://wiki.tr8n.org/images/6/64/Tr8n4.png
 
-Tr8n Translation Interface (with a keyboard)
+== Tr8n Translation Interface (with a keyboard)
 
 http://wiki.tr8n.org/images/4/47/Tr8n6.png
 
-Tr8n Translation Tools
+== Tr8n Translation Tools
 
 http://wiki.tr8n.org/images/0/02/Tr8n8.png
 
-Tr8n Translator Dashboard
+== Tr8n Translator Dashboard
 
 http://wiki.tr8n.org/images/7/7c/Tr8n5.png
 
-Tr8n Translation Admin Tools
+== Tr8n Translation Admin Tools
 
 http://wiki.tr8n.org/images/4/44/Tr8n7.png
 
