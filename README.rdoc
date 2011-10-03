@@ -73,10 +73,10 @@ Open your browser and point to:
 
 = Integration Instructions
 
-The best way to get going with Tr8n is to run the sample application that comes with Tr8n and follow the instructions and documentation in the app:
+The best way to get going with Tr8n is to run the gem as a stand-alone application and follow the instructions and documentation in the app:
 
   $ git clone git://github.com/berk/tr8n.git
-  $ cd tr8n/test/dummy
+  $ cd tr8n/local/tr8n_server
   $ rake db:migrate
   $ rake tr8n:init
   $ rails s

@@ -15,3 +15,5 @@ log/*
 .dotest*
 Thumbs.db
 .tmp*
+local/tr8n_server/tmp/*
+local/tr8n_server/.sass-cache/*

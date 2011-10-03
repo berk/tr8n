@@ -26,8 +26,6 @@ class Tr8n::AwardsController < Tr8n::BaseController
   before_filter :validate_current_translator
   
   def index
-    params[:mode] = "all" if tr8n_current_language.default?
-    
     if params[:mode] == "all"
       @translator_metrics = Tr8n::TranslatorMetric.where("language_id is null").order("total_translations desc, total_votes desc").limit(25)
     else

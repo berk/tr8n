@@ -78,6 +78,7 @@ class Tr8n::BaseController < ApplicationController
   helper_method :tr8n_current_user_is_translator?
 
   def tr8n_current_user_is_manager?
+    return true if Tr8n::Config.current_user_is_admin?
     return false unless Tr8n::Config.current_user_is_translator?
     tr8n_current_translator.manager?
   end

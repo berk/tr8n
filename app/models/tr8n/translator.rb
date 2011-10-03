@@ -195,11 +195,17 @@ class Tr8n::Translator < ActiveRecord::Base
     false
   end
 
+  def system?
+    rank == 1000000
+  end
+  
   def last_logs
     Tr8n::TranslatorLog.find(:all, :conditions => ["translator_id = ?", self.id], :order => "created_at desc", :limit => 20)
   end
   
   def name
+    return "Tr8n Network" if system?
+    
     unless Tr8n::Config.site_user_info_enabled?
       translator_name = super
       return translator_name unless translator_name.blank?
@@ -214,6 +220,8 @@ class Tr8n::Translator < ActiveRecord::Base
   end
 
   def gender
+    return "unknown" if system?
+    
     unless Tr8n::Config.site_user_info_enabled?
       translator_gender = super
       return translator_gender unless translator_gender.blank?
@@ -224,6 +232,8 @@ class Tr8n::Translator < ActiveRecord::Base
   end
 
   def mugshot
+    return Tr8n::Config.system_image if system?
+    
     return super unless Tr8n::Config.site_user_info_enabled?
     return Tr8n::Config.silhouette_image unless user
     img_url = Tr8n::Config.user_mugshot(user)

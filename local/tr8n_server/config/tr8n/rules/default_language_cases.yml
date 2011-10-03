@@ -1,0 +1,272 @@
+#############################################################################
+#
+# Tr8n Default Language Cases
+#
+#############################################################################
+
+en-US:
+  nom:
+    keyword:                  "nom"
+    latin_name:               "Nominative"
+    native_name:              "Nominative" 
+    description:              "Used for any noun or pronoun that is the  subject of a verb"
+    application:              "phrase"
+  obj:
+    keyword:                  "obj"
+    latin_name:               "Objective"
+    native_name:              "Objective" 
+    description:              "Used in the direct object, indirect object, object of preposition, object complement, and subject of an infinitive"
+    application:              "phrase"
+  pos:
+    keyword:                  "pos"
+    latin_name:               "Possessive"
+    native_name:              "Possessive" 
+    description:              "Used to indicate possession (i.e., ownership). It is usually created by adding 's to the word"
+    application:              "phrase"
+    rules:
+      1:
+        multipart:            false 
+        gender:               none
+        part1:                ends_in
+        value1:               "s"
+        operation:            append
+        operation_value:      "'"
+      2:
+        multipart:            false 
+        gender:               none
+        part1:                does_not_end_in
+        value1:               "s"
+        operation:            append
+        operation_value:      "'s"
+  ord:
+    keyword:                  "ord"
+    latin_name:               "Ordinal"
+    native_name:              "Ordinal" 
+    description:              "The adjective form of the cardinal numbers"
+    application:              "phrase"
+    rules:                    
+      1:
+        multipart:            true 
+        gender:               none
+        part1:                ends_in
+        value1:               "1"
+        operator:             and
+        part2:                does_not_end_in
+        value2:               "11"
+        operation:            append
+        operation_value:      "st"
+      2:
+        multipart:            true 
+        gender:               none
+        part1:                ends_in
+        value1:               "2"
+        operator:             and
+        part2:                does_not_end_in
+        value2:               "12"
+        operation:            append
+        operation_value:      "nd"
+      3:
+        multipart:            true 
+        gender:               none
+        part1:                ends_in
+        value1:               "3"
+        operator:             and
+        part2:                does_not_end_in
+        value2:               "13"
+        operation:            append
+        operation_value:      "rd"
+      4:
+        multipart:            false 
+        gender:               none
+        part1:                ends_in
+        value1:               "0,4,5,6,7,8,9,11,12,13"
+        operation:            append
+        operation_value:      "th"
+  times:
+    keyword:                  "times"
+    latin_name:               "Iteration"
+    native_name:              "Iteration" 
+    description:              "The iteration form of the cardinal numbers"
+    application:              "phrase"
+    rules:                    
+      1:
+        multipart:            true 
+        gender:               none
+        part1:                is
+        value1:               "1"
+        operation:            replace
+        operation_value:      "once"
+      2:
+        multipart:            true 
+        gender:               none
+        part1:                is
+        value1:               "2"
+        operation:            replace
+        operation_value:      "twice"
+      3:
+        multipart:            true 
+        gender:               none
+        part1:                is
+        value1:               "3"
+        operation:            replace
+        operation_value:      "thrice"
+      3:
+        multipart:            false 
+        gender:               none
+        part1:                is_not
+        value1:               "1,2,3"
+        operation:            append
+        operation_value:      " times"
+  ordinal:
+    keyword:                  "ordinal"
+    latin_name:               "Ordinal"
+    native_name:              "Ordinal" 
+    description:              "The adjective form of the cardinal numbers"
+    application:              "phrase"
+    rules:                    
+      1:
+        multipart:            true 
+        gender:               none
+        part1:                is
+        value1:               "1"
+        operation:            replace
+        operation_value:      "first"
+      2:
+        multipart:            true 
+        gender:               none
+        part1:                is
+        value1:               "2"
+        operation:            replace
+        operation_value:      "second"
+      3:
+        multipart:            true 
+        gender:               none
+        part1:                is
+        value1:               "3"
+        operation:            replace
+        operation_value:      "third"
+      4:
+        multipart:            true 
+        gender:               none
+        part1:                ends_in
+        value1:               "1"
+        operator:             and
+        part2:                does_not_end_in
+        value2:               "11"
+        operation:            append
+        operation_value:      "st"
+      5:
+        multipart:            true 
+        gender:               none
+        part1:                ends_in
+        value1:               "2"
+        operator:             and
+        part2:                does_not_end_in
+        value2:               "12"
+        operation:            append
+        operation_value:      "nd"
+      6:
+        multipart:            true 
+        gender:               none
+        part1:                ends_in
+        value1:               "3"
+        operator:             and
+        part2:                does_not_end_in
+        value2:               "13"
+        operation:            append
+        operation_value:      "rd"
+      7:
+        multipart:            false 
+        gender:               none
+        part1:                ends_in
+        value1:               "0,4,5,6,7,8,9,11,12,13"
+        operation:            append
+        operation_value:      "th"
+      
+ru:
+  case1:                
+    keyword:                  "nom"
+    latin_name:               "Nominativus"
+    native_name:              "Именительный падеж" 
+    description:              "Есть - Кто? Что?"
+    application:              "words"
+  case2:               
+    keyword:                  "gen"
+    latin_name:               "Genitivus"
+    native_name:              "Родительный падеж" 
+    description:              "Нет - Кого? Чего?"
+    application:              "words"
+    rules:            
+      1:
+        multipart:              false 
+        gender:                 male
+        part1:                  ends_in
+        value1:                 "б, в, г, д, ж, з, к, л, м, н, п, р, с, т, ф, х, ц, ч, ш, щ"
+        operation:              append
+        operation_value:        "a"
+      2:
+        multipart:              false 
+        gender:                 male
+        part1:                  ends_in
+        value1:                 "й"
+        operation:              replace
+        operation_value:        "я"
+      3:
+        multipart:              false 
+        gender:                 female
+        part1:                  ends_in
+        value1:                 "а"
+        operation:              replace
+        operation_value:        "ы"
+      4:
+        multipart:              false 
+        gender:                 female
+        part1:                  ends_in
+        value1:                 "я"
+        operation:              replace
+        operation_value:        "и"
+  case3:               
+    keyword:          "dat"
+    latin_name:       "Dativus"
+    native_name:      "Дательный падеж" 
+    description:      "Рад - Кому? Чему?"
+    application:      "words"
+  case4:               
+    keyword:          "acc"
+    latin_name:       "Accusativus"
+    native_name:      "Винительный падеж" 
+    description:      "Вижу - Кого? Что?"
+    application:      "words"
+  case5:               
+    keyword:          "ins"
+    latin_name:       "Instrumentalis"
+    native_name:      "Творительный падеж" 
+    description:      "Доволен - Кем? Чем?"
+    application:      "words"
+  case6:               
+    keyword:          "pre"
+    latin_name:       "Prepositivus"
+    native_name:      "Предложный падеж" 
+    description:      "Думаю - О ком? О чём?"
+    application:      "words"
+  case7:               
+    keyword:          "pos"
+    latin_name:       "Possessive"
+    native_name:      "Притяжательный падеж" 
+    description:      "Чей?"
+    application:      "words"
+    rules:            
+      1:
+        multipart:              false 
+        gender:                 female
+        part1:                  ends_in
+        value1:                 "ва"
+        operation:              replace
+        operation_value:        "вой"
+      2:
+        multipart:              false 
+        gender:                 male
+        part1:                  ends_in
+        value1:                 "б, в, г, д, ж, з, к, л, м, н, п, р, с, т, ф, х, ц, ч, ш, щ"
+        operation:              append
+        operation_value:        "a"

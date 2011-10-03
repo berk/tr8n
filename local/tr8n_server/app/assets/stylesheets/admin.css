@@ -1,0 +1,200 @@
+/****************************************/
+/*** Classes for the admin user page
+/****************************************/
+@mixin rounded-corners($radius) {
+  border-radius: $radius;
+  -moz-border-radius: $radius;
+  -webkit-border-radius: $radius;
+}
+
+@mixin shadow($info) {
+	box-shadow:$info;
+	-moz-box-shadow:$info;
+	-webkit-box-shadow:$info;
+}
+
+@import "layout.css.scss";
+@import "components.css.scss";
+
+.pagination {
+	text-align:left !important;
+}
+
+.admin_table {
+  width: 100%;
+  font-size: 12px;
+  border: 1px #e5e5e5 solid;
+  border-collapse: collapse;
+  background-color: white;
+  margin-bottom: 10px;
+}
+
+.admin_table th {
+  background-color: #efefef;
+  border: none;
+  border: 1px #e5e5e5 solid;
+  font-weight:bold;
+}
+
+.admin_table tr:hover {
+  background-color: #eee;
+}
+
+.admin_table td {
+  padding: 5px;
+  border: 1px solid #e5e5e5;
+}
+
+.admin_table td.numeric,
+.admin_table th.numeric {
+  text-align: right;
+}
+
+.admin_table span.description {
+  color: #aaaaaa;
+  font-weight: normal;
+  font-size: 11px;
+}
+
+.admin_table td.key {
+  vertical-align:top;
+  width: 33%;
+  color: #666666;
+  font-weight: bold;
+  text-align: right;
+  padding-left: 10px;
+}
+
+.admin_table td.value {
+  vertical-align:top;
+}
+
+.admin_table td.value ul {
+  margin-top:0px;
+  margin-left:1.5em;
+}
+
+.admin_table td.value li {
+  line-height:1em;
+  margin-top:8px;
+  margin-left:0;
+  text-indent:-0.25em;
+}
+
+.admin_table td.value .detail {
+  font-size:11px;
+  color:#666;
+}
+
+.admin_table td .action_link {
+  float:right;
+  font-size:11px;
+}
+
+.admin_table p.status {
+  font-weight:bold;
+}
+
+.admin_table p.closed {
+  color:Red;
+}
+
+.admin_table p.claimed {
+  color:Green;
+}
+
+.admin_table .obscured {
+  background-color:Black;
+  padding:2px 6px;
+}
+
+.admin_table .obscured:hover {
+  background-color:#eee;
+}
+
+.admin_actions {
+  width: 100%;
+  background-color: #fffeee;
+  border: 1px #e5e5e5 solid;
+  margin-bottom: 10px;
+}
+
+.admin_actions th {
+  border: 1px #e5e5e5 solid;
+  font-weight:bold;
+}
+
+.admin_actions td {
+  padding: 5px;
+}
+
+.admin_actions td a {
+  text-decoration: none;
+  display:block;
+  display:inline-block;
+  width: 100%;
+}
+
+.admin_actions td a:hover {
+  text-decoration: underline;
+}
+
+.admin_table .expand_link {
+  float:right;
+}
+
+.admin_footer_edit {font-size:11px;margin-left:10px;margin-bottom:10px;font-weight:normal;height:20px;padding:5px;background-color:#feffef;border:solid 1px #e4e3c9;}
+
+#subtabs {
+  margin-bottom: 1em;
+}
+
+#date_container {
+  margin-bottom: 1em;
+  font-weight: bold;
+}
+
+#totals {
+  border: 2px solid #ccc;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+#totals td, th {
+  padding: 5px;
+  border: 1px solid #999;
+}
+
+.hourly.breakdown th {
+  text-align: center;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.admin_menu_item {
+  padding-left:15px;
+  padding-bottom:3px;
+  text-align:left;
+  width:90%;
+  border-right:1px solid #ccc;
+}
+
+.admin_menu_item_selected {
+  padding-left:15px;
+  text-align:left;
+  width:90%;
+  border-top:1px solid #ccc;
+  border-bottom:1px solid #ccc;
+  border-left:1px solid #ccc;
+  border-right:0px;
+}
+
+.admin_menu_item_selected a {
+  color:black;
+}

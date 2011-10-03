@@ -414,14 +414,22 @@ button::-moz-focus-inner                        {border:none;}
 /***  Licensed under GPL and MIT.
 /****************************************/
 
-.tr8n_pcb, .tr8n_pcb span                       {background: url('/assets/tr8n/buttons.png') no-repeat; height: 23px; line-height: 23px; padding: 3px 0 7px 0; }
-.tr8n_pcb, a.tr8n_pcb:link, a.tr8n_pcb:visited  {color: #333; font-size: 12px; font-style:bold; font-family:arial; padding-left: 14px; text-decoration: none !important; }
+.tr8n_pcb {
+	background: url('/assets/tr8n/buttons.png') no-repeat; 
+	height: 23px; 
+	line-height: 23px; 
+	padding: 3px 0 7px 0; 
 
-/* ie 6 hack */
-* html div#frame .tr8n_pcb                      {color: #333; padding-top: 0px; padding-bottom: 0px; text-decoration: none; }
-
-/* ie 7 hack */
-*:first-child+html .tr8n_pcb                    {color: #333; padding-top: 0px; padding-bottom: 0px; text-decoration: none; }
+	span {
+		background: url('/assets/tr8n/buttons.png') no-repeat; 
+		height: 23px; 
+		line-height: 23px; 
+		padding: 3px 0 7px 0; 
+	}
+}
+.tr8n_pcb {color: #333; font-size: 12px; font-style:bold; font-family:arial; padding-left: 14px; text-decoration: none !important; }
+a.tr8n_pcb:link {color: #333; font-size: 12px; font-style:bold; font-family:arial; padding-left: 14px; text-decoration: none !important; } 
+a.tr8n_pcb:visited  {color: #333; font-size: 12px; font-style:bold; font-family:arial; padding-left: 14px; text-decoration: none !important; }
 
 .tr8n_pcb span                                  {background-position: right -326px; padding-right: 14px; }
 a.tr8n_grey_button                              {background-position: left -219px; padding-top: 3px; }

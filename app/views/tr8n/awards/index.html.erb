@@ -4,13 +4,11 @@
 	
 	<div class="section_title">
 	  <div style="float:right; font-size:12px; padding-top:5px;">
-	  <% unless tr8n_current_language.default? %>
 	    <% if params[:mode] == "all" %>
 	        <%=link_to(tra("Awards for {language} Language", 'Awards section header', :language => tr8n_current_language.native_name), :mode => :current) %> 
 	    <% else %>
 	        <%=link_to(tra("Awards for All Languages", 'Awards section header'), :mode => :all) %> 
 	    <% end %>
-	  <% end %>  
 	  </div>
 	  
 	  <% if params[:mode] == "all" %> 

@@ -66,6 +66,10 @@ module Tr8n
       @default_language ||= Tr8n::Language.for(default_locale) || Tr8n::Language.new(:locale => default_locale)
     end
   
+    def self.system_translator
+      @system_translator ||= Tr8n::Translator.find_by_rank(1000000) || Tr8n::Translator.create(:user_id => 0, :rank => 1000000)
+    end
+  
     def self.reset!
       # thread based variables
       Thread.current[:tr8n_current_language]  = nil
@@ -503,6 +507,10 @@ module Tr8n
     def self.silhouette_image
       "/assets/tr8n/photo_silhouette.gif"
     end
+
+    def self.system_image
+      "/assets/tr8n/photo_system.gif"
+    end
   
     #########################################################
     # rules engine
@@ -623,8 +631,8 @@ module Tr8n
       load_default_rules("value", locale)
     end
 
-    def self.default_cases_for(locale = default_locale)
-      @default_cases ||= load_yml("/config/tr8n/rules/default_cases.yml", nil)
+    def self.default_language_cases_for(locale = default_locale)
+      @default_cases ||= load_yml("/config/tr8n/rules/default_language_cases.yml", nil)
       return [] unless @default_cases[locale.to_s]
       @default_cases[locale.to_s].values
     end

@@ -1,0 +1,7 @@
+<div class="section_title">Site Admins</div>
+
+<%= will_filter_tag(@admins) %>
+
+<%= will_filter_table_tag(@admins, :columns => [:id,  
+	[:user_id, lambda{|admin| admin.user.name}], 
+	:created_at]) %>
