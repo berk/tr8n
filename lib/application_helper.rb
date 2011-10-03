@@ -78,7 +78,7 @@ module ApplicationHelper
 
 #     pp [source, options[:source], url]
     
-    unless Tr8n::Config.enabled?
+    if(!Tr8n::Config.enabled? || Tr8n::Config.current_language==Tr8n::Config.default_language)
       return Tr8n::TranslationKey.substitute_tokens(label, tokens, options)
     end
     
