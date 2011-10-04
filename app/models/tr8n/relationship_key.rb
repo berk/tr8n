@@ -86,10 +86,6 @@ class Tr8n::RelationshipKey < Tr8n::TranslationKey
     decorate_translation(language, translated_label, translation != nil, options)  
   end
 
-  def allowed_token?(token)
-    ['x','y','z'].include?(token.name) and label.index(token.name)
-  end
-
   def default_translation
     @default_translation ||= begin
       trn = valid_translations_for(Tr8n::Config.default_language).first
