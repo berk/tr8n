@@ -57,10 +57,16 @@ class Tr8n::LanguageRule < ActiveRecord::Base
     token.dependency == dependency or suffixes.include?(token.suffix)
   end
 
+  def self.keyword
+    dependency
+  end
+
+  # TDOD: switch to using keyword
   def self.dependency
     raise Tr8n::Exception.new("This method must be implemented in the extending rule") 
   end
   
+  # TDOD: switch to using keyword
   def self.dependency_label
     dependency
   end

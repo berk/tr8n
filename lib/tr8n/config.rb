@@ -424,66 +424,59 @@ module Tr8n
     end
 
     def self.user_id(user)
-      begin
-        user.send(site_user_info[:methods][:id])
-      rescue Exception => ex
-        Tr8n::Logger.error("Failed to fetch user id: #{ex.to_s}")
-        return 0
-      end  
+      return 0 unless user
+      user.send(site_user_info[:methods][:id])
+    rescue Exception => ex
+      Tr8n::Logger.error("Failed to fetch user id: #{ex.to_s}")
+      0
     end
 
     def self.user_name(user)
-      begin
-        user.send(site_user_info[:methods][:name])
-      rescue Exception => ex
-        Tr8n::Logger.error("Failed to fetch #{user_class_name} name: #{ex.to_s}")
-        return "Unknown user"
-      end  
+      return "Unknown user" unless user
+      user.send(site_user_info[:methods][:name])
+    rescue Exception => ex
+      Tr8n::Logger.error("Failed to fetch #{user_class_name} name: #{ex.to_s}")
+      "Invalid user"
     end
 
     def self.user_gender(user)
-      begin
-        user.send(site_user_info[:methods][:gender])
-      rescue Exception => ex
-        Tr8n::Logger.error("Failed to fetch #{user_class_name} name: #{ex.to_s}")
-        return "unknown"
-      end  
+      return "unknown" unless user
+      user.send(site_user_info[:methods][:gender])
+    rescue Exception => ex
+      Tr8n::Logger.error("Failed to fetch #{user_class_name} name: #{ex.to_s}")
+      "unknown"
     end
 
     def self.user_mugshot(user)
-      begin
-        user.send(site_user_info[:methods][:mugshot])
-      rescue Exception => ex
-        Tr8n::Logger.error("Failed to fetch #{user_class_name} image: #{ex.to_s}")
-        return silhouette_image
-      end  
+      return silhouette_image unless user
+      user.send(site_user_info[:methods][:mugshot])
+    rescue Exception => ex
+      Tr8n::Logger.error("Failed to fetch #{user_class_name} image: #{ex.to_s}")
+      silhouette_image
     end
 
     def self.user_link(user)
-      begin
-        user.send(site_user_info[:methods][:link])
-      rescue Exception => ex
-        Tr8n::Logger.error("Failed to fetch #{user_class_name} link: #{ex.to_s}")
-        return "/tr8n"
-      end  
+      return "/tr8n" unless user
+      user.send(site_user_info[:methods][:link])
+    rescue Exception => ex
+      Tr8n::Logger.error("Failed to fetch #{user_class_name} link: #{ex.to_s}")
+      "/tr8n"
     end
 
     def self.user_locale(user)
-      begin
-        user.send(site_user_info[:methods][:locale])
-      rescue Exception => ex
-        Tr8n::Logger.error("Failed to fetch #{user_class_name} locale: #{ex.to_s}")
-        return default_locale
-      end  
+      return default_locale unless user
+      user.send(site_user_info[:methods][:locale])
+    rescue Exception => ex
+      Tr8n::Logger.error("Failed to fetch #{user_class_name} locale: #{ex.to_s}")
+      default_locale
     end
 
     def self.admin_user?(user = current_user)
-      begin
-        user.send(site_user_info[:methods][:admin])
-      rescue Exception => ex
-        Tr8n::Logger.error("Failed to fetch #{user_class_name} admin flag: #{ex.to_s}")
-        return false
-      end  
+      return false unless user
+      user.send(site_user_info[:methods][:admin])
+    rescue Exception => ex
+      Tr8n::Logger.error("Failed to fetch #{user_class_name} admin flag: #{ex.to_s}")
+      false
     end
 
     def self.current_user_is_admin?
@@ -492,12 +485,10 @@ module Tr8n
   
     def self.guest_user?(user = current_user)
       return true unless user
-      begin
-        user.send(site_user_info[:methods][:guest])
-      rescue Exception => ex
-        Tr8n::Logger.error("Failed to fetch #{user_class_name} guest flag: #{ex.to_s}")
-        return true
-      end  
+      user.send(site_user_info[:methods][:guest])
+    rescue Exception => ex
+      Tr8n::Logger.error("Failed to fetch #{user_class_name} guest flag: #{ex.to_s}")
+      true
     end
   
     def self.current_user_is_guest?
@@ -724,6 +715,16 @@ module Tr8n
     def self.enable_client_sdk?
       config[:enable_client_sdk]
     end
-  
+
+    #########################################################
+    # Sync Process
+    #########################################################
+    def self.sync_batch_size
+      50
+    end
+    
+    def self.sync_url
+      "http://localhost:3000/api/v1/sync"
+    end
   end
 end

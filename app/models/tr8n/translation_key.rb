@@ -507,6 +507,11 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     Tr8n::Translation.create(:translation_key => self, :label => label, :language => lang, :translator => translator)
   end
 
+  def to_api_hash
+    translations = Tr8n::Translation.where("translation_key_id = ? and rank >= ?", self.id, Tr8n::Config.translation_threshold).order("rank desc")
+    {:key => self.key, :label => self.label, :description => self.description, :translations => translations.collect{|t| t.to_api_hash}}
+  end
+
   ###############################################################
   ## Feature Related Stuff
   ###############################################################

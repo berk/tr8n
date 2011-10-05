@@ -324,34 +324,6 @@ module Tr8n
         end
       end  
 
-      def tr8n_will_paginate(collection = nil, options = {})
-        will_paginate(collection, options.merge(:previous_label => tr("&laquo; Previous", "Previous entries in a list", {}, options), 
-                                                :next_label => tr("Next &raquo;", "Next entries in a list", {}, options))).html_safe
-      end
-
-      def tr8n_page_entries_info(collection, options = {})
-        entry_name = options[:entry_name] || (collection.empty? ? 'entry' : collection.first.class.name.underscore.sub('_', ' '))
-
-        if collection.total_pages < 2
-          case collection.size
-            when 0
-              tr("None found", "Paginator no entries message", {}, options)
-            when 1
-              tr("Displaying [bold: 1] #{entry_name}", "Paginator one page message", {}, options)
-            else
-              tr("Displaying [bold: all {count}] #{entry_name.pluralize}", "Paginator all entries message", {:count => collection.size}, options)
-          end
-        else
-          tr("Displaying #{entry_name.pluralize} [bold: {start_num} - {end_num}] of [bold: {total_count}] in total", 
-             "Paginator custom message", {
-                :start_num    => collection.offset + 1,
-                :end_num      => collection.offset + collection.length,
-                :total_count  => collection.total_entries
-             }, options
-          )
-        end
-      end
-
       def tr8n_select_month(date, options = {}, html_options = {})
         month_names = options[:use_short_month] ? Tr8n::Config.default_abbr_month_names : Tr8n::Config.default_month_names
         select_month(date, options.merge(
@@ -370,6 +342,10 @@ module Tr8n
 
       def tr8n_button_tag(label, function, opts = {})
         link_to_function("<span>#{label}</span>".html_safe, function, :class => "tr8n_grey_button tr8n_pcb")    
+      end
+
+      def tr8n_paginator_tag(results, subject)  
+        render :partial => "/tr8n/common/paginator", :locals => {:objects => results, :subject => subject}
       end
 
     private

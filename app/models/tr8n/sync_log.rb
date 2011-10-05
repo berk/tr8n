@@ -21,24 +21,35 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-module Tr8n::BaseHelper
-
-  # for admin translations
-  def tra(label, desc = "", tokens = {}, options = {})
-    if Tr8n::Config.enable_admin_translations?
-      if Tr8n::Config.enable_admin_inline_mode?
-        tr(label, desc, tokens, options)
-      else
-        trl(label, desc, tokens, options)
+class Tr8n::SyncLog < ActiveRecord::Base
+  
+  def self.sync
+    log = Tr8n::SyncLog.create(:started_at => Time.now)
+    sync_batch_size = 100
+    key_count = 0
+    translation_count = 0
+    payload = []
+    Tr8n::TranslationKey.find_each(:batch_size => sync_batch_size) do |key|
+      key_count += 1
+      
+      payload << key.to_api_hash
+      
+      if key_count % sync_batch_size == 0
+        exchange(payload)
       end
-    else
-      Tr8n::Config.default_language.translate(label, desc, tokens, options)
     end
+    log.update_attributes(:finished_at => Time.now)
   end
   
-  # for admin translations
-  def trla(label, desc = "", tokens = {}, options = {})
-    tra(label, desc, tokens, options.merge(:skip_decorations => true))
+  def self.exchange(payload)
+    uri = URI.parse(endpoint)
+    
+    req = Net::HTTP::Post.new(uri.path)
+    req.body = JSON.generate(post_params)
+    req["Content-Type"] = "application/json"
+
+    http = Net::HTTP.new(uri.host, uri.port)
+    response = http.start {|htt| htt.request(req)}
   end
   
 end

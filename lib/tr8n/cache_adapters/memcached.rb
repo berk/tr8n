@@ -21,24 +21,16 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-module Tr8n::BaseHelper
-
-  # for admin translations
-  def tra(label, desc = "", tokens = {}, options = {})
-    if Tr8n::Config.enable_admin_translations?
-      if Tr8n::Config.enable_admin_inline_mode?
-        tr(label, desc, tokens, options)
-      else
-        trl(label, desc, tokens, options)
+module Tr8n
+  module CacheAdapters
+    class Memcached
+      def fetch(key, options = {})
+        yield
       end
-    else
-      Tr8n::Config.default_language.translate(label, desc, tokens, options)
+      
+      def delete(key)
+        yield
+      end
     end
   end
-  
-  # for admin translations
-  def trla(label, desc = "", tokens = {}, options = {})
-    tra(label, desc, tokens, options.merge(:skip_decorations => true))
-  end
-  
 end

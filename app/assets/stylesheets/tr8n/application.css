@@ -4,3 +4,44 @@
  * the top of the compiled file, but it's generally better to create a new file per style scope.
  *= require_self
 */
+
+@mixin rounded-corners($radius) {
+  border-radius: $radius;
+  -moz-border-radius: $radius;
+  -webkit-border-radius: $radius;
+}
+
+@mixin shadow($info) {
+	box-shadow:$info;
+	-moz-box-shadow:$info;
+	-webkit-box-shadow:$info;
+}
+
+@import "layout.css.scss";
+@import "components.css.scss";
+
+img                           {vertical-align:text-middle !important;}
+a                             {text-decoration:none; color:#16b; outline:none; border:0px;}
+a:hover                       {text-decoration:underline}
+a img                         {border:0px}
+
+td {
+  font-size: 11px;
+  font-family: verdana;
+}
+h1 {
+  font-size:32px;
+  font-family:arial;
+  font-weight: bold;
+	padding: 0px;
+  padding-bottom: 15px;   
+	margin: 0px;
+}
+h2 {
+  font-size:20px;
+  font-family:arial;
+  padding: 0px;
+  padding-bottom: 15px;   
+  margin: 0px;
+}
+

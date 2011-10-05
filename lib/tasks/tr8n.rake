@@ -85,4 +85,7 @@ namespace :tr8n do
     Tr8n::IpLocation.import_from_file('config/tr8n/data/ip_locations.csv', :verbose => true)
   end
   
+  task :push => :environment do
+    
+  end
 end

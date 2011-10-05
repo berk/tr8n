@@ -94,6 +94,7 @@ class Tr8n::Translation < ActiveRecord::Base
     end
   end
 
+  # TODO: switch to using the full rule hash with definition in the rules field
   def rules_hash
     return nil if rules.nil? or rules.empty? 
     
@@ -104,6 +105,24 @@ class Tr8n::Translation < ActiveRecord::Base
       end
       rulz
     end
+  end
+
+  def rules_api_hash
+    @rules_api_hash ||= begin
+      jrules = []
+      rules.each do |rule|
+        jrules << {
+          :token => rule[:token],
+          :type => rule[:rule].class.keyword,
+          :definition => rule[:rule].definition
+        }
+      end
+      jrules
+    end
+  end
+
+  def to_api_hash
+    {:locale => language.locale, :label => label, :rank => rank, :rules => rules_api_hash}
   end
 
   def rules_definitions
