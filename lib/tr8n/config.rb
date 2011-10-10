@@ -750,6 +750,7 @@ class Tr8n::Config
     Tr8n::RelationshipKey.delete_all if env.test? or env.development?
     
     default_relationship_keys.each do |key, data|
+      puts key unless env.test?
       rkey = Tr8n::RelationshipKey.find_or_create(key)
       rkey.description ||= data.delete(:description)
       rkey.level = curator_level # only admins and curators can see them for now
@@ -776,8 +777,9 @@ class Tr8n::Config
     Tr8n::ConfigurationKey.delete_all if env.test? or env.development?
     
     default_configuration_keys.each do |key, value|
+      puts key unless env.test?
       rkey = Tr8n::ConfigurationKey.find_or_create(key, value[:label], value[:description])
-      rkey = curator_level # only admins and curators can see them for now
+      rkey.level = curator_level # only admins and curators can see them for now
       rkey.save
       
       translations = value[:translations] || {}
