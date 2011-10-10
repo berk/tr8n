@@ -126,7 +126,8 @@ class Tr8n::Config
 
   def self.init_language_cases
     puts "Initializing default language cases..." unless env.test?
-    Tr8n::LanguageCase.delete_all
+
+    Tr8n::LanguageCase.delete_all if env.test? or env.development?
     
     default_language_cases.each do |locale, cases|
       language = Tr8n::Language.for(locale)
@@ -444,66 +445,52 @@ class Tr8n::Config
   end
 
   def self.user_id(user)
-    begin
-      user.send(site_user_info[:methods][:id])
-    rescue Exception => ex
-      Tr8n::Logger.error("Failed to fetch user id: #{ex.to_s}")
-      return 0
-    end  
+    user.send(site_user_info[:methods][:id])
+  rescue Exception => ex
+    Tr8n::Logger.error("Failed to fetch user id: #{ex.to_s}")
+    0
   end
 
   def self.user_name(user)
-    begin
-      user.send(site_user_info[:methods][:name])
-    rescue Exception => ex
-      Tr8n::Logger.error("Failed to fetch #{user_class_name} name: #{ex.to_s}")
-      return "Unknown user"
-    end  
+    user.send(site_user_info[:methods][:name])
+  rescue Exception => ex
+    Tr8n::Logger.error("Failed to fetch #{user_class_name} name: #{ex.to_s}")
+    "Unknown user"
   end
 
   def self.user_gender(user)
-    begin
-      user.send(site_user_info[:methods][:gender])
-    rescue Exception => ex
-      Tr8n::Logger.error("Failed to fetch #{user_class_name} name: #{ex.to_s}")
-      return "unknown"
-    end  
+    user.send(site_user_info[:methods][:gender])
+  rescue Exception => ex
+    Tr8n::Logger.error("Failed to fetch #{user_class_name} name: #{ex.to_s}")
+    "unknown"
   end
 
   def self.user_mugshot(user)
-    begin
-      user.send(site_user_info[:methods][:mugshot])
-    rescue Exception => ex
-      Tr8n::Logger.error("Failed to fetch #{user_class_name} image: #{ex.to_s}")
-      return silhouette_image
-    end  
+    user.send(site_user_info[:methods][:mugshot])
+  rescue Exception => ex
+    Tr8n::Logger.error("Failed to fetch #{user_class_name} image: #{ex.to_s}")
+    silhouette_image
   end
 
   def self.user_link(user)
-    begin
-      user.send(site_user_info[:methods][:link])
-    rescue Exception => ex
-      Tr8n::Logger.error("Failed to fetch #{user_class_name} link: #{ex.to_s}")
-      return "/tr8n"
-    end  
+    user.send(site_user_info[:methods][:link])
+  rescue Exception => ex
+    Tr8n::Logger.error("Failed to fetch #{user_class_name} link: #{ex.to_s}")
+    "/tr8n"
   end
 
   def self.user_locale(user)
-    begin
-      user.send(site_user_info[:methods][:locale])
-    rescue Exception => ex
-      Tr8n::Logger.error("Failed to fetch #{user_class_name} locale: #{ex.to_s}")
-      return default_locale
-    end  
+    user.send(site_user_info[:methods][:locale])
+  rescue Exception => ex
+    Tr8n::Logger.error("Failed to fetch #{user_class_name} locale: #{ex.to_s}")
+    default_locale
   end
 
   def self.admin_user?(user = current_user)
-    begin
-      user.send(site_user_info[:methods][:admin])
-    rescue Exception => ex
-      Tr8n::Logger.error("Failed to fetch #{user_class_name} admin flag: #{ex.to_s}")
-      return false
-    end  
+    user.send(site_user_info[:methods][:admin])
+  rescue Exception => ex
+    Tr8n::Logger.error("Failed to fetch #{user_class_name} admin flag: #{ex.to_s}")
+    false
   end
 
   def self.current_user_is_admin?
@@ -532,6 +519,10 @@ class Tr8n::Config
   
   def self.silhouette_image
     "/tr8n/images/photo_silhouette.gif"
+  end
+
+  def self.system_image
+    "/tr8n/images/photo_system.gif"
   end
   
   #########################################################
@@ -711,13 +702,23 @@ class Tr8n::Config
       '0'     =>  'regular',
       '50'    =>  'trusted',
       '100'   =>  'professional',
-      '1000'  =>  'manager'
+      '1000'  =>  'manager',
+      '10000' =>  'curator'
     } 
   end
 
   def self.manager_level
     1000
   end
+  
+  def self.curator_level
+    10000
+  end
+
+  def self.system_level
+    1000000
+  end
+  
   #########################################################
   def self.enable_api?
     api[:enabled]
@@ -740,17 +741,18 @@ class Tr8n::Config
   #########################################################
   def self.system_translator
     # will be used for relationship translations  - geni user does not work!  User.geni_user
-    @system_translator ||= Tr8n::Translator.find_by_rank(1000000) || Tr8n::Translator.create(:user => User.first, :rank => 1000000)
+    @system_translator ||= Tr8n::Translator.find_by_level(system_level) || Tr8n::Translator.create(:user => User.first, :level => system_level)
   end
   
   def self.init_relationship_keys
     puts "Initializing default relationship keys..." unless env.test?
 
-    Tr8n::RelationshipKey.delete_all
+    Tr8n::RelationshipKey.delete_all if env.test? or env.development?
     
     default_relationship_keys.each do |key, data|
       rkey = Tr8n::RelationshipKey.find_or_create(key)
       rkey.description ||= data.delete(:description)
+      rkey.level = curator_level # only admins and curators can see them for now
       rkey.save
       
       data.each do |locale, labels|
@@ -771,9 +773,13 @@ class Tr8n::Config
   def self.init_configuration_keys
     puts "Initializing default configuration keys..." unless env.test?
 
-    Tr8n::ConfigurationKey.delete_all
+    Tr8n::ConfigurationKey.delete_all if env.test? or env.development?
+    
     default_configuration_keys.each do |key, value|
       rkey = Tr8n::ConfigurationKey.find_or_create(key, value[:label], value[:description])
+      rkey = curator_level # only admins and curators can see them for now
+      rkey.save
+      
       translations = value[:translations] || {}
       translations.each do |locale, lbl|
         language = Tr8n::Language.for(locale)

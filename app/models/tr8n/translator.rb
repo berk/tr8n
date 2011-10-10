@@ -185,14 +185,6 @@ class Tr8n::Translator < ActiveRecord::Base
     inline_mode == true
   end
   
-  # all admins are always manager for all languages
-  def manager?
-    return true unless Tr8n::Config.site_user_info_enabled?
-    return true if Tr8n::Config.admin_user?(user)
-    return true if level >= Tr8n::Config.manager_level
-    false
-  end
-
   def last_logs
     Tr8n::TranslatorLog.find(:all, :conditions => ["translator_id = ?", self.id], :order => "created_at desc", :limit => 20)
   end
@@ -212,6 +204,8 @@ class Tr8n::Translator < ActiveRecord::Base
   end
 
   def gender
+    return "unknown" if system?
+    
     unless Tr8n::Config.site_user_info_enabled?
       translator_gender = super
       return translator_gender unless translator_gender.blank?
@@ -222,6 +216,7 @@ class Tr8n::Translator < ActiveRecord::Base
   end
 
   def mugshot
+    return Tr8n::Config.silhouette_image if system?
     return super unless Tr8n::Config.site_user_info_enabled?
     return Tr8n::Config.silhouette_image unless user
     img_url = Tr8n::Config.user_mugshot(user)
@@ -235,20 +230,26 @@ class Tr8n::Translator < ActiveRecord::Base
     Tr8n::Config.user_link(user)
   end
 
+  def system?
+    level == Tr8n::Config.manager_level
+  end
+  
   def admin?
-    # stand alone translators are always admins
-    return true unless Tr8n::Config.site_user_info_enabled?
-    
     return false unless user
     Tr8n::Config.admin_user?(user)
   end  
 
   def guest?
     return id.nil? unless Tr8n::Config.site_user_info_enabled?
-
     return true unless user
     Tr8n::Config.guest_user?(user)
   end  
+
+  # all admins are always manager for all languages
+  def manager?
+    return true if admin?
+    level >= Tr8n::Config.manager_level
+  end
 
   def level
     return 0 if super.nil?
