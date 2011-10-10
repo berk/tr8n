@@ -257,6 +257,11 @@ class Tr8n::Translation < ActiveRecord::Base
   def self.search_conditions_for(params, language = Tr8n::Config.current_language)
     conditions = ["language_id = ?", language.id]
     
+    # ensure that only allowed translations are visible 
+    # TODO: a better way would probably be to add a level to a translation
+    conditions[0] << " and translation_key_id in (select id from tr8n_translation_keys where level <= ?) " 
+    conditions << Tr8n::Config.current_translator.level
+    
     unless params[:search].blank?
       conditions[0] << " and " unless conditions[0].blank?
       conditions[0] << "label like ?" 
