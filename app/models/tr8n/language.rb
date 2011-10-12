@@ -312,7 +312,12 @@ class Tr8n::Language < ActiveRecord::Base
   end
 
   def recently_updated_translations
-    @recently_updated_translations ||= Tr8n::Translation.find(:all, :conditions => ["language_id = ?", self.id], :order => "updated_at desc", :limit => 5)    
+    @recently_updated_translations ||= begin
+      conditions = ["language_id = ?", self.id]
+      conditions[0] << " and translation_key_id in (select id from tr8n_translation_keys where level <= ?) " 
+      conditions << Tr8n::Config.current_translator.level
+      Tr8n::Translation.find(:all, :conditions => conditions, :order => "updated_at desc", :limit => 5)    
+    end
   end
   
   def recently_updated_votes(translator = Tr8n::Config.current_translator)
