@@ -718,6 +718,10 @@ class Tr8n::Config
   def self.system_level
     1000000
   end
+
+  def self.admin_level
+    100000000
+  end
   
   #########################################################
   def self.enable_api?

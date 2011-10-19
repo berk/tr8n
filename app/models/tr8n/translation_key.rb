@@ -446,6 +446,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   end
   
   def translator_permitted_to_translate?(translator = Tr8n::Config.current_translator)
+    return true if translator.admin?
     translator.level >= level
   end
   
