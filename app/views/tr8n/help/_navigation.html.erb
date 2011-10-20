@@ -25,12 +25,15 @@
           {:title => "Discussions", :action => :discussions},
           {:title => "Help", :action => :help},
         ]},
-    ]}, 
-    {:title => "Relationships", :sections => [
-        {:title => "Tree Position System", :action => :tps},
-        {:title => "Relationship Keys & Paths", :action => :relationship_keys},
-    ]}, 
+    ]},
   ]
+
+	if Tr8n::Config.enable_relationships?
+		sections << {:title => "Relationships", :sections => [
+	      {:title => "Tree Position System", :action => :tps},
+	      {:title => "Relationship Keys & Paths", :action => :relationship_keys},
+	  ]}
+	end
 %>
 
 

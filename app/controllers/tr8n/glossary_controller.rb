@@ -23,6 +23,7 @@
 
 class Tr8n::GlossaryController < Tr8n::BaseController
 
+  set_tr8n_feature  :glossary
   before_filter :validate_current_translator
   
   def index

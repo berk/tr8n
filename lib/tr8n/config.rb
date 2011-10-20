@@ -192,15 +192,7 @@ class Tr8n::Config
   end
 
   def self.features
-    @features ||= begin
-      defs = load_yml("/config/tr8n/site/features.yml")
-      feats = []
-      defs[:enabled_features].each do |key|
-        defs[key][:key] = key
-        feats << defs[key] 
-      end
-      feats
-    end
+    @features ||= load_yml("/config/tr8n/site/features.yml")
   end
   
   def self.enabled?

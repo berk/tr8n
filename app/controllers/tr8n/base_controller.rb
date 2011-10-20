@@ -44,6 +44,7 @@ class Tr8n::BaseController < ApplicationController
   before_filter :validate_tr8n_enabled, :except => [:translate]
   before_filter :validate_guest_user, :except => [:select, :switch, :translate, :table]
   before_filter :validate_current_user, :except => [:translate]
+  before_filter :validate_feature_enabled
   
   layout Tr8n::Config.site_info[:tr8n_layout]
 
@@ -88,23 +89,6 @@ class Tr8n::BaseController < ApplicationController
   helper_method :tr8n_current_user_is_guest?
   
 private
-  
-  def tr8n_features_tabs
-    @tabs ||= begin 
-      tabs = Tr8n::Config.features.clone
-      unless Tr8n::Config.multiple_base_languages?
-        tabs = tabs.select{|tab| tab[:default_language]} if tr8n_current_language.default?
-      end
-    
-      unless tr8n_current_user_is_translator? and tr8n_current_translator.manager?
-        tabs = tabs.select{|tab| !tab[:manager_only]}  
-      end
-      
-      tabs.delete(:relationships) unless Tr8n::Config.enable_relationships?
-      tabs
-    end
-  end
-  helper_method :tr8n_features_tabs
 
   def redirect_to_source
     return redirect_to(params[:source_url]) unless params[:source_url].blank?
@@ -201,6 +185,58 @@ private
     unless tr8n_current_user_is_admin?
       trfe("You must be an admin in order to view this section of the site")
       redirect_to_site_default_url
+    end
+  end
+  
+  def self.set_tr8n_feature(feature)
+    @tr8n_feature = feature
+  end
+
+  def self.tr8n_feature
+    @tr8n_feature
+  end
+  
+  def tr8n_enabled_features
+    @tr8n_enabled_features ||= begin
+      enabled_features = []
+      Tr8n::Config.features.each do |key, defs|
+        defs[:key] = key
+
+        next unless defs[:enabled]
+
+        unless Tr8n::Config.multiple_base_languages?
+          next if tr8n_current_language.default? and defs[:default_language]
+        end
+
+        unless tr8n_current_user_is_translator? and tr8n_current_user_is_manager?  
+          next if defs[:manager_only]
+        end
+
+        unless Tr8n::Config.enable_relationships?
+          next if key == 'relationships'
+        end
+
+        enabled_features << defs.clone
+      end
+      enabled_features
+    end
+  end
+  helper_method :tr8n_enabled_features
+  
+  def tr8n_features_tabs
+    @tabs ||= begin 
+      tabs = tr8n_enabled_features.select{|feature| feature[:tab_position]}
+      tabs.sort_by{|tab| tab[:tab_position]}
+    end
+  end
+  helper_method :tr8n_features_tabs
+  
+  def validate_feature_enabled
+    return if self.class.tr8n_feature.blank?
+
+    unless tr8n_enabled_features.collect{|feature| feature[:key]}.include?(self.class.tr8n_feature.to_s)
+      trfe("You do not have access to this section of Tr8n")
+      redirect_to_site_default_url 
     end
   end
   

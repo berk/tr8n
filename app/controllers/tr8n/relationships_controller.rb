@@ -23,6 +23,8 @@
 
 class Tr8n::RelationshipsController < Tr8n::BaseController
 
+  set_tr8n_feature  :relationships
+  
   def index
     conditions = Tr8n::RelationshipKey.search_conditions_for(params)
     @relationship_keys = Tr8n::RelationshipKey.paginate(:per_page => per_page, :page => page, :conditions => conditions, :order => "label asc")
