@@ -61,7 +61,7 @@ class Tr8n::Config
   end
   
   def self.default_language
-    return Tr8n::Language.new(:locale => default_locale) if disabled?
+    return Tr8n::Language.new(:locale => default_locale) if disabled?  # don't query database if disabled
     @default_language ||= Tr8n::Language.for(default_locale) || Tr8n::Language.new(:locale => default_locale)
   end
   
@@ -129,17 +129,19 @@ class Tr8n::Config
 
     Tr8n::LanguageCase.delete_all if env.test? or env.development?
     
+    sys_translator = system_translator
+    
     default_language_cases.each do |locale, cases|
       language = Tr8n::Language.for(locale)
       next unless language
       cases.keys.sort.each do |lkey|
         lcase = cases[lkey]
         rules = lcase.delete(:rules)
-        language_case = Tr8n::LanguageCase.create(lcase.merge(:language => language, :translator => system_translator))
+        language_case = Tr8n::LanguageCase.create(lcase.merge(:language => language, :translator => sys_translator))
         next if rules.blank?
         rules.keys.sort.each_with_index do |lrkey, index|
           lcrule = rules[lrkey]
-          Tr8n::LanguageCaseRule.create(:language_case => language_case, :language => language, :translator => system_translator, :position => index, :definition => lcrule)
+          Tr8n::LanguageCaseRule.create(:language_case => language_case, :language => language, :translator => sys_translator, :position => index, :definition => lcrule)
         end
       end
     end    
@@ -737,13 +739,15 @@ class Tr8n::Config
   #########################################################
   def self.system_translator
     # will be used for relationship translations  - geni user does not work!  User.geni_user
-    @system_translator ||= Tr8n::Translator.find_by_level(system_level) || Tr8n::Translator.create(:user => User.first, :level => system_level)
+    Tr8n::Translator.find_by_level(system_level) || Tr8n::Translator.create(:user => User.first, :level => system_level)
   end
   
   def self.init_relationship_keys
     puts "Initializing default relationship keys..." unless env.test?
 
     Tr8n::RelationshipKey.delete_all if env.test? or env.development?
+    
+    sys_translator = system_translator
     
     default_relationship_keys.each do |key, data|
       puts key unless env.test?
@@ -757,7 +761,7 @@ class Tr8n::Config
         next unless language
         labels = [labels].flatten # there could be a few translation variations
         labels.each do |lbl|
-          trn = rkey.add_translation(lbl, nil, language, system_translator)
+          trn = rkey.add_translation(lbl, nil, language, sys_translator)
         end
       end
     end
@@ -772,6 +776,8 @@ class Tr8n::Config
 
     Tr8n::ConfigurationKey.delete_all if env.test? or env.development?
     
+    sys_translator = system_translator
+    
     default_configuration_keys.each do |key, value|
       puts key unless env.test?
       rkey = Tr8n::ConfigurationKey.find_or_create(key, value[:label], value[:description])
@@ -782,7 +788,7 @@ class Tr8n::Config
       translations.each do |locale, lbl|
         language = Tr8n::Language.for(locale)
         next unless language
-        rkey.add_translation(lbl, nil, language, system_translator)
+        rkey.add_translation(lbl, nil, language, sys_translator)
       end
     end
   end
