@@ -8,8 +8,8 @@ Gem::Specification.new do |s|
   s.name        = "tr8n"
   s.version     = Tr8n::VERSION
   s.authors     = ["Michael Berkovich"]
-  s.email       = ["theiceberk@gmail.com"]
-  s.homepage    = "https://github.com/berk/will_filter"
+  s.email       = ["michael@tr8n.net"]
+  s.homepage    = "https://github.com/berk/tr8n"
   s.summary     = "Crowd-sourced translation engine for Rails."
   s.description = "Crowd-sourced translation and localization engine for Rails."
 
