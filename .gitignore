@@ -2,7 +2,6 @@
 pkg/
 *.sqlite3
 *.log
-test/dummy/tmp/
 db/schema.rb*
 tmp/*
 log/*
