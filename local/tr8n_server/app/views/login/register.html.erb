@@ -17,6 +17,12 @@
       </div>
     </div>
     <div class="field">
+      <div class="strong field_hd txt_r h4"><%=tr('Confirm Password:') %></div>
+      <div class="field_bd">
+        <%=password_field_tag :password_confirm, "", :class => "xlong_input h4"%> &nbsp; *
+      </div>
+    </div>
+    <div class="field">
       <div class="strong field_hd txt_r h4"><%=tr('First Name:') %></div>
       <div class="field_bd">
         <%=text_field_tag :first_name, params[:first_name], :class => "xlong_input h4" %>
@@ -33,19 +39,8 @@
       <div class="strong" style="padding-top:8px;">
         &nbsp; <%=radio_button_tag(:gender, "male", params[:gender] == 'male')%> <%=tr('Male', 'Gender') %>
         &nbsp; <%=radio_button_tag(:gender, "male", params[:gender] == 'female')%> <%=tr('Female', 'Gender') %>
-        &nbsp; <%=radio_button_tag(:gender, "unknown", params[:gender] == 'unknown')%> <%=tr('Unknown', 'Gender') %>
-      </div>
-    </div>
-    <div class="field">
-      <div class="strong field_hd txt_r h4"><%=tr('Photo Url:') %></div>
-      <div class="field_bd">
-        <%=text_field_tag :mugshot, params[:mugshot], :class => "xlong_input h4" %>
-      </div>
-    </div>
-    <div class="field">
-      <div class="strong field_hd txt_r h4"><%=tr('Link Url:') %></div>
-      <div class="field_bd">
-        <%=text_field_tag :link, params[:link], :class => "xlong_input h4" %>
+				
+				<span style="color:#888; padding-left:10px; font-size:10px;"><%=tr("Used for gender based translations") %></span>	
       </div>
     </div>
     <br>

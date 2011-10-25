@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2011 Michael Berkovich
+# Copyright (c) 2010-2011 Michael Berkovich, tr8n.net
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -46,7 +46,7 @@ class Tr8n::LanguageMetric < ActiveRecord::Base
   end
   
   def self.calculate_language_metrics
-    last_daily_metric = Tr8n::DailyLanguageMetric.find(:first, :conditions => "metric_date is not null", :order => "metric_date desc")
+    last_daily_metric = Tr8n::DailyLanguageMetric.where("metric_date is not null").order("metric_date desc").first
     metric_date = last_daily_metric.nil? ? Date.new(2011, 10, 1) : last_daily_metric.metric_date
 
     Tr8n::Language.enabled_languages.each do |lang|

@@ -1,6 +1,4 @@
-<% if mode == :list and translations.any? %>
-  <%= render :partial => "/tr8n/common/paginator", :locals => {:objects => translations, :subject => 'translation'} %>
-<% end %>	
+<%= tr8n_paginator_tag(translations, :subject => 'translation') if mode == :list and translations.any? %>	
 
 <table style="width:100%;" cellpadding="5px" cellspacing="3px">
   <tr style="border-bottom:1px solid #ccc;">
@@ -25,9 +23,7 @@
     <div style="text-align:left; padding-top:10px; font-size:12px;"><%=trla("No translations found")%></div>
 <% end %>
 
-<% if mode == :list and translations.any? %>
-  <%= render :partial => "/tr8n/common/paginator", :locals => {:objects => translations, :subject => 'translation'} %>
-<% end %>	
+<%= tr8n_paginator_tag(translations, :subject => 'translation') if mode == :list and translations.any? %>	
 
 <% if [:edit, :view].include?(mode) %>
 	<script>

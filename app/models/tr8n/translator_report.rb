@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2011 Michael Berkovich
+# Copyright (c) 2010-2011 Michael Berkovich, tr8n.net
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -32,7 +32,7 @@ class Tr8n::TranslatorReport < ActiveRecord::Base
   end
 
   def self.report_for(translator, object)
-    find(:first, :conditions => ["translator_id = ? and object_type = ? and object_id = ?", translator.id, object.class.name, object.id])
+    self.where("translator_id = ? and object_type = ? and object_id = ?", translator.id, object.class.name, object.id).first
   end
   
   def self.title_for(object)

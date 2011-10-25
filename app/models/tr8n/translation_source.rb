@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2011 Michael Berkovich
+# Copyright (c) 2010-2011 Michael Berkovich, tr8n.net
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -38,7 +38,7 @@ class Tr8n::TranslationSource < ActiveRecord::Base
   def self.find_or_create(source, url)
     translation_domain = Tr8n::TranslationDomain.find_or_create(url)
     Tr8n::Cache.fetch("translation_source_#{translation_domain.id}_#{source}") do 
-      translation_source = find(:first, :conditions => ["source = ? and translation_domain_id = ?", source, translation_domain.id])
+      translation_source = where("source = ? and translation_domain_id = ?", source, translation_domain.id).first
       translation_source ||= create(:source => source, :translation_domain => translation_domain)
       translation_source.update_attributes(:translation_domain => translation_domain) unless translation_source.translation_domain
       translation_source

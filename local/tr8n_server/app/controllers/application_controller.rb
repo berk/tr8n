@@ -4,6 +4,11 @@
 class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
 
+  rescue_from StandardError do |e|
+    pp e.backtrace
+    raise e
+  end
+
   def current_user
     @current_user ||= (User.find_by_id(session[:user_id]) unless session[:user_id].blank?) || User.new
   end

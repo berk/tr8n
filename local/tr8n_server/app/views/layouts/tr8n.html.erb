@@ -1,0 +1,51 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+		<title><%=trl("Tr8n Engine Plugin", "Application title")%></title>
+		<%= stylesheet_link_tag("tr8n/layout") %>
+		<%= stylesheet_link_tag("tr8n/components") %>
+
+		<%= tr8n_scripts_tag %>
+	</head>
+  <body>
+    <div class="document">
+			<div class="page_head">
+			  <div class="page_fixed">
+			    <div class="mrgn_h">
+			    	<%= tr8n_translator_login_tag(:class => "flt_r horiz_list top_nav") %>
+			      <h1 class="logo"><%=link_to(tr("Tr8n Translation Engine", "Application title"), {:controller => "/tr8n/home"}, :style=>"text-decorations:none;")%></h1>
+			    </div>
+			  </div>
+			</div>
+
+			<div class="page_fixed">
+			    <%= tr8n_flashes_tag %>
+			</div>
+
+      <div class="page_fixed">
+        <div class="page_body">
+          <div class="content_module">
+            <div class="content_inner">
+              <%= yield %>
+            </div>
+          </div>
+        </div>
+				<div class="page_ft module quiet">
+				  <ul class="flt_r right_horiz_list">
+				    <li><%=link_to(tr("Home"), "/tr8n/home", :class => "quiet")%></li>
+				    <li><%=link_to(tr("Languages"), "/tr8n/language/table", :class => "quiet")%></li>
+				    <li><%=link_to(tr("Translator Tools"), "/tr8n/dashboard", :class => "quiet")%></li>
+				    <li><%=link_to(tr("Administration Tools"), "/tr8n/admin/language", :class => "quiet")%></li>
+				    <li><%=link_to(tr("Credits"), "/tr8n/home/credits", :class => "quiet")%></li>
+				    <li><%=link_to(tr("License"), "/tr8n/home/license", :class => "quiet")%></li>
+				  </ul>
+				  &copy; Copyright 2010 - 2011 tr8n.net
+				</div>
+
+				<div style="padding:15px;">
+					<%= tr8n_language_strip_tag %>
+				</div>
+      </div>
+    </div>
+  </body>
+</html>

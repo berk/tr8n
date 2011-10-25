@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2011 Michael Berkovich
+# Copyright (c) 2010-2011 Michael Berkovich, tr8n.net
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -37,14 +37,19 @@ class Tr8n::Translation < ActiveRecord::Base
   alias :key :translation_key
   alias :votes :translation_votes
 
+  # TODO: move this to config file
   VIOLATION_INDICATOR = -10
 
   def vote!(translator, score)
     score = score.to_i
     vote = Tr8n::TranslationVote.find_or_create(self, translator)
     vote.update_attributes(:vote => score.to_i)
+    
     update_rank!
     
+    # update the translation key timestamp
+    key.touch
+
     self.translator.update_rank!(language) if self.translator
     
     # add the translator to the watch list
@@ -55,8 +60,7 @@ class Tr8n::Translation < ActiveRecord::Base
   end
   
   def update_rank!
-    self.rank = Tr8n::TranslationVote.sum("vote", :conditions => ["translation_id = ?", self.id])
-    save
+    update_attributes(:rank => Tr8n::TranslationVote.where(:translation_id => self.id).sum(:vote))
   end
   
   def reset_votes!(translator)
@@ -64,6 +68,7 @@ class Tr8n::Translation < ActiveRecord::Base
     vote!(translator, 1)
   end
   
+  # TODO: move this stuff to decorators
   def rank_style(rank)
     Tr8n::Config.default_rank_styles.each do |range, color|
       return color if range.include?(rank)
@@ -71,6 +76,7 @@ class Tr8n::Translation < ActiveRecord::Base
     "color:grey"
   end
   
+  # TODO: move this stuff to decorators
   def rank_label
     return "<span style='color:grey'>0</span>" if rank.blank?
     
@@ -94,7 +100,9 @@ class Tr8n::Translation < ActiveRecord::Base
     end
   end
 
-  # TODO: switch to using the full rule hash with definition in the rules field
+  # generates a hash of token => rule_id
+  # TODO: is this still being used? 
+  # Warning: same token can have multiple rules in a single translation
   def rules_hash
     return nil if rules.nil? or rules.empty? 
     
@@ -107,24 +115,44 @@ class Tr8n::Translation < ActiveRecord::Base
     end
   end
 
+  # generates the hash without rule ids, but with full definitions
   def rules_api_hash
-    @rules_api_hash ||= begin
-      jrules = []
-      rules.each do |rule|
-        jrules << {
-          :token => rule[:token],
-          :type => rule[:rule].class.keyword,
-          :definition => rule[:rule].definition
-        }
-      end
-      jrules
-    end
+    @rules_api_hash ||= (rules || []).collect{|rule_hash| rule_hash[:rule].to_api_hash.merge(:token => rule_hash[:token])}
   end
 
+  # serilaize translation to API hash to be used for synchronization
   def to_api_hash
     {:locale => language.locale, :label => label, :rank => rank, :rules => rules_api_hash}
   end
 
+  # create translation from API hash for a specific key
+  def self.create_from_api_hash(tkey, translator, hash, opts = {})
+    return if hash[:label].blank? # don't add empty translations
+    lang = Tr8n::Language.for(hash[:locale])
+    return unless lang # don't add translations for an unsupported language
+
+    tkey.translations.each do |trn|
+      # if an identical translation exists, don't add it
+      return if trn.to_api_hash == hash
+    end
+    
+    # generate rules for the translation
+    rules = nil
+    
+    if hash[:rules].any?
+      hash[:rules].each do |rule_hash|
+        return unless rule_hash[:token] and rule_hash[:type] and rule_hash[:definition]
+        
+        rule = Tr8n::LanguageRule.for_definition(lang, translator, rule_hash[:type], rule_hash[:definition], opts)
+        return unless rule # if the rule has not been created, we should not even add the translation
+        rules << {:token => rule_hash[:token], :rule_id => rule.id}
+      end
+    end
+    
+    tkey.add_translation(hash[:label], rules, lang, translator)
+  end
+
+  # deprecated - api_hash should be used instead
   def rules_definitions
     return nil if rules.nil? or rules.empty? 
     @rules_definitions ||= begin
@@ -136,6 +164,7 @@ class Tr8n::Translation < ActiveRecord::Base
     end
   end
 
+  # TODO: move to decorators
   def context
     return nil if rules.nil? or rules.empty? 
     
@@ -148,6 +177,7 @@ class Tr8n::Translation < ActiveRecord::Base
     end
   end
 
+  # checks if the translation is valid for the given tokens
   def matches_rules?(token_values)
     return true if rules.nil? # doesn't have any rules
     return false if rules.empty?  # had some rules that have been removed
@@ -162,14 +192,13 @@ class Tr8n::Translation < ActiveRecord::Base
     true
   end
   
+  # used by the permutation generator
   def matches_rule_definitions?(new_rules_hash)
     rules_hash == new_rules_hash
   end
 
   def self.default_translation(translation_key, language, translator)
-    trans = find(:first, 
-      :conditions => ["translation_key_id = ? and language_id = ? and translator_id = ? and rules is null", 
-                       translation_key.id, language.id, translator.id], :order => "rank desc")
+    trans = where("translation_key_id = ? and language_id = ? and translator_id = ? and rules is null", translation_key.id, language.id, translator.id).order("rank desc").first
     trans ||= new(:translation_key => translation_key, :language => language, :translator => translator, :label => translation_key.sanitized_label)
     trans  
   end
@@ -182,13 +211,9 @@ class Tr8n::Translation < ActiveRecord::Base
     # for now, treat all translations as uniq
     return true
     
-    conditions = ["translation_key_id = ? and language_id = ? and label = ?", translation_key.id, language.id, label]
-    if self.id
-      conditions[0] << " and id <> ?"
-      conditions << self.id
-    end
-    
-    self.class.find(:all, :conditions => conditions).empty?
+    trns = self.class.where("translation_key_id = ? and language_id = ? and label = ?", translation_key.id, language.id, label)
+    trns = trns.where("id <> ?", self.id) if self.id
+    trns.count == 0
   end
   
   def clean?
@@ -267,6 +292,10 @@ class Tr8n::Translation < ActiveRecord::Base
   
   def self.for_params(params, language = Tr8n::Config.current_language)
     results = self.where("language_id = ?", language.id)
+    
+    # ensure that only allowed translations are visible
+    results = results.where("translation_key_id in (select id from tr8n_translation_keys where level <= ?)", Tr8n::Config.current_translator.level) 
+    
     results = results.where("label like ?", "%#{params[:search]}%") unless params[:search].blank?
   
     if params[:with_status] == "accepted"

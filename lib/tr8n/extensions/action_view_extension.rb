@@ -344,8 +344,8 @@ module Tr8n
         link_to_function("<span>#{label}</span>".html_safe, function, :class => "tr8n_grey_button tr8n_pcb")    
       end
 
-      def tr8n_paginator_tag(results, subject)  
-        render :partial => "/tr8n/common/paginator", :locals => {:objects => results, :subject => subject}
+      def tr8n_paginator_tag(collection, options)  
+        render :partial => "/tr8n/common/paginator", :locals => {:collection => collection, :options => options}
       end
 
     private

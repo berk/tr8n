@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2011 Michael Berkovich
+# Copyright (c) 2010-2011 Michael Berkovich, tr8n.net
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -53,7 +53,7 @@ class Tr8n::Translator < ActiveRecord::Base
   end
   
   def self.find_or_create(user)
-    trn = find(:first, :conditions => ["user_id = ?", user.id])
+    trn = where(:user_id => user.id).first
     trn = create(:user => user) unless trn
     trn
   end
@@ -62,7 +62,7 @@ class Tr8n::Translator < ActiveRecord::Base
     return unless user
     
     translator = Tr8n::Translator.find_or_create(user)
-    Tr8n::LanguageUser.find(:all, :conditions => ["user_id = ?", user.id]).each do |lu|
+    Tr8n::LanguageUser.where(:user_id => user.id).each do |lu|
       lu.update_attributes(:translator => translator)
     end
     translator
@@ -196,11 +196,15 @@ class Tr8n::Translator < ActiveRecord::Base
   end
 
   def system?
-    rank == 1000000
+    level == Tr8n::Config.system_level
+  end
+
+  def application?
+    level == Tr8n::Config.application_level
   end
   
   def last_logs
-    Tr8n::TranslatorLog.find(:all, :conditions => ["translator_id = ?", self.id], :order => "created_at desc", :limit => 20)
+    Tr8n::TranslatorLog.where("translator_id = ?", self.id).order("created_at desc").limit(20)
   end
   
   def name
@@ -278,7 +282,7 @@ class Tr8n::Translator < ActiveRecord::Base
   end
 
   def unfollow(object)
-    tf = Tr8n::TranslatorFollowing.find(:first, :conditions => ["object_type = ? and object_id = ?", object.class.name, object.id])
+    tf = Tr8n::TranslatorFollowing.where("object_type = ? and object_id = ?", object.class.name, object.id).first
     tf.destroy if tf
   end
 

@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2011 Michael Berkovich
+# Copyright (c) 2010-2011 Michael Berkovich, tr8n.net
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -36,7 +36,7 @@ class Tr8n::TranslationKeySource < ActiveRecord::Base
 
   def self.find_or_create(translation_key, translation_source)
     Tr8n::Cache.fetch("translation_key_source_#{translation_key.id}_#{translation_source.id}") do 
-      tks = find(:first, :conditions => ["translation_key_id = ? and translation_source_id = ?", translation_key.id, translation_source.id])
+      tks = where("translation_key_id = ? and translation_source_id = ?", translation_key.id, translation_source.id).first
       tks || create(:translation_key => translation_key, :translation_source => translation_source)
     end  
   end

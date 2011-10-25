@@ -27,9 +27,7 @@
 	</div>
 	
 	<div class="section">
-    <% if @translation_keys.any? %>
-			<%= tr8n_paginator_tag(@translation_keys, 'phrase') %>	
-    <% end %>
+  	<%= tr8n_paginator_tag(@translation_keys, :subject => 'phrase') if @translation_keys.any? %>	
 	
 	  <table style="width:100%">
 	    <tr style="border-bottom:2px solid #ccc;">
@@ -72,9 +70,7 @@
 		    <div style="text-align:left; padding-top:10px; font-size:12px;"><%=trla("No phrases found")%></div>
 		<% end %>
 		
-		<% if @translation_keys.any? %>
-	    <%= render :partial => "/tr8n/common/paginator", :locals => {:objects => @translation_keys, :subject => 'phrase'} %>
-		<% end %>
+  	<%= tr8n_paginator_tag(@translation_keys, :subject => 'phrase') if @translation_keys.any? %>	
 	</div>
 	<%= render :partial => "/tr8n/common/footer" %>
 	

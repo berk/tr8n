@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2011 Michael Berkovich
+# Copyright (c) 2010-2011 Michael Berkovich, tr8n.net
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -310,19 +310,23 @@ class Tr8n::Language < ActiveRecord::Base
   end
 
   def recently_added_forum_messages
-    @recently_added_forum_messages ||= Tr8n::LanguageForumMessage.find(:all, :conditions => ["language_id = ?", self.id], :order => "created_at desc", :limit => 5)    
+    @recently_added_forum_messages ||= Tr8n::LanguageForumMessage.where("language_id = ?", self.id).order("created_at desc").limit(5)    
   end
 
   def recently_added_translations
-    @recently_added_translations ||= Tr8n::Translation.find(:all, :conditions => ["language_id = ?", self.id], :order => "created_at desc", :limit => 5)    
+    @recently_added_translations ||= Tr8n::Translation.where("language_id = ?", self.id).order("created_at desc").limit(5)    
   end
 
   def recently_updated_translations
-    @recently_updated_translations ||= Tr8n::Translation.find(:all, :conditions => ["language_id = ?", self.id], :order => "updated_at desc", :limit => 5)    
+    @recently_updated_translations ||= begin
+      trans =  Tr8n::Translation.where("language_id = ?", self.id)
+      trans = trans.where("translation_key_id in (select id from tr8n_translation_keys where level <= ?)", Tr8n::Config.current_translator.level)
+      trans.order("updated_at desc").limit(5)
+    end
   end
   
   def recently_updated_votes(translator = Tr8n::Config.current_translator)
-    @recently_updated_votes ||= Tr8n::TranslationVote.find(:all, :conditions => ["translation_id in (select tr8n_translations.id from tr8n_translations where tr8n_translations.language_id = ? and tr8n_translations.translator_id = ?)", self.id, translator.id], :order => "updated_at desc", :limit => 5)    
+    @recently_updated_votes ||= Tr8n::TranslationVote.where("translation_id in (select tr8n_translations.id from tr8n_translations where tr8n_translations.language_id = ? and tr8n_translations.translator_id = ?)", self.id, translator.id).order("updated_at desc").limit(5)
   end
   
 end

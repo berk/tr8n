@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110930041150) do
+ActiveRecord::Schema.define(:version => 20111011013640) do
 
   create_table "admins", :force => true do |t|
     t.integer  "user_id"
@@ -188,6 +188,17 @@ ActiveRecord::Schema.define(:version => 20110930041150) do
 
   add_index "tr8n_languages", ["locale"], :name => "index_tr8n_languages_on_locale"
 
+  create_table "tr8n_sync_logs", :force => true do |t|
+    t.datetime "started_at"
+    t.datetime "finished_at"
+    t.integer  "keys_sent"
+    t.integer  "translations_sent"
+    t.integer  "keys_received"
+    t.integer  "translations_received"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "tr8n_translation_domains", :force => true do |t|
     t.string   "name"
     t.string   "description"
@@ -245,6 +256,7 @@ ActiveRecord::Schema.define(:version => 20110930041150) do
     t.integer  "level",             :default => 0
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "synced_at"
   end
 
   add_index "tr8n_translation_keys", ["key"], :name => "index_tr8n_translation_keys_on_key", :unique => true
@@ -279,6 +291,7 @@ ActiveRecord::Schema.define(:version => 20110930041150) do
     t.text     "rules"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "synced_at"
   end
 
   add_index "tr8n_translations", ["created_at"], :name => "tr8n_trans_created_at"
@@ -360,6 +373,7 @@ ActiveRecord::Schema.define(:version => 20110930041150) do
     t.string   "country_code"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "remote_id"
   end
 
   add_index "tr8n_translators", ["created_at"], :name => "index_tr8n_translators_on_created_at"

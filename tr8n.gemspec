@@ -27,6 +27,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'kaminari', ['>= 0']
   s.add_dependency 'sass', ['>= 0']
   s.add_dependency 'coffee-script', ['>= 0']
+  s.add_development_dependency 'pry', ['>= 0']
   s.add_development_dependency 'bundler', ['>= 1.0.0']
   s.add_development_dependency 'sqlite3', ['>= 0']
   s.add_development_dependency 'rspec', ['>= 0']
@@ -36,4 +37,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'steak', ['>= 0']
   s.add_development_dependency 'capybara', ['>= 0']
   s.add_development_dependency 'database_cleaner', ['>= 0']
+  s.add_development_dependency 'memcache-client', ['>= 1.8.5']
 end

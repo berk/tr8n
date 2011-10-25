@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2011 Michael Berkovich
+# Copyright (c) 2010-2011 Michael Berkovich, tr8n.net
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -218,7 +218,6 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     
   def add_translation(label, rules = nil, language = Tr8n::Config.current_language, translator = Tr8n::Config.current_translator)
     raise Tr8n::Exception.new("The sentence contains dirty words") unless language.clean_sentence?(label)
-    
     translation = Tr8n::Translation.create(:translation_key => self, :language => language, 
                                            :translator => translator, :label => label, :rules => rules)
     translation.vote!(translator, 1)
@@ -226,10 +225,11 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   end
 
   # returns all translations for the key, language and minimal rank
-  def translations_for(language, rank = nil)
-    translations = Tr8n::Translation.where("translation_key_id = ? and language_id = ?", self.id, language.id)
+  def translations_for(language = nil, rank = nil)
+    translations = Tr8n::Translation.where("translation_key_id = ?", self.id)
+    translations = translations.where("language_id = ?", language.id) if language
     translations = translations.where("rank >= ?", rank) if rank
-    translations.order("rank desc")
+    translations.order("rank desc").all
   end
 
   # used by the inline popup dialog, we don't want to show blocked translations
@@ -427,6 +427,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     processed_label
   end
   
+  # TODO: move all this stuff out of the model to decorators
   def default_decoration(language = Tr8n::Config.current_language, options = {})
     return label if Tr8n::Config.current_user_is_guest?
     return label unless Tr8n::Config.current_user_is_translator?
@@ -508,8 +509,30 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   end
 
   def to_api_hash
-    translations = Tr8n::Translation.where("translation_key_id = ? and rank >= ?", self.id, Tr8n::Config.translation_threshold).order("rank desc")
-    {:key => self.key, :label => self.label, :description => self.description, :translations => translations.collect{|t| t.to_api_hash}}
+    { 
+      :key => self.key, 
+      :label => self.label, 
+      :description => self.description, 
+      :locale => (locale || Tr8n::Config.default_locale), 
+      :translations => translations_for(nil, Tr8n::Config.translation_threshold).collect{|t| t.to_api_hash}
+    }
+  end
+
+  # create translation key from API hash
+  def self.create_from_api_hash(tkey_hash, translator, opts = {})
+    return if tkey_hash[:key].blank? or tkey_hash[:label].blank? or tkey_hash[:locale].blank?
+     
+    tkey = Tr8n::TranslationKey.find_or_create(tkey_hash[:label], tkey_hash[:description])
+
+    # return unless tkey.key==tkey_hash[:key] # need to warn the user that the key methods don't match
+
+    opts[:force_create] = Tr8n::Config.synchronization_create_rules? if opts[:force_create].nil?
+    
+    (tkey_hash[:translations] || []).each do |trn_hash|
+      Tr8n::Translation.create_from_api_hash(tkey, translator, trn_hash, opts)
+    end
+
+    tkey
   end
 
   ###############################################################

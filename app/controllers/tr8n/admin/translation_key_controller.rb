@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2011 Michael Berkovich
+# Copyright (c) 2010-2011 Michael Berkovich, tr8n.net
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -108,6 +108,10 @@ class Tr8n::Admin::TranslationKeyController < Tr8n::Admin::BaseController
   
   def comments
     @comments = Tr8n::TranslationKeyComment.filter(:params => params, :filter => Tr8n::TranslationKeyCommentFilter)
+  end
+  
+  def sync_logs
+    @logs = Tr8n::SyncLog.filter(:params => params, :filter => Tr8n::SyncLogFilter)
   end
   
   def delete_comment

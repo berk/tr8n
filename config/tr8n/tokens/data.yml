@@ -16,4 +16,6 @@ rsquo:    "&rsquo;"   # ’
 laquo:    "&laquo;"   # « 
 raquo:    "&raquo;"   # »  
 nbsp:     "&nbsp;"    # space
+lsaquo:   "&lsaquo;"  # ‹
+rsaquo:   "&rsaquo;"  # ›
 br:       "<br/>"     # line break 

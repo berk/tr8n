@@ -74,7 +74,7 @@ module Tr8n
           session[:locale] = params[:locale] if params[:locale]
           tr8n_current_locale = session[:locale]
         end
-
+        
         tr8n_current_user = nil
         if Tr8n::Config.site_user_info_enabled? 
           begin

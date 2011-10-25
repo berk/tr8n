@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2011 Michael Berkovich
+# Copyright (c) 2010-2011 Michael Berkovich, tr8n.net
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -42,7 +42,7 @@ class Tr8n::LanguageRule < ActiveRecord::Base
   end
   
   def self.for(language)
-    find(:all, :conditions => ["language_id = ?", language.id])
+    self.where("language_id = ?", language.id)
   end
   
   def self.options
@@ -59,6 +59,28 @@ class Tr8n::LanguageRule < ActiveRecord::Base
 
   def self.keyword
     dependency
+  end
+
+  # {"locale"=>"ru", "label"=>"{count} сообщения", "rank"=>1, "rules"=>[
+  #        {"token"=>"count", "type"=>"number", "definition"=>
+  #             {"multipart"=>true, "part1"=>"ends_in", "value1"=>"2,3,4", "operator"=>"and", "part2"=>"does_not_end_in", "value2"=>"12,13,14"}
+  #        }
+  #     ]
+  # }
+
+  def self.for_definition(lang, translator, type, definition, opts = {})
+    opts[:force_create] ||= false
+    
+    rule_class = Tr8n::Config.language_rule_dependencies[type]
+    return if rule_class == nil # unsupported rule type, skip this completely
+    
+    rule_class.for(lang).each do |rule|
+      return rule if rule.definition == definition
+    end
+    
+    if opts[:force_create]
+      rule_class.create(:language => lang, :translator => translator, :definition => definition)
+    end
   end
 
   # TDOD: switch to using keyword
@@ -78,6 +100,13 @@ class Tr8n::LanguageRule < ActiveRecord::Base
   
   def self.humanize_values(values)
     sanitize_values(values).join(", ")
+  end
+
+  def to_api_hash
+    {
+      :type => self.class.keyword,
+      :definition => definition
+    }
   end
 
   def evaluate(token_value)

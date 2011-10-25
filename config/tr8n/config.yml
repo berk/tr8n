@@ -7,6 +7,12 @@
 # environment settings at the bottom of the file. 
 #
 # Alternatively, you can overload any of the methods of Tr8n::Config
+#
+# If you would like to manage the configurations on the live site, 
+# try out the Registry gem, located here:
+#
+# http://www.github.com/berk/registry
+#
 #############################################################################
 
 defaults: &defaults
@@ -63,11 +69,15 @@ defaults: &defaults
   #
   # For example: 
   #  
-  # cache_adapter:  ActiveSupport::Cache
-  # cache_store:    memory_store
-  # cache_store:    file_store
-  # cache_store:    drb_store
-  # cache_store:    [mem_cache_store, 'localhost:11211']
+  # adapter:  ActiveSupport::Cache
+  # store:    memory_store        # only for dev or test - single instance
+  # store:    file_store          # only for dev or test - single instance
+  # store:    drb_store
+  # store:    [mem_cache_store, 'localhost:11211'] # recommended
+  # 
+  # If you choose to use memcached, don't forget to add the gem to your Gemfile:
+  #
+  # gem 'memcache-client'
   #
   # You can also provide your own implementation of the adapter:
   #
@@ -76,7 +86,7 @@ defaults: &defaults
   #############################################################################
   caching:
     enabled:                  false
-    adapter:                  "ActiveSupport::Cache"
+    adapter:                  ActiveSupport::Cache
     store:                    ['mem_cache_store', 'localhost:11211']
     version:                  1 # you can change the version to invalidate the cache
 
@@ -96,13 +106,13 @@ defaults: &defaults
     title:                    "Tr8n"                            # site title - provide your site title here
     contact_email:            "admin@tr8n.org"                  # contact email for questions about translations
     current_locale_method:    "current_locale"                  # application controller method that sets and returns current locale
-    default_url:              "/tr8n/home"                      # default site url where to redirect the user if Tr8n is disabled            
+    default_url:              "/"                               # default site url where to redirect the user if Tr8n is disabled            
     default_locale:           "en-US"                           # locale of the site default language
     sitemap_path:             "/config/tr8n/site/sitemap.json"  # location of the sitemap definition file
     splash_screen:            "/tr8n/common/splash_screen"      # location of the Tr8n splash screen  
-    tr8n_layout:              "tr8n"                            # layout for the tr8n pages
+    tr8n_layout:              "tr8n"                            # layout for the tr8n pages - change it to your layout
     tr8n_helpers:             []                                # if you need to add extra helpers
-    admin_layout:             "tr8n_admin"                      # layout to be used for the admin user interface
+    admin_layout:             "tr8n_admin"                      # layout to be used for the admin user interface - change it to your layout
     admin_helpers:            []                                # if you need to add extra helpers
     before_filters:           []                                # filters from application controller
     skip_before_filters:      []                                # filters from application controller
@@ -115,8 +125,8 @@ defaults: &defaults
         id:                   "id"
         name:                 "name"                            
         gender:               "gender"
-        admin:                "admin?"
-        guest:                "guest?"
+        admin:                "admin?"            
+        guest:                "guest?"                          # if current_user is nil, the user is automatically a guest
         mugshot:              "mugshot"
         link:                 "link"
         locale:               "locale"
@@ -198,8 +208,10 @@ defaults: &defaults
     regular:                  0
     trusted:                  50
     professional:             100
-    manager:                  1000   # reserved for translation tools
-    admin:                    10000  # reserved for admin tools
+    manager:                  1000      # reserved for translation tools
+    admin:                    10000     # reserved for admin tools
+    application:              100000    # reserved for applications
+    system:                   1000000   # reserved for system
   
   default_translation_key_level: 0
   #############################################################################
@@ -221,6 +233,29 @@ defaults: &defaults
       monthname_abbr:         '%b %d'               # Jul 4
       monthname_abbr_year:    '%b %d, %Y'           # Jul 4, 2008
       date_time:              '%m/%d/%Y at %H:%M'   # 01/03/1010 at 5:30
+ 
+  #############################################################################
+  # You can synchronize your translation keys and translations with the 
+  # tr8n.net service. This way you can get your site translated by 
+  # millions of users from around the internet. Visit the following url and 
+  # register as a developer, register your application and copy your app key
+  # and secret in the lines below:
+  #
+  #  http://tr8n.net
+  # 
+  # To sychronize your translations run the following command: 
+  # 
+  #  rake tr8n:sync
+  #
+  # You can run this command as often as your account on tr8n.net permits you.
+  #############################################################################
+  synchronization:
+    server:                   "http://tr8n.net"  # alternative, regional locations will be available in the future
+    key:                      "iKjOrZjor68a4UeCD3Cq2r9t9ibBC4HnYoMNMrN7" # replace this with your key
+    secret:                   "iKjOrZjor68a4UeCD3Cq2r9t9ibBC4HnYoMNMrN7" # replace this with your secret   
+    batch_size:               50     # how many kesy to send to the server at a time
+    create_rules:             true   # force rules creation, or skip translations for rules that don't exist
+    all_languages:            false  # use only enabled languages, or all languages
  
 #############################################################################
 # Environment Settings

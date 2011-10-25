@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2011 Michael Berkovich
+# Copyright (c) 2010-2011 Michael Berkovich, tr8n.net
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -26,7 +26,7 @@ class Tr8n::MonthlyLanguageMetric < Tr8n::LanguageMetric
   def update_metrics!
     attribs = default_attributes
     attribs.each do |key, value|
-      attribs[key] = Tr8n::DailyLanguageMetric.sum(key, :conditions => ["language_id = ? and metric_date >= ? and metric_date < ?", language_id, metric_date, metric_date + 1.month])
+      attribs[key] = Tr8n::DailyLanguageMetric.where("language_id = ? and metric_date >= ? and metric_date < ?", language_id, metric_date, metric_date + 1.month).sum(key)
     end
     update_attributes(attribs)
   end

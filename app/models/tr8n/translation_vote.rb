@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2011 Michael Berkovich
+# Copyright (c) 2010-2011 Michael Berkovich, tr8n.net
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -28,9 +28,8 @@ class Tr8n::TranslationVote < ActiveRecord::Base
   belongs_to :translator,   :class_name => "Tr8n::Translator"
     
   def self.find_or_create(translation, translator)
-    vote = find(:first, :conditions => ["translation_id = ? and translator_id = ?", translation.id, translator.id])
-    vote = create(:translation => translation, :translator => translator, :vote => 0) unless vote
-    vote
+    vote = where("translation_id = ? and translator_id = ?", translation.id, translator.id).first
+    vote ||= create(:translation => translation, :translator => translator, :vote => 0)
   end
   
 end

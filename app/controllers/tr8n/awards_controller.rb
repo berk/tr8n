@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2011 Michael Berkovich
+# Copyright (c) 2010-2011 Michael Berkovich, tr8n.net
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -21,19 +21,21 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-class Tr8n::AwardsController < Tr8n::BaseController
+module Tr8n
+  class AwardsController < Tr8n::BaseController
 
-  before_filter :validate_current_translator
+    before_filter :validate_current_translator
   
-  def index
-    if params[:mode] == "all"
-      @translator_metrics = Tr8n::TranslatorMetric.where("language_id is null").order("total_translations desc, total_votes desc").limit(25)
-    else
-      @translator_metrics = Tr8n::TranslatorMetric.where("language_id = ?", tr8n_current_language.id).order("total_translations desc, total_votes desc").limit(25)
+    def index
+      if params[:mode] == "all"
+        @translator_metrics = Tr8n::TranslatorMetric.where("language_id is null").order("total_translations desc, total_votes desc").limit(25)
+      else
+        @translator_metrics = Tr8n::TranslatorMetric.where("language_id = ?", tr8n_current_language.id).order("total_translations desc, total_votes desc").limit(25)
+      end
+    
+      @leaders = @translator_metrics[0..2]
+      @runners = (@translator_metrics.size > 3) ? @translator_metrics[3..-1] : []
     end
     
-    @leaders = @translator_metrics[0..2]
-    @runners = (@translator_metrics.size > 3) ? @translator_metrics[3..-1] : []
   end
-    
 end

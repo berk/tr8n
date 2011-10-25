@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2011 Michael Berkovich
+# Copyright (c) 2010-2011 Michael Berkovich, tr8n.net
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -32,10 +32,10 @@ class Tr8n::LanguageForumTopic < ActiveRecord::Base
   alias :messages :language_forum_messages
   
   def post_count
-    @post_count ||= Tr8n::LanguageForumMessage.count(:conditions => ["language_forum_topic_id = ?", self.id])
+    @post_count ||= Tr8n::LanguageForumMessage.where("language_forum_topic_id = ?", self.id).count
   end
 
   def last_post
-    @last_post ||= Tr8n::LanguageForumMessage.find(:first, :conditions => ["language_forum_topic_id = ?", self.id], :order => "created_at desc")
+    @last_post ||= Tr8n::LanguageForumMessage.where("language_forum_topic_id = ?", self.id).order("created_at desc").first
   end
 end

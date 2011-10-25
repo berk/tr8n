@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2011 Michael Berkovich
+# Copyright (c) 2010-2011 Michael Berkovich, tr8n.net
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -33,7 +33,7 @@ class Tr8n::TranslationKeyLock < ActiveRecord::Base
   alias :key :translation_key
   
   def self.find_or_create(translation_key, language)
-    lock = find(:first, :conditions => ["translation_key_id = ? and language_id = ?", translation_key.id, language.id])
+    lock = where("translation_key_id = ? and language_id = ?", translation_key.id, language.id).first
     lock || create(:translation_key => translation_key, :language => language)
   end
 

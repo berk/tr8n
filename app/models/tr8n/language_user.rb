@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2011 Michael Berkovich
+# Copyright (c) 2010-2011 Michael Berkovich, tr8n.net
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -34,7 +34,7 @@ class Tr8n::LanguageUser < ActiveRecord::Base
   # when users get promoted, they are automatically get associated with a language and marked as translators
   
   def self.find_or_create(user, language)
-    lu = find(:first, :conditions => ["user_id = ? and language_id = ?", user.id, language.id])
+    lu = where("user_id = ? and language_id = ?", user.id, language.id).first
     lu || create(:user_id => user.id, :language_id => language.id)
   end
 
@@ -45,7 +45,7 @@ class Tr8n::LanguageUser < ActiveRecord::Base
   def self.languages_for(user)
     return [] unless user.id
     check_default_language_for(user)
-    find(:all, :conditions => ["user_id = ?", user.id], :order => "updated_at desc")
+    where("user_id = ?", user.id).order("updated_at desc")
   end
 
   def self.create_or_touch(user, language)

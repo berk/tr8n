@@ -3,7 +3,9 @@
   current_tab ||= ""
   [["Translation Keys", {:action => :index}],
    ["Comments", {:action => :comments}],
-   ["Locks", {:action => :locks}]].each do |link|
+   ["Locks", {:action => :locks}],
+   ["Sync Logs", {:action => :sync_logs}]
+	].each do |link|
       if controller.action_name == link.last[:action].to_s
         current_tab = link.first if current_tab.blank?
         links << link.first

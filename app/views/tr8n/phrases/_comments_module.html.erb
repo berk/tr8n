@@ -8,7 +8,7 @@
 	<div class="section" id="comments_content">
 		<div style="margin-bottom:10px;">
 			<% if @comments.any? %>
-				<%=tr8n_paginator_tag(@comments, "comment")%>
+				<%=tr8n_paginator_tag(@comments, :subject => "comment")%>
 			
 			  <table style="width:100%; ">
 			    <% @comments.each do |comment| %>

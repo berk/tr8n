@@ -4394,3 +4394,68 @@
 2011-10-02 18:12:15: Michael Berkovich (4) updated translation in Russian : {count||message}
 2011-10-02 18:12:15: Michael Berkovich (4) voted on translation in Russian : {count||message}
 2011-10-02 18:12:48: Michael Berkovich (4) disabled inline translations for Russian
+2011-10-04 20:30:28: Michael Berkovich (4) switched language to Spanish
+2011-10-04 20:31:56: Michael Berkovich (4) switched language to English (US)
+2011-10-04 20:32:04: Michael Berkovich (4) switched language to English (US)
+2011-10-07 00:20:26: Site user integration is enabled, but current_user method is not defined
+2011-10-07 00:20:39: Site user integration is enabled, but current_user method is not defined
+2011-10-07 00:21:26: Site user integration is enabled, but current_user method is not defined
+2011-10-07 00:22:09: Site user integration is enabled, but current_user method is not defined
+2011-10-07 00:22:43: Site user integration is enabled, but current_user method is not defined
+2011-10-07 00:22:51: Site user integration is enabled, but current_user method is not defined
+2011-10-07 00:24:03: Site user integration is enabled, but current_user method is not defined
+2011-10-07 00:24:34: Site user integration is enabled, but current_user method is not defined
+2011-10-07 00:26:52: Site user integration is enabled, but current_user method is not defined
+2011-10-07 00:28:30: Site user integration is enabled, but current_user method is not defined
+2011-10-07 00:28:44: Site user integration is enabled, but current_user method is not defined
+2011-10-07 00:29:48: Site user integration is enabled, but current_user method is not defined
+2011-10-07 00:37:32: Site user integration is enabled, but current_user method is not defined
+2011-10-07 00:37:41: Site user integration is enabled, but current_user method is not defined
+2011-10-07 00:37:44: Site user integration is enabled, but current_user method is not defined
+2011-10-07 00:37:57: Site user integration is enabled, but current_user method is not defined
+2011-10-07 13:42:23: Site user integration is enabled, but current_user method is not defined
+2011-10-07 13:42:37: Site user integration is enabled, but current_user method is not defined
+2011-10-07 14:01:39: Michael Berkovich (4) enabled inline translations for Afrikaans
+2011-10-07 14:01:46: Michael Berkovich (4) added translation
+2011-10-07 14:07:07: Michael Berkovich (4) added translation
+2011-10-07 14:08:09: Michael Berkovich (4) added translation
+2011-10-07 14:08:39: Michael Berkovich (4) added translation
+2011-10-07 14:09:01: Michael Berkovich (4) added translation
+2011-10-07 14:09:22: Michael Berkovich (4) added translation
+2011-10-07 14:11:05: Michael Berkovich (4) added translation
+2011-10-07 14:11:06: Michael Berkovich (4) voted on translation in Afrikaans : Welcome to Tr8n Translation Memory Server!
+2011-10-07 14:12:37: Michael Berkovich (4) added translation
+2011-10-07 14:12:38: Michael Berkovich (4) voted on translation in Afrikaans : Welcome to Tr8n Translation Memory Server!
+2011-10-07 14:13:35: Michael Berkovich (4) added translation
+2011-10-07 14:13:36: Michael Berkovich (4) voted on translation in Afrikaans : If you are trying out Tr8n functionality, here are some helpful links to get started:
+2011-10-07 14:14:14: Michael Berkovich (4) switched language to Russian
+2011-10-07 14:14:20: Michael Berkovich (4) added translation
+2011-10-07 14:14:20: Michael Berkovich (4) voted on translation in Russian : If you are trying out Tr8n functionality, here are some helpful links to get started:
+2011-10-07 14:45:11: Michael Berkovich (2) enabled inline translations for Russian
+2011-10-07 14:45:24: Michael Berkovich (2) added translation
+2011-10-07 14:45:24: Michael Berkovich (2) voted on translation in Russian : Next {rsaquo}
+2011-10-07 14:45:30: Michael Berkovich (2) added translation
+2011-10-07 14:45:31: Michael Berkovich (2) voted on translation in Russian : Last {raquo}
+2011-10-07 14:45:40: Michael Berkovich (2) added translation
+2011-10-07 14:45:40: Michael Berkovich (2) voted on translation in Russian : {lsaquo} Prev
+2011-10-07 14:45:55: Michael Berkovich (2) added translation
+2011-10-07 14:45:55: Michael Berkovich (2) voted on translation in Russian : {laquo} First
+2011-10-07 14:46:33: Michael Berkovich (2) added translation
+2011-10-07 14:46:33: Michael Berkovich (2) voted on translation in Russian : Displaying phrases [bold: {start_num} - {end_num}] of [bold: {total_count}] in total
+2011-10-07 14:46:47: Michael Berkovich (2) added translation
+2011-10-07 14:46:47: Michael Berkovich (2) voted on translation in Russian : Displaying phrases [bold: {start_num} - {end_num}] of [bold: {total_count}] in total
+2011-10-07 14:46:56: Michael Berkovich (2) voted on translation in Russian : Displaying phrases [bold: {start_num} - {end_num}] of [bold: {total_count}] in total
+2011-10-07 14:47:19: Michael Berkovich (2) disabled inline translations for Russian
+2011-10-07 14:47:58: Michael Berkovich (2) deleted translation in Russian : Displaying phrases [bold: {start_num} - {end_num}] of [bold: {total_count}] in total
+2011-10-07 14:48:39: Michael Berkovich (2) switched language to Russian
+2011-10-07 14:50:22: Michael Berkovich (2) voted on translation in Russian : Displaying phrases [bold: {start_num} - {end_num}] of [bold: {total_count}] in total
+2011-10-07 14:50:24: Michael Berkovich (2) voted on translation in Russian : Displaying phrases [bold: {start_num} - {end_num}] of [bold: {total_count}] in total
+2011-10-07 14:52:03: Michael Berkovich (2) voted on translation in Russian : Displaying phrases [bold: {start_num} - {end_num}] of [bold: {total_count}] in total
+2011-10-07 14:52:30: Michael Berkovich (2) voted on translation in Russian : Displaying phrases [bold: {start_num} - {end_num}] of [bold: {total_count}] in total
+2011-10-07 14:52:36: Michael Berkovich (2) voted on translation in Russian : Displaying phrases [bold: {start_num} - {end_num}] of [bold: {total_count}] in total
+2011-10-07 14:52:45: Michael Berkovich (2) added translation
+2011-10-07 14:52:45: Michael Berkovich (2) voted on translation in Russian : Displaying phrases [bold: {start_num} - {end_num}] of [bold: {total_count}] in total
+2011-10-07 14:52:50: Michael Berkovich (2) voted on translation in Russian : Displaying phrases [bold: {start_num} - {end_num}] of [bold: {total_count}] in total
+2011-10-07 14:55:38: Michael Berkovich (2) deleted translation in Russian : Displaying phrases [bold: {start_num} - {end_num}] of [bold: {total_count}] in total
+2011-10-07 14:56:14: Michael Berkovich (2) voted on translation in Russian : Displaying phrases [bold: {start_num} - {end_num}] of [bold: {total_count}] in total
+2011-10-07 14:56:21: Michael Berkovich (2) voted on translation in Russian : Displaying phrases [bold: {start_num} - {end_num}] of [bold: {total_count}] in total

@@ -23,7 +23,7 @@
 
 Tr8n::Engine.routes.draw do
   [:awards, :chart, :dashboard, :forum, :glossary, :help, :language_cases,
-   :language, :phrases, :translations, :translator, :home, :login].each do |ctrl|
+   :language, :phrases, :translations, :translator].each do |ctrl|
     match "#{ctrl}(/:action)", :controller => "#{ctrl}"
   end
   
@@ -37,7 +37,7 @@ Tr8n::Engine.routes.draw do
   end
   
   namespace :tr8n do
-    root :to => "home#index"
+    root :to => "dashboard#index"
     namespace :admin do
       root :to => "language#index"
     end

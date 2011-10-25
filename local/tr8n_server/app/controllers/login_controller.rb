@@ -33,7 +33,7 @@ class LoginController < ApplicationController
 
   def out
     logout!
-    redirect_to("/tr8n/home") 
+    redirect_to("/home") 
   end
 
 private

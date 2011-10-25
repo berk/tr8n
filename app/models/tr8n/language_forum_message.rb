@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2011 Michael Berkovich
+# Copyright (c) 2010-2011 Michael Berkovich, tr8n.net
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -33,7 +33,7 @@ class Tr8n::LanguageForumMessage < ActiveRecord::Base
   alias :topic :language_forum_topic
 
   def submit_abuse_report(reporter)
-    report = Tr8n::LanguageForumAbuseReport.find(:first, :conditions => ["language_forum_message_id = ? and translator_id = ?", self.id, reporter.id])
+    report = Tr8n::LanguageForumAbuseReport.where("language_forum_message_id = ? and translator_id = ?", self.id, reporter.id).first
     report ||= Tr8n::LanguageForumAbuseReport.create(:language_forum_message => self, :translator => reporter, :language => language)
     translator.update_attributes(:reported => true)
     report

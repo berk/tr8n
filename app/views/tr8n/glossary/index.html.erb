@@ -15,7 +15,7 @@
 	</div>
 	
 	<div class="section">
-	  <%= render :partial => "/tr8n/common/paginator", :locals => {:objects => @terms, :subject => 'term'} %>
+		<%= tr8n_paginator_tag(@terms, :subject => 'term') %>	
 	
 	  <table style="width:100%">
 	    <tr style="border-bottom:1px solid #ccc;">
@@ -34,7 +34,7 @@
 	    <% end %>
 	  </table>
 		
-	  <%= render :partial => "/tr8n/common/paginator", :locals => {:objects => @terms, :subject => 'term'} %>
+		<%= tr8n_paginator_tag(@terms, :subject => 'term') %>	
 	</div>
 	
 	<%= render :partial => "/tr8n/common/footer" %>

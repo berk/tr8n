@@ -1,5 +1,5 @@
 <div class="section">
-	<%= tr8n_paginator_tag(@messages, 'message') %>	
+	<%= tr8n_paginator_tag(@messages, :subject => 'message') %>	
 
   <table style="width:100%; ">
     <% @messages.each do |message| %>

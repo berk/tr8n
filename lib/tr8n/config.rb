@@ -65,9 +65,15 @@ module Tr8n
       return Tr8n::Language.new(:locale => default_locale) if disabled?
       @default_language ||= Tr8n::Language.for(default_locale) || Tr8n::Language.new(:locale => default_locale)
     end
-  
+    
+    # only one allowed per system
     def self.system_translator
-      @system_translator ||= Tr8n::Translator.find_by_rank(1000000) || Tr8n::Translator.create(:user_id => 0, :rank => 1000000)
+      @system_translator ||= Tr8n::Translator.where(:level => system_level).first || Tr8n::Translator.create(:user_id => 0, :level => system_level)
+    end
+
+    # only one allowed per application
+    def self.application_translator_for(user)
+      Tr8n::Translator.where(:user_id => user.id, :level => application_level).first || Tr8n::Translator.create(:user_id => user.id, :level => application_level)
     end
   
     def self.reset!
@@ -292,6 +298,10 @@ module Tr8n
       config[:api]
     end
 
+    def self.synchronization
+      config[:synchronization]
+    end
+
     #########################################################
     # Caching
     def self.enable_caching?
@@ -471,7 +481,7 @@ module Tr8n
       default_locale
     end
 
-    def self.admin_user?(user = current_user)
+    def self.admin_user?(user = Tr8n::Config.current_user)
       return false unless user
       user.send(site_user_info[:methods][:admin])
     rescue Exception => ex
@@ -483,7 +493,7 @@ module Tr8n
       admin_user?
     end
   
-    def self.guest_user?(user = current_user)
+    def self.guest_user?(user = Tr8n::Config.current_user)
       return true unless user
       user.send(site_user_info[:methods][:guest])
     rescue Exception => ex
@@ -701,6 +711,14 @@ module Tr8n
       10000
     end
 
+    def self.application_level
+      100000
+    end
+
+    def self.system_level
+      1000000
+    end
+
     def self.default_translation_key_level
       config[:default_translation_key_level] || 0
     end
@@ -719,12 +737,28 @@ module Tr8n
     #########################################################
     # Sync Process
     #########################################################
-    def self.sync_batch_size
-      50
+    def self.synchronization_batch_size
+      synchronization[:batch_size]
     end
     
-    def self.sync_url
-      "http://localhost:3000/api/v1/sync"
+    def self.synchronization_server
+      synchronization[:server]
+    end
+    
+    def self.synchronization_key
+      synchronization[:key]
+    end
+
+    def self.synchronization_secret
+      synchronization[:secret]
+    end
+
+    def self.synchronization_create_rules?
+      synchronization[:create_rules]
+    end
+
+    def self.synchronization_all_languages?
+      synchronization[:all_languages]
     end
   end
 end
