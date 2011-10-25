@@ -13,4 +13,4 @@ log/*
 .dotest*
 Thumbs.db
 .tmp*
-local
+local/
