@@ -22,6 +22,10 @@ Ctrl+Shift+C:
   description:  Displays Tr8n credits
   script:       "window.location = '/tr8n/home/credits';"
 
+Ctrl+Shift+T:       
+  description:  Displays Tr8n statistics
+  script:       "Tr8n.Utils.displayStatistics();"
+
 Alt+Shift+D: 
   description:  Opens dashboard
   script:       "window.location = '/tr8n/dashboard';"

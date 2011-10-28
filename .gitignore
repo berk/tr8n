@@ -13,4 +13,7 @@ log/*
 .dotest*
 Thumbs.db
 .tmp*
-local/
+local/tr8n_server/db/*.sqlite3
+local/tr8n_server/log/*.log
+local/tr8n_server/tmp/
+local/tr8n_server/.sass-cache/

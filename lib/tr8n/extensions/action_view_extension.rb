@@ -64,20 +64,9 @@ module Tr8n
           desc    = options[:context] || ""
         end
 
-        begin
-          url     = request.url
-          host    = request.env['HTTP_HOST']
-          source  = "#{controller.class.name.underscore.gsub("_controller", "")}/#{controller.action_name}"
-        rescue
-          source = self.class.name
-          url = nil
-          host = 'localhost'
-        end
-
-        options.merge!(:source => source) unless options[:source]
         options.merge!(:caller => caller)
-        options.merge!(:url => url)
-        options.merge!(:host => host)
+        options.merge!(:url => request.url)
+        options.merge!(:host => request.env['HTTP_HOST'])
 
         unless Tr8n::Config.enabled?
           return Tr8n::TranslationKey.substitute_tokens(label, tokens, options)

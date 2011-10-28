@@ -109,12 +109,12 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   # primarely used for the site map and only needs to be enabled 
   # for a short period of time on a single machine
   def self.track_source(tkey, options)
-    return unless Tr8n::Config.enable_key_source_tracking? 
-    return if options[:source].blank?
+    # return unless Tr8n::Config.enable_key_source_tracking? 
+    # return if options[:source].blank?
+
+    key_source = Tr8n::Cache.cache_key_source(tkey, options[:source] || Tr8n::Config.block_options[:source])
     
-    key_source = Tr8n::TranslationKeySource.find_or_create(tkey, Tr8n::TranslationSource.find_or_create(options[:source], options[:url]))
     return unless Tr8n::Config.enable_key_caller_tracking?
-    
     options[:caller] ||= caller
     options[:caller_key] = options[:caller].is_a?(Array) ? options[:caller].join(", ") : options[:caller].to_s
     options[:caller_key] = generate_key(options[:caller_key])
@@ -236,10 +236,18 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   def inline_translations_for(language)
     translations_for(language, -50)
   end
+
+  def translations_cache_key(language)
+    "translations_#{language.locale}_#{key}"
+  end
+  
+  def clear_translations_cache_for_language(language = Tr8n::Config.current_language)
+    Tr8n::Cache.delete(translations_cache_key(language)) 
+  end
   
   # returns only the translations that meet the minimum rank
-  def valid_translations_for(language)
-    Tr8n::Cache.fetch("translations_#{language.locale}_#{key}") do
+  def valid_translations_for_language(language = Tr8n::Config.current_language)
+    Tr8n::Cache.fetch(translations_cache_key(language)) do
       translations_for(language, Tr8n::Config.translation_threshold)
     end
   end
@@ -333,7 +341,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
 
   def find_first_valid_translation(language, token_values)
     # find the first translation in the order of the rank that matches the rules
-    valid_translations_for(language).each do |translation|
+    valid_translations_for_language(language).each do |translation|
       return translation if translation.matches_rules?(token_values)
     end
     
@@ -372,7 +380,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   end
   
   def translate(language = Tr8n::Config.current_language, token_values = {}, options = {})
-    return find_all_valid_translations(valid_translations_for(language)) if options[:api]
+    return find_all_valid_translations(valid_translations_for_language(language)) if options[:api]
     
     if Tr8n::Config.disabled? or language.default?
       return substitute_tokens(label, token_values, options.merge(:fallback => false), language).html_safe
@@ -436,7 +444,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
 
     classes = ['tr8n_translatable']
 
-    if valid_translations_for(language).any?
+    if valid_translations_for_language(language).any?
       classes << 'tr8n_translated'
     else
       classes << 'tr8n_not_translated'
@@ -486,6 +494,18 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     update_attributes(:verified_at => time)
   end
       
+  def translations_changed!(language = Tr8n::Config.current_language)
+    clear_translations_cache_for_language(language)
+    
+    # update timestamp and clear cache
+    update_translation_count! 
+    
+    # notify all language sources that translation has changed
+    sources.each do |source|
+      Tr8n::TranslationSourceLanguage.touch(source, language)
+    end
+  end
+        
   def update_translation_count!
     update_attributes(:translation_count => Tr8n::Translation.count(:conditions => ["translation_key_id = ?", self.id]))
   end
@@ -502,10 +522,6 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   
   def clear_cache
     Tr8n::Cache.delete("translation_key_#{key}")
-  end
-
-  def add_translation(label, rules = nil, lang = Tr8n::Config.current_language, translator = Tr8n::Config.current_translator) 
-    Tr8n::Translation.create(:translation_key => self, :label => label, :language => lang, :translator => translator)
   end
 
   def to_api_hash

@@ -23,8 +23,8 @@
 
 class Tr8n::Translation < ActiveRecord::Base
   set_table_name :tr8n_translations
-  after_save      :clear_cache
-  after_destroy   :clear_cache
+  after_save      :update_cache
+  after_destroy   :update_cache
 
   belongs_to :language,         :class_name => "Tr8n::Language"
   belongs_to :translation_key,  :class_name => "Tr8n::TranslationKey"
@@ -248,9 +248,9 @@ class Tr8n::Translation < ActiveRecord::Base
     destroy
   end
   
-  def clear_cache
-    Tr8n::Cache.delete("translations_#{language.locale}_#{translation_key.key}")
-    translation_key.update_translation_count!
+  def update_cache
+    language.translations_changed!
+    translation_key.translations_changed!(language)
   end
   
   ###############################################################

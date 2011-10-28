@@ -73,7 +73,7 @@ defaults: &defaults
   # store:    memory_store        # only for dev or test - single instance
   # store:    file_store          # only for dev or test - single instance
   # store:    drb_store
-  # store:    [mem_cache_store, 'localhost:11211'] # recommended
+  # store:    ['mem_cache_store', 'localhost:11211'] # recommended
   # 
   # If you choose to use memcached, don't forget to add the gem to your Gemfile:
   #
@@ -82,12 +82,14 @@ defaults: &defaults
   # You can also provide your own implementation of the adapter:
   #
   # cache_adapter:  YOUR_CACHE_ADAPTER_CLASS
+  # 
+  # Note: Make sure you enable config.class_caching in your environment file
   #
   #############################################################################
   caching:
     enabled:                  false
     adapter:                  ActiveSupport::Cache
-    store:                    ['mem_cache_store', 'localhost:11211']
+    store:                    'memory_store'
     version:                  1 # you can change the version to invalidate the cache
 
   #############################################################################

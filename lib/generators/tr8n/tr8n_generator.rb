@@ -45,7 +45,7 @@ class Tr8nGenerator < Rails::Generators::Base
   end
   
   def copy_configuration
-    config_source = File.expand_path('../../../../config/tr8n', __FILE__)
+    config_source = File.expand_path("#{self.class.source_root}/config', __FILE__)
     system "rsync -ruv #{config_source} #{Rails.root}/config"
   end
   

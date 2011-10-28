@@ -23,19 +23,19 @@
 
 class Tr8n::TranslationSource < ActiveRecord::Base
   set_table_name :tr8n_translation_sources
-  after_save      :clear_cache
   after_destroy   :clear_cache
   
-  belongs_to  :translation_domain,       :class_name => "Tr8n::TranslationDomain"
+  belongs_to  :translation_domain,            :class_name => "Tr8n::TranslationDomain"
   
-  has_many    :translation_key_sources,  :class_name => "Tr8n::TranslationKeySource",  :dependent => :destroy
-  has_many    :translation_keys,         :class_name => "Tr8n::TranslationKey",        :through => :translation_key_sources
+  has_many    :translation_key_sources,       :class_name => "Tr8n::TranslationKeySource",  :dependent => :destroy
+  has_many    :translation_keys,              :class_name => "Tr8n::TranslationKey",        :through => :translation_key_sources
+  has_many    :translation_source_languages,  :class_name => "Tr8n::TranslationSourceLanguage"
   
   alias :domain   :translation_domain
   alias :sources  :translation_key_sources
   alias :keys     :translation_keys
   
-  def self.find_or_create(source, url)
+  def self.find_or_create(source, url = nil)
     translation_domain = Tr8n::TranslationDomain.find_or_create(url)
     Tr8n::Cache.fetch("translation_source_#{translation_domain.id}_#{source}") do 
       translation_source = where("source = ? and translation_domain_id = ?", source, translation_domain.id).first

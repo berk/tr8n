@@ -43,6 +43,7 @@ class Array
     return "" if empty?
     return first if size == 1
 
+    options.merge!(:source => self.class.name)
     result = "#{self[0..-2].join(", ")}"
     result << " " << "and".translate("List elements joiner", {}, options, language) << " "
     result << self.last

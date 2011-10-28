@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111011013640) do
+ActiveRecord::Schema.define(:version => 20111026230545) do
 
   create_table "admins", :force => true do |t|
     t.integer  "user_id"
@@ -260,6 +260,15 @@ ActiveRecord::Schema.define(:version => 20111011013640) do
   end
 
   add_index "tr8n_translation_keys", ["key"], :name => "index_tr8n_translation_keys_on_key", :unique => true
+
+  create_table "tr8n_translation_source_languages", :force => true do |t|
+    t.integer  "language_id"
+    t.integer  "translation_source_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "tr8n_translation_source_languages", ["language_id", "translation_source_id"], :name => "tsllt"
 
   create_table "tr8n_translation_sources", :force => true do |t|
     t.string   "source"

@@ -65,7 +65,6 @@ class Date
       end
     end
 
-#    options.merge!(:skip_decorations => true) if options[:skip_decorations].blank?
     language.tr(label, nil, tokens, options)
   end
   alias :tr :translate  

@@ -33,7 +33,7 @@ class String
   end
 
   def trl(desc = "", tokens = {}, options = {}, language = Tr8n::Config.current_language)
-    translate(desc, tokens, options.merge!(:skip_decorations => true), language)
+    translate(desc, tokens, options.merge(:skip_decorations => true), language)
   end
 
   def tr8n_translated

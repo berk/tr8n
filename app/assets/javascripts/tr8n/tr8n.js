@@ -851,9 +851,9 @@ Tr8n.Utils = {
       tr8nLightbox.show('/tr8n/help/lb_shortcuts', {width:400, height:480});
   },
 
-  displayCredits: function() {
+  displayStatistics: function() {
     if (tr8nLightbox)
-      tr8nLightbox.show('/tr8n/help/lb_credits', {width:420, height:250});
+      tr8nLightbox.show('/tr8n/help/lb_stats', {width:420, height:400});
   }
 
 }

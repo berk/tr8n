@@ -31,15 +31,20 @@ module Tr8n
   
     # initializes language, user and translator
     # the variables are kept in a thread safe form throughout the request
-    def self.init(locale, site_current_user)
-      Thread.current[:tr8n_current_language]   = Tr8n::Language.for(locale) || default_language
+    def self.init(site_current_locale, site_current_user = nil, site_current_source = nil)
+      Thread.current[:tr8n_current_language]   = Tr8n::Language.for(site_current_locale) || default_language
       Thread.current[:tr8n_current_user]       = site_current_user
       Thread.current[:tr8n_current_translator] = Tr8n::Translator.for(site_current_user)
+      Thread.current[:tr8n_current_source]     = site_current_source
       Thread.current[:tr8n_block_options]      = {}
     end
   
     def self.current_user
       Thread.current[:tr8n_current_user]
+    end
+
+    def self.current_source
+      Thread.current[:tr8n_current_source]
     end
   
     def self.current_language
@@ -82,6 +87,7 @@ module Tr8n
       Thread.current[:tr8n_current_user] = nil
       Thread.current[:tr8n_current_translator] = nil
       Thread.current[:tr8n_block_options]  = nil
+      Thread.current[:tr8n_current_source] = nil
     end
 
     def self.models
@@ -89,7 +95,7 @@ module Tr8n
          Tr8n::LanguageRule, Tr8n::LanguageUser, Tr8n::Language, Tr8n::LanguageMetric,
          Tr8n::LanguageCase, Tr8n::LanguageCaseValueMap, Tr8n::LanguageCaseRule,
          Tr8n::TranslationKey, Tr8n::TranslationKeySource, Tr8n::TranslationKeyComment, Tr8n::TranslationKeyLock,
-         Tr8n::TranslationSource, Tr8n::TranslationDomain,
+         Tr8n::TranslationSource, Tr8n::TranslationDomain, Tr8n::TranslationSourceLanguage,
          Tr8n::Translation, Tr8n::TranslationVote,
          Tr8n::Translator, Tr8n::TranslatorLog, Tr8n::TranslatorMetric, 
          Tr8n::TranslatorFollowing, Tr8n::TranslatorReport, 

@@ -23,7 +23,6 @@
 
 class Tr8n::TranslationKeySource < ActiveRecord::Base
   set_table_name :tr8n_translation_key_sources
-  after_save      :clear_cache
   after_destroy   :clear_cache
 
   belongs_to :translation_source, :class_name => "Tr8n::TranslationSource"

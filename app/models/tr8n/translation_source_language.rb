@@ -21,30 +21,17 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-class Tr8n::HelpController < Tr8n::BaseController
-
-  before_filter :validate_current_translator, :except => [:lb_shortcuts, :lb_stats, :credits, :license]
-  before_filter :validate_guest_user, :except => [:lb_shortcuts, :lb_stats, :credits, :license]
-  before_filter :validate_current_user, :except => [:lb_shortcuts, :lb_stats, :credits, :license]
+class Tr8n::TranslationSourceLanguage < ActiveRecord::Base
+  belongs_to  :translation_source,  :class_name => "Tr8n::TranslationSource"
+  belongs_to  :language,  :class_name => "Tr8n::Language"
   
-  def index
-
-  end
-    
-  def lb_shortcuts
-    render :layout => false
-  end
-
-  def lb_stats
-    render :layout => false
-  end
+  def self.find_or_create(translation_source, language = Tr8n::Config.current_language)
+    source_lang = where("translation_source_id = ? and language_id = ?", translation_source.id, language.id).first
+    source_lang ||= create(:translation_source => translation_source, :language => language)
+  end  
   
-  def credits
-    
-  end
-
-  def license
-    
+  def self.touch(translation_source, language = Tr8n::Config.current_language)
+    find_or_create(translation_source, language).touch
   end
   
 end

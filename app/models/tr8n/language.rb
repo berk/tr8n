@@ -24,8 +24,8 @@
 class Tr8n::Language < ActiveRecord::Base
   set_table_name :tr8n_languages
   
-  after_save      :clear_cache
-  after_destroy   :clear_cache
+  after_save      :update_cache
+  after_destroy   :update_cache
 
   belongs_to :fallback_language,    :class_name => 'Tr8n::Language', :foreign_key => :fallback_language_id
   
@@ -303,7 +303,11 @@ class Tr8n::Language < ActiveRecord::Base
     true
   end
 
-  def clear_cache
+  def translations_changed!
+    # TODO: handle change event - count translations, update total metrics
+  end
+  
+  def update_cache
     Tr8n::Cache.delete("language_#{locale}")
     Tr8n::Cache.delete("featured_languages")
     Tr8n::Cache.delete("enabled_languages")

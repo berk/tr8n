@@ -62,35 +62,44 @@ module Tr8n
           request.remote_ip
         end
       end
+      
+      def tr8n_init_current_source
+        "#{self.class.name.underscore.gsub("_controller", "")}/#{self.action_name}"
+      rescue
+        self.class.name
+      end
+
+      def tr8n_init_current_locale
+        eval(Tr8n::Config.current_locale_method)
+      rescue
+        # fallback to the default session based locale implementation
+        # choose the first language from the accepted languages header
+        session[:locale] = tr8n_user_preffered_locale unless session[:locale]
+        session[:locale] = params[:locale] if params[:locale]
+        session[:locale]
+      end
+
+      def tr8n_init_current_user
+        unless Tr8n::Config.site_user_info_enabled? # deprecated - the site should run a standalone translation engine with a bridge
+          user = Tr8n::Translator.find_by_id(session[:tr8n_translator_id]) if session[:tr8n_translator_id]
+          user ||= Tr8n::Translator.new
+          return user
+        end
+          
+        user = eval(Tr8n::Config.current_user_method)
+        user = nil if user.class.name != Tr8n::Config.user_class_name
+        user
+      rescue
+        Tr8n::Logger.error("Site user integration is enabled, but #{Tr8n::Config.current_user_method} method is not defined")
+        Tr8n::Translator.new
+      end
 
       def init_tr8n
-        tr8n_current_locale = nil
-        begin
-          tr8n_current_locale = eval(Tr8n::Config.current_locale_method)
-        rescue
-          # fallback to the default session based locale implementation
-          # choose the first language from the accepted languages header
-          session[:locale] = tr8n_user_preffered_locale unless session[:locale]
-          session[:locale] = params[:locale] if params[:locale]
-          tr8n_current_locale = session[:locale]
-        end
-        
-        tr8n_current_user = nil
-        if Tr8n::Config.site_user_info_enabled? 
-          begin
-            tr8n_current_user = eval(Tr8n::Config.current_user_method)
-            tr8n_current_user = nil if tr8n_current_user.class.name != Tr8n::Config.user_class_name
-          rescue
-            tr8n_current_user = Tr8n::Translator.new
-            Tr8n::Logger.error("Site user integration is enabled, but #{Tr8n::Config.current_user_method} method is not defined")
-          end
-        else
-          tr8n_current_user = Tr8n::Translator.find_by_id(session[:tr8n_translator_id]) if session[:tr8n_translator_id]
-          tr8n_current_user = Tr8n::Translator.new unless tr8n_current_user
-        end
-
         # initialize request thread variables
-        Tr8n::Config.init(tr8n_current_locale, tr8n_current_user)
+        Tr8n::Config.init(tr8n_init_current_locale, tr8n_init_current_user, tr8n_init_current_source)
+        
+        # invalidate source for the current page
+        Tr8n::Cache.invalidate_source(Tr8n::Config.current_source)
 
         # track user's last ip address  
         if Tr8n::Config.enable_country_tracking? and Tr8n::Config.current_user_is_translator?
@@ -112,20 +121,9 @@ module Tr8n
           desc    = options[:desc] || ""
         end
 
-        begin
-          url     = request.url
-          host    = request.env['HTTP_HOST']
-          source  = "#{controller.class.name.underscore.gsub("_controller", "")}/#{controller.action_name}"
-        rescue
-          source = self.class.name
-          url = nil
-          host = 'localhost'
-        end
-
-        options.merge!(:source => source) unless options[:source]
         options.merge!(:caller => caller)
-        options.merge!(:url => url)
-        options.merge!(:host => host)
+        options.merge!(:url => request.url)
+        options.merge!(:host => request.env['HTTP_HOST'])
 
         unless Tr8n::Config.enabled?
           return Tr8n::TranslationKey.substitute_tokens(label, tokens, options)
