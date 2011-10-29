@@ -48,10 +48,6 @@ class Tr8n::TranslationKeySource < ActiveRecord::Base
     details[options[:caller_key]] = options[:caller]
     save
   end
-  
-  def after_save
-    Tr8n::Cache.delete("translation_key_source_#{translation_key_id}_#{translation_source_id}")
-  end
 
   def after_destroy
     Tr8n::Cache.delete("translation_key_source_#{translation_key_id}_#{translation_source_id}")

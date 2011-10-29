@@ -121,7 +121,7 @@ class Tr8n::Translator < ActiveRecord::Base
 
   def switched_language!(language)
     lu = Tr8n::LanguageUser.create_or_touch(user || self, language)
-    lu.update_attributes(:translator => self) unless lu.translator
+    lu.update_attributes(:translator_id => self.id) unless lu.translator
     Tr8n::TranslatorLog.log(self, :switched_language, language.id)
   end
 

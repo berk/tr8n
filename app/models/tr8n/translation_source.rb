@@ -24,16 +24,17 @@
 class Tr8n::TranslationSource < ActiveRecord::Base
   set_table_name :tr8n_translation_sources
   
-  belongs_to  :translation_domain,       :class_name => "Tr8n::TranslationDomain"
+  belongs_to  :translation_domain,            :class_name => "Tr8n::TranslationDomain"
   
-  has_many    :translation_key_sources,  :class_name => "Tr8n::TranslationKeySource",  :dependent => :destroy
-  has_many    :translation_keys,         :class_name => "Tr8n::TranslationKey",        :through => :translation_key_sources
+  has_many    :translation_key_sources,       :class_name => "Tr8n::TranslationKeySource",  :dependent => :destroy
+  has_many    :translation_keys,              :class_name => "Tr8n::TranslationKey",        :through => :translation_key_sources
+  has_many    :translation_source_languages,  :class_name => "Tr8n::TranslationSourceLanguage"
   
   alias :domain   :translation_domain
   alias :sources  :translation_key_sources
   alias :keys     :translation_keys
   
-  def self.find_or_create(source, url)
+  def self.find_or_create(source, url = nil)
     translation_domain = Tr8n::TranslationDomain.find_or_create(url)
     Tr8n::Cache.fetch("translation_source_#{translation_domain.id}_#{source}") do 
       translation_source = find(:first, :conditions => ["source = ? and translation_domain_id = ?", source, translation_domain.id])
@@ -41,10 +42,6 @@ class Tr8n::TranslationSource < ActiveRecord::Base
       translation_source.update_attributes(:translation_domain => translation_domain) unless translation_source.translation_domain
       translation_source
     end  
-  end
-
-  def after_save
-    Tr8n::Cache.delete("translation_source_#{translation_domain_id}_#{source}")
   end
 
   def after_destroy

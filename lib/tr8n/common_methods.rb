@@ -63,6 +63,12 @@ module Tr8n::CommonMethods
     end
   end
   
+  def tr8n_site_current_source
+    "#{self.class.name.underscore.gsub("_controller", "")}/#{self.action_name}"
+  rescue
+    self.class.name
+  end  
+  
   def init_tr8n
     tr8n_current_locale = nil
     
@@ -90,8 +96,11 @@ module Tr8n::CommonMethods
     end
     
     # initialize request thread variables
-    Tr8n::Config.init(tr8n_current_locale, tr8n_current_user)
+    Tr8n::Config.init(tr8n_current_locale, tr8n_current_user, tr8n_site_current_source)
   
+    # invalidate source for the current page
+    Tr8n::Cache.invalidate_source(Tr8n::Config.current_source)
+    
     # track user's last ip address  
     if Tr8n::Config.enable_country_tracking? and Tr8n::Config.current_user_is_translator?
       Tr8n::Config.current_translator.update_last_ip(tr8n_request_remote_ip)
@@ -107,19 +116,14 @@ module Tr8n::CommonMethods
     begin
       url     = request.url
       host    = request.env['HTTP_HOST']
-      source  = "#{controller.class.name.underscore.gsub("_controller", "")}/#{controller.action_name}"
     rescue Exception => ex
-      source = self.class.name
       url = nil
       host = 'localhost'
     end
 
-    options.merge!(:source => source) unless options[:source]
     options.merge!(:caller => caller)
     options.merge!(:url => url)
     options.merge!(:host => host)
-
-#     pp [source, options[:source], url]
     
     unless Tr8n::Config.enabled?
       return Tr8n::TranslationKey.substitute_tokens(label, tokens, options)

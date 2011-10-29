@@ -291,6 +291,10 @@ class Tr8n::Language < ActiveRecord::Base
     true
   end
 
+  def translations_changed!
+    # TODO: handle change event
+  end
+
   def after_save
     Tr8n::Cache.delete("language_#{locale}")
     Tr8n::Cache.delete("featured_languages")

@@ -24,7 +24,9 @@
 class Tr8n::HelpController < Tr8n::BaseController
 
   set_tr8n_feature  :help
-  before_filter :validate_current_translator
+  before_filter :validate_current_translator, :except => [:lb_shortcuts, :lb_stats, :credits, :license]
+  before_filter :validate_guest_user, :except => [:lb_shortcuts, :lb_stats, :credits, :license]
+  before_filter :validate_current_user, :except => [:lb_shortcuts, :lb_stats, :credits, :license]  
   
   def index
 
@@ -34,8 +36,16 @@ class Tr8n::HelpController < Tr8n::BaseController
     render :layout => false
   end
 
-  def lb_credits
+  def lb_stats
     render :layout => false
+  end
+  
+  def credits
+    
+  end
+  
+  def license
+    
   end
 
 end

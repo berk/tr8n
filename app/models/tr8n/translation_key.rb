@@ -102,10 +102,10 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   # primarely used for the site map and only needs to be enabled 
   # for a short period of time on a single machine
   def self.track_source(tkey, options)
-    return unless Tr8n::Config.enable_key_source_tracking? 
-    return if options[:source].blank?
-    
-    key_source = Tr8n::TranslationKeySource.find_or_create(tkey, Tr8n::TranslationSource.find_or_create(options[:source], options[:url]))
+    # return unless Tr8n::Config.enable_key_source_tracking? 
+    # return if options[:source].blank?
+
+    key_source = Tr8n::Cache.cache_key_source(tkey, options[:source] || Tr8n::Config.block_options[:source])
     return unless Tr8n::Config.enable_key_caller_tracking?
     
     options[:caller] ||= caller
@@ -225,10 +225,18 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   def inline_translations_for(language)
     translations_for(language, -50)
   end
+
+  def translations_cache_key(language)
+   "translations_#{language.locale}_#{key}"
+  end
+  
+  def clear_translations_cache_for_language(language = Tr8n::Config.current_language)
+    Tr8n::Cache.delete(translations_cache_key(language)) 
+  end  
   
   # returns only the translations that meet the minimum rank
   def valid_translations_for(language)
-    Tr8n::Cache.fetch("translations_#{language.locale}_#{self.key}") do
+    Tr8n::Cache.fetch(translations_cache_key(language)) do
       translations_for(language, Tr8n::Config.translation_threshold)
     end
   end
@@ -479,6 +487,18 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     update_attributes(:verified_at => time)
   end
       
+  def translations_changed!(language = Tr8n::Config.current_language)
+    clear_translations_cache_for_language(language)
+    
+    # update timestamp and clear cache
+    update_translation_count! 
+    
+    # notify all language sources that translation has changed
+    sources.each do |source|
+      Tr8n::TranslationSourceLanguage.touch(source, language)
+    end
+  end
+        
   def update_translation_count!
     update_attributes(:translation_count => Tr8n::Translation.count(:conditions => ["translation_key_id = ?", self.id]))
   end
