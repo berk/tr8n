@@ -318,7 +318,7 @@ class Tr8n::Language < ActiveRecord::Base
   def recently_updated_translations
     @recently_updated_translations ||= begin
       conditions = ["language_id = ?", self.id]
-      conditions[0] << " and translation_key_id in (select id from tr8n_translation_keys where level <= ?) " 
+      conditions[0] << " and translation_key_id in (select id from tr8n_translation_keys where level <= ? and (type is null or type = 'Tr8n::TranslationKey' or type = 'TranslationKey')) " 
       conditions << Tr8n::Config.current_translator.level
       Tr8n::Translation.find(:all, :conditions => conditions, :order => "updated_at desc", :limit => 5)    
     end
