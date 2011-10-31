@@ -431,7 +431,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   def default_decoration(language = Tr8n::Config.current_language, options = {})
     return label if Tr8n::Config.current_user_is_guest?
     return label unless Tr8n::Config.current_user_is_translator?
-    return label unless translator_permitted_to_translate?
+    return label unless can_be_translated?
     return label if locked?(language)
 
     classes = ['tr8n_translatable']
@@ -453,9 +453,17 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     super
   end
   
-  def translator_permitted_to_translate?(translator = Tr8n::Config.current_translator)
-    return true if translator.admin?
+  def can_be_translated?(translator = Tr8n::Config.current_translator)
+    return false if locked?
     translator.level >= level
+  end
+
+  def can_be_locked?(translator = Tr8n::Config.current_translator)
+      translator.admin? or translator.manager?
+  end
+
+  def can_be_unlocked?(translator = Tr8n::Config.current_translator)
+     translator.admin? or translator.manager?
   end
   
   def decorate_translation(language, translated_label, translated = true, options = {})
@@ -463,7 +471,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     return translated_label if Tr8n::Config.current_user_is_guest?
     return translated_label unless Tr8n::Config.current_user_is_translator?
     return translated_label unless Tr8n::Config.current_translator.enable_inline_translations?
-    return translated_label unless translator_permitted_to_translate?
+    return translated_label unless can_be_translated?
     return translated_label if locked?(language)
     return translated_label if self.language == language
 
@@ -583,7 +591,10 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   end
   
   def self.search_conditions_for(params)
-    conditions = ["tr8n_translation_keys.locale <> ? and (level is null or level <= ?)", Tr8n::Config.current_language.locale, Tr8n::Config.current_translator.level]
+    conditions = ["(tr8n_translation_keys.type is null or tr8n_translation_keys.type = 'Tr8n::TranslationKey' or tr8n_translation_keys.type = 'TranslationKey')"]
+    conditions[0] << " and tr8n_translation_keys.locale <> ? and (level is null or level <= ?) "
+    conditions << Tr8n::Config.current_language.locale
+    conditions << Tr8n::Config.current_translator.level
     
     if Tr8n::Config.enable_caching?
       conditions[0] << " and verified_at is not null"

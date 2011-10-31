@@ -4,7 +4,7 @@
   </div>
   <%
     actions = []
-    if tr8n_current_user_is_translator? and tr8n_current_translator.manager?
+    if tr8n_current_user_is_translator? and  @translation_key.can_be_locked?
       if @translation_key.locked?
         actions << link_to("#{image_tag('/tr8n/images/lock_delete.png', :style=>'height:15px; vertical-align:bottom')} #{tra("Unlock")}",{:action => :unlock, :translation_key_id => @translation_key.id}, :confirm => trla("Once the key is unlocked, users will be able to submit or vote on translations for this key. \n\nAre you sure you want to unlock it?") )
       else  

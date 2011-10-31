@@ -42,9 +42,9 @@
 	    </tr>  
 	    <% @translation_keys.each do |tk| %>
 	      <tr style="border-bottom:1px solid #ccc;">
-	        <% color = tk.locked? ? "#ECFFEF" : "#FDFDDF" %>
+	        <% color = tk.can_be_translated? ? "#FDFDDF" : "#ECFFEF" %>
 	        <td style="padding:5px; background: <%=color%>; ">
-	          <% if tk.locked? %>
+	          <% unless tk.can_be_translated? %>
 	            <div style="float:right"><%=image_tag("/tr8n/images/lock.png", :style=>"width:12px", :title => trla("This phrase is locked"))%></div>
 	          <% end %>
 	          <%=link_to(tk.default_decoration, :action => :view, :translation_key_id => tk.id, :section_key => @section_key)%>
@@ -55,7 +55,7 @@
 	          <% translations = tk.translations_for(tr8n_current_language) %>
 				    <% if translations.empty? %>
 	            <%= tra("There are no translations for this phrase.") %> 
-							<% unless tk.locked? %>
+							<% if tk.can_be_translated? %>
 		            <%= tra("Be the first one to [link: translate it].", "", 
 		                    :link => lambda{|str| link_to(str, :controller => "/tr8n/phrases", :action => :view, :translation_key_id => tk.id, :section_key => @section_key)}  ) %>
 							<% end %>				

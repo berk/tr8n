@@ -65,7 +65,7 @@
 	<%= render :partial => "permutations_module" %>
 	<%= render :partial => "comments_module" %>
 	
-	<% if @show_add_dialog and not @translation_key.locked? %>
+	<% if @show_add_dialog and @translation_key.can_be_translated? %>
 		<script>
 	    addEvent(window, "load", function(event) {
 			  addTranslation();

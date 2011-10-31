@@ -135,7 +135,7 @@ class Tr8n::RelationshipKey < Tr8n::TranslationKey
   ###############################################################
 
   def self.search_conditions_for(params)
-    conditions = [""]
+    conditions = [" "]
 
     unless params[:search].blank?
       conditions[0] << " and " unless conditions[0] == ""

@@ -500,7 +500,7 @@ class Tr8n::Config
   def self.current_user_is_manager?
     return false unless current_user_is_translator?
     return true if current_user_is_admin?
-    tr8n_current_translator.manager?
+    current_translator.manager?
   end
   
   def self.guest_user?(user = current_user)

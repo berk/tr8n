@@ -1,6 +1,6 @@
 <div id="tranlsations_module">
 	<div class="section_title">
-		<% unless @translation_key.locked? %>
+		<% if @translation_key.can_be_translated? %>
 	    <div style="float:right; font-size: 12px; font-weight:normal;">
 	      <%= link_to_function("#{image_tag('/tr8n/images/add.png', :style=>'vertical-align:bottom')} #{tra("add translation")}", "addTranslation()") %>
 	    </div> 
@@ -51,7 +51,7 @@
       <% end %>
   <% end %>
   
-  <% unless @translation_key.locked? %>
+  <% if @translation_key.can_be_translated? %>
     <div style="font-size: 12px; color: grey; padding-top:15px; padding-bottom:15px;">
     <%= trla("You can only edit or delete translations submitted by you.") %>
      

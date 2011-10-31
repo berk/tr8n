@@ -52,9 +52,9 @@
 	    </tr>  
 	    <% @relationship_keys.each do |rk| %>
 	      <tr style="border-bottom:1px solid #ccc;">
-	        <% color = rk.locked? ? "#ECFFEF" : "#FDFDDF" %>
+	        <% color = rk.can_be_translated? ? "#FDFDDF" : "#ECFFEF"%>
 	        <td style="padding:5px; background: <%=color%>; ">
-	          <% if rk.locked? %>
+	          <% unless rk.can_be_translated? %>
 	            <div style="float:right"><%=image_tag("/tr8n/images/lock.png", :style=>"width:12px", :title => trla("This relationship is locked"))%></div>
 	          <% end %>
 						<div style="font-size:18px;font-family:Arial;">
@@ -72,7 +72,7 @@
 	          <% translations = rk.translations_for(tr8n_current_language) %>
 				    <% if translations.empty? %>
 	            <%= tra("There are no translations for this relationship.") %> 
-							<% unless rk.locked? %>
+							<% if rk.can_be_translated? %>
 		            <%= tra("[link: Be the first one to translate it], but only if it does exist in your language.", "", 
 		                    :link => lambda{|str| link_to(str, :controller => "/tr8n/phrases", :action => :view, :translation_key_id => rk.id)}  ) %>
 							<% end %>				
