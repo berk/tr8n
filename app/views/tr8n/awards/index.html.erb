@@ -32,7 +32,7 @@
 	      <%=tra("Runner-Ups for {language} Language", 'Awards section header', :language => tr8n_current_language.native_name) %>
 	    <% end %>  
 	  </div>
-	  <div style="border: 1px dotted #ccc; padding:10px; margin-top:5px; margin-top:10px;">
+	  <div class="section_box">
 	    <%= render(:partial => 'list', :locals => {:metrics => @runners, :show_medals => false}) %>  
 	  </div>
 	<% end %>

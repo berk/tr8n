@@ -1,6 +1,11 @@
 <style>
 	.votes_table {
-		width:100%; background-color:white; border: 1px dotted #ccc;
+		width:100%; background-color:white; 
+	  border-radius: 10px;
+	  -moz-border-radius: 10px;
+	  -webkit-border-radius: 10px;
+		border:solid 1px #e8e8e8;
+		border-color:#e8e8e8 #bababa #bababa #e8e8e8;
 	}
 	.votes_table td {
     padding:3px;
@@ -18,12 +23,13 @@
 		<span style="color:#ccc; font-size:12px;">(<%=tra("last 5", "Translations header for showing only the last 5 translation votes")%>)</span>
 	</div>
 	
-	<div id="votes_content_<%=lang.id%>" style="display:none">
-		<table class="translations_table">
+	<div id="votes_content_<%=lang.id%>" style="display:none" class="votes_table">
+		<div style="margin:10px">
+		<table>
 		  <tr style="border-bottom:1px solid #ccc;">
 		    <td class="topic_header" style="width:200px;"><%=tra("Voter", "Translation votes section header")%></td>
-        <td class="topic_header" style="width:25px;text-align:right;"><%=tra("Vote", "Translation votes section header")%></td>
-        <td class="topic_header" style="width:80px;text-align:right"><%=tra("Total Rank", "Translation votes section header")%></td>
+        <td class="topic_header" style="width:25px;text-align:right;padding-right:15px;"><%=tra("Vote", "Translation votes section header")%></td>
+        <td class="topic_header" style="width:80px;text-align:right;padding-right:15px;"><%=tra("Total Rank", "Translation votes section header")%></td>
         <td class="topic_header" style=""><%=tra("Translation", "Translation votes section header")%></td>
 		  </tr>  
 		
@@ -49,11 +55,11 @@
 						  </table>
 						</td>
 						
-            <td style="text-align:right; vertical-align:top; padding-top:3px;">
+            <td style="text-align:right; vertical-align:top; padding-top:3px;padding-right:15px;">
                 <%= vote.vote %> 
             </td>  
             
-            <td style="text-align:right; vertical-align:top; padding-top:3px;">
+            <td style="text-align:right; vertical-align:top; padding-top:3px;padding-right:15px;">
                 <%= translation.rank_label %> 
             </td>
 						
@@ -72,5 +78,6 @@
 		    </tr>
 		  <% end %>
 		</table>
+		</div>
 	</div>	
 <% end %>	

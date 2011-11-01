@@ -1,6 +1,11 @@
 <style>
 	.translations_table {
-		width:100%; background-color:white; border: 1px dotted #ccc;
+		width:100%; background-color:white; 
+	  border-radius: 10px;
+	  -moz-border-radius: 10px;
+	  -webkit-border-radius: 10px;
+		border:solid 1px #e8e8e8;
+		border-color:#e8e8e8 #bababa #bababa #e8e8e8;
 	}
 	.translations_table td {
     padding:3px;
@@ -19,6 +24,8 @@
 	</div>
 	
 	<div id="trans_content_<%=lang.id%>" class="translations_table" style="display:none;">
+		<div style="margin:10px;">
     <%= render :partial => "/tr8n/translations/list", :locals => {:language => lang, :translations => lang.recently_updated_translations, :mode => :short_list} %>
+		</div>
 	</div>	
 <% end %>	

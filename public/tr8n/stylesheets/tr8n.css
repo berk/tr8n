@@ -29,7 +29,13 @@
 /****************************************/
 
 .section_title                                  {padding-top:10px; border-bottom: 1px solid #ccc; margin-bottom:10px; color:black;font-size:18px;}  
-.section_box                                    {border: 1px dotted #ccc; padding:10px; margin-top:10px; margin-bottom:15px;}
+.section_box                                    {border: 1px dotted #ccc; padding:10px; margin-top:10px; margin-bottom:15px;
+  border-radius: 10px;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+	border:solid 1px #e8e8e8;
+	border-color:#e8e8e8 #bababa #bababa #e8e8e8;
+}
 .section_box.colored                            {background: #f9f8f7;}
 .section_box.locked                             {background: #F1FFEF;}
      
@@ -144,7 +150,13 @@ button::-moz-focus-inner                        {border:none;}
 /*** Classes for the feature tabs
 /****************************************/
    
-.translations_navigation                  {height:70px; position:relative; padding:15px 15px 0px; background-color:#f1f4f9; border:1px solid #ccc; margin:0px; margin-bottom:10px;}
+.translations_navigation                  {height:70px; position:relative; padding:15px 15px 0px; background-color:#f1f4f9; border:1px solid #ccc; margin:0px; margin-bottom:10px;
+  border-radius: 10px;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+	border:solid 1px #e8e8e8;
+	border-color:#e8e8e8 #bababa #bababa #e8e8e8;
+}
 
 .translations_tab_nav                     {list-style-type:none;bottom:-1px !important;position:absolute;margin:0px;padding:0px;font-family:arial;}
 .translations_tab_nav li                  {float:left;margin-right:2px;cursor:pointer;text-align:bottom;}
