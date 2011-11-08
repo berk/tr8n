@@ -258,8 +258,14 @@ class Tr8n::Translation < ActiveRecord::Base
     conditions = ["language_id = ?", language.id]    
     
     # ensure that only allowed translations are visible 
-    conditions[0] << " and translation_key_id in (select id from tr8n_translation_keys where level <= ? and (type is null or type = 'Tr8n::TranslationKey' or type = 'TranslationKey')) " 
+    conditions[0] << " and translation_key_id in (select id from tr8n_translation_keys where level <= ? " 
+    if params[:only_phrases]  
+      conditions[0] << " and (type is null or type = 'Tr8n::TranslationKey' or type = 'TranslationKey')) "
+    else
+      conditions[0] << " ) "
+    end
     conditions << Tr8n::Config.current_translator.level
+    
     
     unless params[:search].blank?
       conditions[0] << " and " unless conditions[0].blank?

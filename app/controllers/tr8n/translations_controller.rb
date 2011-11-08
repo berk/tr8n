@@ -119,7 +119,7 @@ class Tr8n::TranslationsController < Tr8n::BaseController
 
   # list of translations    
   def index
-    conditions = Tr8n::Translation.search_conditions_for(params)
+    conditions = Tr8n::Translation.search_conditions_for(params.merge(:only_phrases => true))
     @translations = Tr8n::Translation.paginate(:per_page => per_page, :page => page, :conditions => conditions, :order => "created_at desc, rank desc")    
   end
 
