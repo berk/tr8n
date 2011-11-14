@@ -23,21 +23,28 @@ You can visit their web sites and see how it is being used. If your company is u
 
 = Documentation
 
+Tr8n Translation Engine Configuration Guide
+
+https://github.com/berk/tr8n/wiki/4.-Configuration-Instructions
+
 Tr8n Translation Engine Integration Guide
 
-http://wiki.tr8n.org/index.php?title=Tr8n_Translation_Engine_Integration_Guide
+https://github.com/berk/tr8n/wiki/5.-Integration-Instructions
 
 Tr8n Label Internationalization
 
-http://wiki.tr8n.org/index.php?title=Tr8n_Label_Internationalization
+https://github.com/berk/tr8n/wiki/6.-Tr8n-Syntax
 
 Tr8n Rules Engine Configuration Guide
 
-http://wiki.tr8n.org/index.php?title=Tr8n_Rules_Engine_Configuration_Guide
+https://github.com/berk/tr8n/wiki/7.2-Language-Case-Rules
+https://github.com/berk/tr8n/wiki/7.1-Language-Context-Rules
+https://github.com/berk/tr8n/wiki/7.2-Language-Case-Rules
 
 Tr8n Supported Languages
 
-http://wiki.tr8n.org/index.php?title=Tr8n_Languages
+https://github.com/berk/tr8n/wiki/9.-Supported-Languages
+
 
 = Installation Instructions
 
