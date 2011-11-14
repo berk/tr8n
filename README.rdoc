@@ -37,7 +37,7 @@ https://github.com/berk/tr8n/wiki/6.-Tr8n-Syntax
 
 Tr8n Rules Engine Configuration Guide
 
-https://github.com/berk/tr8n/wiki/7.2-Language-Case-Rules
+https://github.com/berk/tr8n/wiki/7.-Tr8n-Rules-Engine
 
 https://github.com/berk/tr8n/wiki/7.1-Language-Context-Rules
 
