@@ -153,10 +153,14 @@ Geni Goes Global With 20 New Languages And A Crowdsourced Translation Tool
 
 http://tcrn.ch/f1VLnj 
 
-
 Quora Discussion - What is the best way to deal with internationlization of text on a large social site?
 
 http://bit.ly/hUU6R9 
+
+
+LinkedIn Discussion 
+
+http://www.linkedin.com/groups/Internationalizing-your-application-using-Tr8n-4090552?gid=4090552
 
 
 RailsCasts - If you would like to see a RailsCasts episode on how to get Tr8n configured and running, please visit the RailsCasts suggestion page and vote it up. Thank you!
