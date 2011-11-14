@@ -92,35 +92,35 @@ Below are a few screenshots of what Tr8n looks like:
 
 == Tr8n Language Selector (in a lightbox)
 
-http://wiki.tr8n.org/images/e/e8/Tr8n1.png
+http://img853.imageshack.us/img853/6784/tr8n1.png
 
 == Tr8n Translation Interface
 
-http://wiki.tr8n.org/images/4/4d/Tr8n2.png
+http://img140.imageshack.us/img140/1272/tr8n2.png
 
 == Tr8n Translation Votes Interface
 
-http://wiki.tr8n.org/images/c/ce/Tr8n3.png
+http://img854.imageshack.us/img854/1341/tr8n3.png
 
 == Tr8n Language Selector (as a dropdown)
 
-http://wiki.tr8n.org/images/6/64/Tr8n4.png
+http://img233.imageshack.us/img233/3973/tr8n4.png
 
 == Tr8n Translation Interface (with a keyboard)
 
-http://wiki.tr8n.org/images/4/47/Tr8n6.png
+http://img717.imageshack.us/img717/9392/tr8n6.png
 
 == Tr8n Translation Tools
 
-http://wiki.tr8n.org/images/0/02/Tr8n8.png
+http://img824.imageshack.us/img824/2263/tr8n8.png
 
 == Tr8n Translator Dashboard
 
-http://wiki.tr8n.org/images/7/7c/Tr8n5.png
+http://img337.imageshack.us/img337/3180/tr8n5.png
 
 == Tr8n Translation Admin Tools
 
-http://wiki.tr8n.org/images/4/44/Tr8n7.png
+http://img225.imageshack.us/img225/3599/tr8n7.png
 
 
 = External Links
