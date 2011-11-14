@@ -1,5 +1,7 @@
 = Welcome to Tr8n Translation Engine
 
+http://img507.imageshack.us/img507/2876/tr8nlogo.png
+
 Tr8n Translation Engine is a Rails Engine Plugin/Gem that provides a framework for crowd-sourced translation of any Rails based application. 
 The power of the engine comes from its simple and friendly user interface that allows site users as well as professional translators to rapidly 
 translate the site into hundreds of languages. The flexible and robust rules engine that powers Tr8n allows for any combination of language 
