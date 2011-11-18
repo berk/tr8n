@@ -22,6 +22,8 @@
 #++
 
 class Tr8n::TranslationSourceLanguage < ActiveRecord::Base
+  set_table_name :tr8n_translation_source_languages
+
   belongs_to  :translation_source,  :class_name => "Tr8n::TranslationSource"
   belongs_to  :language,  :class_name => "Tr8n::Language"
   

@@ -129,10 +129,7 @@ module Tr8n
         end
 
         if linked
-          html << link_to(name.html_safe, :controller => "/tr8n/language", 
-                  :action => :switch, :language_action => :switch_language, 
-                  :locale => lang.locale,
-                  :source_url => opts[:source_url])
+          html << link_to(name.html_safe, "/tr8n/language/switch?locale=#{lang.locale}&language_action=switch_language&source_url=#{CGI.escape(opts[:source_url]||'')}")
         else    
           html << name
         end

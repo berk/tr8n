@@ -23,8 +23,6 @@
 
 class Tr8n::Translator < ActiveRecord::Base
   set_table_name :tr8n_translators
-  after_save      :clear_cache
-  after_destroy   :clear_cache
 
   belongs_to :user, :class_name => Tr8n::Config.user_class_name, :foreign_key => :user_id
   
@@ -46,10 +44,7 @@ class Tr8n::Translator < ActiveRecord::Base
     return nil unless user and user.id 
     return nil if Tr8n::Config.guest_user?(user)
     return user if user.is_a?(Tr8n::Translator)
-    
-    Tr8n::Cache.fetch("translator_for_#{user.id}") do 
-      find_by_user_id(user.id)
-    end
+    find_by_user_id(user.id)
   end
   
   def self.find_or_create(user)
@@ -303,10 +298,6 @@ class Tr8n::Translator < ActiveRecord::Base
 #    need to figure out what to do with it
 #    ipl = Tr8n::IpLocation.find_by_ip(new_ip)
 #    update_attributes(:last_ip => new_ip, :country_code => (ipl? ? ipl.ctry : nil))
-  end
-
-  def clear_cache
-    Tr8n::Cache.delete("translator_for_#{user_id}")
   end
 
   def to_s
