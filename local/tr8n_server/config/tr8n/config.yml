@@ -9,7 +9,7 @@
 # Alternatively, you can overload any of the methods of Tr8n::Config
 #############################################################################
 
-defaults: &defaults
+defaults:
   enable_tr8n:                true      # enables the engine
   enable_key_source_tracking: false     # builds the site map sources
   enable_key_caller_tracking: false     # tracks all calls to labels with their traces - for debugging only
@@ -258,21 +258,11 @@ defaults: &defaults
 # You can overload any feature defined in the defaults for any environment
 #############################################################################
 development:
-  <<: *defaults
-#  enable_key_source_tracking: false
   
 test:
-  <<: *defaults
-#  enable_key_source_tracking: false
       
 qa:
-  <<: *defaults
-#  enable_key_source_tracking: false
 
 stage:
-  <<: *defaults
-#   enable_key_source_tracking: false
 
 production:
-  <<: *defaults
-#  enable_key_source_tracking: false
