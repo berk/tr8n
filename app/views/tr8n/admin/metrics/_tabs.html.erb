@@ -1,0 +1,22 @@
+<%
+  links = []
+  current_tab ||= ""
+  [ 
+		["Top Translators By Language", {:action => :index}],
+	].each do |link|
+      if controller.action_name == link.last[:action].to_s
+        current_tab = link.first if current_tab.blank?
+        links << link.first
+      else
+        links << link_to(link.first, link.last)
+      end 
+   end   
+%>
+
+<div class="section_title">
+  <span style="font-size:12px; float:right; padding-top:5px;">
+    <%=links.join(" | ")%>
+  </span>
+  <%=current_tab %>
+</div>
+

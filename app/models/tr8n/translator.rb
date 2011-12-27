@@ -66,6 +66,11 @@ class Tr8n::Translator < ActiveRecord::Base
     translator
   end
   
+  def self.top_translators_for_language(lang = Tr8n::Config.current_language, limit = 5)
+    Tr8n::TranslatorMetric.find(:all, :conditions => ["language_id = ?", lang.id], 
+                                :order => "total_translations desc, total_votes desc", :limit => limit)
+  end  
+  
   def total_metric
     @total_metric ||= Tr8n::TranslatorMetric.find_or_create(self, nil)
   end

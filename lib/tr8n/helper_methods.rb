@@ -24,6 +24,60 @@
 module Tr8n::HelperMethods
   include Tr8n::CommonMethods
 
+  def tr8n_translations_js_tag(opts = {})
+    html = []
+    html << "<script>"
+
+    var_name = opts[:id] || :tr8n_translations
+
+    source_names = opts[:sources] || [opts[:source]]
+    sources = Tr8n::TranslationSource.find(:all, :conditions => ["source in (?)", source_names])
+    source_ids = sources.collect{|source| source.id}
+
+    if source_ids.empty?
+      conditions = ["1=2"]
+    else
+      conditions = ["(id in (select distinct(translation_key_id) from tr8n_translation_key_sources where translation_source_id in (?)))"]
+      conditions << source_ids.uniq
+    end
+
+    translations = []
+    Tr8n::TranslationKey.find(:all, :conditions => conditions).each_with_index do |tkey, index|
+      trn = tkey.translate(Tr8n::Config.current_language, {}, {:api => true})
+      translations << trn 
+    end
+
+    html << "var #{var_name} = #{translations.to_json};"
+
+    html << "</script>"
+    html.join('')
+  end
+        
+  def tr8n_client_sdk_scripts_tag(opts = {})
+    opts[:default_source] ||= "application"
+    opts[:scheduler_interval] ||= 5000
+
+    opts[:enable_inline_translations] = (Tr8n::Config.current_user_is_translator? and Tr8n::Config.current_translator.enable_inline_translations? and (not Tr8n::Config.current_language.default?))
+    opts[:default_decorations]        = Tr8n::Config.default_decoration_tokens
+    opts[:default_tokens]             = Tr8n::Config.default_data_tokens
+    opts[:rules]                      = { 
+      :number => Tr8n::Config.rules_engine[:numeric_rule],      :gender => Tr8n::Config.rules_engine[:gender_rule],
+      :list   => Tr8n::Config.rules_engine[:gender_list_rule],  :date   => Tr8n::Config.rules_engine[:date_rule]
+    }
+
+    html = [javascript_include_tag("/tr8n/javascripts/tr8n_client_sdk.js")]
+    html << "<script>"
+    html << "function initializeTr8nProxy() {"
+    html << "    tr8nProxy = new Tr8n.Proxy(#{opts.to_json});"
+  #    html << "   Tr8n.Utils.addEvent(window, 'load', function() {"
+  #    html << "       tr8nProxy = new Tr8n.Proxy(#{opts.to_json});"
+  #    html << "    });"
+    html << "}"
+    html << "initializeTr8nProxy();"
+    html << "</script>"
+    html.join("\n").html_safe
+  end
+        
   def tr8n_options_for_select(options, selected = nil, description = nil, lang = Tr8n::Config.current_language)
     options_for_select(options.tro(description), selected)
   end
@@ -116,10 +170,6 @@ module Tr8n::HelperMethods
 
   def tr8n_scripts_tag(opts = {})
     render(:partial => '/tr8n/common/scripts', :locals => {:opts => opts})    
-  end
-  
-  def tr8n_client_sdk_scripts_tag(opts = {})
-    javascript_include_tag("/tr8n/javascripts/tr8n_client_sdk.js", :locals => {:opts => opts})
   end
 
   def tr8n_translator_rank_tag(translator, rank = nil)
