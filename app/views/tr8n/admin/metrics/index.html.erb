@@ -1,13 +1,23 @@
 <%= render :partial => "/tr8n/admin/common/header" %>
 <%= render :partial => "tabs" %>
 
+<style>
+ .translator {
+	 border-bottom:1px dotted #ccc;
+ }
+ .translator:hover {
+	background-color:#eee;
+ }
+</style>
+
+
 <% @languages.each do |lang| %>
 
 <div class="section_title">
 	 <div style="float:right; font-size:12px; padding-top:5px;">
-     <span style="color:#666">Translated Key Count:</span> <%= lang.total_metric.translated_key_count %> 
-     <span style="color:#666">Translations:</span> <%= lang.total_metric.translation_count %> 
+     <span style="color:#666">Translated Keys:</span> <%= lang.total_metric.translated_key_count %> 
      <span style="color:#666">Translators:</span> <%= lang.total_metric.translator_count %> 
+     <span style="color:#666">Translations:</span> <%= lang.total_metric.translation_count %> 
 	 </div>	
 	
    <%=tr8n_toggler_tag("lang_content_#{lang.id}")%>
@@ -23,27 +33,27 @@
 	%>
 		<table>
 			<tr style="background-color:#eee;border-bottom:1px solid #ccc;">
-				<td>Translator Id</td>
-				<td>User Id</td>
+				<td style="width:100px;">Translator Id</td>
+				<td style="width:100px;">User Id</td>
 				<td>Name</td>
-				<td>Translations</td>
-				<td>Votes</td>
+				<td style="width:100px;text-align:right">Translations</td>
+				<td style="width:100px;text-align:right">Votes</td>
 			</tr>	
 			<% @translators.each do |tm| %>
-			<tr style="border-bottom:1px dotted #ccc;">
+			<tr class="translator">
 				<td>
-					<%=tm.translator_id if tm.translator %>
+					<%=link_to(tm.translator_id, "/tr8n/admin/translator/view?translator_id=#{tm.translator_id}") if tm.translator %>
 				</td>
 				<td>
-					<%=tm.translator.user_id if tm.translator %>
+					<%=link_to(tm.translator.user_id, tm.translator.link) if tm.translator %>
 				</td>
 				<td>
 					<%=tm.translator.name if tm.translator %>
 				</td>
-				<td>
+				<td style="text-align:right">
 	        <%=tm.total_translations%>
 				</td>
-				<td>
+				<td style="text-align:right">
 	        <%=tm.total_votes%>
 	        (<span style="color:green" title="<%=trla('Number of positive votes', 'Awards section header')%>"><%=tm.positive_votes || 0 %></span>/<span style="color:red" title="<%=trla('Number of negative votes', 'Awards section header')%>"><%=tm.negative_votes || 0 %></span>)
 				</td>
