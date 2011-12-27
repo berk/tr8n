@@ -1,5 +1,5 @@
 /****************************************************************************
-  Copyright (c) 2010 Michael Berkovich, Geni Inc
+  Copyright (c) 2010-2011 Michael Berkovich
 
   Permission is hereby granted, free of charge, to any person obtaining
   a copy of this software and associated documentation files (the
@@ -50,10 +50,11 @@ Tr8n.Proxy = function(options) {
 	this.options['url'] = this.options['url'] || '/tr8n/api/v1/language/translate'; 
   this.options['scheduler_interval'] = this.options['scheduler_interval'] || 20000; 
 	this.logger_enabled = true;
-	
+	this.missing_translations_locked = false;
+	this.inline_translations_enabled = this.options['enable_inline_translations'];
 	this.logger = new Tr8n.Proxy.Logger({
     'proxy': self,
-		'element_id': options['debugger']
+		'element_id': options['debugger_element_id']
 	});
         
   this.language = new Tr8n.Proxy.Language({
@@ -91,9 +92,9 @@ Tr8n.Proxy.prototype = {
 	  return this.translations;
   },
 	getDecorationFor: function(decoration_name) {
-		if (!this.options['decorations'])
+		if (!this.options['default_decorations'])
 		  return null;
-		return this.options['decorations'][decoration_name];
+		return this.options['default_decorations'][decoration_name];
 	},
 	getLanguageRuleForType: function(rule_type) {
 		// modify this section to add more rules
@@ -117,30 +118,57 @@ Tr8n.Proxy.prototype = {
     return null;    
   },
 	
-	registerMissingTranslationKey: function(translation_key) {
-    this.missing_translation_keys = this.missing_translation_keys || {};
-		if (!this.missing_translation_keys[translation_key.key]) {
-		  this.missing_translation_keys[translation_key.key] = translation_key;
-	  }
-	},
-	
 	registerTranslationKeys: function(translations) {
-    this.log("Found " + translations.length + " phrases");
+    this.log("Found " + translations.length + " registered phrases");
     for (i = 0; i < translations.length; i++) {
-       this.log("Registering " + translations[i]['key']);
-       this.translations[translations[i]['key']] = translations[i];
+			 var translation_key = translations[i];
+       this.log("Registering " + translation_key['key']);
+       this.translations[translation_key['key']] = translation_key;
     }
 	},
-	
+  initTranslations: function(forced) {
+    if (!forced && this.translations) return;
+
+    var self = this;
+    self.translations = {};
+
+    if (this.options['translations_element_id']) {
+      self.log("Registering page translations...");
+      this.registerTranslationKeys(eval(this.options['translations_element_id']));
+      return;
+    }
+
+    self.log("Fetching translations from the server...");
+    Tr8n.Proxy.Utils.ajax(this.options['url'], {
+      method: 'get',
+      parameters: {'batch': true, 'source': self.options['default_source']},
+      onSuccess: function(response) {
+        self.log("Received response from the server");
+        self.log(response.responseText);
+        self.registerTranslationKeys(eval("[" + response.responseText + "]")[0]['phrases']);
+      }
+    }); 
+  },
+  	
+  registerMissingTranslationKey: function(translation_key, token_values, options) {
+    this.missing_translation_keys = this.missing_translation_keys || {};
+    if (!this.missing_translation_keys[translation_key.key]) {
+      this.log('Adding missing translation to the queue: ' + translation_key.key);
+      this.missing_translation_keys[translation_key.key] = {translation_key: translation_key, token_values: token_values, options:options};
+    }
+  },
   submitMissingTranslationKeys: function() {
-    if (!this.missing_translation_keys) {
-			this.log('No missing translation keys to submit...');
-			return;
+		if (this.missing_translations_locked) {
+			this.log('Missing translations are being processed, postponding registration task.');
+		  return;
 	  }
+			
+    this.missing_translation_keys = this.missing_translation_keys || {};
 		
 		var phrases = "[";
 		for (var key in this.missing_translation_keys) {
-			var translation_key = this.missing_translation_keys[key];
+			var translation_key = this.missing_translation_keys[key].translation_key;
+			if (translation_key == null) continue;
 			if (phrases!="[") phrases = phrases + ",";
       phrases = phrases + "{";
 			phrases = phrases + '"label":"' + translation_key.label + '", ';
@@ -148,42 +176,51 @@ Tr8n.Proxy.prototype = {
       phrases = phrases + "}";
 		}
 		phrases = phrases + "]";
-    this.missing_translation_keys = null;
+		
+    if (phrases == '[]') {
+//      this.log('No missing translation keys to submit...');
+      return;
+    }
 		
     var self = this;
     this.debug('Submitting missing translation keys: ' + phrases);
     Tr8n.Proxy.Utils.ajax(this.options['url'], {
       method: 'put',
-      parameters: {'source': self.options['source'], 'phrases': phrases},
+      parameters: {'source': self.options['default_source'], 'phrases': phrases},
       onSuccess: function(response) {
         self.log("Received response from the server");
         self.log(response.responseText);
-				self.registerTranslationKeys(eval("[" + response.responseText + "]")[0]['phrases']);
+				self.updateMissingTranslationKeys(eval("[" + response.responseText + "]")[0]['phrases']);
       }
     }); 
   },
-	
-	initTranslations: function(forced) {
-    if (!forced && this.translations) return;
-
-		var self = this;
-		self.log("Fetching translations from the server...");
-		self.translations = {};
-	  Tr8n.Proxy.Utils.ajax(this.options['url'], {
-			method: 'get',
-		  parameters: {'batch': true, 'source': self.options['source']},
-			onSuccess: function(response) {
-        self.log("Received response from the server");
-        self.log(response.responseText);
-        self.registerTranslationKeys(eval("[" + response.responseText + "]")[0]['phrases']);
-			}
-		});	
-	},
-	
+  updateMissingTranslationKeys: function(translations) {
+		this.missing_translations_locked = true;
+    this.log("Received " + translations.length + " registered phrases...");
+    for (i = 0; i < translations.length; i++) {
+       var translation_key_data = translations[i];
+			 
+       this.log("Registering new key " + translation_key_data.key);
+       this.translations[translation_key_data.key] = translation_key_data;
+       var missing_key_data = this.missing_translation_keys[translation_key_data.key];
+       var tr8nElement = Tr8n.element(translation_key_data.key);
+      
+       if (tr8nElement && missing_key_data.translation_key) {
+	       tr8nElement.innerHTML = missing_key_data.translation_key.translate(this.language, missing_key_data.token_values, {skip_decorations:true});
+         tr8nElement.setAttribute('translation_key_id', translation_key_data['id']);
+         if (this.inline_translations_enabled) {
+		 	      tr8nElement.className = 'tr8n_translatable tr8n_not_translated';
+		     }
+       }
+       
+       delete this.missing_translation_keys[missing_key_data.translation_key.key];
+    }
+		this.missing_translations_locked = false;
+  },	
   runScheduledTasks: function() {
     var self = this;
 		
-    this.log("Running scheduled tasks...");
+//    this.log("Running scheduled tasks...");
 		this.submitMissingTranslationKeys();
 		
 		window.setTimeout(function() {
@@ -239,7 +276,7 @@ Tr8n.Proxy.TranslationKey.prototype = {
   
 	  translations = translations['labels'];
 		if (!translations) {
-			this.getLogger().error("Translations are in a weid form...");
+			this.getLogger().error("Translations are in a weird form...");
 			return null;
 		}
 
@@ -247,25 +284,34 @@ Tr8n.Proxy.TranslationKey.prototype = {
 		for (var i=0; i<translations.length; i++) {
 			this.getLogger().debug("Checking context rules for:" + translations[i]['label']);
 			
-			if (!translations[i]['context']) return translations[i];
+			if (!translations[i]['context']) {
+        this.getLogger().debug("Translation has no context, using it by default");
+	  	  return translations[i];
+	    }
 			var valid_context = true;
 
 			for (var token in translations[i]['context']) {
 				if (!valid_context) continue;
 				var token_context = translations[i]['context'][token];
 			  var rule_name = this.getProxy().getLanguageRuleForType(token_context['type']);
-        this.getLogger().debug("Evaluating rule:" + rule_name);
+        this.getLogger().debug("Evaluating rule: " + rule_name);
 				var options = {'proxy': this.getProxy()};
 				var rule = eval("new " + rule_name + "(token_context, options)");
 				valid_context = valid_context && rule.evaluate(token, token_values);
 			}
 			
-      if (valid_context) return translations[i];
+      if (valid_context) {
+        this.getLogger().debug("Found valid translation: " + translations[i].label);
+	  	  return translations[i];
+	    } else {
+        this.getLogger().debug("The rules were not matched for: " + translations[i].label);
+			}
 		}
 		
     this.getLogger().debug('No acceptable ranslations found');
 		return null;    		
 	},
+	
   translate: function(language, token_values, options) {
     if (!this.label) {
       this.getLogger().error('Label must always be provided for the translate method');
@@ -273,13 +319,28 @@ Tr8n.Proxy.TranslationKey.prototype = {
     }
     
     var translations = this.getProxy().getTranslations();
-    if (translations[this.key]) {
-      var translation = this.findFirstAcceptableTranslation(translations[this.key], token_values);
-      if (!translation) return this.substituteTokens(this.label, token_values, options);
-      return this.substituteTokens(translation['label'], token_values, options);    
-    }
+    var translation_key = translations[this.key];
+				
+    if (translation_key) {
+      this.getLogger().debug("Found translations, evaluating rules...");      
+			
+      this.id = translation_key.id;
+			this.original = translation_key.original;
+      var translation = this.findFirstAcceptableTranslation(translation_key, token_values);
 
-    this.getProxy().registerMissingTranslationKey(this);
+      if (translation) {
+        this.getLogger().debug("Found a valid match: " + translation.label);      
+				return this.substituteTokens(translation['label'], token_values, options);
+	    } else {
+        this.getLogger().debug("No valid match found, using default language");      
+  	    return this.substituteTokens(this.label, token_values, options);
+	    }
+			
+    } else {
+      this.getLogger().debug("Translation not found, using default language");			
+		}
+
+    this.getProxy().registerMissingTranslationKey(this, token_values, options);
     this.getLogger().debug('No translation found. Using default...');
     return this.substituteTokens(this.label, token_values, options);    
   },
@@ -306,7 +367,7 @@ Tr8n.Proxy.TranslationKey.prototype = {
 
   substituteTokens: function(label, token_values, options) {
     this.registerDataTokens(label);
-		if (!this.data_tokens) return label;
+		if (!this.data_tokens) return this.decorateLabel(label, options);
     for (var i = 0; i < this.data_tokens.length; i++) {
 			label = this.data_tokens[i].substitute(label, token_values || {});
 	  }
@@ -317,8 +378,38 @@ Tr8n.Proxy.TranslationKey.prototype = {
       label = this.decoration_tokens[i].substitute(label, token_values || {});
     }
 		
-		return label;
-  } 
+		return this.decorateLabel(label, options);
+  },
+	
+  decorateLabel: function(label, options){
+		options = options || {};
+		if (options['skip_decorations'])
+      return label;
+			
+    html = [];
+		html.push("<tr8n ");
+		
+		if (this.id) 
+		  html.push(" translation_key_id='" + this.id + "' ");
+			
+    if (this.key) 
+      html.push(" id='" + this.key + "' ");
+	
+	  var klasses = ['tr8n_translatable'];
+		
+		if (this.original)
+		  klasses.push('tr8n_not_translated');
+		else	
+      klasses.push('tr8n_translated');
+
+		if (this.getProxy().inline_translations_enabled && this.id)
+      html.push(" class='" + klasses.join(' ') + "'");
+			
+    html.push(">");
+		html.push(label);
+		html.push("</tr8n>");
+		return html.join("");
+  }
 }
 
 /****************************************************************************
@@ -336,12 +427,26 @@ Tr8n.Proxy.LanguageRule.prototype = {
   },
 	getTokenValue: function(token_name, token_values) {
 		var object = token_values[token_name];
-		if (!object) { 
+		if (object == null) { 
       this.getLogger().error("Invalid token value for token: " + token_name);
 		}
 		
 		return object;		
-	}
+	},
+	getDefinitionDescription: function() {
+    var result = [];
+    for (var key in this.definition)
+      result.push(key + ": '" + this.definition[key] + "'");
+    return "{" + result.join(", ") + "}";		
+	},
+  sanitizeArrayValue: function(value) {
+    var results = [];
+    var arr = value.split(',');
+		for (var index = 0; index < arr.length; index++) {
+		  results.push(Tr8n.Proxy.Utils.trim(arr[index]));
+		}		
+		return results;
+  }
 }
 
 /****************************************************************************
@@ -366,9 +471,10 @@ Tr8n.Proxy.NumericRule.transform = function(count, values) {
 
 Tr8n.Proxy.NumericRule.prototype.evaluate = function(token_name, token_values){
 	//	"count":{"value1":"2,3,4","operator":"and","type":"number","multipart":true,"part2":"does_not_end_in","value2":"12,13,14","part1":"ends_in"}
+	
 	var object = this.getTokenValue(token_name, token_values);
-	if (!object) return false;
-  
+	if (object == null) return false;
+
 	var token_value = null;
   if (typeof object == 'string' || typeof object == 'number') {
     token_value = "" + object;
@@ -379,10 +485,15 @@ Tr8n.Proxy.NumericRule.prototype.evaluate = function(token_name, token_values){
 		return false;
 	}
 	
-  var result1 = this.evaluatePartialRule(token_value, this.definition['part1'], this.definition['value1'].split(','));
-	if (!this.definition['multipart']) return result1;
+  this.getLogger().debug("Rule value: '" + token_value + "' for definition: " + this.getDefinitionDescription());
+	
+  var result1 = this.evaluatePartialRule(token_value, this.definition['part1'], this.sanitizeArrayValue(this.definition['value1']));
+	if (this.definition['multipart'] == 'false' || this.definition['multipart'] == false || this.definition['multipart'] == null) return result1;
+  this.getLogger().debug("Part 1: " + result1 + " Processing part 2...");
 
-  var result2 = this.evaluatePartialRule(token_value, this.definition['part2'], this.definition['value2'].split(','));
+  var result2 = this.evaluatePartialRule(token_value, this.definition['part2'], this.sanitizeArrayValue(this.definition['value2']));
+  this.getLogger().debug("Part 2: " + result2 + " Completing evaluation...");
+	
 	if (this.definition['operator'] == "or") return (result1 || result2);
   return (result1 && result2);
 }
@@ -391,11 +502,11 @@ Tr8n.Proxy.NumericRule.prototype.evaluate = function(token_name, token_values){
 Tr8n.Proxy.NumericRule.prototype.evaluatePartialRule = function(token_value, name, values) {
   if (name == 'is') {
     if (Tr8n.Proxy.Utils.indexOf(values, token_value)!=-1) return true; 
-    return false
+    return false;
   }
   if (name == 'is_not') {
     if (Tr8n.Proxy.Utils.indexOf(values, token_value)==-1) return true; 
-    return false
+    return false;
   }
   if (name == 'ends_in') {
 		for(var i=0; i<values.length; i++) {
@@ -558,7 +669,7 @@ Tr8n.Proxy.Token.prototype = {
 	},
   register: function(label, options) {
 		if (this.getExpression() == null)
-		  alert("Expression must be provided");
+		  alert("Token expression must be provided");
 			
 	  var tokens = label.match(this.getExpression());
 	  if (!tokens) return [];
@@ -959,19 +1070,42 @@ Tr8n.Proxy.Utils = {
 /****************************************************************************
 **** Tr8n Proxy Initialization
 ****************************************************************************/
-//var tr8nProxy;
+var tr8nProxy;
+
 //
+// the following should be done by the tr8n_client_sdk_scripts_tag
+//
+
 //function initializeTr8nClientSDK(source, debugger) {
 //  tr8nProxy = tr8nProxy || new Tr8n.Proxy({
-//    "source": source,
-//    "debugger": debugger,
-//    "decorations": {"bold": "<strong>{$0}</strong>", "italic": "<i>{$0}</i>", "link": "<a href='{$href}'>{$0}</a>"},
+//    "default_source": source,
+//    "debugger_element_id": debugger,
+//    "default_decorations": {"bold": "<strong>{$0}</strong>", "italic": "<i>{$0}</i>", "link": "<a href='{$href}'>{$0}</a>"},
 //    "rules": {"number":{"token_suffixes":["count", "num"]}, 
 //              "gender":{"token_suffixes":["user", "profile", "actor", "target"]},
 //              "list":{"token_suffixes":["list"]}, "date":{"token_suffixes":["date"]}
 //    }
 //  });
 //}
+
+// global javascript method
+function reloadTranslations() {
+  tr8nProxy.initTranslations(true);
+}
+
+// global javascript method - can be used after initialization
+function tr(label, description, tokens, options) {
+//  tr8nProxy.logger.log("Translating: " + label);
+  return tr8nProxy.translate(label, description || '', tokens || {}, options || {});
+}
+
+// global javascript method - can be used after initialization
+function trl(label, description, tokens, options) {
+//  tr8nProxy.logger.log("Translating: " + label);
+  options = options || {};
+  options['skip_decorations'] = true;
+  return tr8nProxy.translate(label, description || '', tokens || {}, options);
+}
 
 /****************************************************************************
 ***
