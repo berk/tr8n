@@ -243,6 +243,10 @@ class Tr8n::Config
     config[:enable_google_suggestions]
   end
 
+  def self.google_api_key
+    config[:google_api_key]
+  end
+
   def self.enable_glossary_hints?
     config[:enable_glossary_hints]
   end
