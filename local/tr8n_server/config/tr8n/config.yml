@@ -16,7 +16,6 @@ defaults:
   
   enable_glossary_hints:      true      # shows glossary in the translator    
   enable_software_keyboard:   true      # shows the soft keyboard icon  
-  enable_google_suggestions:  true      # uses google for suggestions
   enable_keyboard_shortcuts:  true      # adds some keyboard shortcuts like ctrl+shift+s
   enable_dictionary_lookup:   true      # shows dictionary words definitions
   
@@ -34,6 +33,19 @@ defaults:
   
   enable_country_tracking:    true      # tracks and reports translator countries 
 
+  #############################################################################
+  # Google translation suggestions is now a paid feature by Google.
+  # 
+  # In order to enable this useful feauture, visit:
+  # http://code.google.com/apis/language/translate/overview.html  
+  #
+  # Provide your billing information and register for an API key.
+  # 
+  # Put your API key in the box below.
+  #############################################################################
+  enable_google_suggestions:  false      # uses google for suggestions
+  google_api_key: "YOUR GOOGLE API KEY"  # get this API key from Google.
+  
   #############################################################################
   # Featured languages can be added as a bottom strip bar on all pages using
   #

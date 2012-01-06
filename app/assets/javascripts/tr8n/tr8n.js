@@ -94,6 +94,7 @@ Tr8n.Translator = function(options) {
   var self = this;
   this.options = options;
   this.translation_key_id = null;
+  this.suggestion_tokens = null;
 
   this.container                = document.createElement('div');
   this.container.className      = 'tr8n_translator';
@@ -291,20 +292,35 @@ Tr8n.Translator.prototype = {
     });
   },
 
-  suggestTranslation: function(translation_key_id, original, tokens, from_lang, to_lang) {
-    google.language.translate(original, from_lang, to_lang, function(result) {
-      if (!result.error) {
-        var suggestion = result.translation;
-        tokens = tokens.split(",");
-        for (var i=0; i<tokens.length; i++) {
-          suggestion = Tr8n.Utils.replaceAll(suggestion, "(" + i + ")", tokens[i]);
-        }
-        Tr8n.element("tr8n_translation_suggestion_" + translation_key_id).innerHTML = suggestion;
-        Tr8n.element("tr8n_google_suggestion_container_" + translation_key_id).style.display = "block";
-        var suggestion_section = Tr8n.element('tr8n_google_suggestion_section');
-        if (suggestion_section) suggestion_section.style.display = "block";
+  processSuggestedTranslation: function(response) {
+    if (response == null ||response.data == null || response.data.translations==null || response.data.translations.length == 0) 
+      return;
+    var suggestion = response.data.translations[0].translatedText;
+    if (this.suggestion_tokens) {
+      var tokens = this.suggestion_tokens.split(",");
+      this.suggestion_tokens = null;
+      for (var i=0; i<tokens.length; i++) {
+        suggestion = Tr8n.Utils.replaceAll(suggestion, "(" + i + ")", tokens[i]);
       }
-    });
+    }  
+    Tr8n.element("tr8n_translation_suggestion_" + this.translation_key_id).innerHTML = suggestion;
+    Tr8n.element("tr8n_google_suggestion_container_" + this.translation_key_id).style.display = "block";
+    var suggestion_section = Tr8n.element('tr8n_google_suggestion_section');
+    if (suggestion_section) suggestion_section.style.display = "block";
+  },
+  
+  suggestTranslation: function(translation_key_id, original, tokens, from_lang, to_lang) {
+    if (Tr8n.google_api_key == null) return;
+    
+    this.suggestion_tokens = tokens;
+    this.translation_key_id = translation_key_id;
+    var new_script = document.createElement('script');
+    new_script.type = 'text/javascript';
+    var source_text = escape(original);
+    var api_source = 'https://www.googleapis.com/language/translate/v2?key=' + Tr8n.google_api_key;
+    var source = api_source + '&source=' + from_lang + '&target=' + to_lang + '&callback=tr8nTranslator.processSuggestedTranslation&q=' + source_text;
+    new_script.src = source;
+    document.getElementsByTagName('head')[0].appendChild(new_script);
   }
 
 }
@@ -885,8 +901,4 @@ function initializeTr8n() {
   }
 
   Tr8n.Utils.addEvent(window, 'load', setup);
-}
-
-function initializeTr8nGoogleSuggestions() {
-   google.load("language", "1");
 }

@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2011 Michael Berkovich, tr8n.net
+# Copyright (c) 2010-2012 Michael Berkovich, tr8n.net
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -84,8 +84,8 @@ class CreateTr8nTables < ActiveRecord::Migration
     add_index :tr8n_language_users, [:user_id], :name => :tr8n_lu_u
     add_index :tr8n_language_users, [:language_id, :user_id], :name => :tr8n_lu_lu
     add_index :tr8n_language_users, [:language_id, :translator_id], :name => :tr8n_lu_lt
-    add_index :tr8n_language_users, [:created_at], :name => :tr8n_lu_c
-    add_index :tr8n_language_users, [:updated_at], :name => :tr8n_lu_u
+    add_index :tr8n_language_users, [:created_at], :name => :tr8n_lu_ca
+    add_index :tr8n_language_users, [:updated_at], :name => :tr8n_lu_ua
     
     create_table :tr8n_language_metrics do |t|
       t.string  :type
@@ -121,6 +121,7 @@ class CreateTr8nTables < ActiveRecord::Migration
       t.integer :manager
       t.string  :last_ip
       t.string  :country_code
+      t.integer :remote_id
       t.timestamps
     end
     add_index :tr8n_translators, [:user_id], :name => :tr8n_t_u
@@ -166,6 +167,7 @@ class CreateTr8nTables < ActiveRecord::Migration
       t.boolean   :admin
       t.string    :locale
       t.integer   :level, :default => 0
+      t.timestamp :synced_at
       t.timestamps
     end
     add_index :tr8n_translation_keys, [:key], :unique => true, :name => :tr8n_tk_k
@@ -203,6 +205,7 @@ class CreateTr8nTables < ActiveRecord::Migration
       t.integer :rank,                :default => 0
       t.integer :approved_by_id,      :limit => 8
       t.text    :rules      
+      t.timestamp :synced_at
       t.timestamps
     end
     add_index :tr8n_translations, [:translator_id], :name => :tr8n_trn_t
@@ -325,6 +328,16 @@ class CreateTr8nTables < ActiveRecord::Migration
       t.timestamps
     end
     add_index :tr8n_translation_source_languages, [:language_id, :translation_source_id], :name => :tr8n_tsl_lt    
+    
+    create_table :tr8n_sync_logs do |t|
+      t.timestamp :started_at
+      t.timestamp :finished_at
+      t.integer   :keys_sent
+      t.integer   :translations_sent
+      t.integer   :keys_received
+      t.integer   :translations_received
+      t.timestamps
+    end
   end
 
   def self.down
@@ -354,5 +367,6 @@ class CreateTr8nTables < ActiveRecord::Migration
     drop_table :tr8n_translator_reports
     drop_table :tr8n_ip_locations
     drop_table :tr8n_translation_source_languages
+    drop_table :tr8n_sync_logs
   end
 end

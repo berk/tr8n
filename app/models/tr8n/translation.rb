@@ -86,11 +86,14 @@ class Tr8n::Translation < ActiveRecord::Base
 
   # populate language rules from the internal rules hash
   def rules
-    return nil if super.nil? or super.empty?
-    
+    super_rules = super
+    return nil if super_rules == nil
+    return nil unless super_rules.class.name == 'Array'
+    return nil if super_rules.size == 0
+        
     @loaded_rules ||= begin
       rulz = []
-      super.each do |rule|
+      super_rules.each do |rule|
         [rule[:rule_id]].flatten.each do |rule_id|
           language_rule = Tr8n::LanguageRule.by_id(rule_id)
           rulz << rule.merge({:rule => language_rule}) if language_rule
