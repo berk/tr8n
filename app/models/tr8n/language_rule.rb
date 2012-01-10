@@ -102,7 +102,7 @@ class Tr8n::LanguageRule < ActiveRecord::Base
     sanitize_values(values).join(", ")
   end
 
-  def to_api_hash
+  def to_sync_hash
     {
       :type => self.class.keyword,
       :definition => definition

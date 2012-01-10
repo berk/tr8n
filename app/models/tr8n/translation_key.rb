@@ -68,6 +68,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
                           :locale => locale,
                           :level => level,
                           :admin => Tr8n::Config.block_options[:admin])
+
         unless options[:source].blank?
           # at the time of creation - mark the first source of the key
           Tr8n::TranslationKeySource.find_or_create(new_tkey, Tr8n::TranslationSource.find_or_create(options[:source], options[:url]))
@@ -218,8 +219,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     
   def add_translation(label, rules = nil, language = Tr8n::Config.current_language, translator = Tr8n::Config.current_translator)
     raise Tr8n::Exception.new("The sentence contains dirty words") unless language.clean_sentence?(label)
-    translation = Tr8n::Translation.create(:translation_key => self, :language => language, 
-                                           :translator => translator, :label => label, :rules => rules)
+    translation = Tr8n::Translation.create(:translation_key => self, :language => language, :translator => translator, :label => label, :rules => rules)
     translation.vote!(translator, 1)
     translation
   end
@@ -524,31 +524,54 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     Tr8n::Cache.delete("translation_key_#{key}")
   end
 
-  def to_api_hash
+  ###############################################################
+  ## Synchronization Related Stuff
+  ###############################################################
+  def to_sync_hash(default_translation_hashes = nil)
     { 
-      :key => self.key, 
-      :label => self.label, 
-      :description => self.description, 
-      :locale => (locale || Tr8n::Config.default_locale), 
-      :translations => translations_for(nil, Tr8n::Config.translation_threshold).collect{|t| t.to_api_hash}
+      "key" => self.key, 
+      "label" => self.label, 
+      "description" => self.description, 
+      "locale" => (locale || Tr8n::Config.default_locale), 
+      "translations" => default_translation_hashes || translations_for(nil, Tr8n::Config.translation_threshold).collect{|t| t.to_sync_hash}
     }
   end
 
+  def transations_sync_hashes
+    @transations_sync_hashes ||= translations.collect{|t| t.to_sync_hash(false)}
+  end
+    
   # create translation key from API hash
-  def self.create_from_api_hash(tkey_hash, translator, opts = {})
-    return if tkey_hash[:key].blank? or tkey_hash[:label].blank? or tkey_hash[:locale].blank?
+  def self.create_from_sync_hash(tkey_hash, translator, opts = {})
+    return if tkey_hash["key"].blank? or tkey_hash["label"].blank? or tkey_hash["locale"].blank?
      
-    tkey = Tr8n::TranslationKey.find_or_create(tkey_hash[:label], tkey_hash[:description])
+    tkey = Tr8n::TranslationKey.find_or_create(tkey_hash["label"], tkey_hash["description"])
 
     # return unless tkey.key==tkey_hash[:key] # need to warn the user that the key methods don't match
 
-    opts[:force_create] = Tr8n::Config.synchronization_create_rules? if opts[:force_create].nil?
+    # opts[:force_create] = Tr8n::Config.synchronization_create_rules? if opts[:force_create].nil?
+
+    remaining_translations = tkey.transations_sync_hashes.dup
+    # pp :before, remaining_sync_hashes
     
-    (tkey_hash[:translations] || []).each do |trn_hash|
-      Tr8n::Translation.create_from_api_hash(tkey, translator, trn_hash, opts)
+    added_trans = []
+    (tkey_hash["translations"] || []).each do |t_hash|
+      # if the translation came from a linked translator, use the translator
+      translation_translator = translator
+      if t_hash["translator_id"]
+        translation_translator = Tr8n::Translator.find_by_id(t_hash["translator_id"])
+        t_hash.delete("translator_id")
+        translation_translator ||= translator
+      end
+
+      remaining_translations.delete(t_hash)
+      next if tkey.transations_sync_hashes.include?(t_hash)
+      trans = Tr8n::Translation.create_from_sync_hash(tkey, translation_translator, t_hash, opts)
     end
 
-    tkey
+    # need to send back translations that have not been added, but exist in the system
+    # pp :after, remaining_sync_hashes
+    [tkey, remaining_translations]
   end
 
   ###############################################################
@@ -641,6 +664,6 @@ class Tr8n::TranslationKey < ActiveRecord::Base
       results = results.where("tr8n_translation_keys.id not in (select tr8n_translation_key_locks.translation_key_id from tr8n_translation_key_locks where tr8n_translation_key_locks.language_id = ? and tr8n_translation_key_locks.locked = ?)", Tr8n::Config.current_language.id, true)
     end
     
-    results
+    results.order("created_at desc")
   end    
 end
