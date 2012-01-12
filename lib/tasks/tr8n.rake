@@ -85,8 +85,10 @@ namespace :tr8n do
     Tr8n::IpLocation.import_from_file('config/tr8n/data/ip_locations.csv', :verbose => true)
   end
   
-  desc "Downloads translations from tr8n.net"
+  desc "Synchronize translations with tr8n.net"
   task :sync => :environment do
-    Tr8n::SyncLog.sync
+    opts = {}
+    opts[:force] = true if ENV["force"] == "true"
+    Tr8n::SyncLog.sync(opts)
   end
 end

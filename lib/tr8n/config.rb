@@ -532,7 +532,7 @@ module Tr8n
 
     def self.language_rule_dependencies
       @language_rule_dependencies ||= begin
-        depts = {}
+        depts = HashWithIndifferentAccess.new
         language_rule_classes.each do |cls|
           if depts[cls.dependency]
             raise Tr8n::Exception.new("The same dependency key #{cls.dependency} has been registered for multiple rules. This is not allowed.")

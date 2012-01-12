@@ -90,7 +90,7 @@ class Tr8n::Translation < ActiveRecord::Base
     return nil if super_rules == nil
     return nil unless super_rules.class.name == 'Array'
     return nil if super_rules.size == 0
-        
+
     @loaded_rules ||= begin
       rulz = []
       super_rules.each do |rule|
@@ -116,46 +116,6 @@ class Tr8n::Translation < ActiveRecord::Base
       end
       rulz
     end
-  end
-
-  ###############################################################
-  ## Synchronization Related Stuff
-  ###############################################################
-  # generates the hash without rule ids, but with full definitions
-  def rules_sync_hash
-    @rules_sync_hash ||= (rules || []).collect{|rule_hash| rule_hash["rule"].to_sync_hash.merge("token" => rule_hash["token"])}
-  end
-
-  # serilaize translation to API hash to be used for synchronization
-  def to_sync_hash(include_translator = true)
-    hash = {"locale" => language.locale, "label" => label, "rank" => rank, "rules" => rules_sync_hash}
-    hash["translator_id"] = translator.remote_id if include_translator and translator and translator.remote_id
-    hash  
-  end
-
-  # create translation from API hash for a specific key
-  def self.create_from_sync_hash(tkey, translator, hash, opts = {})
-    # don't add empty translations
-    return if hash["label"].blank? 
-    
-    lang = Tr8n::Language.for(hash["locale"])
-    # don't add translations for an unsupported language
-    return unless lang 
-
-    # generate rules for the translation
-    rules = nil
-    
-    if hash["rules"] and hash["rules"].any?
-      hash["rules"].each do |rule_hash|
-        return unless rule_hash["token"] and rule_hash["type"] and rule_hash["definition"]
-        
-        rule = Tr8n::LanguageRule.for_definition(lang, translator, rule_hash["type"], rule_hash["definition"], opts)
-        return unless rule # if the rule has not been created, we should not even add the translation
-        rules << {"token" => rule_hash["token"], "rule_id" => rule.id}
-      end
-    end
-    
-    tkey.add_translation(hash["label"], rules, lang, translator)
   end
 
   # deprecated - api_hash should be used instead
@@ -260,9 +220,49 @@ class Tr8n::Translation < ActiveRecord::Base
   end
   
   ###############################################################
-  ## Search Related Stuff
+  ## Synchronization Methods
   ###############################################################
-  
+  # generates the hash without rule ids, but with full definitions
+  def rules_sync_hash
+    @rules_sync_hash ||= (rules || []).collect{|rule| rule[:rule].to_sync_hash(rule[:token])}
+  end
+
+  # serilaize translation to API hash to be used for synchronization
+  def to_sync_hash(include_translator = true)
+    hash = {"locale" => language.locale, "label" => label, "rank" => rank, "rules" => rules_sync_hash}
+    hash["translator_id"] = translator.remote_id if include_translator and translator and translator.remote_id
+    hash  
+  end
+
+  # create translation from API hash for a specific key
+  def self.create_from_sync_hash(tkey, translator, hash, opts = {})
+    # don't add empty translations
+    return if hash["label"].blank? 
+    
+    lang = Tr8n::Language.for(hash["locale"])
+    # don't add translations for an unsupported language
+    return unless lang 
+
+    # generate rules for the translation
+    rules = []
+    
+    if hash["rules"] and hash["rules"].any?
+      hash["rules"].each do |rule_hash|
+        rule = Tr8n::LanguageRule.create_from_sync_hash(lang, translator, rule_hash, opts)
+        pp rule
+        
+        return unless rule # if the rule has not been created, we should not even add the translation
+        rules << {:token => rule_hash["token"], :rule_id => rule.id}
+      end
+    end
+    
+    rules = nil if rules.empty?
+    tkey.add_translation(hash["label"], rules, lang, translator)
+  end
+    
+  ###############################################################
+  ## Search Methods
+  ###############################################################
   def self.filter_status_options
     [["all translations", "all"], 
      ["accepted translations", "accepted"], 

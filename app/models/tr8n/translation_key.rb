@@ -219,7 +219,10 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     
   def add_translation(label, rules = nil, language = Tr8n::Config.current_language, translator = Tr8n::Config.current_translator)
     raise Tr8n::Exception.new("The sentence contains dirty words") unless language.clean_sentence?(label)
+    pp rules
     translation = Tr8n::Translation.create(:translation_key => self, :language => language, :translator => translator, :label => label, :rules => rules)
+    pp translation
+    
     translation.vote!(translator, 1)
     translation
   end
@@ -525,8 +528,12 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   end
 
   ###############################################################
-  ## Synchronization Related Stuff
+  ## Synchronization Methods
   ###############################################################
+  def mark_as_synced!
+    update_attributes(:synced_at => Time.now + 5.seconds)
+  end
+    
   def to_sync_hash(default_translation_hashes = nil)
     { 
       "key" => self.key, 
@@ -575,7 +582,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   end
 
   ###############################################################
-  ## Feature Related Stuff
+  ## Feature Methods
   ###############################################################
   
   def self.title
@@ -603,7 +610,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   end
 
   ###############################################################
-  ## Search Related Stuff
+  ## Search Methods
   ###############################################################
   
   def self.filter_phrase_type_options

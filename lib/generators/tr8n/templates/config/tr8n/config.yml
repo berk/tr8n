@@ -265,8 +265,8 @@ defaults:
   #############################################################################
   synchronization:
     server:                   "http://tr8n.net"  # alternative, regional locations will be available in the future
-    key:                      "iKjOrZjor68a4UeCD3Cq2r9t9ibBC4HnYoMNMrN7" # replace this with your key
-    secret:                   "iKjOrZjor68a4UeCD3Cq2r9t9ibBC4HnYoMNMrN7" # replace this with your secret   
+    key:                      "YOUR APP KEY"     # replace this with your key
+    secret:                   "YOUR APP SECRET"  # replace this with your secret   
     batch_size:               50     # how many kesy to send to the server at a time
     create_rules:             true   # force rules creation, or skip translations for rules that don't exist
     all_languages:            false  # use only enabled languages, or all languages
