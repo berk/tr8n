@@ -218,6 +218,46 @@ class Tr8n::Translation < ActiveRecord::Base
   end
   
   ###############################################################
+  ## Synchronization Methods
+  ###############################################################
+  # generates the hash without rule ids, but with full definitions
+  def rules_sync_hash
+    @rules_sync_hash ||= (rules || []).collect{|rule| rule[:rule].to_sync_hash(rule[:token])}
+  end
+
+  # serilaize translation to API hash to be used for synchronization
+  def to_sync_hash(include_translator = true)
+    hash = {"locale" => language.locale, "label" => label, "rank" => rank, "rules" => rules_sync_hash}
+    hash["translator_id"] = translator.remote_id if include_translator and translator and translator.remote_id
+    hash  
+  end
+
+  # create translation from API hash for a specific key
+  def self.create_from_sync_hash(tkey, translator, hash, opts = {})
+    # don't add empty translations
+    return if hash["label"].blank? 
+    
+    lang = Tr8n::Language.for(hash["locale"])
+    # don't add translations for an unsupported language
+    return unless lang 
+
+    # generate rules for the translation
+    rules = []
+    
+    if hash["rules"] and hash["rules"].any?
+      hash["rules"].each do |rule_hash|
+        rule = Tr8n::LanguageRule.create_from_sync_hash(lang, translator, rule_hash, opts)
+        
+        return unless rule # if the rule has not been created, we should not even add the translation
+        rules << {:token => rule_hash["token"], :rule_id => rule.id}
+      end
+    end
+    
+    rules = nil if rules.empty?
+    tkey.add_translation(hash["label"], rules, lang, translator)
+  end
+  
+  ###############################################################
   ## Search Related Stuff
   ###############################################################
   

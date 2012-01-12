@@ -222,5 +222,11 @@ namespace :tr8n do
     puts "Done."
   end
     
+  desc 'syncs up translations'
+  task :exchange => :environment do
+    opts = {}
+    opts[:force] = true if ENV["force"] == "true"
+    Tr8n::SyncLog.sync(opts)
+  end
   
 end

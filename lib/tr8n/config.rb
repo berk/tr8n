@@ -90,7 +90,7 @@ class Tr8n::Config
        Tr8n::Translator, Tr8n::TranslatorLog, Tr8n::TranslatorMetric, 
        Tr8n::TranslatorFollowing, Tr8n::TranslatorReport, 
        Tr8n::LanguageForumTopic, Tr8n::LanguageForumMessage, Tr8n::LanguageForumAbuseReport,
-       Tr8n::Glossary, Tr8n::IpLocation
+       Tr8n::Glossary, Tr8n::IpLocation, Tr8n::SyncLog
     ]    
   end
 
@@ -805,6 +805,37 @@ class Tr8n::Config
   
   def self.default_configuration_keys
     @default_configuration_keys ||= load_yml("/config/tr8n/data/default_configuration_keys.yml", nil)
+  end
+
+  #########################################################
+  # Sync Process
+  #########################################################
+  def self.synchronization
+    config[:synchronization]
+  end
+
+  def self.synchronization_batch_size
+    synchronization[:batch_size]
+  end
+  
+  def self.synchronization_server
+    synchronization[:server]
+  end
+  
+  def self.synchronization_key
+    synchronization[:key]
+  end
+
+  def self.synchronization_secret
+    synchronization[:secret]
+  end
+
+  def self.synchronization_create_rules?
+    synchronization[:create_rules]
+  end
+
+  def self.synchronization_all_languages?
+    synchronization[:all_languages]
   end
   
 end

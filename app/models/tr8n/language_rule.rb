@@ -55,6 +55,10 @@ class Tr8n::LanguageRule < ActiveRecord::Base
     raise Tr8n::Exception.new("This method must be implemented in the extending rule") 
   end
   
+  def self.keyword
+    dependency
+  end
+  
   def self.dependency_label
     dependency
   end
@@ -110,6 +114,30 @@ class Tr8n::LanguageRule < ActiveRecord::Base
 
   def after_destroy
     Tr8n::Cache.delete("language_rule_#{id}")
+  end
+
+  ###############################################################
+  ## Synchronization Methods
+  ###############################################################
+  def to_sync_hash(token)
+    {
+      "token" => token,  
+      "type" => self.class.keyword,
+      "definition" => definition
+    }
+  end
+
+  def self.create_from_sync_hash(lang, translator, rule_hash, opts = {})
+    return unless rule_hash["token"] and rule_hash["type"] and rule_hash["definition"]
+
+    rule_class = Tr8n::Config.language_rule_dependencies[rule_hash["type"]]
+    return unless rule_class # unsupported rule type, skip this completely
+    
+    rule_class.for(lang).each do |rule|
+      return rule if rule.definition == rule_hash["definition"]
+    end
+    
+    rule_class.create(:language => lang, :translator => translator, :definition => rule_hash["definition"])
   end
 
 end
