@@ -547,49 +547,59 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   ## Synchronization Methods
   ###############################################################
   def mark_as_synced!
-    update_attributes(:synced_at => Time.now + 5.seconds)
+    update_attributes(:synced_at => Time.now + 2.seconds)
   end
     
-  def to_sync_hash(default_translation_hashes = nil)
+  def to_sync_hash(opts = {})
     { 
       "key" => self.key, 
       "label" => self.label, 
       "description" => self.description, 
       "locale" => (locale || Tr8n::Config.default_locale), 
-      "translations" => default_translation_hashes || translations_for(nil, Tr8n::Config.translation_threshold).collect{|t| t.to_sync_hash}
+      "translations" => opts[:translations] || translations_for(opts[:languages], opts[:threshold] || Tr8n::Config.translation_threshold).collect{|t| t.to_sync_hash(opts)}
     }
   end
 
-  def transations_sync_hashes
-    @transations_sync_hashes ||= translations.collect{|t| t.to_sync_hash(false)}
+  def transations_sync_hashes(opts = {})
+    @transations_sync_hashes ||= begin
+      translations.collect{|t| t.to_sync_hash(:comparible => true)}
+    end  
   end
     
+  def self.can_create_from_sync_hash?(tkey_hash, translator, opts = {})
+    return false if tkey_hash["key"].blank? or tkey_hash["label"].blank? or tkey_hash["locale"].blank?
+    true
+  end
+      
   # create translation key from API hash
-  def self.create_from_sync_hash(tkey_hash, translator, opts = {})
-    return if tkey_hash["key"].blank? or tkey_hash["label"].blank? or tkey_hash["locale"].blank?
-     
+  def self.create_from_sync_hash(tkey_hash, default_translator, opts = {})
+    return unless can_create_from_sync_hash?(tkey_hash, default_translator, opts)
+    
+    # find or create translation key  
     tkey = Tr8n::TranslationKey.find_or_create(tkey_hash["label"], tkey_hash["description"])
 
-    # return unless tkey.key==tkey_hash[:key] # need to warn the user that the key methods don't match
+    # we will keep the translations that need to be sent back
+    remaining_translations = tkey.transations_sync_hashes(opts).dup
 
-    # opts[:force_create] = Tr8n::Config.synchronization_create_rules? if opts[:force_create].nil?
-
-    remaining_translations = tkey.transations_sync_hashes.dup
-    # pp :before, remaining_sync_hashes
-    
     added_trans = []
-    (tkey_hash["translations"] || []).each do |t_hash|
-      # if the translation came from a linked translator, use the translator
-      translation_translator = translator
-      if t_hash["translator_id"]
-        translation_translator = Tr8n::Translator.find_by_id(t_hash["translator_id"])
-        t_hash.delete("translator_id")
-        translation_translator ||= translator
-      end
+    (tkey_hash["translations"] || []).each do |thash|
+      remaining_translations.delete(thash)
 
-      remaining_translations.delete(t_hash)
-      next if tkey.transations_sync_hashes.include?(t_hash)
-      trans = Tr8n::Translation.create_from_sync_hash(tkey, translation_translator, t_hash, opts)
+      # if the translation came from a linked translator, use the translator
+      translator = default_translator
+      if thash["translator_id"] # incoming translations from the remote server
+        translator = Tr8n::Translator.find_by_id(thash["translator_id"]) || default_translator
+      elsif thash["translator"]
+        translator = Tr8n::Translator.create_from_sync_hash(thash["translator"], opts) || default_translator
+      end
+      
+      # don't insert duplicate translations
+      comparible_hash = thash.slice("locale", "label", "rules")
+      next if tkey.transations_sync_hashes.include?(comparible_hash)
+      
+      translation = Tr8n::Translation.create_from_sync_hash(tkey, translator, thash, opts)
+      
+      translation.mark_as_synced! if translation
     end
 
     # need to send back translations that have not been added, but exist in the system

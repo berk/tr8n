@@ -810,10 +810,6 @@ class Tr8n::Config
   #########################################################
   # Sync Process
   #########################################################
-  def self.synchronization
-    config[:synchronization]
-  end
-
   def self.synchronization_batch_size
     synchronization[:batch_size]
   end
@@ -830,12 +826,16 @@ class Tr8n::Config
     synchronization[:secret]
   end
 
-  def self.synchronization_create_rules?
-    synchronization[:create_rules]
-  end
-
   def self.synchronization_all_languages?
     synchronization[:all_languages]
+  end
+
+  def self.synchronization_push_enabled?
+    synchronization[:enable_push]
+  end
+  
+  def self.synchronization_push_servers
+    synchronization[:push_servers]
   end
   
 end

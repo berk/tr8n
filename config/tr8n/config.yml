@@ -90,7 +90,7 @@ defaults: &defaults
   caching:
     enabled:                  false
     adapter:                  ActiveSupport::Cache
-    store:                    [mem_cache_store, 'localhost:11211']
+    store:                    [mem_cache_store, "localhost:11211"]
     version:                  1 # you can change the version to invalidate the cache
 
   #############################################################################
@@ -226,6 +226,30 @@ defaults: &defaults
       monthname_abbr:         '%b %d'               # Jul 4
       monthname_abbr_year:    '%b %d, %Y'           # Jul 4, 2008
       date_time:              '%m/%d/%Y at %H:%M'   # 01/03/1010 at 5:30
+
+  #############################################################################
+  # You can synchronize your translation keys and translations with other 
+  # sites that use Tr8n. This way you can get your site translated by 
+  # millions of users from around the internet. Visit the following url and 
+  # register as a developer, register your application and copy your app key
+  # in the line below:
+  #
+  #  http://tr8n.net
+  # 
+  # To sychronize your translations run the following command: 
+  # 
+  #  rake tr8n:sync
+  #
+  # You can run this command as often as your account on tr8n.net permits you.
+  ############################################################################# 
+  synchronization:
+    server:                   "http://tr8n.net"  # visit this url to register your application
+    key:                      "YOUR APP KEY"     # replace with your application key
+    secret:                   "YOUR APP SECRET"  # replace with your application secret   
+    batch_size:               50                 # how many keys to send to the server at a time - if your site supports many language, decrease the batch size
+    all_languages:            false              # use only enabled languages, or all languages
+    enable_push:              false              # allows translations to be pushed from the main server using the sync API        
+    push_servers:             ["tr8n.net"]       # only allows those servers to push translations
  
 #############################################################################
 # Environment Settings

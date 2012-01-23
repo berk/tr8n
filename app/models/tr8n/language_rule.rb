@@ -119,14 +119,14 @@ class Tr8n::LanguageRule < ActiveRecord::Base
   ###############################################################
   ## Synchronization Methods
   ###############################################################
-  def to_sync_hash(token)
+  def to_sync_hash(token, opts = {})
     {
       "token" => token,  
       "type" => self.class.keyword,
       "definition" => definition
     }
   end
-
+  
   def self.create_from_sync_hash(lang, translator, rule_hash, opts = {})
     return unless rule_hash["token"] and rule_hash["type"] and rule_hash["definition"]
 
