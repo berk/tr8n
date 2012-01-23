@@ -104,7 +104,7 @@ class CreateTr8nTables < ActiveRecord::Migration
     add_index :tr8n_language_metrics, [:created_at], :name => :tr8n_lm_c
     
     create_table :tr8n_translators do |t|
-      t.integer :user_id,     :null => false
+      t.integer :user_id
       t.boolean :inline_mode, :default => false
       t.boolean :blocked,     :default => false
       t.boolean :reported,    :default => false

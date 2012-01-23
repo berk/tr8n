@@ -190,6 +190,12 @@ class Tr8n::Translator < ActiveRecord::Base
     false
   end
 
+  # for translators registered on the exchange server
+  def remote?
+    return false if user
+    not remote_id.nil?
+  end
+
   def system?
     level == Tr8n::Config.system_level
   end
@@ -204,13 +210,14 @@ class Tr8n::Translator < ActiveRecord::Base
   
   def name
     return "Tr8n Network" if system?
+    return super if remote?
     
     unless Tr8n::Config.site_user_info_enabled?
       translator_name = super
       return translator_name unless translator_name.blank?
       return "No Name"
     end  
-    
+
     return "Deleted User" unless user
     user_name = Tr8n::Config.user_name(user)
     return "No Name" if user_name.blank?
@@ -220,6 +227,7 @@ class Tr8n::Translator < ActiveRecord::Base
 
   def gender
     return "unknown" if system?
+    return super if remote?
     
     unless Tr8n::Config.site_user_info_enabled?
       translator_gender = super
@@ -230,9 +238,10 @@ class Tr8n::Translator < ActiveRecord::Base
     Tr8n::Config.user_gender(user)
   end
 
+  # TODO: change db to mugshot_url
   def mugshot
     return Tr8n::Config.system_image if system?
-    
+    return super if remote?
     return super unless Tr8n::Config.site_user_info_enabled?
     return Tr8n::Config.silhouette_image unless user
     img_url = Tr8n::Config.user_mugshot(user)
@@ -240,7 +249,9 @@ class Tr8n::Translator < ActiveRecord::Base
     img_url
   end
 
+  # TODO: change db to link_url
   def link
+    # return super if remote? 
     return super unless Tr8n::Config.site_user_info_enabled?
     return Tr8n::Config.default_url unless user
     Tr8n::Config.user_link(user)
@@ -263,12 +274,14 @@ class Tr8n::Translator < ActiveRecord::Base
 
   def level
     return Tr8n::Config.admin_level if admin?
+    return super if remote?
     return 0 if super.nil?
     super
   end
 
   def title
     return 'admin' if admin?
+    return super if remote?
     Tr8n::Config.translator_levels[level.to_s] || 'unknown'
   end
 
@@ -303,4 +316,29 @@ class Tr8n::Translator < ActiveRecord::Base
   def to_s
     name
   end
+  
+  ###############################################################
+  ## Synchronization Methods
+  ###############################################################
+  def to_sync_hash(opts = {})
+    { 
+      "id" => opts[:remote] ? self.remote_id : self.id, 
+      "name" => self.name, 
+      "gender" => self.gender, 
+      "mugshot" => self.mugshot, 
+      "link" => self.link
+    }
+  end
+
+  def self.create_from_sync_hash(thash, opts = {})
+    Tr8n::Translator.find_by_remote_id(thash[:id]) || Tr8n::Translator.create(
+      :user_id => 0,
+      :remote_id => thash[:id], 
+      :name => thash[:name], 
+      :gender => thash[:gender], 
+      :mugshot => thash[:mugshot], 
+      :link => thash[:link]
+    )
+  end
+  
 end

@@ -258,18 +258,27 @@ defaults:
   # You can run this command as often as your account on tr8n.net permits you.
   #############################################################################
   synchronization:
-    server:                   "http://tr8n.net"  # alternative, regional locations will be available in the future
-    key:                      "iKjOrZjor68a4UeCD3Cq2r9t9ibBC4HnYoMNMrN7" # replace this with your key
-    secret:                   "iKjOrZjor68a4UeCD3Cq2r9t9ibBC4HnYoMNMrN7" # replace this with your secret   
-    batch_size:               50     # how many kesy to send to the server at a time
-    create_rules:             true   # force rules creation, or skip translations for rules that don't exist
-    all_languages:            false  # use only enabled languages, or all languages
+    server:                   "http://tr8n.net"  # visit this url to register your application
+    key:                      "YOUR APP KEY"     # replace with your application key
+    secret:                   "YOUR APP SECRET"  # replace with your application secret   
+    batch_size:               50                 # how many keys to send to the server at a time - if your site supports many language, decrease the batch size
+    all_languages:            false              # use only enabled languages, or all languages
+    enable_push:              false              # allows translations to be pushed from the main server using the sync API        
+    push_servers:             ["tr8n.net"]       # only allows those servers to push translations
 
 #############################################################################
 # Environment Settings
 # You can overload any feature defined in the defaults for any environment
 #############################################################################
 development:
+  # synchronization:
+  #   server:                   "http://localhost:3000"  # alternative, regional locations will be available in the future
+  #   key:                      "14ngS3YadRF54PArKR8mre3MJfPzJA0jxW2j2RJu" # replace this with your key
+  #   secret:                   "ycFdAAQOEmxtpb8gE9M4gqQrgfU4SR1LetkXnLDZ" # replace this with your secret   
+  #   batch_size:               50     # how many kesy to send to the server at a time
+  #   all_languages:            false  # use only enabled languages, or all languages
+  #   enable_push:              true               # allows translations to be pushed from the main server using the sync API        
+  #   push_servers:             ["localhost", "tr8n.net"]       # only allows those servers to push translations
   
 test:
       

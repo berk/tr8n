@@ -34,7 +34,9 @@ class CreateTr8nSyncTables < ActiveRecord::Migration
     end
     
     add_column :tr8n_translation_keys, :synced_at, :timestamp
+    add_index :tr8n_translation_keys, :synced_at
     add_column :tr8n_translations, :synced_at, :timestamp
+    add_index :tr8n_translations, :synced_at
   end
 
   def down

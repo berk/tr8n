@@ -123,7 +123,7 @@ class Tr8n::LanguageRule < ActiveRecord::Base
   ###############################################################
   ## Synchronization Methods
   ###############################################################
-  def to_sync_hash(token)
+  def to_sync_hash(token, opts = {})
     {
       "token" => token,  
       "type" => self.class.keyword,

@@ -100,7 +100,7 @@ module Tr8n
          Tr8n::Translator, Tr8n::TranslatorLog, Tr8n::TranslatorMetric, 
          Tr8n::TranslatorFollowing, Tr8n::TranslatorReport, 
          Tr8n::LanguageForumTopic, Tr8n::LanguageForumMessage, Tr8n::LanguageForumAbuseReport,
-         Tr8n::Glossary, Tr8n::IpLocation
+         Tr8n::Glossary, Tr8n::IpLocation, Tr8n::SyncLog
       ]    
     end
 
@@ -763,12 +763,17 @@ module Tr8n
       synchronization[:secret]
     end
 
-    def self.synchronization_create_rules?
-      synchronization[:create_rules]
-    end
-
     def self.synchronization_all_languages?
       synchronization[:all_languages]
     end
+
+    def self.synchronization_push_enabled?
+      synchronization[:enable_push]
+    end
+    
+    def self.synchronization_push_servers
+      synchronization[:push_servers]
+    end
+    
   end
 end
