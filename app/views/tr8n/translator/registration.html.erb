@@ -1,0 +1,16 @@
+<div class="module page_title lengthy">
+  <div class="inner">
+    <div class="hd">
+      <h1><%=Tr8n::Config.site_title %> Translations Terms of Use <span class="small quiet no_bold">updated January 12, 2012</span></h1>
+    </div>
+  </div>
+</div>
+
+<div style="padding:10px;border:1px solid #ccc;overflow:auto;height:500px;margin:10px;font-family:Arial;font-size:12px;">
+	<%=render :partial => Tr8n::Config.registration_disclaimer_path %>
+</div>
+
+<div style="text-align:center; padding:15px;">
+  <%= link_to(trl('Agree', 'Client application action label'), {:action => :registration, :agree => :yes}, :class=>'button super blue xlarge') %>
+  <%=tr("or")%> <%=link_to(tr("Cancel"), Tr8n::Config.default_url)%>
+</div>
