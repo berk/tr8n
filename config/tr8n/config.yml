@@ -34,6 +34,7 @@ defaults: &defaults
   enable_country_tracking:    true      # tracks and reports translator countries
   enable_relationships:       false 
 
+
   #############################################################################
   # Google translation suggestions is now a paid feature by Google.
   # 
@@ -67,7 +68,9 @@ defaults: &defaults
   # translation. If the flag is set to false, then a user must be promoted to
   # be a translator in order to submit or vote on translations.
   #############################################################################
-  open_registration_mode:     true
+  open_registration_mode:           true
+  enable_registration_disclaimer:   true
+  registration_disclaimer_path:     "/tr8n/common/terms_of_use"
 
   #############################################################################
   # Tr8n best run with caching enabled 

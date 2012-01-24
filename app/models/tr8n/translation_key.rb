@@ -205,7 +205,9 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     not locked?(language)
   end
 
-  def followed?(translator = Tr8n::Config.current_translator)
+  def followed?(translator = nil)
+    translator ||= (Tr8n::Config.current_user_is_translator? ? Tr8n::Config.current_translator : nil)
+    return false unless translator
     Tr8n::TranslatorFollowing.following_for(translator, self)
   end
 
@@ -458,17 +460,23 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     super
   end
   
-  def can_be_translated?(translator = Tr8n::Config.current_translator)
+  def can_be_translated?(translator = nil)
     return false if locked?
-    translator.level >= level
+    translator ||= (Tr8n::Config.current_user_is_translator? ? Tr8n::Config.current_translator : nil)
+    translator_level = translator ? translator.level : 0
+    translator_level >= level
   end
 
-  def can_be_locked?(translator = Tr8n::Config.current_translator)
-      translator.admin? or translator.manager?
+  def can_be_locked?(translator = nil)
+    translator ||= (Tr8n::Config.current_user_is_translator? ? Tr8n::Config.current_translator : nil)
+    return false unless translator
+    translator.admin? or translator.manager?
   end
 
-  def can_be_unlocked?(translator = Tr8n::Config.current_translator)
-     translator.admin? or translator.manager?
+  def can_be_unlocked?(translator = nil)
+    translator ||= (Tr8n::Config.current_user_is_translator? ? Tr8n::Config.current_translator : nil)
+    return false unless translator
+    translator.admin? or translator.manager?
   end
   
   def decorate_translation(language, translated_label, translated = true, options = {})
@@ -663,7 +671,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     conditions = ["(tr8n_translation_keys.type is null or tr8n_translation_keys.type = 'Tr8n::TranslationKey' or tr8n_translation_keys.type = 'TranslationKey')"]
     conditions[0] << " and tr8n_translation_keys.locale <> ? and (level is null or level <= ?) "
     conditions << Tr8n::Config.current_language.locale
-    conditions << Tr8n::Config.current_translator.level
+    conditions << (Tr8n::Config.current_user_is_translator? ? Tr8n::Config.current_translator.level : 0)
     
     if Tr8n::Config.enable_caching?
       conditions[0] << " and verified_at is not null"
@@ -697,11 +705,11 @@ class Tr8n::TranslationKey < ActiveRecord::Base
       conditions[0] << " and tr8n_translation_keys.id not in (select tr8n_translations.translation_key_id from tr8n_translations where tr8n_translations.language_id = ?)"
       conditions << Tr8n::Config.current_language.id
       
-    elsif params[:phrase_type] == "followed"
+    elsif params[:phrase_type] == "followed" and Tr8n::Config.current_user_is_translator?
       conditions[0] << " and tr8n_translation_keys.id in (select tr8n_translator_following.object_id from tr8n_translator_following where tr8n_translator_following.translator_id = ? and tr8n_translator_following.object_type = ?)"
-      
       conditions << Tr8n::Config.current_translator.id
       conditions << 'Tr8n::TranslationKey'
+      
     end
     
     if params[:phrase_lock] == "locked"

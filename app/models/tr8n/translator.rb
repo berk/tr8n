@@ -48,7 +48,7 @@ class Tr8n::Translator < ActiveRecord::Base
   end
   
   def self.find_or_create(user)
-    trn = where(:user_id => user.id).first
+    trn = find_by_user_id(user.id)
     trn = create(:user => user) unless trn
     trn
   end
@@ -57,7 +57,7 @@ class Tr8n::Translator < ActiveRecord::Base
     return unless user
     
     translator = Tr8n::Translator.find_or_create(user)
-    Tr8n::LanguageUser.where(:user_id => user.id).each do |lu|
+    Tr8n::LanguageUser.find_all_by_user_id(user.id).each do |lu|
       lu.update_attributes(:translator => translator)
     end
     translator
@@ -205,7 +205,7 @@ class Tr8n::Translator < ActiveRecord::Base
   end
   
   def last_logs
-    Tr8n::TranslatorLog.where("translator_id = ?", self.id).order("created_at desc").limit(20)
+    Tr8n::TranslatorLog.find(:all, :conditions => ["translator_id = ?", self.id], :order => "created_at desc", :limit => 20)
   end
   
   def name
@@ -290,7 +290,7 @@ class Tr8n::Translator < ActiveRecord::Base
   end
 
   def unfollow(object)
-    tf = Tr8n::TranslatorFollowing.where("object_type = ? and object_id = ?", object.class.name, object.id).first
+    tf = Tr8n::TranslatorFollowing.find(:first, :conditions => ["object_type = ? and object_id = ?", object.class.name, object.id])
     tf.destroy if tf
   end
 

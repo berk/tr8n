@@ -312,8 +312,7 @@ class Tr8n::Translation < ActiveRecord::Base
     else
       conditions[0] << " ) "
     end
-    conditions << Tr8n::Config.current_translator.level
-    
+    conditions << (Tr8n::Config.current_user_is_translator? ? Tr8n::Config.current_translator.level : 0)
     
     unless params[:search].blank?
       conditions[0] << " and " unless conditions[0].blank?
@@ -334,10 +333,15 @@ class Tr8n::Translation < ActiveRecord::Base
       conditions[0] << " rank < 0 "
     end
     
-    if params[:submitted_by] == "me"
-      conditions[0] << " and " unless conditions[0].blank?
-      conditions[0] << " translator_id = ? "
-      conditions << Tr8n::Config.current_translator.id
+    if params[:submitted_by] == "me" 
+      if Tr8n::Config.current_user_is_translator?
+        conditions[0] << " and " unless conditions[0].blank?
+        conditions[0] << " translator_id = ? "
+        conditions << Tr8n::Config.current_translator.id
+      else
+        conditions[0] << " and " unless conditions[0].blank?
+        conditions[0] << " translator_id = 0 "
+      end
     end
     
     if params[:submitted_on] == "today"
