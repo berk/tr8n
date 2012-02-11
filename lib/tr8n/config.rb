@@ -299,6 +299,10 @@ class Tr8n::Config
     config[:enable_relationships]
   end
   
+  def self.enable_translator_tabs?
+    config[:enable_translator_tabs]
+  end
+  
   #########################################################
   # Config Sections
   def self.caching

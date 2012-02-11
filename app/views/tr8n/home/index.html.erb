@@ -1,34 +1,38 @@
 <% Tr8n::Config.with_options(:default_locale => 'en-US', :admin => true) do %>
 
-	<div style="text-align:center; padding:20px;">
-	   <%=image_tag("/tr8n/images/tr8n_logo2.png", :style => "height:120px;")%>
-	</div>
-	
-	<h2 class="underscore content_hd">
-	  <%=tr('Welcome to Tr8n Translation Engine') %>
-	</h2>
-	
-	<div class="content_bd">
-	  <h3><%=tr("If you are trying out Tr8n functionality, here are some helpful links to get started:")%></h3>
-	  <ul style="list-style-type:decimal; margin-left:30px; font-size:14px;">
-	    <li><%= link_to(tr("Register for a test translator account (this account is local and only used for testing this site)"), "/tr8n/login/register")%></li>
-	    <li><%= link_to_function(tr("Change your language and enable inline translations by using the language selector in the top right corner"), "tr8nLanguageSelector.toggle();")%></li>
-			<li><%= link_to(tr("Take a look at your dashboard and see your translation progress"), "/tr8n/dashboard")%></li>
-	    <li><%= link_to(tr("View and translate phrases in the bulk translation mode"), "/tr8n/phrases")%></li>
-	    <li><%= link_to(tr("View and search through translations"), "/tr8n/translations")%></li>
-	    <li><%= link_to(tr("See translator awards"), "/tr8n/awards")%></li>
-	    <li><%= link_to(tr("Participate in translator discussions"), "/tr8n/forum")%></li>
-	    <li><%= link_to(tr("View help"), "/tr8n/help")%></li>
-	  </ul>
-	
-	  <br><br>
-		<h3><%=tr("If you are a Ruby on Rails developer and would like to integrate Tr8n into your own application, here are some documents you should read to get started:")%></h3>
-	  <ul style="list-style-type:circle; margin-left:30px; font-size:14px;">		
-	    <li><%=link_to("Tr8n Translation Engine Integration Guide", "http://wiki.tr8n.org/index.php?title=Tr8n_Translation_Engine_Integration_Guide")%></li>
-	    <li><%=link_to("Tr8n Label Internationalization", "http://wiki.tr8n.org/index.php?title=Tr8n_Label_Internationalization")%></li>
-	    <li><%=link_to("Tr8n Rules Engine Configuration Guide", "http://wiki.tr8n.org/index.php?title=Tr8n_Rules_Engine_Configuration_Guide")%></li>
-		</ul>
-		
+<style>
+	.banner { background: #f6f8ee; border: 1px solid #c2c2c2; color: #666; height: 325px; margin: 20px auto; overflow: hidden; position: relative; width: 938px; -webkit-border-radius: 11px; -moz-border-radius: 11px; border-radius: 11px; }
+	.link {
+		padding-bottom:8px;
+	}
+</style>
+
+	<div class="banner">
+		<table>
+			<tr>
+				<td style="vertical-align:middle;text-align:center;padding:25px;">
+			   <%=image_tag("/tr8n/images/tr8n_logo2.png", :style => "height:180px;")%>
+				</td>	
+				<td style="vertical-align:top;padding:15px;">
+					<div class="content_bd">
+						<h2 class="underscore content_hd">
+						  <%=tr('Welcome to Tr8n Translation Engine') %>
+						</h2>
+					  <h3 style="padding-left:15px;color:#666;font-size:14px;"><%=tr("Follow these links to get started:")%></h3>
+						<br>
+					  <ul style="list-style-type:decimal; margin-left:30px; font-size:14px;">
+					    <li class="link"><%= link_to_function(tr("Change your language and enable inline translations by using the language selector in the top right corner"), "tr8nLanguageSelector.toggle();")%></li>
+							<li class="link"><%= link_to(tr("Take a look at your dashboard and see your translation progress"), "/tr8n/dashboard")%></li>
+					    <li class="link"><%= link_to(tr("View and translate phrases in the bulk translation mode"), "/tr8n/phrases")%></li>
+					    <li class="link"><%= link_to(tr("View and search through translations"), "/tr8n/translations")%></li>
+					    <li class="link"><%= link_to(tr("See translator awards"), "/tr8n/awards")%></li>
+					    <li class="link"><%= link_to(tr("Participate in translator discussions"), "/tr8n/forum")%></li>
+					    <li class="link"><%= link_to(tr("View help"), "/tr8n/help")%></li>
+					  </ul>
+					</div>
+				</td>	
+			</tr>	
+		</table>	
 	</div>
 	
 <% end %>	
