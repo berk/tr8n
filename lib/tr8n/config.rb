@@ -759,9 +759,13 @@ class Tr8n::Config
   end
   
   #########################################################
+  def self.system_user
+    # overwrite this method in the initializer class
+    @system_user = User.first || User.create
+  end
+    
   def self.system_translator
-    # will be used for relationship translations  - geni user does not work!  User.geni_user
-    Tr8n::Translator.find_by_level(system_level) || Tr8n::Translator.create(:user => User.first, :level => system_level)
+    Tr8n::Translator.find_by_level(system_level) || Tr8n::Translator.create(:user => system_user, :level => system_level)
   end
   
   def self.init_relationship_keys
