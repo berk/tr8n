@@ -113,6 +113,10 @@ module Tr8n::CommonMethods
       raise Tr8n::Exception.new("The second parameter of the tr function must be a description")
     end
 
+    # if the label has already been translated, just return it back.
+    # if this line is removed, an exception will be raised from within the Language object
+    return label if label.tr8n_translated?
+
     begin
       url     = request.url
       host    = request.env['HTTP_HOST']
