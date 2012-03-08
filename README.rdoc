@@ -44,7 +44,7 @@ and will_filter created by me for filtering results in the admin interface.
 
 To install the required plugins, run the following commands:
 
-  $ script/plugin install git://github.com/mislav/will_paginate.git
+  $ script/plugin install git://github.com/mislav/will_paginate.git -r 2-3-stable
   
   $ script/plugin install git://github.com/berk/will_filter.git -r rails-2.3.x
   $ rake will_filter:sync  
