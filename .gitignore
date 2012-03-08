@@ -1,3 +1,7 @@
+.bundle/
+pkg/
+*.sqlite3
+*.log
 db/schema.rb*
 tmp/*
 log/*
@@ -9,5 +13,8 @@ log/*
 .dotest*
 Thumbs.db
 .tmp*
-db/development.sqlite3
-db/test.sqlite3
+tmp/
+local/tr8n_server/db/*.sqlite3
+local/tr8n_server/log/*.log
+local/tr8n_server/tmp/
+local/tr8n_server/.sass-cache/
