@@ -13,6 +13,6 @@ class CreateTr8nTranslationKeyComments < ActiveRecord::Migration
   end
 
   def self.down
-    remove_table :tr8n_translation_key_comments
+    drop_table :tr8n_translation_key_comments
   end
 end
