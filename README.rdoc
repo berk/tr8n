@@ -46,14 +46,14 @@ To install the required plugins, run the following commands:
 
   $ script/plugin install git://github.com/mislav/will_paginate.git
   
-  $ script/plugin install git://github.com/berk/will_filter.git
+  $ script/plugin install git://github.com/berk/will_filter.git -r rails-2.3.x
   $ rake will_filter:sync  
   $ rake db:migrate 
   $ cd public; ln -s ../vendor/plugins/will_filter/public/wf wf; cd ..;
 
 To install, configure and initialize Tr8n engine, run the following commands: 
 
-  $ script/plugin install git://github.com/berk/tr8n.git
+  $ script/plugin install git://github.com/berk/tr8n.git -r rails-2.3.x
   $ rake tr8n:sync         
   $ rake db:migrate 
   $ rake tr8n:init
