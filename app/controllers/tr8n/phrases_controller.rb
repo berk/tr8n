@@ -44,7 +44,7 @@ class Tr8n::PhrasesController < Tr8n::BaseController
       end
     end
     
-    @translation_keys = Tr8n::TranslationKey.paginate(:per_page => per_page, :page => page, :conditions => conditions, :order => "label asc")    
+    @translation_keys = Tr8n::TranslationKey.paginate(:per_page => per_page, :page => page, :conditions => conditions, :order => "created_at desc")    
   end
   
   def view
