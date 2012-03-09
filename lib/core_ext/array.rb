@@ -38,6 +38,19 @@ class Array
     end
   end
 
+  # translate array values 
+  def trl(description = "", options = {}, language = Tr8n::Config.current_language)
+    return [] if empty?
+
+    collect do |opt|
+      if opt.is_a?(String)
+        opt.trl(description, {}, options, language)
+      else  
+        opt
+      end
+    end
+  end
+
   # creates a sentence with tr "and" joiner
   def tr_sentence(options = {}, language = Tr8n::Config.current_language)
     return "" if empty?
