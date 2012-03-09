@@ -23,7 +23,6 @@
 
 class Tr8n::Api::V1::TranslatorController < Tr8n::Api::V1::BaseController
 
-  # returns a list of all languages
   def index
     return sanitize_api_response({:error => "Api is disabled"}) unless Tr8n::Config.enable_api?
     return sanitize_api_response({:guest => true}) if tr8n_current_user_is_guest?
