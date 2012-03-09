@@ -307,13 +307,13 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   # returns back grouped by context
   def find_all_valid_translations(translations)
     if translations.empty?
-      return {:key => self.key, :label => self.label, :original => true}
+      return {:id => self.id, :key => self.key, :label => self.label, :original => true}
     end
     
     # if the first translation does not depend on any of the context rules
     # use it... we don't care about the rest of the rules.
     if translations.first.rules_hash.blank?
-      return {:key => self.key, :label => translations.first.label}
+      return {:id => self.id, :key => self.key, :label => translations.first.label}
     end
     
     # build a context hash for every kind of context rules combinations
@@ -333,7 +333,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
 
     # always add the default one at the end, so if none of the rules matched, use the english one
     valid_translations << {:label => self.label} unless context_hash_matches[""]
-    {:key => self.key, :labels => valid_translations}
+    {:id => self.id, :key => self.key, :labels => valid_translations}
   end
 
   def find_first_valid_translation(language, token_values)
