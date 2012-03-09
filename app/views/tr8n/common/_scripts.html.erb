@@ -13,11 +13,13 @@
 	<% end %>
 
   <% if Tr8n::Config.enable_client_sdk? %>
-    <%=javascript_include_tag("/tr8n/javascripts/tr8n_client_sdk.js") -%>
-		<% tr8n_source = "#{@controller.controller_name}/#{@controller.action_name}" %>
-	  <script type="text/javascript">
-	     // initializeTr8nClientSDK("<%=tr8n_source%>");
-	  </script>
+    <% source = "#{params[:controller]}/#{params[:action]}/JS" %>
+    <%= tr8n_translations_js_tag(:sources => [source], :id => :tr8n_translations) %>
+    <%= tr8n_client_sdk_scripts_tag(
+                :default_source                   => source,
+                :translations_element_id          => "tr8n_translations",
+                :scheduler_interval               =>  5000
+    ) %>
   <% end %>
 
   <% if Tr8n::Config.enable_google_suggestions? and Tr8n::Config.current_user_is_translator? %>  

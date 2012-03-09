@@ -187,6 +187,9 @@ defaults: &defaults
     enabled:                  true
     response_encoding:        json     # options: xml, json
     allow_key_registration:   true
+    skip_before_filters:      []       # filters from application controller
+    before_filters:           []       # filters from application controller
+    after_filters:            []       # filters from application controller
   
   #############################################################################
   # Translator Roles         - manager level is set at 1000 and anything above

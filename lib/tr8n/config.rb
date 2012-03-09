@@ -305,6 +305,7 @@ class Tr8n::Config
   
   #########################################################
   # Config Sections
+  #########################################################
   def self.caching
     config[:caching]
   end
@@ -331,6 +332,7 @@ class Tr8n::Config
 
   #########################################################
   # Caching
+  #########################################################
   def self.enable_caching?
     caching[:enabled]
   end
@@ -350,6 +352,7 @@ class Tr8n::Config
 
   #########################################################
   # Logger
+  #########################################################
   def self.enable_logger?
     logger[:enabled]
   end
@@ -361,10 +364,10 @@ class Tr8n::Config
   def self.enable_paranoia_mode?
     logger[:enable_paranoia_mode]
   end
-  #########################################################
   
   #########################################################
   # Site Info
+  #########################################################
   def self.site_title
     site_info[:title] 
   end
@@ -542,8 +545,8 @@ class Tr8n::Config
   end
   
   #########################################################
-  # rules engine
-  
+  # RULES ENGINE
+  #########################################################
   def self.language_rule_classes
     @language_rule_classes ||= rules_engine[:language_rule_classes].collect{|lrc| lrc.constantize}
   end
@@ -665,9 +668,8 @@ class Tr8n::Config
   end
 
   #########################################################
-  # localization
+  # LOCALIZATION
   #########################################################
-  
   def self.strftime_symbol_to_token(symbol)
     {
       "%a" => "{short_week_day_name}",
@@ -713,6 +715,8 @@ class Tr8n::Config
   end
 
   #########################################################
+  ### TRANSLATOR LEVELS
+  #########################################################
   def self.translator_levels
     config[:translator_levels] ||= {
       '0'     =>  'regular',
@@ -740,6 +744,8 @@ class Tr8n::Config
   end
   
   #########################################################
+  ### API
+  #########################################################
   def self.enable_api?
     api[:enabled]
   end
@@ -748,6 +754,23 @@ class Tr8n::Config
     config[:enable_client_sdk]
   end
 
+  def self.api_skip_before_filters
+    return [] unless api[:skip_before_filters]
+    @api_skip_before_filters ||= api[:skip_before_filters].collect{|filter| filter.to_sym}
+  end
+
+  def self.api_before_filters
+    return [] unless api[:before_filters]
+    @api_before_filters ||= api[:before_filters].collect{|filter| filter.to_sym}
+  end
+
+  def self.api_after_filters
+    return [] unless api[:after_filters]
+    @api_after_filters ||= api[:after_filters].collect{|filter| filter.to_sym}
+  end
+
+  #########################################################
+  ### OPTIONS
   #########################################################
   def self.with_options(opts = {})
     Thread.current[:tr8n_block_options] = opts
@@ -758,6 +781,8 @@ class Tr8n::Config
     ret
   end
   
+  #########################################################
+  ### RELATIONSHIP AND CONFIGURATION KEYS
   #########################################################
   def self.system_user
     # overwrite this method in the initializer class
