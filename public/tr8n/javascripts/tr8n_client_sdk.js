@@ -82,11 +82,20 @@ Tr8n.Proxy.prototype = {
     this.logger.error(msg);
   },
 	translate: function(label, description, tokens, options) {
+    if (!label) return "";
+    description = description || "";
+    tokens = tokens || {};
+    options = options || {};
     return this.language.translate(label, description, tokens, options);
 	},
 	tr: function(label, description, tokens, options) {
 		return this.translate(label, description, tokens, options);
 	},
+  trl: function(label, description, tokens, options) {
+    options = options || {};
+    options['skip_decorations'] = true;
+    return this.translate(label, description, tokens, options);
+  },
   getTranslations: function() {
     if (!this.translations) return {};
 	  return this.translations;

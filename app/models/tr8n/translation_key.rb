@@ -59,11 +59,12 @@ class Tr8n::TranslationKey < ActiveRecord::Base
                           :locale => (options[:locale] || Tr8n::Config.block_options[:default_locale] || Tr8n::Config.default_locale),
                           :level => (options[:level] || Tr8n::Config.block_options[:level] || 0),
                           :admin => Tr8n::Config.block_options[:admin])
-        unless options[:source].blank?
-          # at the time of creation - mark the first source of the key
-          Tr8n::TranslationKeySource.find_or_create(new_tkey, Tr8n::TranslationSource.find_or_create(options[:source], options[:url]))
-        end  
         new_tkey
+      end  
+
+      # mark keys with sources
+      unless options[:source].blank?
+        Tr8n::TranslationKeySource.find_or_create(existing_key, Tr8n::TranslationSource.find_or_create(options[:source], options[:url]))
       end  
 
       # for backwards compatibility only
