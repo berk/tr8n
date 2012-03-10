@@ -1,5 +1,5 @@
 /****************************************************************************
-  Copyright (c) 2010-2011 Michael Berkovich
+  Copyright (c) 2010-2012 Michael Berkovich
 
   Permission is hereby granted, free of charge, to any person obtaining
   a copy of this software and associated documentation files (the
@@ -54,7 +54,8 @@ Tr8n.Proxy = function(options) {
 	this.inline_translations_enabled = this.options['enable_inline_translations'];
 	this.logger = new Tr8n.Proxy.Logger({
     'proxy': self,
-		'element_id': options['debugger_element_id']
+		'element_id': options['logger_element_id'],
+    'enabled': options['logger_enabled']
 	});
         
   this.language = new Tr8n.Proxy.Language({
@@ -1074,46 +1075,6 @@ Tr8n.Proxy.Utils = {
     request.setRequestHeader('Accept', 'text/javascript, text/html, application/xml, text/xml, */*');
     request.send(options.parameters);
   }	
-}
-
-/****************************************************************************
-**** Tr8n Proxy Initialization
-****************************************************************************/
-var tr8nProxy;
-
-//
-// the following should be done by the tr8n_client_sdk_scripts_tag
-//
-
-//function initializeTr8nClientSDK(source, debugger) {
-//  tr8nProxy = tr8nProxy || new Tr8n.Proxy({
-//    "default_source": source,
-//    "debugger_element_id": debugger,
-//    "default_decorations": {"bold": "<strong>{$0}</strong>", "italic": "<i>{$0}</i>", "link": "<a href='{$href}'>{$0}</a>"},
-//    "rules": {"number":{"token_suffixes":["count", "num"]}, 
-//              "gender":{"token_suffixes":["user", "profile", "actor", "target"]},
-//              "list":{"token_suffixes":["list"]}, "date":{"token_suffixes":["date"]}
-//    }
-//  });
-//}
-
-// global javascript method
-function reloadTranslations() {
-  tr8nProxy.initTranslations(true);
-}
-
-// global javascript method - can be used after initialization
-function tr(label, description, tokens, options) {
-//  tr8nProxy.logger.log("Translating: " + label);
-  return tr8nProxy.translate(label, description || '', tokens || {}, options || {});
-}
-
-// global javascript method - can be used after initialization
-function trl(label, description, tokens, options) {
-//  tr8nProxy.logger.log("Translating: " + label);
-  options = options || {};
-  options['skip_decorations'] = true;
-  return tr8nProxy.translate(label, description || '', tokens || {}, options);
 }
 
 /****************************************************************************
