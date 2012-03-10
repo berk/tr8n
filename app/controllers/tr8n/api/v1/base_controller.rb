@@ -22,6 +22,7 @@
 #++
 
 class Tr8n::Api::V1::BaseController < ApplicationController
+  unloadable
 
   if Tr8n::Config.api_skip_before_filters.any?
     skip_before_filter *Tr8n::Config.api_skip_before_filters

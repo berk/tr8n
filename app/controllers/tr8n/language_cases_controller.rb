@@ -22,6 +22,7 @@
 #++
 
 class Tr8n::LanguageCasesController < Tr8n::BaseController
+  unloadable
 
   before_filter :validate_current_translator
   before_filter :validate_language_management, :only => [:index]

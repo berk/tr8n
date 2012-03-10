@@ -22,6 +22,7 @@
 #++
 
 class Tr8n::BaseController < ApplicationController
+  unloadable
 
   layout Tr8n::Config.site_info[:tr8n_layout]
 

@@ -22,6 +22,7 @@
 #++
 
 class Tr8n::Api::V1::TranslationController < Tr8n::Api::V1::BaseController
+  unloadable
 
   def submit
     return sanitize_api_response({:error => "Api is disabled"}) unless Tr8n::Config.enable_api?

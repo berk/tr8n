@@ -22,6 +22,7 @@
 #++
 
 class Tr8n::Admin::MetricsController < Tr8n::Admin::BaseController
+  unloadable
 
   def index
     @languages = Tr8n::Language.enabled_languages

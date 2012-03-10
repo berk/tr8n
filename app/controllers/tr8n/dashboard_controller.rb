@@ -22,6 +22,7 @@
 #++
 
 class Tr8n::DashboardController < Tr8n::BaseController
+  unloadable
 
   set_tr8n_feature  :dashboard
   before_filter :validate_current_translator

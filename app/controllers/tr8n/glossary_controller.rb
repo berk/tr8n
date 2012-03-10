@@ -22,6 +22,7 @@
 #++
 
 class Tr8n::GlossaryController < Tr8n::BaseController
+  unloadable
 
   set_tr8n_feature  :glossary
   before_filter :validate_current_translator

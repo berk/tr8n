@@ -22,6 +22,7 @@
 #++
 
 class Tr8n::RelationshipsController < Tr8n::BaseController
+  unloadable
 
   set_tr8n_feature  :relationships
   

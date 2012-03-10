@@ -22,6 +22,7 @@
 #++
 
 class Tr8n::HelpController < Tr8n::BaseController
+  unloadable
 
   set_tr8n_feature  :help
   before_filter :validate_current_translator, :except => [:lb_shortcuts, :lb_stats, :credits, :license]

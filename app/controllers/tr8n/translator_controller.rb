@@ -22,6 +22,7 @@
 #++
 
 class Tr8n::TranslatorController < Tr8n::BaseController
+  unloadable
   
   def registration
     if params[:agree] == "yes"

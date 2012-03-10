@@ -22,6 +22,7 @@
 #++
 
 class Tr8n::Api::V1::LanguageController < Tr8n::Api::V1::BaseController
+  unloadable
 
   # for ssl access to the translator - using ssl_requirement plugin  
   ssl_allowed :translate  if respond_to?(:ssl_allowed)

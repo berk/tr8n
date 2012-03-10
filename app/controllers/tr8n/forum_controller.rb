@@ -22,6 +22,7 @@
 #++
 
 class Tr8n::ForumController < Tr8n::BaseController
+  unloadable
 
   set_tr8n_feature  :forum
   before_filter :validate_current_translator

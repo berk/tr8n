@@ -22,6 +22,7 @@
 #++
 
 class Tr8n::Admin::DomainController < Tr8n::Admin::BaseController
+  unloadable
 
   def index
     @domains = Tr8n::TranslationDomain.filter(:params => params, :filter => Tr8n::TranslationDomainFilter)
