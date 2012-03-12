@@ -49,13 +49,12 @@ Tr8n.Proxy = function(options) {
   this.options = options;
 	this.options['url'] = this.options['url'] || '/tr8n/api/v1/language/translate'; 
   this.options['scheduler_interval'] = this.options['scheduler_interval'] || 20000; 
-	this.logger_enabled = true;
+	this.logger_enabled = false;
 	this.missing_translations_locked = false;
 	this.inline_translations_enabled = this.options['enable_inline_translations'];
 	this.logger = new Tr8n.Proxy.Logger({
     'proxy': self,
-		'element_id': options['logger_element_id'],
-    'enabled': options['logger_enabled']
+    'element_id': options['logger_element_id'] || 'tr8n_debugger'
 	});
         
   this.language = new Tr8n.Proxy.Language({
@@ -69,6 +68,20 @@ Tr8n.Proxy = function(options) {
 Tr8n.Proxy.prototype = {
   log: function(msg) {
     this.logger.debug(msg);
+  },
+  logSettings: function() {
+    this.logger.clear();
+    this.logger.logObject(this.options);
+  },
+  logTranslations: function() {
+    this.logger.clear();
+    this.translations = this.translations || {};
+    this.logger.logObject(this.translations);
+  },
+  logMissingTranslations: function() {
+    this.logger.clear();
+    this.missing_translation_keys = this.missing_translation_keys || {};
+    this.logger.logObject(this.missing_translation_keys);
   },
 	disableLogger: function() {
 		this.logger_enabled = false;
@@ -98,7 +111,7 @@ Tr8n.Proxy.prototype = {
     return this.translate(label, description, tokens, options);
   },
   getTranslations: function() {
-    if (!this.translations) return {};
+    this.translations = this.translations || {};
 	  return this.translations;
   },
 	getDecorationFor: function(decoration_name) {
@@ -127,8 +140,7 @@ Tr8n.Proxy.prototype = {
 		}
     return null;    
   },
-	
-	registerTranslationKeys: function(translations) {
+  registerTranslationKeys: function(translations) {
     this.log("Found " + translations.length + " registered phrases");
     for (i = 0; i < translations.length; i++) {
 			 var translation_key = translations[i];
@@ -948,25 +960,178 @@ Tr8n.Proxy.DecorationToken.prototype.substitute = function(label, token_values) 
 
 Tr8n.Proxy.Logger = function(options) {
   this.options = options;
+  this.object_keys = [];
 }
 
 Tr8n.Proxy.Logger.prototype = {
+  clear: function() {
+    if (!this.options['proxy'].logger_enabled) return;
+    if (!this.options['element_id']) return;
+    if (!Tr8n.Proxy.Utils.element(this.options['element_id'])) return;
+    Tr8n.element(this.options['element_id']).innerHTML = ""; 
+  },
+  append: function(msg) {
+    if (!this.options['proxy'].logger_enabled) return;
+    if (!this.options['element_id']) return;
+    if (!Tr8n.Proxy.Utils.element(this.options['element_id'])) return;
+
+    var str = msg + "<br>" + Tr8n.Proxy.Utils.element(this.options['element_id']).innerHTML;
+    Tr8n.element(this.options['element_id']).innerHTML = str; 
+  },
   log: function(msg) {
 		if (!this.options['proxy'].logger_enabled) return;
-		if (!this.options['element_id']) return;
-		
-		var str = Tr8n.Proxy.Utils.element(this.options['element_id']).innerHTML;
 		var now = new Date();
-		str = "<span style='color:#ccc;'>" + (now.toLocaleDateString() + " " + now.toLocaleTimeString()) + "</span>: " + msg + "<br>" + str;  
-    Tr8n.Proxy.Utils.element(this.options['element_id']).innerHTML = str;	
+		var str = "<span style='color:#ccc;'>" + (now.toLocaleDateString() + " " + now.toLocaleTimeString()) + "</span>: " + msg;  
+    this.append(str);	
 	},
   debug: function(msg) {
     this.log("<span style='color:grey'>" + msg + "</span>");
   },
   error: function(msg) {
 		this.log("<span style='color:red'>" + msg + "</span>");
+  },
+  S4: function() {
+    return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+  },
+  guid: function() {
+    return (this.S4()+this.S4()+"-"+this.S4()+"-"+this.S4()+"-"+this.S4()+"-"+this.S4()+this.S4()+this.S4());
+  },
+  escapeHTML: function(str) { 
+    return( str.replace(/&/g,'&amp;').replace(/>/g,'&gt;').replace(/</g,'&lt;').replace(/"/g,'&quot;')); 
+  },
+  showObject: function (obj_key, flag) {
+    if (flag) {
+      Tr8n.Proxy.Utils.hide("no_object_" + obj_key);
+      Tr8n.Proxy.Utils.show("object_" + obj_key);
+      Tr8n.element("expander_" + obj_key).innerHTML = "<img src='/tr8n/images/minus_node.png'>";
+    } else {
+      Tr8n.Proxy.Utils.hide("object_" + obj_key);
+      Tr8n.Proxy.Utils.show("no_object_" + obj_key);
+      Tr8n.element("expander_" + obj_key).innerHTML = "<img src='/tr8n/images/plus_node.png'>";
+    } 
+  },
+  toggleNode: function(obj_key) {
+    this.showObject(obj_key, (Tr8n.element("object_" + obj_key).style.display == 'none'));
+  },
+  expandAllNodes: function() {
+    for (var i=0; i<this.object_keys.length; i++) {
+      this.showObject(this.object_keys[i], true);
+    }
+  },
+  collapseAllNodes: function() {
+    for (var i=0; i<this.object_keys.length; i++) {
+      this.showObject(this.object_keys[i], false);
+    }
+  },
+  logObject: function(data) {
+    this.object_keys = [];
+    html = []
+    html.push("<div style='float:right;padding-right:10px;'>");
+    html.push("<span style='padding:2px;' onClick=\"tr8nProxy.logger.expandAllNodes()\"><img src='/tr8n/images/plus_node.png'></span>");
+    html.push("<span style='padding:2px;' onClick=\"tr8nProxy.logger.collapseAllNodes()\"><img src='/tr8n/images/minus_node.png'></span>");
+    html.push("</div>");
+
+    var results = data;
+    if (typeof results == 'string') {
+      try {
+        results = eval("[" + results + "]")[0];
+      } 
+      catch (err) {
+        this.push(results);
+        return;
+      }
+    }
+    if (typeof results == 'object') {
+      html.push(this.formatObject(results, 1));
+    } else {
+      html.push(results);
+    }
+    this.append(html.join(""));
+  },
+  formatObject: function(obj, level) {
+    if (obj == null) return "{<br>}";
+
+    var html = [];
+    var obj_key = this.guid();  
+    html.push("<span class='tr8n_logger_expander' id='expander_" + obj_key + "' onClick=\"tr8nProxy.logger.toggleNode('" + obj_key + "')\"><img src='/tr8n/images/minus_node.png'></span> <span style='display:none' id='no_object_" + obj_key + "'>{...}</span> <span id='object_" + obj_key + "'>{");
+    this.object_keys.push(obj_key);
+
+    var keys = Object.keys(obj).sort();
+
+    for (var i=0; i<keys.length; i++) {
+      key = keys[i];
+      if (this.isObject(obj[key])) {
+        if (this.isArray(obj[key])) {
+          html.push(this.createSpacer(level) + "<span class='tr8n_logger_obj_key'>" + key + ":</span>" + this.formatArray(obj[key], level + 1) + ",");
+        } else {
+          html.push(this.createSpacer(level) + "<span class='tr8n_logger_obj_key'>" + key + ":</span>" + this.formatObject(obj[key], level + 1) + ",");
+        }
+      } else {
+        html.push(this.createSpacer(level) + this.formatProperty(key, obj[key]) + ",");
+      }
+    }
+    html.push(this.createSpacer(level-1) + "}</span>");
+    return html.join("<br>");
+  },
+  formatArray: function(arr, level) {
+    if (arr == null) return "[<br>]";
+
+    var html = [];
+    var obj_key = this.guid();  
+    html.push("<span class='tr8n_logger_expander' id='expander_" + obj_key + "' onClick=\"tr8nProxy.logger.toggleNode('" + obj_key + "')\"><img src='/tr8n/images/minus_node.png'></span> <span style='display:none' id='no_object_" + obj_key + "'>[...]</span> <span id='object_" + obj_key + "'>[");
+    this.object_keys.push(obj_key);
+
+    for (var i=0; i<arr.length; i++) {
+      if (this.isObject(arr[i])) {
+        if (this.isArray(arr[i])) {
+           html.push(this.createSpacer(level) + this.formatArray(arr[i], level + 1) + ","); 
+        } else {
+           html.push(this.createSpacer(level) + this.formatObject(arr[i], level + 1) + ",");  
+        }     
+      } else {
+        html.push(this.createSpacer(level) + this.formatProperty(null, arr[i]) + ",");
+      }
+    }  
+    html.push(this.createSpacer(level-1) + "]</span>");
+    return html.join("<br>");
+  },
+  formatProperty: function(key, value) {
+    if (value == null) return "<span class='tr8n_logger_obj_key'>" + key + ":</span><span class='obj_value_null'>null</span>";
+    
+    var cls = "tr8n_logger_obj_value_" + (typeof value);
+    var value_span = "";
+    
+    if (this.isString(value)) 
+      value_span = "<span class='" + cls + "'>\"" + this.escapeHTML(value) + "\"</span>";
+    else
+      value_span = "<span class='" + cls + "'>" + value + "</span>";
+       
+    if (key == null)
+      return value_span;
+      
+    return "<span class='tr8n_logger_obj_key'>" + key + ":</span>" + value_span;
+  },
+  createSpacer: function(level) {
+    return "<img src='/tr8n/images/pixel.gif' style='height:1px;width:" + (level * 20) + "px;'>";
+  },
+  isArray: function(obj) {
+    if (obj == null) return false;
+    return !(obj.constructor.toString().indexOf("Array") == -1);
+  },
+  isObject: function(obj) {
+    if (obj == null) return false;
+    return (typeof obj == 'object');
+  },
+  isString: function(obj) {
+    return (typeof obj == 'string');
+  },
+  isURL: function(str) {
+    str = "" + str;
+    return (str.indexOf("http://") != -1) || (str.indexOf("https://") != -1);
   }
 }
+
+
 
 /****************************************************************************
 **** Tr8n Proxy Utils
@@ -979,6 +1144,15 @@ Tr8n.Proxy.Utils = {
     return element_id;
   },
   
+  hide: function(element_id) {
+    Tr8n.element(element_id).style.display = "none";
+  },
+
+  show: function(element_id) {
+    var style = (Tr8n.element(element_id).tagName == "SPAN") ? "inline" : "block";
+    Tr8n.element(element_id).style.display = style;
+  },
+
 	indexOf: function(array, item, i) {
 	  i || (i = 0);
 	  var length = array.length;

@@ -51,7 +51,7 @@ private
         {"title" => "Translators", "description" => "Admin tab", "controller" => "translator"},
         {"title" => "Glossary", "description" => "Admin tab", "controller" => "glossary"},
         {"title" => "Forum", "description" => "Admin tab", "controller" => "forum"},
-        {"title" => "Metrics", "description" => "Metrics tab", "controller" => "metrics"},
+        # {"title" => "Metrics", "description" => "Metrics tab", "controller" => "metrics"},
         {"title" => "Client SDK", "description" => "Admin tab", "controller" => "clientsdk"}
     ]
   end
