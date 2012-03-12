@@ -1,4 +1,4 @@
-<%= tr8n_with_options_tag(:default_locale => 'en-US', :admin => true) do %>
+<%= tr8n_with_options_tag(:default_locale => Tr8n::Config.default_admin_locale, :admin => true) do %>
 	<div class="head">
 	  <div class="action">
 	    <%=link_to_function(image_tag("tr8n/close.gif", :style => "border:0px; padding:5px;", :alt=>trla("Close")), "Tr8n.UI.LanguageSelector.hide()")%>
