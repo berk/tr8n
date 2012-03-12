@@ -292,8 +292,8 @@ module Tr8n::HelperMethods
   end  
   
   def tr8n_will_paginate(collection = nil, options = {})
-    will_paginate(collection, options.merge(:previous_label => tr("&laquo; Previous", "Previous entries in a list", {}, options), 
-                                            :next_label => tr("Next &raquo;", "Next entries in a list", {}, options)))
+    will_paginate(collection, options.merge(:previous_label => tr("{laquo} Previous", "Previous entries in a list", {}, options), 
+                                            :next_label => tr("Next {raquo}", "Next entries in a list", {}, options)))
   end
 
   def tr8n_page_entries_info(collection, options = {})
@@ -304,12 +304,12 @@ module Tr8n::HelperMethods
         when 0
           tr("None found", "Paginator no entries message", {}, options)
         when 1
-          tr("Displaying [bold: 1] #{entry_name}", "Paginator one page message", {}, options)
+          tr("Displaying [strong: 1] #{entry_name}", "Paginator one page message", {}, options)
         else
-          tr("Displaying [bold: all {count}] #{entry_name.pluralize}", "Paginator all entries message", {:count => collection.size}, options)
+          tr("Displaying [strong: all {count}] #{entry_name.pluralize}", "Paginator all entries message", {:count => collection.size}, options)
       end
     else
-      tr("Displaying #{entry_name.pluralize} [bold: {start_num} - {end_num}] of [bold: {total_count}] in total", 
+      tr("Displaying #{entry_name.pluralize} [strong: {start_num} - {end_num}] of [strong: {total_count}] in total", 
          "Paginator custom message", {
             :start_num    => collection.offset + 1,
             :end_num      => collection.offset + collection.length,

@@ -1,8 +1,12 @@
 <div style="padding-bottom:10px;padding-top:5px;">
   <table style="width:100%;">
     <tr>
-      <td style="text-align:left; vertical-align:top;font-size:11px; font-family:arial;"><%= page_entries_info(objects, :skip_decorations => true, :entry_name => subject) %></td>
-      <td style="text-align:right; vertical-align:top;font-size:11px; font-family:arial;"><%= will_paginate(objects, :skip_decorations => true, :style => "text-align:right;") %></td>
+      <td style="text-align:left; vertical-align:top;font-size:11px; font-family:arial;">
+    	<%= tr8n_page_entries_info(@translation_keys, :entry_name => subject) %>
+      </td>
+      <td style="text-align:right; vertical-align:top;font-size:11px; font-family:arial;">
+      	<%= tr8n_will_paginate(objects, :style => "text-align:right;") %>
+      </td>
     </tr>
   </table>
 </div>
