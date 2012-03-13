@@ -102,8 +102,10 @@ module Tr8n
       end
 
       options.merge!(:caller => caller)
-      options.merge!(:url => request.url)
-      options.merge!(:host => request.env['HTTP_HOST'])
+      if request
+        options.merge!(:url => request.url)
+        options.merge!(:host => request.env['HTTP_HOST'])
+      end
 
       unless Tr8n::Config.enabled?
         return Tr8n::TranslationKey.substitute_tokens(label, tokens, options)
