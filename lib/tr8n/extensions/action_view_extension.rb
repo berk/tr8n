@@ -26,34 +26,83 @@ module Tr8n
     extend ActiveSupport::Concern
     module InstanceMethods
       
-      # generates translations json for client sdk
-      def tr8n_translations_js_tag(opts = {})
+
+      def tr8n_default_client_source
+        "#{params[:controller]}/#{params[:action]}/JS"
+      end
+
+      # Creates a hash of translations for a page source(s) or a component(s)
+      def tr8n_translations_cache_tag(opts = {})
         html = []
-        html << "<script>"
 
-        var_name = opts[:id] || :tr8n_translations
+        opts[:translations_element_id] ||= :tr8n_translations
+        opts[:sources] ||= [tr8n_default_client_source]
+        client_sdk_var_name = opts[:client_var_name] || :tr8nProxy
 
-        source_names = opts[:sources] || [opts[:source]]
-        sources = Tr8n::TranslationSource.find(:all, :conditions => ["source in (?)", source_names])
-        source_ids = sources.collect{|source| source.id}
+        if Tr8n::Config.enable_browser_cache?  # translations are loaded through a script
 
-        if source_ids.empty?
-          conditions = ["1=2"]
-        else
-          conditions = ["(id in (select distinct(translation_key_id) from tr8n_translation_key_sources where translation_source_id in (?)))"]
-          conditions << source_ids.uniq
+          opts[:sources].each do |source_name|
+            source = Tr8n::TranslationSource.find_or_create(source_name, request.url)
+            js_source = "/tr8n/api/v1/language/translate.js?cache=true&sdk_jsvar=#{client_sdk_var_name}&source=#{CGI.escape(source_name)}&t=#{source.updated_at.to_i}"
+            html << "<script type='text/javascript' src='#{js_source}'></script>"
+          end  
+
+        else  # translations are embedded right into the page
+
+          html << "<script>"
+          sources = Tr8n::TranslationSource.find(:all, :conditions => ["source in (?)", opts[:sources]])
+          source_ids = sources.collect{|source| source.id}
+
+          if source_ids.empty?
+            conditions = ["1=2"]
+          else
+            conditions = ["(id in (select distinct(translation_key_id) from tr8n_translation_key_sources where translation_source_id in (?)))"]
+            conditions << source_ids.uniq
+          end
+
+          translations = []
+          Tr8n::TranslationKey.find(:all, :conditions => conditions).each_with_index do |tkey, index|
+            trn = tkey.translate(Tr8n::Config.current_language, {}, {:api => true})
+            translations << trn 
+          end
+
+          html << "#{client_sdk_var_name}.updateTranslations(#{translations.to_json});"
+          html << "</script>"
         end
-
-        translations = []
-        Tr8n::TranslationKey.find(:all, :conditions => conditions).each_with_index do |tkey, index|
-          trn = tkey.translate(Tr8n::Config.current_language, {}, {:api => true})
-          translations << trn 
-        end
-
-        html << "var #{var_name} = #{translations.to_json};"
-
-        html << "</script>"
+          
         html.join('').html_safe
+      end
+
+      # Creates an instance of tr8nProxy object
+      def tr8n_client_sdk_tag(opts = {})
+        opts[:default_source]           ||= tr8n_default_client_source
+        opts[:scheduler_interval]       ||= Tr8n::Config.default_client_interval
+
+        opts[:enable_inline_translations] = (Tr8n::Config.current_user_is_translator? and Tr8n::Config.current_translator.enable_inline_translations? and (not Tr8n::Config.current_language.default?))
+        opts[:default_decorations]        = Tr8n::Config.default_decoration_tokens
+        opts[:default_tokens]             = Tr8n::Config.default_data_tokens
+
+        opts[:rules]                      = { 
+          :number => Tr8n::Config.rules_engine[:numeric_rule],      :gender => Tr8n::Config.rules_engine[:gender_rule],
+          :list   => Tr8n::Config.rules_engine[:gender_list_rule],  :date   => Tr8n::Config.rules_engine[:date_rule]
+        }
+
+        client_var_name = opts[:client_var_name] || :tr8nProxy
+
+        html = [javascript_include_tag("tr8n/tr8n_client_sdk.js")]
+        html << "<script>"
+        html << "  var #{client_var_name} = new Tr8n.Proxy(#{opts.to_json});"
+        html << "  function reloadTranslations() { "
+        html << "    #{client_var_name}.initTranslations(true); "
+        html << "  } "
+        html << "  function tr(label, description, tokens, options) { "
+        html << "    return #{client_var_name}.tr(label, description, tokens, options); "
+        html << "  } "
+        html << "  function trl(label, description, tokens, options) { "
+        html << "    return #{client_var_name}.trl(label, description, tokens, options); "
+        html << "  } "
+        html << "</script>"
+        html.join("\n").html_safe
       end
 
       # translation functions

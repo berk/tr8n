@@ -756,6 +756,14 @@ module Tr8n
       config[:enable_client_sdk]
     end
 
+    def self.enable_browser_cache?
+      config[:enable_browser_cache]
+    end
+
+    def self.default_client_interval
+      5000
+    end
+
     def self.api_skip_before_filters
       return [] unless api[:skip_before_filters]
       @api_skip_before_filters ||= api[:skip_before_filters].collect{|filter| filter.to_sym}
@@ -770,6 +778,7 @@ module Tr8n
       return [] unless api[:after_filters]
       @api_after_filters ||= api[:after_filters].collect{|filter| filter.to_sym}
     end
+
 
     #########################################################
     # Sync Process

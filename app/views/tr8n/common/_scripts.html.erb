@@ -13,6 +13,11 @@
     <%=javascript_include_tag(Tr8n::Config.effects_library_path) -%>
 	<% end %>
 	
+  <% if Tr8n::Config.enable_client_sdk? and not opts[:disable_tr8n_client_sdk] %>
+    <%= tr8n_client_sdk_tag(opts) %>
+    <%= tr8n_translations_cache_tag(opts) %>
+  <% end %>
+  
   <% if Tr8n::Config.enable_google_suggestions? and Tr8n::Config.current_user_is_translator? %>  
     <script type="text/javascript">
 			Tr8n.google_api_key = "<%=Tr8n::Config.google_api_key %>";
