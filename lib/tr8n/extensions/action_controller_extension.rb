@@ -86,9 +86,7 @@ module Tr8n
           return user
         end
           
-        user = eval(Tr8n::Config.current_user_method)
-        user = nil if user.class.name != Tr8n::Config.user_class_name
-        user
+        eval(Tr8n::Config.current_user_method)
       rescue
         Tr8n::Logger.error("Site user integration is enabled, but #{Tr8n::Config.current_user_method} method is not defined")
         Tr8n::Translator.new
