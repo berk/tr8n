@@ -49,4 +49,8 @@ class Tr8n::HomeController < ApplicationController
   def credits
     
   end
+
+  def samples
+    
+  end
 end
