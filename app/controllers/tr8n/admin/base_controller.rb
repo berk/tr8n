@@ -50,12 +50,15 @@ private
         {"title" => "Translators", "description" => "Admin tab", "controller" => "translator"},
         {"title" => "Glossary", "description" => "Admin tab", "controller" => "glossary"},
         {"title" => "Forum", "description" => "Admin tab", "controller" => "forum"},
+        {"title" => "Metrics", "description" => "Metrics tab", "controller" => "metrics"},
         {"title" => "Client SDK", "description" => "Admin tab", "controller" => "clientsdk"}
     ]
   end
   helper_method :tr8n_admin_tabs
 
   def validate_admin
+    return if Tr8n::Config.env == 'development'
+
     unless tr8n_current_user_is_admin?
       trfe("You must be an admin in order to view this section of the site")
       redirect_to_site_default_url

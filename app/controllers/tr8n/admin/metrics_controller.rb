@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2011 Michael Berkovich
+# Copyright (c) 2010-2012 Michael Berkovich, tr8n.net
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -21,29 +21,10 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-Tr8n::Engine.routes.draw do
-  [:awards, :chart, :dashboard, :forum, :glossary, :help, :language_cases,
-   :language, :phrases, :translations, :translator].each do |ctrl|
-    match "#{ctrl}(/:action)", :controller => "#{ctrl}"
-  end
-  
-  [:chart, :clientsdk, :forum, :glossary, :language, :translation, 
-   :translation_key, :translator, :domain, :metrics].each do |ctrl|
-    match "admin/#{ctrl}(/:action)", :controller => "admin/#{ctrl}"
-  end
-  
-  [:application, :language, :translation, :translator].each do |ctrl|
-    match "api/v1/#{ctrl}(/:action)", :controller => "api/v1/#{ctrl}"
-  end
-  
-  match "api/v1/language/translate.js", :controller => "api/v1/language", :action => "translate"
+class Tr8n::Admin::MetricsController < Tr8n::Admin::BaseController
 
-  namespace :tr8n do
-    root :to => "dashboard#index"
-    namespace :admin do
-      root :to => "language#index"
-    end
+  def index
+    @languages = Tr8n::Language.enabled_languages
   end
-  
-  root :to => "dashboard#index"
+
 end

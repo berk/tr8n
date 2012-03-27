@@ -1,0 +1,60 @@
+<%= render :partial => "/tr8n/admin/common/header" %>
+<%= render :partial => "tabs" %>
+
+<% @languages.each do |lang| %>
+
+<div class="section_title">
+	 <div style="float:right; font-size:12px; padding-top:5px;">
+     <span style="color:#666">Translated Key Count:</span> <%= lang.total_metric.translated_key_count %> 
+     <span style="color:#666">Translations:</span> <%= lang.total_metric.translation_count %> 
+     <span style="color:#666">Translators:</span> <%= lang.total_metric.translator_count %> 
+	 </div>	
+	
+   <%=tr8n_toggler_tag("lang_content_#{lang.id}")%>
+
+   <%= tr8n_language_name_tag(lang, :linked => false) %> &nbsp;
+</div>
+
+<div id="lang_content_<%=lang.id%>" class="section_box colored">
+	<% 
+		@translators = Tr8n::Translator.top_translators_for_language(lang)
+		if @translators.any?
+	%>
+		<table>
+			<tr style="background-color:#eee;border-bottom:1px solid #ccc;">
+				<td>Translator Id</td>
+				<td>User Id</td>
+				<td>Name</td>
+				<td>Translations</td>
+				<td>Votes</td>
+			</tr>	
+			<% @translators.each do |tm| %>
+			<tr style="border-bottom:1px dotted #ccc;">
+				<td>
+					<%=tm.translator_id if tm.translator %>
+				</td>
+				<td>
+					<%=tm.translator.user_id if tm.translator %>
+				</td>
+				<td>
+					<%=tm.translator.name if tm.translator %>
+				</td>
+				<td>
+	        <%=tm.total_translations%>
+				</td>
+				<td>
+	        <%=tm.total_votes%>
+	        (<span style="color:green" title="<%=trla('Number of positive votes', 'Awards section header')%>"><%=tm.positive_votes || 0 %></span>/<span style="color:red" title="<%=trla('Number of negative votes', 'Awards section header')%>"><%=tm.negative_votes || 0 %></span>)
+				</td>
+			</tr>	
+			<% end %>
+		</table>	
+	<% end %>	
+</div>	
+
+
+<% end %>
+
+
+<%= render :partial => "/tr8n/admin/common/footer" %>
+ No newline at end of file
