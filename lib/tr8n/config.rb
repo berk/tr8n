@@ -756,6 +756,21 @@ module Tr8n
       config[:enable_client_sdk]
     end
 
+    def self.api_skip_before_filters
+      return [] unless api[:skip_before_filters]
+      @api_skip_before_filters ||= api[:skip_before_filters].collect{|filter| filter.to_sym}
+    end
+
+    def self.api_before_filters
+      return [] unless api[:before_filters]
+      @api_before_filters ||= api[:before_filters].collect{|filter| filter.to_sym}
+    end
+
+    def self.api_after_filters
+      return [] unless api[:after_filters]
+      @api_after_filters ||= api[:after_filters].collect{|filter| filter.to_sym}
+    end
+
     #########################################################
     # Sync Process
     #########################################################

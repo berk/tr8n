@@ -23,6 +23,18 @@
 
 class Tr8n::Api::V1::BaseController < ApplicationController
 
+  if Tr8n::Config.api_skip_before_filters.any?
+    skip_before_filter *Tr8n::Config.api_skip_before_filters
+  end
+
+  if Tr8n::Config.api_before_filters.any?
+    before_filter *Tr8n::Config.api_before_filters
+  end
+  
+  if Tr8n::Config.api_after_filters.any?
+    after_filter *Tr8n::Config.api_after_filters
+  end
+
 private
 
   def tr8n_current_user
