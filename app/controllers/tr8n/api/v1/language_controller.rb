@@ -40,10 +40,8 @@ class Tr8n::Api::V1::LanguageController < Tr8n::Api::V1::BaseController
   def translate
     return sanitize_api_response({"error" => "Api is disabled"}) unless Tr8n::Config.enable_api?
 
-#   return sanitize_api_response({"error" => "You must be logged in to use the api"}) if tr8n_current_user_is_guest?
-
     language = Tr8n::Language.for(params[:language]) || tr8n_current_language
-    source = CGI.unescape(params[:source]) || "API"
+    source = CGI.unescape(params[:source] || "API") 
     
     return sanitize_api_response(translate_phrase(language, params, {:source => source})) if params[:label]
     
@@ -51,7 +49,7 @@ class Tr8n::Api::V1::LanguageController < Tr8n::Api::V1::BaseController
     # {:source => "", :language => "", :phrases => [{:label => ""}]}
     
     # get all phrases for the specified source
-    if params[:batch] == "true"
+    if params[:batch] == "true" or params[:cache] == "true"
       if params[:sources].blank? and params[:source].blank?
         return sanitize_api_response({"error" => "No source/sources have been provided for the batch request."})
       end
@@ -73,6 +71,10 @@ class Tr8n::Api::V1::LanguageController < Tr8n::Api::V1::BaseController
         translations << trn 
       end
       
+      if params[:sdk_jsvar]
+        return render(:text => "#{params[:sdk_jsvar]}.updateTranslations(#{translations.to_json});", :content_type => "text/javascript")
+      end 
+      
       return sanitize_api_response({:phrases => translations})
     elsif params[:phrases]
       
@@ -92,7 +94,7 @@ class Tr8n::Api::V1::LanguageController < Tr8n::Api::V1::BaseController
       return sanitize_api_response({:phrases => translations})    
     end
     
-    sanitize_api_response({"error" => "Invalid API request. Please read the documentation and try again."})
+    sanitize_api_response(:phrases => {})
   rescue Tr8n::KeyRegistrationException => ex
     sanitize_api_response({"error" => ex.message})
   end

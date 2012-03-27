@@ -41,10 +41,19 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   alias :domains      :translation_domains
   alias :comments     :translation_key_comments
   
+
+  def self.cache_key(key_hash)
+    "translation_key_#{key_hash}"
+  end
+
+  def cache_key
+    self.class.cache_key(key)
+  end
+
   def self.find_or_create(label, desc = "", options = {})
     key = generate_key(label, desc).to_s
     
-    tkey = Tr8n::Cache.fetch("translation_key_#{key}") do 
+    tkey = Tr8n::Cache.fetch(cache_key(key)) do 
       existing_key = where(:key => key).first
       
       unless existing_key
@@ -61,31 +70,23 @@ class Tr8n::TranslationKey < ActiveRecord::Base
       end
       locale = options[:locale] || Tr8n::Config.block_options[:default_locale] || Tr8n::Config.default_locale
       
-      existing_key ||= begin
-        new_tkey = create(:key => key.to_s, 
-                          :label => label, 
-                          :description => desc, 
-                          :locale => locale,
-                          :level => level,
-                          :admin => Tr8n::Config.block_options[:admin])
-
-        unless options[:source].blank?
-          # at the time of creation - mark the first source of the key
-          Tr8n::TranslationKeySource.find_or_create(new_tkey, Tr8n::TranslationSource.find_or_create(options[:source], options[:url]))
-        end  
-        new_tkey
-      end  
+      existing_key ||= create(:key => key.to_s, 
+                              :label => label, 
+                              :description => desc, 
+                              :locale => locale,
+                              :level => level,
+                              :admin => Tr8n::Config.block_options[:admin])
 
       # for backwards compatibility only
       mark_as_admin(existing_key, options)
       update_default_locale(existing_key, options)
       
       # mark each key as verified - but only if caching is enabled
+      # verification is used to cleanup unused keys
       existing_key.update_attributes(:verified_at => Time.now) if Tr8n::Config.enable_caching?
       existing_key
     end
     
-    # for detailed tracking of all sources and caller stack - only needed for debugging - expensive
     track_source(tkey, options)  
     tkey  
   end
@@ -106,20 +107,31 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     tkey.update_attributes(:locale => key_locale)
   end
 
-  # used to create associations between the translation keys and source
-  # primarely used for the site map and only needs to be enabled 
-  # for a short period of time on a single machine
-  def self.track_source(tkey, options)
-    # return unless Tr8n::Config.enable_key_source_tracking? 
-    # return if options[:source].blank?
+  # creates associations between the translation keys and sources
+  # used for the site map and javascript support
+  def self.track_source(translation_key, options)
 
-    key_source = Tr8n::Cache.cache_key_source(tkey, options[:source] || Tr8n::Config.block_options[:source])
-    
-    return unless Tr8n::Config.enable_key_caller_tracking?
+    # key source tracking or client sdk must be enabled for this to work
+    return unless Tr8n::Config.enable_key_source_tracking? or Tr8n::Config.enable_client_sdk?
+
+    # source can be passed into an individual key, or as a block or fall back on the controller/action
+    source = options[:source] || Tr8n::Config.block_options[:source] || Tr8n::Config.current_source
+
+    # should never be blank
+    return if source.blank?
+
+    # each page or component is identified by a translation source
+    translation_source = Tr8n::TranslationSource.find_or_create(source, options[:url])
+
+    # each key is associated with one or more sources
+    translation_key_source = Tr8n::TranslationKeySource.find_or_create(translation_key, translation_source)
+
+    # for debugging purposes only - this will track the actual location of the key in the source
+    return unless Tr8n::Config.enable_key_caller_tracking?    
     options[:caller] ||= caller
     options[:caller_key] = options[:caller].is_a?(Array) ? options[:caller].join(", ") : options[:caller].to_s
     options[:caller_key] = generate_key(options[:caller_key])
-    key_source.update_details!(options)
+    translation_key_source.update_details!(options)
   end
   
   def self.generate_key(label, desc = "")
@@ -130,7 +142,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
 
   def reset_key!
     # remove old key from cache
-    Tr8n::Cache.delete("translation_key_#{key}")
+    Tr8n::Cache.delete(cache_key)
     self.update_attributes(:key => self.class.generate_key(label, description))
   end
   
@@ -539,8 +551,15 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     end
   end
   
+  def touch_sources
+    sources.each do |source|
+      source.touch
+    end
+  end
+
   def clear_cache
-    Tr8n::Cache.delete("translation_key_#{key}")
+    Tr8n::Cache.delete(cache_key)
+    touch_sources
   end
 
   ###############################################################

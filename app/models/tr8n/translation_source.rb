@@ -35,9 +35,17 @@ class Tr8n::TranslationSource < ActiveRecord::Base
   alias :sources  :translation_key_sources
   alias :keys     :translation_keys
   
+  def self.cache_key(source)
+    "translation_source_#{source}"
+  end
+
+  def cache_key
+    self.class.cache_key(source)
+  end
+
   def self.find_or_create(source, url = nil)
-    translation_domain = Tr8n::TranslationDomain.find_or_create(url)
-    Tr8n::Cache.fetch("translation_source_#{translation_domain.id}_#{source}") do 
+    Tr8n::Cache.fetch(cache_key(source)) do 
+      translation_domain = Tr8n::TranslationDomain.find_or_create(url)
       translation_source = where("source = ? and translation_domain_id = ?", source, translation_domain.id).first
       translation_source ||= create(:source => source, :translation_domain => translation_domain)
       translation_source.update_attributes(:translation_domain => translation_domain) unless translation_source.translation_domain
@@ -46,7 +54,7 @@ class Tr8n::TranslationSource < ActiveRecord::Base
   end
 
   def clear_cache
-    Tr8n::Cache.delete("translation_source_#{translation_domain_id}_#{source}")
+    Tr8n::Cache.delete(cache_key)
   end
   
 end

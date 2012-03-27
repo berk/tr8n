@@ -34,15 +34,23 @@ class Tr8n::TranslationDomain < ActiveRecord::Base
   alias :key_sources  :translation_key_sources
   alias :keys         :translation_keys
   
+  def self.cache_key(domain_name)
+    "translation_domain_#{domain_name}"
+  end
+
+  def cache_key
+    self.class.cache_key(name)
+  end
+  
   def self.find_or_create(url = nil)
     domain_name = URI.parse(url || 'localhost').host || 'localhost'
-    Tr8n::Cache.fetch("translation_domain_#{domain_name}") do 
+    Tr8n::Cache.fetch(cache_key(domain_name)) do 
       find_by_name(domain_name) || create(:name => domain_name)
     end  
   end
   
   def clear_cache
-    Tr8n::Cache.delete("translation_domain_#{name}")
+    Tr8n::Cache.delete(cache_key)
   end
   
 end
