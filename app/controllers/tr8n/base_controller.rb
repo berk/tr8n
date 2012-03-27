@@ -176,12 +176,12 @@ module Tr8n
     
       if tr8n_current_language.default?
         trfe("Only administrators can modify this language")
-        return redirect_to(@tabs.first[:link])
+        return redirect_to(tr8n_features_tabs.first[:link])
       end
 
       unless tr8n_current_user_is_translator? and tr8n_current_translator.manager? 
         trfe("In order to manage a language you first must request to become a manager of that language. Please send your request to Geni support.")
-        return redirect_to(@tabs.first[:link])
+        return redirect_to(tr8n_features_tabs.first[:link])
       end
     end
   
