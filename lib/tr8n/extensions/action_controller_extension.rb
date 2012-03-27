@@ -115,6 +115,9 @@ module Tr8n
       # tr(label, {:desc => "", tokens => {},  ...})
       ############################################################
       def tr(label, desc = "", tokens = {}, options = {})
+
+        return label if label.tr8n_translated?
+
         if desc.is_a?(Hash)
           options = desc
           tokens  = options[:tokens] || {}
