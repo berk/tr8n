@@ -107,7 +107,7 @@ module Tr8n
       return unless enabled?
       cache.decrement(name, amount, opts)
     end
-  
+
     #################################################################
     # Cache Source Methods
     #################################################################
@@ -147,17 +147,6 @@ module Tr8n
         
         sources_timestamps[translation_source_language.id] = translation_source_language.updated_at
       end
-    end
-    
-    def self.cache_key_source(translation_key, source_name)
-      return unless Tr8n::Config.enable_key_source_tracking? 
-      return unless memory_store?
-      pp "caching: #{source_name}"
-      
-      source_name ||= Tr8n::Config.current_source || 'Undefined'
-      translation_source = Tr8n::TranslationSource.find_or_create(source_name)
-      key_source = Tr8n::TranslationKeySource.find_or_create(translation_key, translation_source)
-      key_source
     end
     
   end

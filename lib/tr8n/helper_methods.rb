@@ -35,30 +35,42 @@ module Tr8n::HelperMethods
   # Creates a hash of translations for a page source(s) or a component(s)
   def tr8n_translations_cache_tag(opts = {})
     html = []
-    html << "<script>"
 
     opts[:translations_element_id] ||= :tr8n_translations
     opts[:sources] ||= [tr8n_default_client_source]
+    client_sdk_var_name = opts[:client_var_name] || :tr8nProxy
 
-    sources = Tr8n::TranslationSource.find(:all, :conditions => ["source in (?)", opts[:sources]])
-    source_ids = sources.collect{|source| source.id}
+    if Tr8n::Config.enable_browser_cache?  # translations are loaded through a script
 
-    if source_ids.empty?
-      conditions = ["1=2"]
-    else
-      conditions = ["(id in (select distinct(translation_key_id) from tr8n_translation_key_sources where translation_source_id in (?)))"]
-      conditions << source_ids.uniq
+      opts[:sources].each do |source_name|
+        source = Tr8n::TranslationSource.find_or_create(source_name, request.url)
+        js_source = "/tr8n/api/v1/language/translate.js?cache=true&sdk_jsvar=#{client_sdk_var_name}&source=#{CGI.escape(source_name)}&t=#{source.updated_at.to_i}"
+        html << "<script type='text/javascript' src='#{js_source}'></script>"
+      end  
+
+    else  # translations are embedded right into the page
+
+      html << "<script>"
+      sources = Tr8n::TranslationSource.find(:all, :conditions => ["source in (?)", opts[:sources]])
+      source_ids = sources.collect{|source| source.id}
+
+      if source_ids.empty?
+        conditions = ["1=2"]
+      else
+        conditions = ["(id in (select distinct(translation_key_id) from tr8n_translation_key_sources where translation_source_id in (?)))"]
+        conditions << source_ids.uniq
+      end
+
+      translations = []
+      Tr8n::TranslationKey.find(:all, :conditions => conditions).each_with_index do |tkey, index|
+        trn = tkey.translate(Tr8n::Config.current_language, {}, {:api => true})
+        translations << trn 
+      end
+
+      html << "#{client_sdk_var_name}.updateTranslations(#{translations.to_json});"
+      html << "</script>"
     end
-
-    translations = []
-    Tr8n::TranslationKey.find(:all, :conditions => conditions).each_with_index do |tkey, index|
-      trn = tkey.translate(Tr8n::Config.current_language, {}, {:api => true})
-      translations << trn 
-    end
-
-    html << "var #{opts[:translations_element_id]} = #{translations.to_json};"
-
-    html << "</script>"
+      
     html.join('')
   end
 
@@ -66,7 +78,6 @@ module Tr8n::HelperMethods
   def tr8n_client_sdk_tag(opts = {})
     opts[:default_source]           ||= tr8n_default_client_source
     opts[:scheduler_interval]       ||= Tr8n::Config.default_client_interval
-    opts[:translations_element_id]  ||= :tr8n_translations
 
     opts[:enable_inline_translations] = (Tr8n::Config.current_user_is_translator? and Tr8n::Config.current_translator.enable_inline_translations? and (not Tr8n::Config.current_language.default?))
     opts[:default_decorations]        = Tr8n::Config.default_decoration_tokens

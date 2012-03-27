@@ -11,6 +11,8 @@ ActionController::Routing::Routes.draw do |map|
   [:application, :language, :translation, :translator].each do |ctrl|   
     map.connect "tr8n/api/v1/#{ctrl}/:action", :controller => "tr8n/api/v1/#{ctrl}"
   end
+
+  map.connect "tr8n/api/v1/language/translate.js", :controller => "tr8n/api/v1/language", :action => "translate"
   
   map.namespace('tr8n') do |tr8n|
     tr8n.root :controller => 'home'

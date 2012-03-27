@@ -754,6 +754,10 @@ class Tr8n::Config
     config[:enable_client_sdk]
   end
 
+  def self.enable_browser_cache?
+    config[:enable_browser_cache]
+  end
+
   def self.default_client_interval
     5000
   end

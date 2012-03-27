@@ -140,6 +140,7 @@ Tr8n.Proxy.prototype = {
 		}
     return null;    
   },
+
   registerTranslationKeys: function(translations) {
     this.log("Found " + translations.length + " registered phrases");
     for (i = 0; i < translations.length; i++) {
@@ -148,28 +149,39 @@ Tr8n.Proxy.prototype = {
        this.translations[translation_key['key']] = translation_key;
     }
 	},
+
   initTranslations: function(forced) {
     if (!forced && this.translations) return;
+    
+    this.translations = {};
 
-    var self = this;
-    self.translations = {};
-
-    if (this.options['translations_element_id']) {
-      self.log("Registering page translations...");
-      this.registerTranslationKeys(eval(this.options['translations_element_id']));
-      return;
+    // Check for page variable to load translations from, if variable was provided
+    if (this.options['translations_cache_id']) {
+      this.log("Registering page translations from translations cache...");
+      this.updateTranslations(eval(this.options['translations_cache_id']));
     }
 
-    self.log("Fetching translations from the server...");
-    Tr8n.Proxy.Utils.ajax(this.options['url'], {
-      method: 'get',
-      parameters: {'batch': true, 'source': self.options['default_source']},
-      onSuccess: function(response) {
-        self.log("Received response from the server");
-        self.log(response.responseText);
-        self.registerTranslationKeys(eval("[" + response.responseText + "]")[0]['phrases']);
-      }
-    }); 
+    var self = this;
+
+    // Optionally, fetch translations from the server
+    if (this.options['fetch_translations_on_init']) {
+      this.log("Fetching translations from the server...");
+      Tr8n.Proxy.Utils.ajax(this.options['url'], {
+        method: 'get',
+        parameters: {'batch': true, 'source': self.options['default_source']},
+        onSuccess: function(response) {
+          self.log("Received response from the server");
+          self.log(response.responseText);
+          self.updateTranslations(eval("[" + response.responseText + "]")[0]['phrases']);
+        }
+      }); 
+    }
+  },
+
+  updateTranslations: function(new_translations) {
+    this.translations = this.translations || {};
+    this.log("Updating page translations...");
+    this.registerTranslationKeys(new_translations);
   },
   	
   registerMissingTranslationKey: function(translation_key, token_values, options) {
