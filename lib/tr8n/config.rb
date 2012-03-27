@@ -290,6 +290,10 @@ module Tr8n
       config[:enable_country_tracking]
     end
   
+    def self.enable_translator_tabs?
+      config[:enable_translator_tabs]
+    end
+
     #########################################################
     # Config Sections
     def self.caching

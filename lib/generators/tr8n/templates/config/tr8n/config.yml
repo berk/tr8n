@@ -39,6 +39,8 @@ defaults:
   
   enable_country_tracking:    true      # tracks and reports translator countries 
 
+  enable_translator_tabs:     true      # enables translation tools tabs 
+
   #############################################################################
   # Google translation suggestions is now a paid feature by Google.
   # 
