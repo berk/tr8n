@@ -83,11 +83,11 @@ class Tr8n::TranslatorLog < ActiveRecord::Base
     html = action.to_s.gsub("_", " ")
     act = action.to_sym
     if [:got_blocked, :got_unblocked, :got_promoted, :got_demoted].include?(act)
-      html << " by " << user.name if user
+      html << " by " << Tr8n::Config.user_name(user) if user
       html << " (" << reason << ")" unless reason.blank?
     elsif [:got_new_level].include?(act)
       html << " " << reference unless reference.blank?
-      html << " from " << user.name if user
+      html << " from " << Tr8n::Config.user_name(user) if user
       html << " (" << reason << ")" unless reason.blank?
     elsif [:enabled_inline_translations, :disabled_inline_translations].include?(act)
       lang = Tr8n::Language.find_by_id(reference) unless reference.blank?
