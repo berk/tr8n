@@ -43,8 +43,8 @@ module Tr8n
     end
   
     before_filter :validate_tr8n_enabled, :except => [:translate]
-    before_filter :validate_guest_user, :except => [:select, :switch, :translate, :table]
-    before_filter :validate_current_user, :except => [:translate]
+    before_filter :validate_guest_user, :except => [:select, :switch, :translate, :table, :registration]
+    before_filter :validate_current_user, :except => [:select, :switch, :translate, :table, :registration]
   
     layout Tr8n::Config.site_info[:tr8n_layout]
 
@@ -149,9 +149,15 @@ module Tr8n
 
     # make sure users have the rights to access this section
     def validate_current_user
-      unless Tr8n::Config.open_registration_mode? or Tr8n::Config.current_user_is_translator? 
+      return if Tr8n::Config.current_user_is_translator?
+
+      unless Tr8n::Config.open_registration_mode?
         trfe("You don't have rights to access that section.")
         return redirect_to(Tr8n::Config.default_url)
+      end
+
+      if Tr8n::Config.enable_registration_disclaimer?
+        redirect_to("/tr8n/translator/registration")
       end
     end
 

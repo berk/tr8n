@@ -307,7 +307,8 @@ class Tr8n::Translation < ActiveRecord::Base
     results = self.where("language_id = ?", language.id)
     
     # ensure that only allowed translations are visible
-    results = results.where("translation_key_id in (select id from tr8n_translation_keys where level <= ?)", Tr8n::Config.current_translator.level) 
+    allowed_level = Tr8n::Config.current_user_is_translator? ? Tr8n::Config.current_translator.level : 0
+    results = results.where("translation_key_id in (select id from tr8n_translation_keys where level <= ?)", allowed_level) 
     
     results = results.where("label like ?", "%#{params[:search]}%") unless params[:search].blank?
   
@@ -320,7 +321,7 @@ class Tr8n::Translation < ActiveRecord::Base
     end
     
     if params[:submitted_by] == "me"
-      results = results.where("translator_id = ?", Tr8n::Config.current_translator.id)
+      results = results.where("translator_id = ?", Tr8n::Config.current_user_is_translator? ? Tr8n::Config.current_translator.id : 0)
     end
     
     if params[:submitted_on] == "today"

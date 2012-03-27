@@ -1,0 +1,21 @@
+<div class="module page_title lengthy">
+  <div class="inner">
+    <div class="hd">
+      <h1><%=Tr8n::Config.site_title %> Translations Terms of Use <span class="small quiet no_bold">updated January 12, 2012</span></h1>
+    </div>
+  </div>
+</div>
+
+<div style="padding:10px;border:1px solid #ccc;overflow:auto;height:500px;margin:10px;font-family:Arial;font-size:12px;">
+	<%=render :partial => Tr8n::Config.registration_disclaimer_path %>
+</div>
+
+<%= form_tag({}, {:id => :registration_form}) do %>
+	<%=hidden_field_tag(:agree, "yes") %>
+	<div style="text-align:center; padding:15px;">
+		<button type="submit" class="translator_btn translator_small_btn" onclick="Tr8n.Effects.submit('registration_form'); return false;">
+			<span><%=tr("Agree") %></span>
+		</button>	
+	  <%=tr("or")%> <%=link_to(tr("Cancel"), Tr8n::Config.default_url)%>
+	</div>
+<% end %>

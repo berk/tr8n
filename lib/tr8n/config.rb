@@ -261,6 +261,14 @@ module Tr8n
     def self.open_registration_mode?
       config[:open_registration_mode]
     end
+
+    def self.enable_registration_disclaimer?
+      config[:enable_registration_disclaimer]
+    end
+
+    def self.registration_disclaimer_path
+      config[:registration_disclaimer_path] || "/tr8n/common/terms_of_service"
+    end
   
     def self.enable_fallback_languages?
       config[:enable_fallback_languages]
