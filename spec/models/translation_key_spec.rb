@@ -4,8 +4,12 @@ describe Tr8n::TranslationKey do
   describe '#creation' do
 
     before :all do 
-      @user = @translator = Tr8n::Translator.create!(:name => "Mike", :user_id => 0, :gender => "male")
-      @user2 = @translator2 = Tr8n::Translator.create!(:name => "Anna", :user_id => 0, :gender => "female")
+      @user = User.create(:first_name => "Mike", :gender => "male")
+      @translator = Tr8n::Translator.create!(:name => "Mike", :user => @user, :gender => "male")
+
+      @user2 = User.create(:first_name => "Anna", :gender => "female")
+      @translator2 = Tr8n::Translator.create!(:name => "Anna", :user => @user2, :gender => "female")
+
       @english = Tr8n::Language.create!(:locale => "en-US", :english_name => "English")
       @russian = Tr8n::Language.create!(:locale => "ru", :english_name => "Russian")
       @spanish = Tr8n::Language.create!(:locale => "es", :english_name => "Spanish")      

@@ -1,0 +1,21 @@
+#############################################################################
+#
+# Tr8n Default Data Tokens
+#
+#############################################################################
+
+ndash:    "&ndash;"   # –
+mdash:    "&mdash;"   # —   
+iexcl:    "&iexcl;"   # ¡
+iquest:   "&iquest;"  # ¿  
+quot:     "&quot;"    # "   
+ldquo:    "&ldquo;"   # “
+rdquo:    "&rdquo;"   # ”
+lsquo:    "&lsquo;"   # ‘   
+rsquo:    "&rsquo;"   # ’   
+laquo:    "&laquo;"   # « 
+raquo:    "&raquo;"   # »  
+nbsp:     "&nbsp;"    # space
+lsaquo:   "&lsaquo;"  # ‹
+rsaquo:   "&rsaquo;"  # ›
+br:       "<br/>"     # line break 

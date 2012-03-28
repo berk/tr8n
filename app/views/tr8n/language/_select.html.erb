@@ -49,7 +49,7 @@
               <% languages_height = "400px" %>
             <% end %>
 
-            <div id="tr8n_languages_list" style="max-height: <%=languages_height%>; overflow: auto; border:solid 1px #e8e8e8; padding:5px; background-color:white;">
+            <div id="tr8n_languages_list" style="height: <%=languages_height%>; overflow: auto; border:solid 1px #e8e8e8; padding:5px; background-color:white;">
                 <ul class="language_list">
                     <% @all_languages.each do |language| %>
                     <li onClick="Tr8n.element('language_selector_locale').value='<%=language.locale%>'; Tr8n.element('language_selector_form').submit();">

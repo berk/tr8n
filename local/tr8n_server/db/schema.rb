@@ -260,6 +260,7 @@ ActiveRecord::Schema.define(:version => 20111026230545) do
   end
 
   add_index "tr8n_translation_keys", ["key"], :name => "index_tr8n_translation_keys_on_key", :unique => true
+  add_index "tr8n_translation_keys", ["synced_at"], :name => "index_tr8n_translation_keys_on_synced_at"
 
   create_table "tr8n_translation_source_languages", :force => true do |t|
     t.integer  "language_id"
@@ -304,6 +305,7 @@ ActiveRecord::Schema.define(:version => 20111026230545) do
   end
 
   add_index "tr8n_translations", ["created_at"], :name => "tr8n_trans_created_at"
+  add_index "tr8n_translations", ["synced_at"], :name => "index_tr8n_translations_on_synced_at"
   add_index "tr8n_translations", ["translation_key_id", "translator_id", "language_id"], :name => "tr8n_trans_key_id_translator_id_lang_id"
   add_index "tr8n_translations", ["translator_id"], :name => "r8n_trans_translator_id"
 

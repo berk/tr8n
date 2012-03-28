@@ -11,6 +11,7 @@ class User < ActiveRecord::Base
   end
   
   def name
+    return first_name if last_name.blank?
     [first_name, last_name].join(" ")
   end
   
