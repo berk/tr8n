@@ -63,7 +63,7 @@ module Tr8n
         hash
       end
     end
-  
+
     def tokens?
       tokens.any?
     end
@@ -123,16 +123,6 @@ module Tr8n
           parts << w.strip.capitalize if w.length > 3
         end
         parts
-      end
-    end
-
-    def sanitized_tokens_hash
-      @sanitized_tokens_hash ||= begin
-        hash = {}
-        tokens.each do |token|
-          hash[token.sanitized_name] = token
-        end
-        hash
       end
     end
   

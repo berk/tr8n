@@ -16,6 +16,7 @@ Spork.prefork do
 
 	RSpec.configure do |config|
 	  config.use_transactional_fixtures = true
+      config.use_instantiated_fixtures  = false	  
 	end
 
 end
