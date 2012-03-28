@@ -40,23 +40,35 @@ class Tr8n::Translator < ActiveRecord::Base
 
   belongs_to :fallback_language,            :class_name => 'Tr8n::Language',                  :foreign_key => :fallback_language_id
     
+  def self.cache_key(user_id)
+    "translator_#{user_id}"
+  end
+
+  def cache_key
+    self.class.cache_key(key)
+  end
+
   def self.for(user)
     return nil unless user and user.id 
     return nil if Tr8n::Config.guest_user?(user)
-    return user if user.is_a?(Tr8n::Translator)
-    find_by_user_id(user.id)
+    translator = Tr8n::Cache.fetch(cache_key(user.id)) do 
+      find_by_user_id(user.id)
+    end
   end
   
   def self.find_or_create(user)
+    return nil unless user and user.id 
+
     trn = where(:user_id => user.id).first
     trn = create(:user => user) unless trn
     trn
   end
 
   def self.register(user = Tr8n::Config.current_user)
-    return unless user
-    
     translator = Tr8n::Translator.find_or_create(user)
+    return unless translator
+
+    # update all language user entries to add a translator id
     Tr8n::LanguageUser.where(:user_id => user.id).each do |lu|
       lu.update_attributes(:translator => translator)
     end
