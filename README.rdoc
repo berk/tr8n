@@ -49,7 +49,7 @@ To install the required plugins, run the following commands:
   $ script/plugin install git://github.com/berk/will_filter.git -r rails-2.3.x
   $ rake will_filter:sync  
   $ rake db:migrate 
-  $ cd public; ln -s ../vendor/plugins/will_filter/public/wf wf; cd ..;
+  $ ln -s ../vendor/plugins/will_filter/public/wf public/wf
 
 To install, configure and initialize Tr8n engine, run the following commands: 
 
@@ -57,7 +57,7 @@ To install, configure and initialize Tr8n engine, run the following commands:
   $ rake tr8n:sync         
   $ rake db:migrate 
   $ rake tr8n:init
-  $ cd public; ln -s ../vendor/plugins/tr8n/public/tr8n tr8n; cd ..;
+  $ ln -s ../vendor/plugins/tr8n/public/tr8n public/tr8n
 
 = Integration Instructions
 
