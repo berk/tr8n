@@ -44,6 +44,7 @@ describe Tr8n::Translator do
   describe 'registering a translator' do
   	context 'when user is not defined' do
 	  	it 'should not register a translator' do 
+        Tr8n::Config.init('en-US', nil)
 	  		Tr8n::Translator.register.should be_nil
 			end  	
 	  	it 'should not register a translator for guest user' do 

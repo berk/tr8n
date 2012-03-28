@@ -39,7 +39,7 @@ describe Tr8n::Tokens::HiddenToken do
       it "should be registered" do
         [
           '{_he_she}',
-          '{_posted__items}'
+          '{_posted__items}',
           'Hello {user.name} you have {count} {_posted__items}'
         ].each do |label|
           tokens = Tr8n::Tokens::HiddenToken.parse(label)
