@@ -105,8 +105,9 @@ class Tr8n::Config
     puts "Done."
 
     init_default_languages
+    init_language_cases
     init_glossary
-    
+
     puts "Done."
   end
 
@@ -139,6 +140,8 @@ class Tr8n::Config
     
     default_language_cases.each do |locale, cases|
       language = Tr8n::Language.for(locale)
+      puts ">> Initializing language cases for #{language.english_name}..."
+      
       next unless language
       cases.keys.sort.each do |lkey|
         lcase = cases[lkey]
