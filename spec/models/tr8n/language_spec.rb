@@ -1,6 +1,13 @@
 require File.expand_path('../../spec_helper', File.dirname(__FILE__))
 
 describe Tr8n::Language do
+  describe 'cache key' do
+    it 'shold use locale' do
+      lang = Tr8n::Language.find_or_create('test', 'Test Language')
+      lang.cache_key.should eq("language_test")
+    end
+  end
+
   describe 'finding or creating a new language' do
     context 'none existing language' do
       it 'should not be found' do
@@ -66,5 +73,7 @@ describe Tr8n::Language do
       lang.default?.should be_true
     end
   end
+
+
 
 end    
