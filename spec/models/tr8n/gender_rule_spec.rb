@@ -51,8 +51,8 @@ describe Tr8n::GenderRule do
 				male.stub!(:gender).and_return("male")
 				female = mock("male")
 				female.stub!(:gender).and_return("female")
-				unknwon = mock("unknwon")
-				unknwon.stub!(:gender).and_return("unknwon")
+				unknown = mock("unknown")
+				unknown.stub!(:gender).and_return("unknown")
 
 				Tr8n::GenderRule.transform(male, "registered on").should eq("registered on")
 				Tr8n::GenderRule.transform(male, "he", "she").should eq("he")
@@ -64,10 +64,10 @@ describe Tr8n::GenderRule do
 				Tr8n::GenderRule.transform(female, "his", "her").should eq("her")
 				Tr8n::GenderRule.transform(female, "he", "she", "he/she").should eq("she")
 
-				Tr8n::GenderRule.transform(unknwon, "registered on").should eq("registered on")
-				Tr8n::GenderRule.transform(unknwon, "he", "she").should eq("he/she")
-				Tr8n::GenderRule.transform(unknwon, "his", "her").should eq("his/her")
-				Tr8n::GenderRule.transform(unknwon, "he", "she", "he/she").should eq("he/she")
+				Tr8n::GenderRule.transform(unknown, "registered on").should eq("registered on")
+				Tr8n::GenderRule.transform(unknown, "he", "she").should eq("he/she")
+				Tr8n::GenderRule.transform(unknown, "his", "her").should eq("his/her")
+				Tr8n::GenderRule.transform(unknown, "he", "she", "he/she").should eq("he/she")
 			end
 		end
 	end	

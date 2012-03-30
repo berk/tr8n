@@ -112,6 +112,118 @@ describe Tr8n::TranslationKey do
           key.translate(@russian, {:count => 103}).should eq("U vas est 103 soobsheniya.")
         end
       end
+
+
+      context "labels with gender rules" do
+        it "should return correct translations" do
+
+          definition = {operator: "is", value: "male"}
+          rule1 = Tr8n::GenderRule.create(:language => @russian, :definition => definition)
+
+          definition = {operator: "is", value: "female"}
+          rule2 = Tr8n::GenderRule.create(:language => @russian, :definition => definition)
+
+          definition = {operator: "is", value: "unknown"}
+          rule3 = Tr8n::GenderRule.create(:language => @russian, :definition => definition)
+
+          key = Tr8n::TranslationKey.find_or_create("{user| Born on:}")
+          key.add_translation("Rodilsya:", [{:token=>"user", :rule_id=>[rule1.id]}], @russian, @translator)
+          key.add_translation("Rodilas':", [{:token=>"user", :rule_id=>[rule2.id]}], @russian, @translator)
+          key.add_translation("Rodilsya/Rodilas':", [{:token=>"user", :rule_id=>[rule3.id]}], @russian, @translator)
+
+          male = mock("male")
+          male.stub!(:to_s).and_return("Michael")
+          male.stub!(:gender).and_return("male")
+          female = mock("female")
+          female.stub!(:to_s).and_return("Anna")
+          female.stub!(:gender).and_return("female")
+          unknown = mock("unknown")
+          unknown.stub!(:to_s).and_return("Alex")
+          unknown.stub!(:gender).and_return("unknown")
+
+          key.translate(@english, {:user => male}).should eq("Born on:")
+          key.translate(@english, {:user => female}).should eq("Born on:")
+
+          key.translate(@russian, {:user => male}).should eq("Rodilsya:")
+          key.translate(@russian, {:user => female}).should eq("Rodilas':")
+          key.translate(@russian, {:user => unknown}).should eq("Rodilsya/Rodilas':")
+
+          key = Tr8n::TranslationKey.find_or_create("{user} updated {user|his, her} profile.")
+          key.add_translation("{user} obnovil svoi profil'.", [{:token=>"user", :rule_id=>[rule1.id]}], @russian, @translator)
+          key.add_translation("{user} obnovila svoi profil'.", [{:token=>"user", :rule_id=>[rule2.id]}], @russian, @translator)
+          key.add_translation("{user} obnovil/obnovila svoi profil'.", [{:token=>"user", :rule_id=>[rule3.id]}], @russian, @translator)
+
+          key.translate(@english, {:user => male}).should eq("Michael updated his profile.")
+          key.translate(@english, {:user => female}).should eq("Anna updated her profile.")
+
+          key.translate(@russian, {:user => male}).should eq("Michael obnovil svoi profil'.")
+          key.translate(@russian, {:user => female}).should eq("Anna obnovila svoi profil'.")
+          key.translate(@russian, {:user => unknown}).should eq("Alex obnovil/obnovila svoi profil'.")
+        end
+      end      
+
+      context "labels with mixed rules and tokens" do
+        it "should return correct translations" do
+          definition = {operator: "is", value: "male"}
+          grule1 = Tr8n::GenderRule.create(:language => @russian, :definition => definition)
+          definition = {operator: "is", value: "female"}
+          grule2 = Tr8n::GenderRule.create(:language => @russian, :definition => definition)
+          definition = {operator: "is", value: "unknown"}
+          grule3 = Tr8n::GenderRule.create(:language => @russian, :definition => definition)
+
+          definition = {multipart: true, part1: "ends_in", value1: "1", operator: "and", part2: "does_not_end_in", value2: "11"}
+          nrule1 = Tr8n::NumericRule.create(:language => @russian, :definition => definition)
+          definition = {multipart: true, part1: "ends_in", value1: "2,3,4", operator: "and", part2: "does_not_end_in", value2: "12,13,14"}
+          nrule2 = Tr8n::NumericRule.create(:language => @russian, :definition => definition)
+          definition = {multipart: false, part1: "ends_in", value1: "0,5,6,7,8,9,11,12,13,14"}
+          nrule3 = Tr8n::NumericRule.create(:language => @russian, :definition => definition)
+
+          male = mock("male")
+          male.stub!(:to_s).and_return("Michael")
+          male.stub!(:gender).and_return("male")
+          female = mock("female")
+          female.stub!(:to_s).and_return("Anna")
+          female.stub!(:gender).and_return("female")
+          unknown = mock("unknown")
+          unknown.stub!(:to_s).and_return("Alex")
+          unknown.stub!(:gender).and_return("unknown")
+
+          key = Tr8n::TranslationKey.find_or_create("Dear {user}, you have [bold: {count||message}].")
+          key.add_translation("Dorogoi {user}, u vas est' [bold: {count} soobshenie].", [
+                {:token=>"user", :rule_id=>[grule1.id]}, {:token=>"count", :rule_id=>[nrule1.id]}
+          ], @russian, @translator)
+          key.add_translation("Dorogoi {user}, u vas est' [bold: {count} soobsheniya].", [
+                {:token=>"user", :rule_id=>[grule1.id]}, {:token=>"count", :rule_id=>[nrule2.id]}
+          ], @russian, @translator)
+          key.add_translation("Dorogoi {user}, u vas est' [bold: {count} soobshenii].", [
+                {:token=>"user", :rule_id=>[grule1.id]}, {:token=>"count", :rule_id=>[nrule3.id]}
+          ], @russian, @translator)
+          key.add_translation("Dorogaya {user}, u vas est' [bold: {count} soobshenie].", [
+                {:token=>"user", :rule_id=>[grule2.id]}, {:token=>"count", :rule_id=>[nrule1.id]}
+          ], @russian, @translator)
+          key.add_translation("Dorogaya {user}, u vas est' [bold: {count} soobsheniya].", [
+                {:token=>"user", :rule_id=>[grule2.id]}, {:token=>"count", :rule_id=>[nrule2.id]}
+          ], @russian, @translator)
+          key.add_translation("Dorogaya {user}, u vas est' [bold: {count} soobshenii].", [
+                {:token=>"user", :rule_id=>[grule2.id]}, {:token=>"count", :rule_id=>[nrule3.id]}
+          ], @russian, @translator)
+
+          key.translate(@english, {:user => male, :count => 1, :bold => "<b>{$0}</b>"}).should eq("Dear Michael, you have <b>1 message</b>.")
+          key.translate(@english, {:user => female, :count => 1, :bold => "<b>{$0}</b>"}).should eq("Dear Anna, you have <b>1 message</b>.")
+
+          key.translate(@english, {:user => male, :count => 5, :bold => "<b>{$0}</b>"}).should eq("Dear Michael, you have <b>5 messages</b>.")
+          key.translate(@english, {:user => female, :count => 5, :bold => "<b>{$0}</b>"}).should eq("Dear Anna, you have <b>5 messages</b>.")
+
+          key.translate(@russian, {:user => male, :count => 1, :bold => "<b>{$0}</b>"}).should eq("Dorogoi Michael, u vas est' <b>1 soobshenie</b>.")
+          key.translate(@russian, {:user => female, :count => 1, :bold => "<b>{$0}</b>"}).should eq("Dorogaya Anna, u vas est' <b>1 soobshenie</b>.")
+
+          key.translate(@russian, {:user => male, :count => 2, :bold => "<b>{$0}</b>"}).should eq("Dorogoi Michael, u vas est' <b>2 soobsheniya</b>.")
+          key.translate(@russian, {:user => female, :count => 2, :bold => "<b>{$0}</b>"}).should eq("Dorogaya Anna, u vas est' <b>2 soobsheniya</b>.")
+
+          key.translate(@russian, {:user => male, :count => 5, :bold => "<b>{$0}</b>"}).should eq("Dorogoi Michael, u vas est' <b>5 soobshenii</b>.")
+          key.translate(@russian, {:user => female, :count => 5, :bold => "<b>{$0}</b>"}).should eq("Dorogaya Anna, u vas est' <b>5 soobshenii</b>.")
+        end      
+      end
     end
 
   end  
