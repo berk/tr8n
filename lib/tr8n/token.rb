@@ -201,7 +201,7 @@ module Tr8n
           value = ERB::Util.html_escape(value)
         end
       end
-    
+
       if has_case_key?
         value = apply_case(object, value, options, language)
       end
@@ -402,7 +402,6 @@ module Tr8n
     end
   
     def substitute(label, values = {}, options = {}, language = Tr8n::Config.current_language)
-    
       # get the object from the values
       object = values[name_key]
 

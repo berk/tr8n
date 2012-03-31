@@ -1,16 +1,16 @@
 <div class="original_text">
   <div class="supplemental">
   	<% if @map.id %>
-      <%=link_to_function(image_tag("/tr8n/images/exclamation.png", :title=>trla("Report these language case values")), "tr8nLanguageCaseManager.reportCaseMap('#{@map.id}')")%>
+      <%=link_to_function(image_tag("tr8n/exclamation.png", :title=>trla("Report these language case values")), "tr8nLanguageCaseManager.reportCaseMap('#{@map.id}')")%>
 		<% end %>
     <%= tr8n_help_icon_tag %>
   </div>
   
   <div class="quiet small"><%=trl("Original Word")%></div>
   <div class="quote">
-    <%=image_tag("/tr8n/images/left_quote.png") %>
+    <%=image_tag("tr8n/left_quote.png") %>
     <%=@map.keyword %>
-    <%=image_tag("/tr8n/images/right_quote.png") %>
+    <%=image_tag("tr8n/right_quote.png") %>
   </div>
 </div>
 
