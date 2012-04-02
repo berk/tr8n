@@ -55,7 +55,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
       existing_key = find_by_key(key) 
       
       unless existing_key
-        if options[:api] and (not Tr8n::Config.api[:allow_key_registration])
+        if options[:api] == :translate and (not Tr8n::Config.api[:allow_key_registration])
           raise Tr8n::KeyRegistrationException.new("Key registration through API is disabled!")  
         end
       end
@@ -101,29 +101,30 @@ class Tr8n::TranslationKey < ActiveRecord::Base
 
   # creates associations between the translation keys and sources
   # used for the site map and javascript support
-  def self.track_source(translation_key, options)
+  def self.track_source(translation_key, options = {})
 
-    # key source tracking or client sdk must be enabled for this to work
-    return unless Tr8n::Config.enable_key_source_tracking? or Tr8n::Config.enable_client_sdk?
+    # key source tracking must be enabled or request must come from an API (JavaScript) to get it registered with a source
+    if Tr8n::Config.enable_key_source_tracking? or options[:api] == :translate
+      # source can be passed into an individual key, or as a block or fall back on the controller/action
+      source = options[:source] || Tr8n::Config.block_options[:source] || Tr8n::Config.current_source
 
-    # source can be passed into an individual key, or as a block or fall back on the controller/action
-    source = options[:source] || Tr8n::Config.block_options[:source] || Tr8n::Config.current_source
+      # should never be blank
+      return if source.blank?
 
-    # should never be blank
-    return if source.blank?
+      # each page or component is identified by a translation source
+      translation_source = Tr8n::TranslationSource.find_or_create(source, options[:url])
 
-    # each page or component is identified by a translation source
-    translation_source = Tr8n::TranslationSource.find_or_create(source, options[:url])
-
-    # each key is associated with one or more sources
-    translation_key_source = Tr8n::TranslationKeySource.find_or_create(translation_key, translation_source)
-
+      # each key is associated with one or more sources
+      translation_key_source = Tr8n::TranslationKeySource.find_or_create(translation_key, translation_source)
+    end
+      
     # for debugging purposes only - this will track the actual location of the key in the source
-    return unless Tr8n::Config.enable_key_caller_tracking?    
-    options[:caller] ||= caller
-    options[:caller_key] = options[:caller].is_a?(Array) ? options[:caller].join(", ") : options[:caller].to_s
-    options[:caller_key] = generate_key(options[:caller_key])
-    translation_key_source.update_details!(options)
+    if Tr8n::Config.enable_key_caller_tracking?    
+      options[:caller] ||= caller
+      options[:caller_key] = options[:caller].is_a?(Array) ? options[:caller].join(", ") : options[:caller].to_s
+      options[:caller_key] = generate_key(options[:caller_key])
+      translation_key_source.update_details!(options)
+    end
   end
   
   def self.generate_key(label, desc = "")

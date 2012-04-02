@@ -44,12 +44,13 @@ class Tr8n::Api::V1::LanguageController < Tr8n::Api::V1::BaseController
     language = Tr8n::Language.for(params[:language]) || tr8n_current_language
     source = CGI.unescape(params[:source] || "API") 
     
-    return sanitize_api_response(translate_phrase(language, params, {:source => source})) if params[:label]
+    return sanitize_api_response(translate_phrase(language, params, {:source => source, :api => :translate})) if params[:label]
     
     # API signature
     # {:source => "", :language => "", :phrases => [{:label => ""}]}
     
-    # get all phrases for the specified source
+    # get all phrases for the specified source 
+    # this can be used by a parallel application or a JavaScript Client SDK that needs to build a page cache
     if params[:batch] == "true" or params[:cache] == "true"
       if params[:sources].blank? and params[:source].blank?
         return sanitize_api_response({"error" => "No source/sources have been provided for the batch request."})
@@ -68,7 +69,7 @@ class Tr8n::Api::V1::LanguageController < Tr8n::Api::V1::BaseController
       
       translations = []
       Tr8n::TranslationKey.find(:all, :conditions => conditions).each_with_index do |tkey, index|
-        trn = tkey.translate(language, {}, {:api => true})
+        trn = tkey.translate(language, {}, {:api => :cache})
         translations << trn 
       end
 
@@ -89,7 +90,7 @@ class Tr8n::Api::V1::LanguageController < Tr8n::Api::V1::BaseController
       translations = []
       phrases.each do |phrase|
         phrase = {:label => phrase} if phrase.is_a?(String)
-        translations << translate_phrase(language, phrase, {:source => source})
+        translations << translate_phrase(language, phrase, {:source => source, :api => :translate})
       end
       
       return sanitize_api_response({:phrases => translations})    
@@ -104,7 +105,7 @@ private
   
   def translate_phrase(language, phrase, opts = {})
     return "" if phrase[:label].strip.blank?
-    language.translate(phrase[:label], phrase[:description], {}, {:api => true, :source => opts[:source]})
+    language.translate(phrase[:label], phrase[:description], {}, opts)
   end
   
 end
