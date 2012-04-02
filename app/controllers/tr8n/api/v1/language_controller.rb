@@ -28,8 +28,6 @@ class Tr8n::Api::V1::LanguageController < Tr8n::Api::V1::BaseController
 
   # returns a list of all languages
   def index
-    return sanitize_api_response({"error" => "Api is disabled"}) unless Tr8n::Config.enable_api?
-
     languages = []
     Tr8n::Language.enabled_languages.each do |lang|
       languages << {:locale => lang.locale, :name => lang.full_name}
@@ -38,8 +36,6 @@ class Tr8n::Api::V1::LanguageController < Tr8n::Api::V1::BaseController
   end
   
   def translate
-    return sanitize_api_response({"error" => "Api is disabled"}) unless Tr8n::Config.enable_api?
-
     language = Tr8n::Language.for(params[:language]) || tr8n_current_language
     source = CGI.unescape(params[:source] || "API") 
     

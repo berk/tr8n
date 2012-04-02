@@ -25,7 +25,6 @@ class Tr8n::Api::V1::TranslationController < Tr8n::Api::V1::BaseController
 
   # returns a list of all languages
   def submit
-    return sanitize_api_response({:error => "Api is disabled"}) unless Tr8n::Config.enable_api?
     return sanitize_api_response({:error => "Guest user cannot submit a translation"}) if tr8n_current_user_is_guest?
 
     if params[:translation_key]

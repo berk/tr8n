@@ -22,6 +22,8 @@
 #++
 
 class Tr8n::Api::V1::BaseController < ApplicationController
+  
+  before_filter :check_api_enabled
 
   if Tr8n::Config.api_skip_before_filters.any?
     skip_before_filter *Tr8n::Config.api_skip_before_filters
@@ -37,6 +39,10 @@ class Tr8n::Api::V1::BaseController < ApplicationController
 
 private
 
+  def check_api_enabled
+    sanitize_api_response({"error" => "Api is disabled"}) unless Tr8n::Config.enable_api?
+  end
+  
   def tr8n_current_user
     Tr8n::Config.current_user
   end
