@@ -85,7 +85,7 @@ class Tr8n::Api::V1::LanguageController < Tr8n::Api::V1::BaseController
       translations = []
       phrases.each do |phrase|
         phrase = {:label => phrase} if phrase.is_a?(String)
-        translations << translate_phrase(language, phrase, {:source => source})
+        translations << translate_phrase(language, phrase, {:source => source, :api => :translate})
       end
       
       return sanitize_api_response({:phrases => translations})    

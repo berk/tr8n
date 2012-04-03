@@ -1,5 +1,5 @@
 ﻿/****************************************************************************
-  Copyright (c) 2010-2011 Michael Berkovich, Ian McDaniel
+  Copyright (c) 2010-2012 Michael Berkovich, Ian McDaniel
 
   Permission is hereby granted, free of charge, to any person obtaining
   a copy of this software and associated documentation files (the
@@ -23,6 +23,8 @@
 
 /****************************************************************************
 **** Tr8n Generic Helper Functions
+****
+**** Tr8n does not rely on any library and is 100% fully self-contained
 ****************************************************************************/
 
 document.createElement('tr8n');
@@ -38,7 +40,7 @@ var Tr8n = Tr8n || {
 };
 
 /****************************************************************************
-**** Tr8n Effects Helper Functions - Can be overloaded by JS frameworks
+**** Tr8n Effects Helper Functions - Can be overloaded by any JS frameworks
 ****************************************************************************/
 
 Tr8n.Effects = {
