@@ -66,12 +66,8 @@ https://github.com/berk/tr8n/wiki/9.-Supported-Languages
 
 Add the following gems to your Gemfile: 
 
-  gem 'kaminari'
   gem 'will_filter', "~> 3.1.2" 
-  gem 'tr8n', "~> 3.1.1" 
-  gem 'sass'
-  gem 'coffee-script'
-
+  gem 'tr8n', "~> 3.2.1" 
 	
 And run:
 
