@@ -43,7 +43,7 @@ https://github.com/berk/tr8n/wiki/5.-Integration-Instructions
 
 Translation Markup Language (TML)
 
-https://github.com/berk/tr8n/wiki/6.-Tr8n-Syntax-and-Translation-Markup-Language-(TML)
+https://github.com/berk/tr8n/wiki/6.-Tr8n-Syntax-and-Translation-Markup-Language
 
 Rules Engine 
 
