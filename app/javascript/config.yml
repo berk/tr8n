@@ -1,0 +1,63 @@
+all:
+  src/ext/inflector.js
+  src/ext/md5.js
+  src/base.js
+  src/utils.js
+  src/effects.js
+  src/ui/language_case_manager.js
+  src/ui/language_selector.js
+  src/ui/lightbox.js
+  src/ui/translator.js
+  src/proxy.js
+  src/logger.js
+  src/language.js
+  src/translation_key.js
+  src/tokens/token.js
+  src/tokens/data_token.js
+  src/tokens/transform_token.js
+  src/tokens/decoration_token.js
+  src/rules/language_rule.js
+  src/rules/date_rule.js
+  src/rules/gender_rule.js
+  src/rules/numeric_rule.js
+  src/rules/list_rule.js
+  src/rules/gender_list_rule.js
+  src/tml/label.js
+  src/tml/token.js
+  src/init.js
+
+ui:
+  src/ext/md5.js
+  src/base.js
+  src/utils.js
+  src/effects.js
+  src/ui/language_case_manager.js
+  src/ui/language_selector.js
+  src/ui/lightbox.js
+  src/ui/translator.js
+  src/init.js
+
+proxy:
+  src/ext/inflector.js
+  src/ext/md5.js
+  src/base.js
+  src/utils.js
+  src/effects.js
+  src/proxy.js
+  src/logger.js
+  src/language.js
+  src/translation_key.js
+  src/tokens/token.js
+  src/tokens/data_token.js
+  src/tokens/transform_token.js
+  src/tokens/decoration_token.js
+  src/rules/language_rule.js
+  src/rules/date_rule.js
+  src/rules/gender_rule.js
+  src/rules/numeric_rule.js
+  src/rules/list_rule.js
+  src/rules/gender_list_rule.js
+  src/tml/label.js
+  src/tml/token.js
+
+
