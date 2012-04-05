@@ -48,7 +48,7 @@ Tr8n.Proxy.DecorationToken.prototype.getDecoratedValue = function() {
   if (!this.decorated_value) {
     var value = this.getFullName().replace(/[\]]/g, '');
     value = value.substring(value.indexOf(':') + 1, value.length);
-    this.decorated_value = Tr8n.Proxy.Utils.trim(value);
+    this.decorated_value = Tr8n.Utils.trim(value);
   }
   return this.decorated_value;
 }
@@ -65,18 +65,18 @@ Tr8n.Proxy.DecorationToken.prototype.substitute = function(label, token_values) 
       return label;
     }
     
-    decoration = Tr8n.Proxy.Utils.replaceAll(decoration, '{$0}', this.getDecoratedValue());
+    decoration = Tr8n.Utils.replaceAll(decoration, '{$0}', this.getDecoratedValue());
     if (object) {
       for (var key in object) {
-        decoration = Tr8n.Proxy.Utils.replaceAll(decoration, '{$' + key + '}', object[key]);
+        decoration = Tr8n.Utils.replaceAll(decoration, '{$' + key + '}', object[key]);
       }
     }
   } else if (typeof object == 'string') {
-    decoration = Tr8n.Proxy.Utils.replaceAll(decoration, '{$0}', this.getDecoratedValue());
+    decoration = Tr8n.Utils.replaceAll(decoration, '{$0}', this.getDecoratedValue());
   } else {
     this.getLogger().error("Unknown type of decoration token " + this.getFullName());
     return label;
   }
   
-  return Tr8n.Proxy.Utils.replaceAll(label, this.getFullName(), decoration);
+  return Tr8n.Utils.replaceAll(label, this.getFullName(), decoration);
 }

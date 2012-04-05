@@ -64,7 +64,9 @@ Tr8n.Proxy.TranslationKey.prototype = {
         var rule_name = this.getProxy().getLanguageRuleForType(token_context['type']);
         this.getLogger().debug("Evaluating rule: " + rule_name);
         var options = {'proxy': this.getProxy()};
-        var rule = eval("new " + rule_name + "(token_context, options)");
+        var rule = eval("new " + rule_name + "()");
+        rule.definition = token_context;
+        rule.options = options;
         valid_context = valid_context && rule.evaluate(token, token_values);
       }
       

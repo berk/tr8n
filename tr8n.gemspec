@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.rubyforge_project = 'tr8n'
 
   s.files         = `git ls-files`.split("\n")
-  s.test_files    = `git ls-files -- {test,local,spec,features}/*`.split("\n")
+  s.test_files    = `git ls-files -- {test,local,spec,features,app/javascript}/*`.split("\n")
   s.extra_rdoc_files = ['README.rdoc']
   s.require_paths = ['lib']
 

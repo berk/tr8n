@@ -89,7 +89,8 @@ module Tr8n
 
         client_var_name = opts[:client_var_name] || :tr8nProxy
 
-        html = [javascript_include_tag("tr8n/tr8n_client_sdk.js")]
+        html = []
+        # html << [javascript_include_tag("tr8n/tr8n_client_sdk.js")]
         html << "<script>"
         html << "  var #{client_var_name} = new Tr8n.Proxy(#{opts.to_json});"
         html << "  function reloadTranslations() { "
@@ -101,6 +102,12 @@ module Tr8n
         html << "  function trl(label, description, tokens, options) { "
         html << "    return #{client_var_name}.trl(label, description, tokens, options); "
         html << "  } "
+
+        # TODO: check if TML is enabled
+        html << "  Tr8n.Utils.addEvent(window, 'load', function() { "
+        html << "    #{client_var_name}.initTml(); "                               
+        html << "  }) "                              
+
         html << "</script>"
         html.join("\n").html_safe
       end

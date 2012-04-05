@@ -22,6 +22,7 @@
 ****************************************************************************/
 
 document.createElement('tr8n');
+document.createElement('tml');
 
 var Tr8n = Tr8n || {
   element:function(element_id) {

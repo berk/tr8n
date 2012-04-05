@@ -23,12 +23,13 @@
 
 Tr8n.Tml = Tr8n.Tml || {};
 
-Tr8n.Tml.Label = function(node) {
+Tr8n.Tml.Label = function(node, proxy) {
   this.node = node;
   this.label = "";
   this.description = "";
   this.tokens = {};
   this.options = {};
+  this.proxy = proxy;
 
   for (var i=0; i < this.node.childNodes.length; i++) {
     var childNode = this.node.childNodes[i];
@@ -54,6 +55,6 @@ Tr8n.Tml.Label = function(node) {
 
 Tr8n.Tml.Label.prototype = {
   translate: function() {
-    this.node.innerHTML = tr8nProxy.translate(this.label, this.description, this.tokens, this.options);
+    this.node.innerHTML = this.proxy.translate(this.label, this.description, this.tokens, this.options);
   }
 }

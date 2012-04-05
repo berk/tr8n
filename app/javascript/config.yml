@@ -1,6 +1,8 @@
 all:
   src/ext/inflector.js
   src/ext/md5.js
+  src/ext/shortcut.js
+  src/ext/keyboard_1_49.js
   src/base.js
   src/utils.js
   src/effects.js
@@ -27,7 +29,8 @@ all:
   src/init.js
 
 ui:
-  src/ext/md5.js
+  src/ext/shortcut.js
+  src/ext/keyboard_1_49.js
   src/base.js
   src/utils.js
   src/effects.js

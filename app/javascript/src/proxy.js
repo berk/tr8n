@@ -238,7 +238,7 @@ Tr8n.Proxy.prototype = {
     }, this.options['scheduler_interval']);
   },
 
-  parseTml: function() {
+  initTml: function() {
     var tree_walker = document.createTreeWalker(document.body, NodeFilter.SHOW_ALL, function(node) {
       if (node.nodeName == 'TML:LABEL') {
         return NodeFilter.FILTER_ACCEPT;
@@ -248,7 +248,7 @@ Tr8n.Proxy.prototype = {
     }, false);
 
     while (tree_walker.nextNode()) {
-      new Tr8n.Tml.Label(tree_walker.currentNode).translate();
+      new Tr8n.Tml.Label(tree_walker.currentNode, this).translate();
     }
   }
 }
