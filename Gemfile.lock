@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    tr8n (3.2.0)
+    tr8n (3.2.1)
       coffee-script
       kaminari
       rails (>= 3.1.0)
