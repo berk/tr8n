@@ -67,15 +67,10 @@ class Tr8n::TranslationKey < ActiveRecord::Base
                               :level => (options[:level] || Tr8n::Config.block_options[:level] || 0),
                               :admin => Tr8n::Config.block_options[:admin])
 
-      # for backwards compatibility only
       mark_as_admin(existing_key, options)
       update_default_locale(existing_key, options)
-      
-      # mark each key as verified - but only if caching is enabled
-      # verification is used to cleanup unused keys
-      if Tr8n::Config.enable_caching?
-        existing_key.update_attributes(:verified_at => Time.now)
-      end  
+      verify_key(existing_key, options)
+
       existing_key
     end
     
@@ -97,6 +92,13 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     return unless tkey.locale.blank?
     key_locale = Tr8n::Config.block_options[:default_locale] || Tr8n::Config.default_locale
     tkey.update_attributes(:locale => key_locale)
+  end
+
+  # mark each key as verified - but only if caching is enabled
+  # verification is used to cleanup unused keys
+  def self.verify_key(tkey, options)
+    return unless Tr8n::Config.enable_key_verification?
+    existing_key.update_attributes(:verified_at => Time.now)
   end
 
   # creates associations between the translation keys and sources
@@ -126,7 +128,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
       translation_key_source.update_details!(options)
     end
   end
-  
+
   def self.generate_key(label, desc = "")
     Digest::MD5.hexdigest("#{label};;;#{desc}")
   end
@@ -554,12 +556,12 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   end
 
   def after_save
-    Tr8n::Cache.delete(cache_key)
+    # Tr8n::Cache.delete(cache_key)
     touch_sources
   end
 
   def after_destroy
-    Tr8n::Cache.delete(cache_key)
+    # Tr8n::Cache.delete(cache_key)
   end
 
   def add_translation(label, rules = nil, lang = Tr8n::Config.current_language, translator = Tr8n::Config.current_translator)
