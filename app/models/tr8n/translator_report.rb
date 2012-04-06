@@ -20,6 +20,26 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
+#
+#-- Tr8n::TranslatorReport Schema Information
+#
+# Table name: tr8n_translator_reports
+#
+#  id               INTEGER         not null, primary key
+#  translator_id    integer         
+#  state            varchar(255)    
+#  object_id        integer         
+#  object_type      varchar(255)    
+#  reason           varchar(255)    
+#  comment          text            
+#  created_at       datetime        
+#  updated_at       datetime        
+#
+# Indexes
+#
+#  index_tr8n_translator_reports_on_translator_id    (translator_id) 
+#
+#++
 
 class Tr8n::TranslatorReport < ActiveRecord::Base
   set_table_name :tr8n_translator_reports

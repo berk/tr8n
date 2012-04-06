@@ -20,6 +20,22 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
+#
+#-- Tr8n::Glossary Schema Information
+#
+# Table name: tr8n_glossary
+#
+#  id             INTEGER         not null, primary key
+#  keyword        varchar(255)    
+#  description    text            
+#  created_at     datetime        
+#  updated_at     datetime        
+#
+# Indexes
+#
+#  index_tr8n_glossary_on_keyword    (keyword) 
+#
+#++
 
 class Tr8n::Glossary < ActiveRecord::Base
   set_table_name :tr8n_glossary

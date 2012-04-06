@@ -20,6 +20,30 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
+#
+#-- Tr8n::Translation Schema Information
+#
+# Table name: tr8n_translations
+#
+#  id                    INTEGER       not null, primary key
+#  translation_key_id    integer       not null
+#  language_id           integer       not null
+#  translator_id         integer       not null
+#  label                 text          not null
+#  rank                  integer       default = 0
+#  approved_by_id        integer(8)    
+#  rules                 text          
+#  created_at            datetime      
+#  updated_at            datetime      
+#  synced_at             datetime      
+#
+# Indexes
+#
+#  tr8n_trans_created_at                      (created_at) 
+#  tr8n_trans_key_id_translator_id_lang_id    (translation_key_id, translator_id, language_id) 
+#  r8n_trans_translator_id                    (translator_id) 
+#
+#++
 
 class Tr8n::Translation < ActiveRecord::Base
   set_table_name :tr8n_translations

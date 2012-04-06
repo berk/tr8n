@@ -20,6 +20,28 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
+#
+#-- Tr8n::TranslatorLog Schema Information
+#
+# Table name: tr8n_translator_logs
+#
+#  id               INTEGER         not null, primary key
+#  translator_id    integer         
+#  user_id          integer(8)      
+#  action           varchar(255)    
+#  action_level     integer         
+#  reason           varchar(255)    
+#  reference        varchar(255)    
+#  created_at       datetime        
+#  updated_at       datetime        
+#
+# Indexes
+#
+#  index_tr8n_translator_logs_on_created_at       (created_at) 
+#  index_tr8n_translator_logs_on_user_id          (user_id) 
+#  index_tr8n_translator_logs_on_translator_id    (translator_id) 
+#
+#++
 
 class Tr8n::TranslatorLog < ActiveRecord::Base
   set_table_name :tr8n_translator_logs

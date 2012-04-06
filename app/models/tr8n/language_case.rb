@@ -20,6 +20,29 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
+#
+#-- Tr8n::LanguageCase Schema Information
+#
+# Table name: tr8n_language_cases
+#
+#  id               INTEGER         not null, primary key
+#  language_id      integer         not null
+#  translator_id    integer         
+#  keyword          varchar(255)    
+#  latin_name       varchar(255)    
+#  native_name      varchar(255)    
+#  description      text            
+#  application      varchar(255)    
+#  created_at       datetime        
+#  updated_at       datetime        
+#
+# Indexes
+#
+#  index_tr8n_language_cases_on_language_id_and_keyword          (language_id, keyword) 
+#  index_tr8n_language_cases_on_language_id_and_translator_id    (language_id, translator_id) 
+#  index_tr8n_language_cases_on_language_id                      (language_id) 
+#
+#++
 
 class Tr8n::LanguageCase < ActiveRecord::Base
   set_table_name :tr8n_language_cases

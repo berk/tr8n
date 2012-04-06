@@ -20,6 +20,41 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
+#
+#-- Tr8n::Translator Schema Information
+#
+# Table name: tr8n_translators
+#
+#  id                      INTEGER         not null, primary key
+#  user_id                 integer         not null
+#  inline_mode             boolean         
+#  blocked                 boolean         
+#  reported                boolean         
+#  fallback_language_id    integer         
+#  rank                    integer         default = 0
+#  name                    varchar(255)    
+#  gender                  varchar(255)    
+#  email                   varchar(255)    
+#  password                varchar(255)    
+#  mugshot                 varchar(255)    
+#  link                    varchar(255)    
+#  locale                  varchar(255)    
+#  level                   integer         default = 0
+#  manager                 integer         
+#  last_ip                 varchar(255)    
+#  country_code            varchar(255)    
+#  created_at              datetime        
+#  updated_at              datetime        
+#  remote_id               integer         
+#
+# Indexes
+#
+#  index_tr8n_translators_on_email_and_password    (email, password) 
+#  index_tr8n_translators_on_email                 (email) 
+#  index_tr8n_translators_on_created_at            (created_at) 
+#  index_tr8n_translators_on_user_id               (user_id) 
+#
+#++
 
 class Tr8n::Translator < ActiveRecord::Base
   set_table_name :tr8n_translators

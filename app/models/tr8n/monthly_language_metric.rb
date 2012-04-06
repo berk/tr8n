@@ -20,6 +20,30 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
+#
+#-- Tr8n::MonthlyLanguageMetric Schema Information
+#
+# Table name: tr8n_language_metrics
+#
+#  id                      INTEGER         not null, primary key
+#  type                    varchar(255)    
+#  language_id             integer         not null
+#  metric_date             date            
+#  user_count              integer         default = 0
+#  translator_count        integer         default = 0
+#  translation_count       integer         default = 0
+#  key_count               integer         default = 0
+#  locked_key_count        integer         default = 0
+#  translated_key_count    integer         default = 0
+#  created_at              datetime        
+#  updated_at              datetime        
+#
+# Indexes
+#
+#  index_tr8n_language_metrics_on_created_at     (created_at) 
+#  index_tr8n_language_metrics_on_language_id    (language_id) 
+#
+#++
 
 class Tr8n::MonthlyLanguageMetric < Tr8n::LanguageMetric
 

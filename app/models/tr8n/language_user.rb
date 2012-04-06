@@ -20,6 +20,28 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
+#
+#-- Tr8n::LanguageUser Schema Information
+#
+# Table name: tr8n_language_users
+#
+#  id               INTEGER     not null, primary key
+#  language_id      integer     not null
+#  user_id          integer     not null
+#  translator_id    integer     
+#  manager          boolean     
+#  created_at       datetime    
+#  updated_at       datetime    
+#
+# Indexes
+#
+#  index_tr8n_language_users_on_updated_at                       (updated_at) 
+#  index_tr8n_language_users_on_created_at                       (created_at) 
+#  index_tr8n_language_users_on_language_id_and_translator_id    (language_id, translator_id) 
+#  index_tr8n_language_users_on_language_id_and_user_id          (language_id, user_id) 
+#  index_tr8n_language_users_on_user_id                          (user_id) 
+#
+#++
 
 class Tr8n::LanguageUser < ActiveRecord::Base
   set_table_name :tr8n_language_users

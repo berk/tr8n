@@ -20,6 +20,26 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
+#
+#-- Tr8n::LanguageForumMessage Schema Information
+#
+# Table name: tr8n_language_forum_messages
+#
+#  id                         INTEGER     not null, primary key
+#  language_id                integer     not null
+#  language_forum_topic_id    integer     not null
+#  translator_id              integer     not null
+#  message                    text        not null
+#  created_at                 datetime    
+#  updated_at                 datetime    
+#
+# Indexes
+#
+#  tr8n_forum_msgs_lang_id_topic_id    (language_id, language_forum_topic_id) 
+#  tr8n_forums_msgs_translator_id      (translator_id) 
+#  tr8n_forum_msgs_lang_id             (language_id) 
+#
+#++
 
 class Tr8n::LanguageForumMessage < ActiveRecord::Base
   set_table_name :tr8n_language_forum_messages

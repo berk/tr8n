@@ -20,6 +20,22 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
+#
+#-- Tr8n::TranslationSourceLanguage Schema Information
+#
+# Table name: tr8n_translation_source_languages
+#
+#  id                       INTEGER     not null, primary key
+#  language_id              integer     
+#  translation_source_id    integer     
+#  created_at               datetime    
+#  updated_at               datetime    
+#
+# Indexes
+#
+#  tsllt    (language_id, translation_source_id) 
+#
+#++
 
 class Tr8n::TranslationSourceLanguage < ActiveRecord::Base
   set_table_name :tr8n_translation_source_languages

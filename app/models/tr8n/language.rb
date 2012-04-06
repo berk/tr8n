@@ -20,6 +20,31 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
+#
+#-- Tr8n::Language Schema Information
+#
+# Table name: tr8n_languages
+#
+#  id                      INTEGER         not null, primary key
+#  locale                  varchar(255)    not null
+#  english_name            varchar(255)    not null
+#  native_name             varchar(255)    
+#  enabled                 boolean         
+#  right_to_left           boolean         
+#  completeness            integer         
+#  fallback_language_id    integer         
+#  curse_words             text            
+#  featured_index          integer         default = 0
+#  google_key              varchar(255)    
+#  facebook_key            varchar(255)    
+#  created_at              datetime        
+#  updated_at              datetime        
+#
+# Indexes
+#
+#  index_tr8n_languages_on_locale    (locale) 
+#
+#++
 
 class Tr8n::Language < ActiveRecord::Base
   set_table_name :tr8n_languages

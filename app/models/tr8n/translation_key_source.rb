@@ -20,6 +20,24 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
+#
+#-- Tr8n::TranslationKeySource Schema Information
+#
+# Table name: tr8n_translation_key_sources
+#
+#  id                       INTEGER     not null, primary key
+#  translation_key_id       integer     not null
+#  translation_source_id    integer     not null
+#  details                  text        
+#  created_at               datetime    
+#  updated_at               datetime    
+#
+# Indexes
+#
+#  tr8n_trans_keys_source_id    (translation_source_id) 
+#  tr8n_trans_keys_key_id       (translation_key_id) 
+#
+#++
 
 class Tr8n::TranslationKeySource < ActiveRecord::Base
   set_table_name  :tr8n_translation_key_sources

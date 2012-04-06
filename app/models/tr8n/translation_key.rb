@@ -20,6 +20,30 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
+#
+#-- Tr8n::TranslationKey Schema Information
+#
+# Table name: tr8n_translation_keys
+#
+#  id                   INTEGER         not null, primary key
+#  type                 varchar(255)    
+#  key                  varchar(255)    not null
+#  label                text            not null
+#  description          text            
+#  verified_at          datetime        
+#  translation_count    integer         
+#  admin                boolean         
+#  locale               varchar(255)    
+#  level                integer         default = 0
+#  created_at           datetime        
+#  updated_at           datetime        
+#  synced_at            datetime        
+#
+# Indexes
+#
+#  index_tr8n_translation_keys_on_key    (key) UNIQUE
+#
+#++
 
 require 'digest/md5'
 

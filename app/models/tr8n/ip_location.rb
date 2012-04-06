@@ -20,6 +20,28 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
+#
+#-- Tr8n::IpLocation Schema Information
+#
+# Table name: tr8n_ip_locations
+#
+#  id            INTEGER        not null, primary key
+#  low           integer(8)     
+#  high          integer(8)     
+#  registry      varchar(20)    
+#  assigned      date           
+#  ctry          varchar(2)     
+#  cntry         varchar(3)     
+#  country       varchar(80)    
+#  created_at    datetime       
+#  updated_at    datetime       
+#
+# Indexes
+#
+#  index_tr8n_ip_locations_on_high    (high) 
+#  index_tr8n_ip_locations_on_low     (low) 
+#
+#++
 
 class Tr8n::IpLocation < ActiveRecord::Base
   set_table_name :tr8n_ip_locations

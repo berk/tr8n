@@ -20,6 +20,25 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
+#
+#-- Tr8n::SyncLog Schema Information
+#
+# Table name: tr8n_sync_logs
+#
+#  id                       INTEGER     not null, primary key
+#  started_at               datetime    
+#  finished_at              datetime    
+#  keys_sent                integer     
+#  translations_sent        integer     
+#  keys_received            integer     
+#  translations_received    integer     
+#  created_at               datetime    
+#  updated_at               datetime    
+#
+# Indexes
+#
+#
+#++
 
 class Tr8n::SyncLog < ActiveRecord::Base
   set_table_name :tr8n_sync_logs
