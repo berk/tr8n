@@ -76,12 +76,9 @@ class Tr8n::TranslationKey < ActiveRecord::Base
         new_tkey
       end  
 
-      # for backwards compatibility only
       mark_as_admin(existing_key, options)
       update_default_locale(existing_key, options)
-      
-      # mark each key as verified - but only if caching is enabled
-      existing_key.update_attributes(:verified_at => Time.now) if Tr8n::Config.enable_caching?
+      verify_key(existing_key, options)
       existing_key
     end
     
@@ -106,22 +103,40 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     tkey.update_attributes(:locale => key_locale)
   end
 
-  # used to create associations between the translation keys and source
-  # primarely used for the site map and only needs to be enabled 
-  # for a short period of time on a single machine
-  def self.track_source(tkey, options)
-    # return unless Tr8n::Config.enable_key_source_tracking? 
-    # return if options[:source].blank?
-
-    key_source = Tr8n::Cache.cache_key_source(tkey, options[:source] || Tr8n::Config.block_options[:source])
-    
-    return unless Tr8n::Config.enable_key_caller_tracking?
-    options[:caller] ||= caller
-    options[:caller_key] = options[:caller].is_a?(Array) ? options[:caller].join(", ") : options[:caller].to_s
-    options[:caller_key] = generate_key(options[:caller_key])
-    key_source.update_details!(options)
+  # mark each key as verified - but only if caching is enabled
+  # verification is used to cleanup unused keys
+  def self.verify_key(tkey, options)
+    return unless Tr8n::Config.enable_key_verification?
+    existing_key.update_attributes(:verified_at => Time.now)
   end
-  
+
+  # creates associations between the translation keys and sources
+  # used for the site map and javascript support
+  def self.track_source(tkey, options = {})
+    # key source tracking must be enabled or request must come from an API (JavaScript) to get it registered with a source
+    if Tr8n::Config.enable_key_source_tracking? or options[:api] == :translate
+      # source can be passed into an individual key, or as a block or fall back on the controller/action
+      source = options[:source] || Tr8n::Config.block_options[:source] || Tr8n::Config.current_source
+
+      # should never be blank
+      return if source.blank?
+
+      # each page or component is identified by a translation source
+      translation_source = Tr8n::TranslationSource.find_or_create(source, options[:url])
+
+      # each key is associated with one or more sources
+      translation_key_source = Tr8n::TranslationKeySource.find_or_create(tkey, translation_source)
+    end
+      
+    # for debugging purposes only - this will track the actual location of the key in the source
+    if Tr8n::Config.enable_key_caller_tracking?    
+      options[:caller] ||= caller
+      options[:caller_key] = options[:caller].is_a?(Array) ? options[:caller].join(", ") : options[:caller].to_s
+      options[:caller_key] = generate_key(options[:caller_key])
+      translation_key_source.update_details!(options)
+    end
+  end
+
   def self.generate_key(label, desc = "")
     # TODO: there is something iffy going on with the strings from the hash
     # without the extra ~ = the strings are not seen in the sqlite database - wtf?
@@ -521,9 +536,16 @@ class Tr8n::TranslationKey < ActiveRecord::Base
       map
     end
   end
+
+  def touch_sources
+    sources.each do |source|
+      source.touch
+    end
+  end
   
   def clear_cache
-    Tr8n::Cache.delete("translation_key_#{key}")
+    # never need to be deleted from cache
+    # Tr8n::Cache.delete("translation_key_#{key}")
   end
 
   ###############################################################

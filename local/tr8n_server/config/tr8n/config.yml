@@ -13,7 +13,8 @@ defaults:
   enable_tr8n:                true      # enables the engine
   enable_key_source_tracking: false     # builds the site map sources
   enable_key_caller_tracking: false     # tracks all calls to labels with their traces - for debugging only
-  
+  enable_key_verification:    false     # marks cached keys as verified, for cleanup
+
   enable_glossary_hints:      true      # shows glossary in the translator    
   enable_software_keyboard:   true      # shows the soft keyboard icon  
   enable_keyboard_shortcuts:  true      # adds some keyboard shortcuts like ctrl+shift+s
