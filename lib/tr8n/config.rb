@@ -234,7 +234,7 @@ module Tr8n
       config[:enable_key_caller_tracking]
     end
 
-    def enable_key_verification?
+    def self.enable_key_verification?
       config[:enable_key_verification]
     end
 
