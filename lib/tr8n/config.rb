@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2011 Michael Berkovich
+# Copyright (c) 2010-2012 Michael Berkovich, tr8n.net
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -265,6 +265,14 @@ module Tr8n
     def self.open_registration_mode?
       config[:open_registration_mode]
     end
+
+    def self.enable_registration_disclaimer?
+      config[:enable_registration_disclaimer]
+    end
+
+    def self.registration_disclaimer_path
+      config[:registration_disclaimer_path] || "/tr8n/common/terms_of_service"
+    end
   
     def self.enable_fallback_languages?
       config[:enable_fallback_languages]
@@ -286,6 +294,10 @@ module Tr8n
       config[:enable_country_tracking]
     end
   
+    def self.enable_translator_tabs?
+      config[:enable_translator_tabs]
+    end
+
     #########################################################
     # Config Sections
     def self.caching
@@ -747,6 +759,30 @@ module Tr8n
     def self.enable_client_sdk?
       config[:enable_client_sdk]
     end
+
+    def self.enable_browser_cache?
+      config[:enable_browser_cache]
+    end
+
+    def self.default_client_interval
+      5000
+    end
+
+    def self.api_skip_before_filters
+      return [] unless api[:skip_before_filters]
+      @api_skip_before_filters ||= api[:skip_before_filters].collect{|filter| filter.to_sym}
+    end
+
+    def self.api_before_filters
+      return [] unless api[:before_filters]
+      @api_before_filters ||= api[:before_filters].collect{|filter| filter.to_sym}
+    end
+
+    def self.api_after_filters
+      return [] unless api[:after_filters]
+      @api_after_filters ||= api[:after_filters].collect{|filter| filter.to_sym}
+    end
+
 
     #########################################################
     # Sync Process

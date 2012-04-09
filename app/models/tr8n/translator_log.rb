@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2011 Michael Berkovich, tr8n.net
+# Copyright (c) 2010-2012 Michael Berkovich, tr8n.net
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -19,6 +19,28 @@
 # LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+#++
+#
+#-- Tr8n::TranslatorLog Schema Information
+#
+# Table name: tr8n_translator_logs
+#
+#  id               INTEGER         not null, primary key
+#  translator_id    integer         
+#  user_id          integer(8)      
+#  action           varchar(255)    
+#  action_level     integer         
+#  reason           varchar(255)    
+#  reference        varchar(255)    
+#  created_at       datetime        
+#  updated_at       datetime        
+#
+# Indexes
+#
+#  index_tr8n_translator_logs_on_created_at       (created_at) 
+#  index_tr8n_translator_logs_on_user_id          (user_id) 
+#  index_tr8n_translator_logs_on_translator_id    (translator_id) 
+#
 #++
 
 class Tr8n::TranslatorLog < ActiveRecord::Base
@@ -83,11 +105,11 @@ class Tr8n::TranslatorLog < ActiveRecord::Base
     html = action.to_s.gsub("_", " ")
     act = action.to_sym
     if [:got_blocked, :got_unblocked, :got_promoted, :got_demoted].include?(act)
-      html << " by " << user.name if user
+      html << " by " << Tr8n::Config.user_name(user) if user
       html << " (" << reason << ")" unless reason.blank?
     elsif [:got_new_level].include?(act)
       html << " " << reference unless reference.blank?
-      html << " from " << user.name if user
+      html << " from " << Tr8n::Config.user_name(user) if user
       html << " (" << reason << ")" unless reason.blank?
     elsif [:enabled_inline_translations, :disabled_inline_translations].include?(act)
       lang = Tr8n::Language.find_by_id(reference) unless reference.blank?

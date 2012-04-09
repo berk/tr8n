@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2011 Michael Berkovich, tr8n.net
+# Copyright (c) 2010-2012 Michael Berkovich, tr8n.net
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -20,6 +20,23 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
+#
+#-- Tr8n::TranslationDomain Schema Information
+#
+# Table name: tr8n_translation_domains
+#
+#  id              INTEGER         not null, primary key
+#  name            varchar(255)    
+#  description     varchar(255)    
+#  source_count    integer         default = 0
+#  created_at      datetime        
+#  updated_at      datetime        
+#
+# Indexes
+#
+#  index_tr8n_translation_domains_on_name    (name) UNIQUE
+#
+#++
 
 class Tr8n::TranslationDomain < ActiveRecord::Base
   set_table_name :tr8n_translation_domains
@@ -34,15 +51,23 @@ class Tr8n::TranslationDomain < ActiveRecord::Base
   alias :key_sources  :translation_key_sources
   alias :keys         :translation_keys
   
+  def self.cache_key(domain_name)
+    "translation_domain_#{domain_name}"
+  end
+
+  def cache_key
+    self.class.cache_key(name)
+  end
+  
   def self.find_or_create(url = nil)
     domain_name = URI.parse(url || 'localhost').host || 'localhost'
-    Tr8n::Cache.fetch("translation_domain_#{domain_name}") do 
+    Tr8n::Cache.fetch(cache_key(domain_name)) do 
       find_by_name(domain_name) || create(:name => domain_name)
     end  
   end
   
   def clear_cache
-    Tr8n::Cache.delete("translation_domain_#{name}")
+    Tr8n::Cache.delete(cache_key)
   end
   
 end

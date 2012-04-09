@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2011 Michael Berkovich, tr8n.net
+# Copyright (c) 2010-2012 Michael Berkovich, tr8n.net
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -20,6 +20,27 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
+#
+#-- Tr8n::LanguageCaseRule Schema Information
+#
+# Table name: tr8n_language_case_rules
+#
+#  id                  INTEGER     not null, primary key
+#  language_case_id    integer     not null
+#  language_id         integer     
+#  translator_id       integer     
+#  definition          text        not null
+#  position            integer     
+#  created_at          datetime    
+#  updated_at          datetime    
+#
+# Indexes
+#
+#  tr8n_lcr_translator_id    (translator_id) 
+#  tr8n_lcr_lang_id          (language_id) 
+#  tr8n_lcr_case_id          (language_case_id) 
+#
+#++
 
 class Tr8n::LanguageCaseRule < ActiveRecord::Base
   set_table_name :tr8n_language_case_rules
@@ -29,13 +50,26 @@ class Tr8n::LanguageCaseRule < ActiveRecord::Base
   belongs_to :translator,     :class_name => "Tr8n::Translator"   
   
   serialize :definition
-  
+
+  def definition
+    @indifferent_def ||= HashWithIndifferentAccess.new(super)
+  end
+
+  def self.cache_key(id)
+    "language_case_rule_#{id}"
+  end
+
+  def cache_key
+    self.class.cache_key(id)
+  end
+
+  # TODO: what is this for?
   def self.by_id(id)
-    Tr8n::Cache.fetch("language_case_rule_#{id}") do 
+    Tr8n::Cache.fetch(cache_key(id)) do 
       find_by_id(id)
     end
   end
-  
+
   def self.gender_options
     [["not applicable", "none"], ["unknown", "unknown"], ["male", "male"], ["female", "female"]]
   end
@@ -60,7 +94,9 @@ class Tr8n::LanguageCaseRule < ActiveRecord::Base
   end
 
   def evaluate(object, value)
-    if definition["gender"] != "none"
+    value = value.to_s
+
+    if ["male", "female", "unknown", "neutral"].include?(definition["gender"])
       object_gender = Tr8n::GenderRule.gender_token_value(object)
       return false if definition["gender"] == "male"    and object_gender != Tr8n::GenderRule.gender_object_value_for("male")
       return false if definition["gender"] == "female"  and object_gender != Tr8n::GenderRule.gender_object_value_for("female")
@@ -74,12 +110,12 @@ class Tr8n::LanguageCaseRule < ActiveRecord::Base
       return false if definition["operator"] == "or"  and !(result1 or result2)
     end  
     
-    return result1
+    result1
   end
   
   def evaluate_part(token_value, index)
     values = sanitize_values(definition["value#{index}"])
-    
+
     case definition["part#{index}"]
       when "starts_with" 
         values.each do |value|
@@ -111,6 +147,8 @@ class Tr8n::LanguageCaseRule < ActiveRecord::Base
   end
   
   def apply(value)
+    value = value.to_s
+
     values = sanitize_values(definition["value1"])
     regex = values.join('|')
     case definition["operation"]
@@ -156,7 +194,7 @@ class Tr8n::LanguageCaseRule < ActiveRecord::Base
     desc << " token value"
     desc << describe_part(1)
   
-    if definition["multipart"] == "true"
+    if ["true", true].include?(definition["multipart"])
       desc << " " << definition["operator"]
       desc << describe_part(2)
     end

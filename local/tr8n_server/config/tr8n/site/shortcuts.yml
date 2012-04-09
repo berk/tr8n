@@ -8,7 +8,7 @@ Ctrl+Shift+I:
   
 Ctrl+Shift+L:       
   description:  Shows/hides language selector 
-  script:       "tr8nLanguageSelector.toggle();"
+  script:       "tr8nLightbox.show('/tr8n/language/select?lightbox=true', {height:500, width:400});"
   
 Ctrl+Shift+A:       
   description:  Displays all available languages  

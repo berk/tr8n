@@ -41,7 +41,7 @@ class Tr8n::PhrasesController < Tr8n::BaseController
       end
     end
     
-    @translation_keys = @translation_keys.order("label asc").page(page).per(per_page)
+    @translation_keys = @translation_keys.order("created_at desc").page(page).per(per_page)
   end
   
   def view

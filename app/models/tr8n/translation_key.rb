@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2011 Michael Berkovich, tr8n.net
+# Copyright (c) 2010-2012 Michael Berkovich, tr8n.net
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -19,6 +19,30 @@
 # LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+#++
+#
+#-- Tr8n::TranslationKey Schema Information
+#
+# Table name: tr8n_translation_keys
+#
+#  id                   INTEGER         not null, primary key
+#  type                 varchar(255)    
+#  key                  varchar(255)    not null
+#  label                text            not null
+#  description          text            
+#  verified_at          datetime        
+#  translation_count    integer         
+#  admin                boolean         
+#  locale               varchar(255)    
+#  level                integer         default = 0
+#  created_at           datetime        
+#  updated_at           datetime        
+#  synced_at            datetime        
+#
+# Indexes
+#
+#  index_tr8n_translation_keys_on_key    (key) UNIQUE
+#
 #++
 
 require 'digest/md5'
@@ -41,14 +65,23 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   alias :domains      :translation_domains
   alias :comments     :translation_key_comments
   
+
+  def self.cache_key(key_hash)
+    "translation_key_#{key_hash}"
+  end
+
+  def cache_key
+    self.class.cache_key(key)
+  end
+
   def self.find_or_create(label, desc = "", options = {})
     key = generate_key(label, desc).to_s
     
-    tkey = Tr8n::Cache.fetch("translation_key_#{key}") do 
+    tkey = Tr8n::Cache.fetch(cache_key(key)) do 
       existing_key = where(:key => key).first
       
       unless existing_key
-        if options[:api] and (not Tr8n::Config.api[:allow_key_registration])
+        if options[:api]==:translate and (not Tr8n::Config.api[:allow_key_registration])
           raise Tr8n::KeyRegistrationException.new("Key registration through API is disabled!")  
         end
       end
@@ -61,20 +94,12 @@ class Tr8n::TranslationKey < ActiveRecord::Base
       end
       locale = options[:locale] || Tr8n::Config.block_options[:default_locale] || Tr8n::Config.default_locale
       
-      existing_key ||= begin
-        new_tkey = create(:key => key.to_s, 
-                          :label => label, 
-                          :description => desc, 
-                          :locale => locale,
-                          :level => level,
-                          :admin => Tr8n::Config.block_options[:admin])
-
-        unless options[:source].blank?
-          # at the time of creation - mark the first source of the key
-          Tr8n::TranslationKeySource.find_or_create(new_tkey, Tr8n::TranslationSource.find_or_create(options[:source], options[:url]))
-        end  
-        new_tkey
-      end  
+      existing_key ||= create(:key => key.to_s, 
+                              :label => label, 
+                              :description => desc, 
+                              :locale => locale,
+                              :level => level,
+                              :admin => Tr8n::Config.block_options[:admin])
 
       mark_as_admin(existing_key, options)
       update_default_locale(existing_key, options)
@@ -82,13 +107,12 @@ class Tr8n::TranslationKey < ActiveRecord::Base
       existing_key
     end
     
-    # for detailed tracking of all sources and caller stack - only needed for debugging - expensive
     track_source(tkey, options)  
     tkey  
   end
 
   # for backwards compatibility only - new keys will be marked as such
-  def self.mark_as_admin(tkey, options)
+  def self.mark_as_admin(tkey, options = {})
     return if options[:skip_block_options]
     return unless Tr8n::Config.block_options[:admin]
     return if tkey.admin?
@@ -96,7 +120,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   end
   
   # for backwards compatibility only - if locale is provided update it in the key
-  def self.update_default_locale(tkey, options)
+  def self.update_default_locale(tkey, options = {})
     return if options[:skip_block_options]
     return unless tkey.locale.blank?
     key_locale = Tr8n::Config.block_options[:default_locale] || Tr8n::Config.default_locale
@@ -108,13 +132,16 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   def self.verify_key(tkey, options)
     return unless Tr8n::Config.enable_key_verification?
     existing_key.update_attributes(:verified_at => Time.now)
+
   end
 
   # creates associations between the translation keys and sources
   # used for the site map and javascript support
-  def self.track_source(tkey, options = {})
+  def self.track_source(translation_key, options = {})
+
     # key source tracking must be enabled or request must come from an API (JavaScript) to get it registered with a source
     if Tr8n::Config.enable_key_source_tracking? or options[:api] == :translate
+
       # source can be passed into an individual key, or as a block or fall back on the controller/action
       source = options[:source] || Tr8n::Config.block_options[:source] || Tr8n::Config.current_source
 
@@ -125,9 +152,10 @@ class Tr8n::TranslationKey < ActiveRecord::Base
       translation_source = Tr8n::TranslationSource.find_or_create(source, options[:url])
 
       # each key is associated with one or more sources
-      translation_key_source = Tr8n::TranslationKeySource.find_or_create(tkey, translation_source)
+      translation_key_source = Tr8n::TranslationKeySource.find_or_create(translation_key, translation_source)
+
     end
-      
+
     # for debugging purposes only - this will track the actual location of the key in the source
     if Tr8n::Config.enable_key_caller_tracking?    
       options[:caller] ||= caller
@@ -138,14 +166,12 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   end
 
   def self.generate_key(label, desc = "")
-    # TODO: there is something iffy going on with the strings from the hash
-    # without the extra ~ = the strings are not seen in the sqlite database - wtf?
     "#{Digest::MD5.hexdigest("#{label};;;#{desc}")}~"[0..-2]
   end
 
   def reset_key!
     # remove old key from cache
-    Tr8n::Cache.delete("translation_key_#{key}")
+    Tr8n::Cache.delete(cache_key)
     self.update_attributes(:key => self.class.generate_key(label, description))
   end
   
@@ -228,11 +254,14 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     not locked?(language)
   end
 
-  def followed?(translator = Tr8n::Config.current_translator)
+  def followed?(translator = nil)
+    translator ||= (Tr8n::Config.current_user_is_translator? ? Tr8n::Config.current_translator : nil)
+    return false unless translator
     Tr8n::TranslatorFollowing.following_for(translator, self)
   end
     
   def add_translation(label, rules = nil, language = Tr8n::Config.current_language, translator = Tr8n::Config.current_translator)
+    raise Tr8n::Exception.new("The translator is blocked and cannot submit translations") if translator.blocked?
     raise Tr8n::Exception.new("The sentence contains dirty words") unless language.clean_sentence?(label)
     translation = Tr8n::Translation.create(:translation_key => self, :language => language, :translator => translator, :label => label, :rules => rules)
     translation.vote!(translator, 1)
@@ -456,7 +485,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   def default_decoration(language = Tr8n::Config.current_language, options = {})
     return label if Tr8n::Config.current_user_is_guest?
     return label unless Tr8n::Config.current_user_is_translator?
-    return label unless translator_permitted_to_translate?
+    return label unless can_be_translated?
     return label if locked?(language)
 
     classes = ['tr8n_translatable']
@@ -478,8 +507,23 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     super
   end
   
-  def translator_permitted_to_translate?(translator = Tr8n::Config.current_translator)
-    translator.level >= level
+  def can_be_translated?(translator = nil)
+    return false if locked?
+    translator ||= (Tr8n::Config.current_user_is_translator? ? Tr8n::Config.current_translator : nil)
+    translator_level = translator ? translator.level : 0
+    translator_level >= level
+  end
+
+  def can_be_locked?(translator = nil)
+    translator ||= (Tr8n::Config.current_user_is_translator? ? Tr8n::Config.current_translator : nil)
+    return false unless translator
+    translator.admin? or translator.manager?
+  end
+
+  def can_be_unlocked?(translator = nil)
+    translator ||= (Tr8n::Config.current_user_is_translator? ? Tr8n::Config.current_translator : nil)
+    return false unless translator
+    translator.admin? or translator.manager?
   end
   
   def decorate_translation(language, translated_label, translated = true, options = {})
@@ -487,7 +531,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     return translated_label if Tr8n::Config.current_user_is_guest?
     return translated_label unless Tr8n::Config.current_user_is_translator?
     return translated_label unless Tr8n::Config.current_translator.enable_inline_translations?
-    return translated_label unless translator_permitted_to_translate?
+    return translated_label unless can_be_translated?
     return translated_label if locked?(language)
     return translated_label if self.language == language
 
@@ -543,9 +587,15 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     end
   end
   
+  def touch_sources
+    sources.each do |source|
+      source.touch
+    end
+  end
+
   def clear_cache
-    # never need to be deleted from cache
-    # Tr8n::Cache.delete("translation_key_#{key}")
+    # Tr8n::Cache.delete(cache_key)
+    touch_sources
   end
 
   ###############################################################
@@ -665,7 +715,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   end
   
   def self.for_params(params)
-    results = self.where("tr8n_translation_keys.locale <> ? and (level is null or level <= ?)", Tr8n::Config.current_language.locale, Tr8n::Config.current_translator.level)
+    results = self.where("tr8n_translation_keys.locale <> ? and (level is null or level <= ?)", Tr8n::Config.current_language.locale, Tr8n::Config.current_user_is_translator? ? Tr8n::Config.current_translator.level : 0)
     
     if Tr8n::Config.enable_caching?
       results = results.where("verified_at is not null")
@@ -691,7 +741,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     elsif params[:phrase_type] == "without"
       results = results.where("tr8n_translation_keys.id not in (select tr8n_translations.translation_key_id from tr8n_translations where tr8n_translations.language_id = ?)", Tr8n::Config.current_language.id)
       
-    elsif params[:phrase_type] == "followed"
+    elsif params[:phrase_type] == "followed" and Tr8n::Config.current_user_is_translator?
       results = results.where("tr8n_translation_keys.id in (select tr8n_translator_following.object_id from tr8n_translator_following where tr8n_translator_following.translator_id = ? and tr8n_translator_following.object_type = ?)", Tr8n::Config.current_translator.id, 'Tr8n::TranslationKey')
     end
     

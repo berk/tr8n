@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2011 Michael Berkovich
+# Copyright (c) 2010-2012 Michael Berkovich, tr8n.net
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -63,7 +63,7 @@ module Tr8n
         hash
       end
     end
-  
+
     def tokens?
       tokens.any?
     end
@@ -123,16 +123,6 @@ module Tr8n
           parts << w.strip.capitalize if w.length > 3
         end
         parts
-      end
-    end
-
-    def sanitized_tokens_hash
-      @sanitized_tokens_hash ||= begin
-        hash = {}
-        tokens.each do |token|
-          hash[token.sanitized_name] = token
-        end
-        hash
       end
     end
   

@@ -1,5 +1,5 @@
 /****************************************************************************
-  Copyright (c) 2010-2011 Michael Berkovich, Ian McDaniel
+  Copyright (c) 2010-2012 Michael Berkovich, Ian McDaniel
 
   Permission is hereby granted, free of charge, to any person obtaining
   a copy of this software and associated documentation files (the
@@ -442,3 +442,23 @@ body.tr8n_grey_disabled_button                  {background-position: left -300p
 body.tr8n_grey_disabled_button span             {background-position: right -626px; }
 
 .tr8n_cancel_link                               {font-size:12px;font-family:arial;}
+
+/****************************************/
+/*** Logger Objects
+/****************************************/
+.tr8n_logger_obj_key {
+  padding-right: 10px;
+  color: #444;
+}
+.tr8n_logger_obj_value_string {
+  color: green;
+}
+.tr8n_logger_obj_value_string {
+  color: green;
+}
+.tr8n_logger_obj_value_boolean {
+  color: blue;
+}
+.tr8n_logger_obj_value_number {
+  color: red;
+}

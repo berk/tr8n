@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2011 Michael Berkovich
+# Copyright (c) 2010-2012 Michael Berkovich, tr8n.net
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -32,6 +32,19 @@ class Array
         [opt.first.trl(description, {}, options, language), opt.last]
       elsif opt.is_a?(String)
         [opt.trl(description, {}, options, language), opt]
+      else  
+        opt
+      end
+    end
+  end
+
+  # translate array values 
+  def trl(description = "", options = {}, language = Tr8n::Config.current_language)
+    return [] if empty?
+
+    collect do |opt|
+      if opt.is_a?(String)
+        opt.trl(description, {}, options, language)
       else  
         opt
       end

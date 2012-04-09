@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2011 Michael Berkovich, tr8n.net
+# Copyright (c) 2010-2012 Michael Berkovich, tr8n.net
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -19,6 +19,25 @@
 # LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+#++
+#
+#-- Tr8n::LanguageRule Schema Information
+#
+# Table name: tr8n_language_rules
+#
+#  id               INTEGER         not null, primary key
+#  language_id      integer         not null
+#  translator_id    integer         
+#  type             varchar(255)    
+#  definition       text            
+#  created_at       datetime        
+#  updated_at       datetime        
+#
+# Indexes
+#
+#  index_tr8n_language_rules_on_language_id_and_translator_id    (language_id, translator_id) 
+#  index_tr8n_language_rules_on_language_id                      (language_id) 
+#
 #++
 
 class Tr8n::LanguageRule < ActiveRecord::Base

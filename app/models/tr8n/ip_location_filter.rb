@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2011 Michael Berkovich, tr8n.net
+# Copyright (c) 2010-2012 Michael Berkovich, tr8n.net
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -19,6 +19,25 @@
 # LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+#++
+#
+#-- Tr8n::IpLocationFilter Schema Information
+#
+# Table name: will_filter_filters
+#
+#  id                  INTEGER         not null, primary key
+#  type                varchar(255)    
+#  name                varchar(255)    
+#  data                text            
+#  user_id             integer         
+#  model_class_name    varchar(255)    
+#  created_at          datetime        
+#  updated_at          datetime        
+#
+# Indexes
+#
+#  index_will_filter_filters_on_user_id    (user_id) 
+#
 #++
 
 class Tr8n::IpLocationFilter < Tr8n::BaseFilter

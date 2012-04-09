@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2011 Michael Berkovich
+# Copyright (c) 2010-2012 Michael Berkovich, tr8n.net
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -147,13 +147,6 @@ module Tr8n
         
         sources_timestamps[translation_source_language.id] = translation_source_language.updated_at
       end
-    end
-    
-    def self.cache_key_source(translation_key, source_name)
-      source_name ||= Tr8n::Config.current_source || 'Undefined'
-      translation_source = Tr8n::TranslationSource.find_or_create(source_name)
-      key_source = Tr8n::TranslationKeySource.find_or_create(translation_key, translation_source)
-      key_source
     end
     
   end

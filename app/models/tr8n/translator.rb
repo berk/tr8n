@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2011 Michael Berkovich, tr8n.net
+# Copyright (c) 2010-2012 Michael Berkovich, tr8n.net
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -19,6 +19,41 @@
 # LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+#++
+#
+#-- Tr8n::Translator Schema Information
+#
+# Table name: tr8n_translators
+#
+#  id                      INTEGER         not null, primary key
+#  user_id                 integer         not null
+#  inline_mode             boolean         
+#  blocked                 boolean         
+#  reported                boolean         
+#  fallback_language_id    integer         
+#  rank                    integer         default = 0
+#  name                    varchar(255)    
+#  gender                  varchar(255)    
+#  email                   varchar(255)    
+#  password                varchar(255)    
+#  mugshot                 varchar(255)    
+#  link                    varchar(255)    
+#  locale                  varchar(255)    
+#  level                   integer         default = 0
+#  manager                 integer         
+#  last_ip                 varchar(255)    
+#  country_code            varchar(255)    
+#  created_at              datetime        
+#  updated_at              datetime        
+#  remote_id               integer         
+#
+# Indexes
+#
+#  index_tr8n_translators_on_email_and_password    (email, password) 
+#  index_tr8n_translators_on_email                 (email) 
+#  index_tr8n_translators_on_created_at            (created_at) 
+#  index_tr8n_translators_on_user_id               (user_id) 
+#
 #++
 
 class Tr8n::Translator < ActiveRecord::Base
@@ -40,29 +75,45 @@ class Tr8n::Translator < ActiveRecord::Base
 
   belongs_to :fallback_language,            :class_name => 'Tr8n::Language',                  :foreign_key => :fallback_language_id
     
+  def self.cache_key(user_id)
+    "translator_#{user_id}"
+  end
+
+  def cache_key
+    self.class.cache_key(key)
+  end
+
   def self.for(user)
     return nil unless user and user.id 
     return nil if Tr8n::Config.guest_user?(user)
-    return user if user.is_a?(Tr8n::Translator)
-    find_by_user_id(user.id)
+    translator = Tr8n::Cache.fetch(cache_key(user.id)) do 
+      find_by_user_id(user.id)
+    end
   end
   
   def self.find_or_create(user)
+    return nil unless user and user.id 
+
     trn = where(:user_id => user.id).first
     trn = create(:user => user) unless trn
     trn
   end
 
   def self.register(user = Tr8n::Config.current_user)
-    return unless user
-    
     translator = Tr8n::Translator.find_or_create(user)
+    return unless translator
+
+    # update all language user entries to add a translator id
     Tr8n::LanguageUser.where(:user_id => user.id).each do |lu|
       lu.update_attributes(:translator => translator)
     end
     translator
   end
   
+  def self.top_translators_for_language(lang = Tr8n::Config.current_language, limit = 5)
+    Tr8n::TranslatorMetric.where(:language_id => lang.id).order("total_translations desc, total_votes desc").limit(limit)
+  end  
+
   def total_metric
     @total_metric ||= Tr8n::TranslatorMetric.find_or_create(self, nil)
   end

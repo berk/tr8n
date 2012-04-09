@@ -2,12 +2,12 @@
 
 	<% if params[:stem_type] %>
 	  <% left_right = params[:stem_type].index("right") ? "right" : "left" %>  
-	  <%=image_tag("/tr8n/images/top_left_stem.png", :class => "stem #{params[:stem_type]}", :style => "#{left_right}:#{params[:stem_offset]}px")%>
+	  <%=image_tag("tr8n/top_left_stem.png", :class => "stem #{params[:stem_type]}", :style => "#{left_right}:#{params[:stem_offset]}px")%>
 	<% end %>  
 	
 	<div class="hd">
 	  <div class="supplemental">
-	    <%=link_to_function(image_tag("/tr8n/images/close.gif", :title=>trl("Close")), "tr8nLanguageCaseManager.hide()")%>
+	    <%=link_to_function(image_tag("tr8n/close.gif", :title=>trl("Close")), "tr8nLanguageCaseManager.hide()")%>
 	  </div>
 	  <%= tr8n_language_flag_tag(tr8n_current_language) %>
 	  <%= trla("{language} Language Cases", nil, :language => tr8n_current_language.native_name) %>

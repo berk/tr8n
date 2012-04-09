@@ -28,7 +28,7 @@ Tr8n::Engine.routes.draw do
   end
   
   [:chart, :clientsdk, :forum, :glossary, :language, :translation, 
-   :translation_key, :translator, :domain].each do |ctrl|
+   :translation_key, :translator, :domain, :metrics].each do |ctrl|
     match "admin/#{ctrl}(/:action)", :controller => "admin/#{ctrl}"
   end
   
@@ -36,6 +36,8 @@ Tr8n::Engine.routes.draw do
     match "api/v1/#{ctrl}(/:action)", :controller => "api/v1/#{ctrl}"
   end
   
+  match "api/v1/language/translate.js", :controller => "api/v1/language", :action => "translate"
+
   namespace :tr8n do
     root :to => "dashboard#index"
     namespace :admin do

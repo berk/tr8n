@@ -36,8 +36,11 @@ defaults:
   
   enable_language_cases:      true      # enables support for language cases
   enable_client_sdk:          false     # allows javascript to use tr8nProxy object
+  enable_browser_cache:       false     # caches translations in the browser
   
   enable_country_tracking:    true      # tracks and reports translator countries 
+
+  enable_translator_tabs:     true      # enables translation tools tabs 
 
   #############################################################################
   # Google translation suggestions is now a paid feature by Google.
@@ -72,7 +75,9 @@ defaults:
   # translation. If the flag is set to false, then a user must be promoted to
   # be a translator in order to submit or vote on translations.
   #############################################################################
-  open_registration_mode:     true
+  open_registration_mode:           true
+  enable_registration_disclaimer:   false
+  registration_disclaimer_path:     "/tr8n/common/terms_of_service"
 
   #############################################################################
   # Tr8n best run with caching enabled 
@@ -194,6 +199,9 @@ defaults:
     enabled:                  true
     response_encoding:        "json"     # options: xml, json
     allow_key_registration:   true
+    skip_before_filters:      []       # filters from application controller
+    before_filters:           []       # filters from application controller
+    after_filters:            []       # filters from application controller
   
   #############################################################################
   # Translator Roles         - manager level is set at 1000 and anything above

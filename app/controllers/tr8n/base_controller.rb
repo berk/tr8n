@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2011 Michael Berkovich, tr8n.net
+# Copyright (c) 2010-2012 Michael Berkovich, tr8n.net
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -43,8 +43,8 @@ module Tr8n
     end
   
     before_filter :validate_tr8n_enabled, :except => [:translate]
-    before_filter :validate_guest_user, :except => [:select, :switch, :translate, :table]
-    before_filter :validate_current_user, :except => [:translate]
+    before_filter :validate_guest_user, :except => [:select, :switch, :translate, :table, :registration]
+    before_filter :validate_current_user, :except => [:select, :switch, :translate, :table, :registration]
   
     layout Tr8n::Config.site_info[:tr8n_layout]
 
@@ -108,7 +108,11 @@ module Tr8n
     helper_method :tr8n_features_tabs
 
     def redirect_to_source
-      return redirect_to(params[:source_url]) unless params[:source_url].blank?
+      # Do not allow redirects to external websites
+      escaped_origin_host = Regexp.escape("#{request.protocol}#{request.host}")
+      if(!params[:source_url].blank? && params[:source_url] =~ /^#{escaped_origin_host}/)
+        return redirect_to(params[:source_url])
+      end
       return redirect_to(request.env['HTTP_REFERER']) unless request.env['HTTP_REFERER'].blank?
       redirect_to_site_default_url
     end
@@ -149,9 +153,15 @@ module Tr8n
 
     # make sure users have the rights to access this section
     def validate_current_user
-      unless Tr8n::Config.open_registration_mode? or Tr8n::Config.current_user_is_translator? 
+      return if Tr8n::Config.current_user_is_translator?
+
+      unless Tr8n::Config.open_registration_mode?
         trfe("You don't have rights to access that section.")
         return redirect_to(Tr8n::Config.default_url)
+      end
+
+      if Tr8n::Config.enable_registration_disclaimer?
+        redirect_to("/tr8n/translator/registration")
       end
     end
 
@@ -170,12 +180,12 @@ module Tr8n
     
       if tr8n_current_language.default?
         trfe("Only administrators can modify this language")
-        return redirect_to(@tabs.first[:link])
+        return redirect_to(tr8n_features_tabs.first[:link])
       end
 
       unless tr8n_current_user_is_translator? and tr8n_current_translator.manager? 
         trfe("In order to manage a language you first must request to become a manager of that language. Please send your request to Geni support.")
-        return redirect_to(@tabs.first[:link])
+        return redirect_to(tr8n_features_tabs.first[:link])
       end
     end
   

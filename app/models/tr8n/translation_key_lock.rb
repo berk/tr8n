@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2011 Michael Berkovich, tr8n.net
+# Copyright (c) 2010-2012 Michael Berkovich, tr8n.net
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -19,6 +19,24 @@
 # LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+#++
+#
+#-- Tr8n::TranslationKeyLock Schema Information
+#
+# Table name: tr8n_translation_key_locks
+#
+#  id                    INTEGER     not null, primary key
+#  translation_key_id    integer     not null
+#  language_id           integer     not null
+#  translator_id         integer     
+#  locked                boolean     
+#  created_at            datetime    
+#  updated_at            datetime    
+#
+# Indexes
+#
+#  tr8n_locks_key_id_lang_id    (translation_key_id, language_id) 
+#
 #++
 
 class Tr8n::TranslationKeyLock < ActiveRecord::Base

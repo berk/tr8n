@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2011 Michael Berkovich, tr8n.net
+# Copyright (c) 2010-2012 Michael Berkovich, tr8n.net
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -20,6 +20,31 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
+#
+#-- Tr8n::Language Schema Information
+#
+# Table name: tr8n_languages
+#
+#  id                      INTEGER         not null, primary key
+#  locale                  varchar(255)    not null
+#  english_name            varchar(255)    not null
+#  native_name             varchar(255)    
+#  enabled                 boolean         
+#  right_to_left           boolean         
+#  completeness            integer         
+#  fallback_language_id    integer         
+#  curse_words             text            
+#  featured_index          integer         default = 0
+#  google_key              varchar(255)    
+#  facebook_key            varchar(255)    
+#  created_at              datetime        
+#  updated_at              datetime        
+#
+# Indexes
+#
+#  index_tr8n_languages_on_locale    (locale) 
+#
+#++
 
 class Tr8n::Language < ActiveRecord::Base
   set_table_name :tr8n_languages
@@ -36,25 +61,33 @@ class Tr8n::Language < ActiveRecord::Base
   has_many :translation_key_locks,  :class_name => 'Tr8n::TranslationKeyLock',  :dependent => :destroy
   has_many :language_metrics,       :class_name => 'Tr8n::LanguageMetric'
   
-  def self.find_or_create(lcl, english_name)
-    find_by_locale(lcl) || create(:locale => lcl, :english_name => english_name) 
+  def self.cache_key(locale)
+    "language_#{locale}"
+  end
+
+  def cache_key
+    self.class.cache_key(locale)
   end
   
   def self.for(locale)
     return nil if locale.nil?
-    Tr8n::Cache.fetch("language_#{locale}") do 
+    Tr8n::Cache.fetch(cache_key(locale)) do 
       find_by_locale(locale)
     end
   end
 
+  def self.find_or_create(lcl, english_name)
+    find_by_locale(lcl) || create(:locale => lcl, :english_name => english_name) 
+  end
+
   def rules
-    Tr8n::Cache.fetch("language_rules_#{id}") do 
+    Tr8n::Cache.fetch("language_rules_#{locale}") do 
       language_rules
     end
   end
 
   def cases
-    Tr8n::Cache.fetch("language_cases_#{id}") do 
+    Tr8n::Cache.fetch("language_cases_#{locale}") do 
       language_cases
     end
   end
@@ -64,6 +97,7 @@ class Tr8n::Language < ActiveRecord::Base
     reset_language_cases!
   end
   
+  # reloads rules for the language from the yml file
   def reset_language_rules!
     rules.delete_all
     Tr8n::Config.language_rule_classes.each do |rule_class|
@@ -73,6 +107,7 @@ class Tr8n::Language < ActiveRecord::Base
     end
   end
   
+  # reloads language cases for the language from the yml file
   def reset_language_cases!
     cases.delete_all
     Tr8n::Config.default_language_cases_for(locale).each do |lcase|
@@ -308,7 +343,9 @@ class Tr8n::Language < ActiveRecord::Base
   end
   
   def update_cache
-    Tr8n::Cache.delete("language_#{locale}")
+    Tr8n::Cache.delete(cache_key)
+    Tr8n::Cache.delete("language_rules_#{locale}")
+    Tr8n::Cache.delete("language_cases_#{locale}")
     Tr8n::Cache.delete("featured_languages")
     Tr8n::Cache.delete("enabled_languages")
   end

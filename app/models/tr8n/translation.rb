@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2011 Michael Berkovich, tr8n.net
+# Copyright (c) 2010-2012 Michael Berkovich, tr8n.net
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -19,6 +19,30 @@
 # LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+#++
+#
+#-- Tr8n::Translation Schema Information
+#
+# Table name: tr8n_translations
+#
+#  id                    INTEGER       not null, primary key
+#  translation_key_id    integer       not null
+#  language_id           integer       not null
+#  translator_id         integer       not null
+#  label                 text          not null
+#  rank                  integer       default = 0
+#  approved_by_id        integer(8)    
+#  rules                 text          
+#  created_at            datetime      
+#  updated_at            datetime      
+#  synced_at             datetime      
+#
+# Indexes
+#
+#  tr8n_trans_created_at                      (created_at) 
+#  tr8n_trans_key_id_translator_id_lang_id    (translation_key_id, translator_id, language_id) 
+#  r8n_trans_translator_id                    (translator_id) 
+#
 #++
 
 class Tr8n::Translation < ActiveRecord::Base
@@ -307,7 +331,8 @@ class Tr8n::Translation < ActiveRecord::Base
     results = self.where("language_id = ?", language.id)
     
     # ensure that only allowed translations are visible
-    results = results.where("translation_key_id in (select id from tr8n_translation_keys where level <= ?)", Tr8n::Config.current_translator.level) 
+    allowed_level = Tr8n::Config.current_user_is_translator? ? Tr8n::Config.current_translator.level : 0
+    results = results.where("translation_key_id in (select id from tr8n_translation_keys where level <= ?)", allowed_level) 
     
     results = results.where("label like ?", "%#{params[:search]}%") unless params[:search].blank?
   
@@ -320,7 +345,7 @@ class Tr8n::Translation < ActiveRecord::Base
     end
     
     if params[:submitted_by] == "me"
-      results = results.where("translator_id = ?", Tr8n::Config.current_translator.id)
+      results = results.where("translator_id = ?", Tr8n::Config.current_user_is_translator? ? Tr8n::Config.current_translator.id : 0)
     end
     
     if params[:submitted_on] == "today"

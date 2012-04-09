@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2011 Michael Berkovich
+# Copyright (c) 2010-2012 Michael Berkovich, tr8n.net
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -86,9 +86,7 @@ module Tr8n
           return user
         end
           
-        user = eval(Tr8n::Config.current_user_method)
-        user = nil if user.class.name != Tr8n::Config.user_class_name
-        user
+        eval(Tr8n::Config.current_user_method)
       rescue
         Tr8n::Logger.error("Site user integration is enabled, but #{Tr8n::Config.current_user_method} method is not defined")
         Tr8n::Translator.new
@@ -115,6 +113,9 @@ module Tr8n
       # tr(label, {:desc => "", tokens => {},  ...})
       ############################################################
       def tr(label, desc = "", tokens = {}, options = {})
+
+        return label if label.tr8n_translated?
+
         if desc.is_a?(Hash)
           options = desc
           tokens  = options[:tokens] || {}

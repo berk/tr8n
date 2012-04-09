@@ -2,7 +2,9 @@
 
 <div class="section_title">
   <span style="font-size:12px; color:grey; float:right; padding-top:5px;">
-    <strong>Make sure that key source tracking is enabled!</strong> And try not to register useless phrases in production.
+    <% unless Tr8n::Config.enable_client_sdk? %>
+      <span style="color:red">Make sure that JS Client SDK is enabled!</span>
+    <% end %>
   </span> 
 	
   Tr8n JavaScript Client SDK Test Tool  
@@ -28,56 +30,48 @@
       </td>
       <td rowspan="3" style="width:15%; padding:2px; vertical-align:top;">
 			   <center>
-			   <div style="width:150px; text-align:center; padding-top:15px;">
-			     <%=link_to_function("<span>Translate Label</span>".html_safe, "translate();", :class => "tr8n_grey_button tr8n_pcb") %>
-
-	         <div style="margin-top:15px; padding:2px; text-align:center; border: 1px dotted #ccc;">
-              <%=link_to_function("<span>View Examples</span>".html_safe, "tr8nLightbox.show('/tr8n/admin/clientsdk/lb_samples', {height:550});", :class => "tr8n_grey_button tr8n_pcb", :style=>"width:200px;") %><br>
-              <%=link_to("<span>View Phrases</span>".html_safe, "/tr8n/phrases/index?section_key=clientsdk", :target => "_phrases", :class => "tr8n_grey_button tr8n_pcb", :style=>"width:200px;") %><br>
-              <%=link_to_function("<span>Load Translations</span>".html_safe, "reloadTranslations();", :class => "tr8n_grey_button tr8n_pcb", :style=>"width:200px;") %><br>
-              <%=link_to_function("<span>Clear Results</span>".html_safe, "clearResults();", :class => "tr8n_grey_button tr8n_pcb", :style=>"width:200px;") %><br>
-              <%=link_to_function("<span>Run Speed Test</span>".html_safe, "speedTest();", :class => "tr8n_grey_button tr8n_pcb", :style=>"width:200px;") %><br>
-	            <%=link_to("<span>Download SDK</span>".html_safe, "/tr8n/javascripts/tr8n_client_sdk.js", :class => "tr8n_grey_button tr8n_pcb", :style=>"width:200px;") %><br>
-	         </div> 
-
-				 </div>
+  			   <div style="width:150px; text-align:center; padding-top:15px;">
+             <button style="width:100%;" onClick="translate();return false;">Translate</button>
+             <button style="width:100%;" onClick="translate({skip_decorations:true});return false;">Translate Label</button>
+             <button style="width:100%;" onClick="searchPhrase();return false;">View Translation Key</button>
+             <br><br>
+             <button style="width:100%;" onClick="clearResults();return false;">Clear Results</button>
+             <button style="width:100%;" onClick="tr8nLightbox.show('/tr8n/admin/clientsdk/lb_samples', {height:500});return false;">View Examples</button>
+             <button style="width:100%;" onClick="reloadTranslations();return false;">Reload Translations</button>
+             <button style="width:100%;" onClick="tr8nProxy.logSettings();return false;">Print Settings</button>
+             <button style="width:100%;" onClick="tr8nProxy.logTranslations();return false;">Print Translation Cache</button>
+          </div> 
 				 </center>
       </td>
     </tr>
     <tr>
       <td colspan="2" style="padding:2px; background:#F1F4FA;">
         <div style="font-weight:bold;">Tokens JSON <span style='color:grey'>- provides values for tokens used in translation. (required, if data tokens are defined)</span></div>
-        <%=text_area_tag(:tokens, "{'count':5}", :style => "width:99%; height:40px;")%>     
+        <%=text_area_tag(:tokens, "{'count':5}", :style => "width:99%; height:50px;")%>     
       </td>
     </tr>
     <tr>
       <td colspan="2" style="padding:2px;">
         <div style="font-weight:bold; padding-top:10px;">Translation <span style='color:grey'>- translated label with substituted tokens</span></div>
         <div id="result_html" style="background:#F9F8F7; height:40px; overflow:auto; border:1px dotted #ccc; padding:10px;"></div>
-        <div style="font-weight:bold; padding-top:10px; color:grey;">Raw HTML:</div>
-        <%=text_area_tag(:result, "", :style => "width:99%; background:#F9F8F7;", :readonly => true)%>     
+        <div style="font-weight:bold; padding-top:10px;">Translation Raw HTML <span style='color:grey'>- translated label with substituted tokens</span></div>
+        <%=text_area_tag(:result, "", :style => "width:99%; background:#F9F8F7;height:50px; border:1px solid #ccc;", :readonly => true)%>     
       </td>
     </tr>
   </table>
 <% end %>
 </div>
 
-<div id="debugger" class="section_box colored" style="font-size:10px; border:1px solid black; height:230px; overflow:auto; padding: 2px;">
+<div id="tr8n_debugger" class="section_box colored" style="font-size:10px; height:350px; overflow:auto; margin: 10px;">
 </div>
 
-<%=tr8n_translations_js_tag(:sources => ["clientsdk_examples"], :id => :tr8n_clientsdk_translations) %>
-<%=tr8n_client_sdk_scripts_tag(
-    :default_source             => "clientsdk_examples",
-    :debugger_element_id        => "debugger",
-    :translations_element_id    => "tr8n_clientsdk_translations",
-    :scheduler_interval         =>  5000
-) %>
-            
 <script>
+  tr8nProxy.enableLogger();
+
   function clearResults() {
-		Tr8n.element('debugger').innerHTML = '';
 		Tr8n.element('result').value = '';
     Tr8n.element('result_html').innerHTML = '';
+    tr8nProxy.logger.clear();
 	}
 	
   function reloadTranslations() {
@@ -91,17 +85,23 @@
 		tr8nLightbox.hide();
 	}
 	
-  function translate() {
+  function translate(opts) {
+    opts = opts || {};
     var tokens = null;
     
     if (Tr8n.element('tokens').value != "") {
       tokens = eval("[" + Tr8n.value('tokens') + "]")[0];
     }
     
-    Tr8n.element('result').value = tr8nProxy.tr(Tr8n.value('label'), '', tokens);
+    Tr8n.element('result').value = tr(Tr8n.value('label'), '', tokens, opts);
     Tr8n.element('result_html').innerHTML = Tr8n.element('result').value;
   }
   
+  function searchPhrase() {
+    url = "/tr8n/phrases/index?search=" + encodeURI(Tr8n.value('label'));
+    window.open(url,'translation_key');
+  }
+
   function speedTest() {
 		var tokens = null;
 

@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2011 Michael Berkovich, tr8n.net
+# Copyright (c) 2010-2012 Michael Berkovich, tr8n.net
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -20,6 +20,22 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
+#
+#-- Tr8n::TranslationSource Schema Information
+#
+# Table name: tr8n_translation_sources
+#
+#  id                       INTEGER         not null, primary key
+#  source                   varchar(255)    
+#  translation_domain_id    integer         
+#  created_at               datetime        
+#  updated_at               datetime        
+#
+# Indexes
+#
+#  tr8n_sources_source    (source) 
+#
+#++
 
 class Tr8n::TranslationSource < ActiveRecord::Base
   set_table_name :tr8n_translation_sources
@@ -35,9 +51,17 @@ class Tr8n::TranslationSource < ActiveRecord::Base
   alias :sources  :translation_key_sources
   alias :keys     :translation_keys
   
+  def self.cache_key(source)
+    "translation_source_#{source}"
+  end
+
+  def cache_key
+    self.class.cache_key(source)
+  end
+
   def self.find_or_create(source, url = nil)
-    translation_domain = Tr8n::TranslationDomain.find_or_create(url)
-    Tr8n::Cache.fetch("translation_source_#{translation_domain.id}_#{source}") do 
+    Tr8n::Cache.fetch(cache_key(source)) do 
+      translation_domain = Tr8n::TranslationDomain.find_or_create(url)
       translation_source = where("source = ? and translation_domain_id = ?", source, translation_domain.id).first
       translation_source ||= create(:source => source, :translation_domain => translation_domain)
       translation_source.update_attributes(:translation_domain => translation_domain) unless translation_source.translation_domain
@@ -46,7 +70,7 @@ class Tr8n::TranslationSource < ActiveRecord::Base
   end
 
   def clear_cache
-    Tr8n::Cache.delete("translation_source_#{translation_domain_id}_#{source}")
+    Tr8n::Cache.delete(cache_key)
   end
   
 end

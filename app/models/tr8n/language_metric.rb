@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2011 Michael Berkovich, tr8n.net
+# Copyright (c) 2010-2012 Michael Berkovich, tr8n.net
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -19,6 +19,30 @@
 # LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+#++
+#
+#-- Tr8n::LanguageMetric Schema Information
+#
+# Table name: tr8n_language_metrics
+#
+#  id                      INTEGER         not null, primary key
+#  type                    varchar(255)    
+#  language_id             integer         not null
+#  metric_date             date            
+#  user_count              integer         default = 0
+#  translator_count        integer         default = 0
+#  translation_count       integer         default = 0
+#  key_count               integer         default = 0
+#  locked_key_count        integer         default = 0
+#  translated_key_count    integer         default = 0
+#  created_at              datetime        
+#  updated_at              datetime        
+#
+# Indexes
+#
+#  index_tr8n_language_metrics_on_created_at     (created_at) 
+#  index_tr8n_language_metrics_on_language_id    (language_id) 
+#
 #++
 
 class Tr8n::LanguageMetric < ActiveRecord::Base

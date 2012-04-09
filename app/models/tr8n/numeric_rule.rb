@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2011 Michael Berkovich, tr8n.net
+# Copyright (c) 2010-2012 Michael Berkovich, tr8n.net
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -19,6 +19,25 @@
 # LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+#++
+#
+#-- Tr8n::NumericRule Schema Information
+#
+# Table name: tr8n_language_rules
+#
+#  id               INTEGER         not null, primary key
+#  language_id      integer         not null
+#  translator_id    integer         
+#  type             varchar(255)    
+#  definition       text            
+#  created_at       datetime        
+#  updated_at       datetime        
+#
+# Indexes
+#
+#  index_tr8n_language_rules_on_language_id_and_translator_id    (language_id, translator_id) 
+#  index_tr8n_language_rules_on_language_id                      (language_id) 
+#
 #++
 
 class Tr8n::NumericRule < Tr8n::LanguageRule
@@ -52,8 +71,13 @@ class Tr8n::NumericRule < Tr8n::LanguageRule
     token.send(Tr8n::Config.rules_engine[:numeric_rule][:object_method])
   end
 
-  def number_token_value(token)
-    self.class.number_token_value(token)
+  def self.sanitize_values(values)
+    return [] unless values
+    values.split(",").collect{|val| val.strip} 
+  end
+
+  def self.humanize_values(values)
+    sanitize_values(values).join(", ")
   end
 
   # FORM: [object, singular, plural]
@@ -89,30 +113,7 @@ class Tr8n::NumericRule < Tr8n::LanguageRule
     args[0].pluralize
   end  
   
-  def evaluate(token)
-    token_value = number_token_value(token)  
-    return false unless token_value
-    
-    result1 = evaluate_partial_rule(token_value.to_s, definition[:part1].to_sym, sanitize_values(definition[:value1]))
-    return result1 unless definition[:multipart].to_s == "true"
-    
-    result2 = evaluate_partial_rule(token_value.to_s, definition[:part2].to_sym, sanitize_values(definition[:value2]))
-    return (result1 or result2) if definition[:operator] == "or"
-    return (result1 and result2)
-    
-    false
-  end
-
-  def sanitize_values(values)
-    return [] unless values
-    values.split(",").collect{|val| val.strip} 
-  end
-
-  def humanize_values(values)
-    sanitize_values(values).join(", ")
-  end
-
-  def evaluate_partial_rule(token_value, name, values)
+  def self.evaluate_rule_fragment(token_value, name, values)
     if name == :is
       return true if values.include?(token_value)
       return false
@@ -140,6 +141,32 @@ class Tr8n::NumericRule < Tr8n::LanguageRule
     false
   end
 
+  def evaluate(token)
+    token_value = number_token_value(token)  
+    return false unless token_value
+    
+    result1 = self.class.evaluate_rule_fragment(token_value.to_s, definition[:part1].to_sym, sanitize_values(definition[:value1]))
+    return result1 unless definition[:multipart].to_s == "true"
+    
+    result2 = self.class.evaluate_rule_fragment(token_value.to_s, definition[:part2].to_sym, sanitize_values(definition[:value2]))
+    return (result1 or result2) if definition[:operator] == "or"
+    return (result1 and result2)
+    
+    false
+  end
+
+  def number_token_value(token)
+    self.class.number_token_value(token)
+  end
+
+  def sanitize_values(values)
+    self.class.sanitize_values(values)
+  end
+
+  def humanize_values(values)
+    self.class.humanize_values(values)
+  end
+
   def to_hash
     { :type => self.class.dependency, 
       :multipart => definition[:multipart], :operator => definition[:operator],  
@@ -147,7 +174,6 @@ class Tr8n::NumericRule < Tr8n::LanguageRule
       :part2 => definition[:part2], :value2 => definition[:value2]
     }
   end
-
 
   # used to describe a context of a given translation
   def description

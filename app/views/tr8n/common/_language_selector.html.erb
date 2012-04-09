@@ -1,9 +1,11 @@
 <% if Tr8n::Config.enabled? and (Tr8n::Config.open_registration_mode? or Tr8n::Config.current_user_is_translator?) %>
+  	<% opts[:label] ||= tr8n_language_name_tag(Tr8n::Config.current_language, opts.merge(:name => :native, :linked => false)) %>
+
 		<% if opts[:lightbox] %>
-      <%=link_to_function(tr8n_language_name_tag(Tr8n::Config.current_language, opts.merge(:name => :native, :linked => false)), "tr8nLightbox.show('/tr8n/language/select?lightbox=true', {height:500, width:400})")%>
+	    <%=link_to_function(opts[:label], "tr8nLightbox.show('/tr8n/language/select?lightbox=true', {height:500, width:400})")%>
 		<% else %>
 	    <span style="<%=opts[:style]%>; cursor:pointer;" onClick="tr8nLanguageSelector.toggle();">
-			  <%= tr8n_language_name_tag(Tr8n::Config.current_language, opts.merge(:name => :native, :linked => false)) %>
+			  <%= opts[:label] %>
 				<% if opts[:show_arrow] %>
 				 <span style="<%=opts[:arrow_style]%>" id="tr8n_language_selector_trigger">▼</span>
 				<% end %>

@@ -1,4 +1,6 @@
-<%= render :partial => "/tr8n/common/tabs" %>
+<% if Tr8n::Config.enable_translator_tabs? %>
+	<%= render :partial => "/tr8n/common/tabs" %>
+<% end %>	
 
 <div class="tr8n">
   
