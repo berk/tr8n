@@ -42,6 +42,10 @@
 
 class Tr8n::GlossaryFilter < Tr8n::BaseFilter
   
+  def model_class
+    Tr8n::Glossary
+  end
+
   def default_order_type
     'asc'
   end

@@ -42,4 +42,8 @@
 
 class Tr8n::TranslationDomainFilter < Tr8n::BaseFilter
 
+  def model_class
+    Tr8n::TranslationDomain
+  end
+
 end

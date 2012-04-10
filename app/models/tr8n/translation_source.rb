@@ -39,6 +39,10 @@
 
 class Tr8n::TranslationSource < ActiveRecord::Base
   set_table_name :tr8n_translation_sources
+
+  attr_accessible :source, :translation_domain_id
+  attr_accessible :translation_domain
+
   after_destroy   :clear_cache
   
   belongs_to  :translation_domain,            :class_name => "Tr8n::TranslationDomain"

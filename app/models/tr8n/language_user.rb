@@ -45,7 +45,10 @@
 
 class Tr8n::LanguageUser < ActiveRecord::Base
   set_table_name :tr8n_language_users
-  
+
+  attr_accessible :language_id, :user_id, :translator_id, :manager
+  attr_accessible :language, :translator, :user
+
   belongs_to :user, :class_name => Tr8n::Config.user_class_name, :foreign_key => :user_id
   belongs_to :language, :class_name => "Tr8n::Language"
   belongs_to :translator, :class_name => "Tr8n::Translator"

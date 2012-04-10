@@ -42,6 +42,10 @@
 
 class Tr8n::TranslatorMetricFilter < Tr8n::BaseFilter
 
+  def model_class
+    Tr8n::TranslatorMetric
+  end
+
   def default_order
     'updated_at'
   end

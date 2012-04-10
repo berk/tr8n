@@ -42,6 +42,10 @@
 
 class Tr8n::IpLocationFilter < Tr8n::BaseFilter
 
+  def model_class
+    Tr8n::IpLocation
+  end
+
   def default_order
     'country'
   end

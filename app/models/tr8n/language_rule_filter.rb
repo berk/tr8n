@@ -46,6 +46,10 @@ class Tr8n::LanguageRuleFilter < Tr8n::BaseFilter
   #   [["Tr8n::Language", :language_id], ["Tr8n::Translator", :translator_id]]
   # end
 
+  def model_class
+    Tr8n::LanguageRule
+  end
+
   def definition
     defs = super  
     defs[:type][:is] = :list

@@ -42,6 +42,10 @@
 
 class Tr8n::LanguageFilter < Tr8n::BaseFilter
 
+  def model_class
+    Tr8n::Language
+  end
+
   def definition
     defs = super  
     defs[:fallback_language_id][:is] = :list

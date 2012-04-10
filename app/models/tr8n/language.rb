@@ -49,6 +49,9 @@
 class Tr8n::Language < ActiveRecord::Base
   set_table_name :tr8n_languages
   
+  attr_accessible :locale, :english_name, :native_name, :enabled, :right_to_left, :completenss, :fallback_language_id, :curse_words, :featured_index, :google_key, :facebook_key
+  attr_accessible :fallback_language
+
   after_save      :update_cache
   after_destroy   :update_cache
 

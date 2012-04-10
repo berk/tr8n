@@ -42,6 +42,10 @@
 
 class Tr8n::LanguageUserFilter < Tr8n::BaseFilter
 
+  def model_class
+    Tr8n::LanguageUser
+  end
+
   def default_filter_if_empty
     "created_today"
   end

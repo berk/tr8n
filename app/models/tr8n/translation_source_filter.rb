@@ -42,6 +42,10 @@
 
 class Tr8n::TranslationSourceFilter < Tr8n::BaseFilter
 
+  def model_class
+    Tr8n::TranslationSource
+  end
+
   def inner_joins
     [:translation_domain]
   end

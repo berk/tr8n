@@ -42,6 +42,10 @@
 
 class Tr8n::LanguageCaseValueMapFilter < Tr8n::BaseFilter
 
+  def model_class
+    Tr8n::LanguageCaseValueMap
+  end
+
   def definition
     defs = super  
     defs[:language_id][:is] = :list

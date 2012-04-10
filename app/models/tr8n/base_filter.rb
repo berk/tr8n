@@ -44,6 +44,8 @@ require 'will_filter'
 
 class Tr8n::BaseFilter < WillFilter::Filter
 
+  attr_accessible :name, :data, :user, :user_id, :model_class_name
+
   def definition
     meta = super
     meta.keys.each do |key|

@@ -42,6 +42,10 @@
 
 class Tr8n::TranslationKeyFilter < Tr8n::BaseFilter
   
+  def model_class
+    Tr8n::TranslationKey
+  end
+
   def default_filters
     super + [
       ["Verified Keys", "verified"],

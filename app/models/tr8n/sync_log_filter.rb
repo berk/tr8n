@@ -40,8 +40,10 @@
 #
 #++
 
-module Tr8n
-  class SyncLogFilter < Tr8n::BaseFilter
-  
+class Tr8n::SyncLogFilter < Tr8n::BaseFilter
+
+  def model_class
+    Tr8n::SyncLog
   end
+
 end

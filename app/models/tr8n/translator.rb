@@ -59,6 +59,9 @@
 class Tr8n::Translator < ActiveRecord::Base
   set_table_name :tr8n_translators
 
+  attr_accessible :user_id, :inline_mode, :blocked, :reported, :fallback_language_id, :rank, :name, :gender, :email, :password, :mugshot, :link, :locale, :level, :manager, :last_ip, :country_code, :remote_id
+  attr_accessible :user
+
   belongs_to :user, :class_name => Tr8n::Config.user_class_name, :foreign_key => :user_id
   
   has_many  :translator_logs,               :class_name => "Tr8n::TranslatorLog",             :dependent => :destroy, :order => "created_at desc"

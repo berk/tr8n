@@ -47,7 +47,10 @@
 
 class Tr8n::LanguageMetric < ActiveRecord::Base
   set_table_name :tr8n_language_metrics
-
+  
+  attr_accessible :language_id, :metric_date, :user_count, :translator_count, :translation_count, :key_count, :locked_key_count, :translated_ley_count
+  attr_accessible :language
+  
   belongs_to :language, :class_name => "Tr8n::Language"   
 
   def self.default_attributes

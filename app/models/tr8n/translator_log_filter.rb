@@ -42,6 +42,10 @@
 
 class Tr8n::TranslatorLogFilter < Tr8n::BaseFilter
 
+  def model_class
+    Tr8n::TranslatorLog
+  end
+
   def definition
     defs = super  
     defs[:action][:is] = :list

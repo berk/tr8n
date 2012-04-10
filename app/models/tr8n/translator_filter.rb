@@ -42,6 +42,10 @@
 
 class Tr8n::TranslatorFilter < Tr8n::BaseFilter
 
+  def model_class
+    Tr8n::Translator
+  end
+
   def default_filters
     super + [
       ["Watchlist", "watchlist"]

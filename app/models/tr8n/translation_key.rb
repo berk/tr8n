@@ -49,6 +49,9 @@ require 'digest/md5'
 
 class Tr8n::TranslationKey < ActiveRecord::Base
   set_table_name :tr8n_translation_keys
+
+  attr_accessible :key, :label, :description, :verified_at, :translation_count, :admin, :locale, :level, :synced_at
+
   after_save      :clear_cache
   after_destroy   :clear_cache
   

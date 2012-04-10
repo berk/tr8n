@@ -42,6 +42,10 @@
 
 class Tr8n::TranslationKeySourceFilter < Tr8n::BaseFilter
 
+  def model_class
+    Tr8n::TranslationKeySource
+  end
+
   def inner_joins
     [:translation_key, :translation_source]
   end
