@@ -209,7 +209,7 @@ module Tr8n
     def lists
       if request.post? 
         if params[:language_action] == "remove"
-          lu = Tr8n::LanguageUser.find(:first, :conditions => ["language_id = ? and user_id = ?", params[:language_id], tr8n_current_user.id])
+          lu = Tr8n::LanguageUser.find(:first, :conditions => ["language_id = ? and user_id = ?", params[:language_id].to_i, tr8n_current_user.id])
           lu.destroy
         end
       end
@@ -220,7 +220,7 @@ module Tr8n
     end
   
     def remove
-      lu = Tr8n::LanguageUser.find(:first, :conditions => ["language_id = ? and user_id = ?", params[:language_id], tr8n_current_user.id])
+      lu = Tr8n::LanguageUser.find(:first, :conditions => ["language_id = ? and user_id = ?", params[:language_id].to_i, tr8n_current_user.id])
       lu.destroy if lu
       redirect_to_source
     end
