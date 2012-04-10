@@ -28,7 +28,7 @@ FSSM.monitor('./src/', '**/*') do
   end
 
   def compile
-    command = "java -jar compressors/google/compiler.jar --js #{config['all']} --js_output_file ../assets/javascripts/tr8n/tr8n-compiled.js; echo 'Done'"
+    command = "java -jar compressors/google/compiler.jar --js #{config['all']} --js_output_file ../app/assets/javascripts/tr8n/tr8n-compiled.js; echo 'Done'"
     pp command
     Kernel.spawn(command)
   end
