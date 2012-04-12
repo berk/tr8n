@@ -549,6 +549,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     end
   end
 
+  # FIXME: make sure this does not create deadlocks
   def touch_sources
     sources.each do |source|
       source.touch
