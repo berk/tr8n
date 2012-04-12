@@ -32,6 +32,7 @@ defaults: &defaults
   enable_language_cases:      true      # enables support for language cases
   enable_client_sdk:          false     # allows javascript to use tr8nProxy object
   enable_browser_cache:       false     # caches translations in the browser
+  enable_tml:                 false     # allows to use HTML TML tags in pages
 
   enable_country_tracking:    true      # tracks and reports translator countries
   enable_relationships:       false 

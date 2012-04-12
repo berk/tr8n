@@ -765,6 +765,10 @@ class Tr8n::Config
     config[:enable_browser_cache]
   end
 
+  def self.enable_tml?
+    config[:enable_tml]
+  end
+
   def self.default_client_interval
     5000
   end

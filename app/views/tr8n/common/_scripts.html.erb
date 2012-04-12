@@ -32,7 +32,6 @@
   <% end %>
 
   <% if Tr8n::Config.enable_keyboard_shortcuts? %>  
-    <%=javascript_include_tag("/tr8n/javascripts/shortcut.js", :charset => "UTF-8") -%>
     <script type="text/javascript">
        <% Tr8n::Config.default_shortcuts.each do |key, data| %>     	
 				  shortcut.add("<%=key%>", function() {

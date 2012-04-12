@@ -103,10 +103,11 @@ module Tr8n::HelperMethods
     html << "    return #{client_var_name}.trl(label, description, tokens, options); "
     html << "  } "
 
-    # TODO: check if TML is enabled
-    # html << "  Tr8n.Utils.addEvent(window, 'load', function() { "
-    # html << "    #{client_var_name}.initTml(); "                               
-    # html << "  }) "                              
+    if Tr8n::Config.enable_tml?
+      html << "  Tr8n.Utils.addEvent(window, 'load', function() { "
+      html << "    #{client_var_name}.initTml(); "                               
+      html << "  }) "                              
+    end
 
     html << "</script>"
     html.join("\n").html_safe
