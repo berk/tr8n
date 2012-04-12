@@ -2,8 +2,16 @@
 
 	<%= tr8n_splash_screen_tag %>
 
+  <% if Tr8n::Config.enable_software_keyboard? %>
+    <script> 
+      VKI_default_layout = "<%=Tr8n::KeyboardMapping.current_1_49%>";
+    </script>     
+    <%=stylesheet_link_tag("/tr8n/stylesheets/keyboard_1_49.css") -%>
+  <% end %>  
+
   <%=stylesheet_link_tag("/tr8n/stylesheets/tr8n.css") -%>
-  <%=javascript_include_tag("/tr8n/javascripts/tr8n.js") -%>
+  <%=javascript_include_tag("/tr8n/javascripts/tr8n-compiled.js", :charset => "UTF-8") -%>
+
   <script type="text/javascript">
      initializeTr8n();
   </script>
@@ -22,14 +30,6 @@
 			Tr8n.google_api_key = "<%=Tr8n::Config.google_api_key %>";
 		</script>
   <% end %>
-
-  <% if Tr8n::Config.enable_software_keyboard? %>
-	  <script> 
-		  VKI_default_layout = "<%=Tr8n::KeyboardMapping.current_1_36%>";
-		</script> 	  
-    <%=javascript_include_tag("/tr8n/javascripts/keyboard_1_36.js", :charset => "UTF-8") -%>
-    <%=stylesheet_link_tag("/tr8n/stylesheets/keyboard_1_36.css") -%>
-  <% end %>  
 
   <% if Tr8n::Config.enable_keyboard_shortcuts? %>  
     <%=javascript_include_tag("/tr8n/javascripts/shortcut.js", :charset => "UTF-8") -%>
