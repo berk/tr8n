@@ -24,7 +24,8 @@
 module Tr8n
   class LanguageController < Tr8n::BaseController
 
-    before_filter :validate_current_translator, :except => [:select, :switch]
+    before_filter :validate_guest_user, :except => [:select, :switch, :translator_splash_screen, :table]
+    before_filter :validate_current_translator, :except => [:select, :switch, :translator_splash_screen, :table]
     before_filter :validate_language_management, :only => [:index]
     
     # for ssl access to the translator - using ssl_requirement plugin  

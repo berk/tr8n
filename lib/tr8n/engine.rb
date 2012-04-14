@@ -22,7 +22,7 @@
 #++
 
 module Tr8n
-  class Engine < Rails::Engine
+  class Engine < ::Rails::Engine
     isolate_namespace Tr8n
     config.generators do |g|
       g.test_framework :rspec, :view_specs => false

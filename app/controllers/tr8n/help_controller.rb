@@ -23,9 +23,9 @@
 
 class Tr8n::HelpController < Tr8n::BaseController
 
-  before_filter :validate_current_translator, :except => [:lb_shortcuts, :lb_stats, :credits, :license]
-  before_filter :validate_guest_user, :except => [:lb_shortcuts, :lb_stats, :credits, :license]
-  before_filter :validate_current_user, :except => [:lb_shortcuts, :lb_stats, :credits, :license]
+  before_filter :validate_current_translator, :except => [:lb_shortcuts, :lb_stats, :credits, :license, :splash_screen]
+  before_filter :validate_guest_user, :except => [:lb_shortcuts, :lb_stats, :credits, :license, :splash_screen]
+  before_filter :validate_current_user, :except => [:lb_shortcuts, :lb_stats, :credits, :license, :splash_screen]
   
   def index
 
