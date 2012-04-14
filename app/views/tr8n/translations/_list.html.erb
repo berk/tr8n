@@ -27,12 +27,6 @@
 
 <% if [:edit, :view].include?(mode) %>
 	<script>
-	  function editTranslationRow(translation_id, section_key) {
-	    Tr8n.Effects.hide('tr8n_votes_for_' + translation_id);
-	    Tr8n.Effects.show('tr8n_spinner_for_' + translation_id);
-	    location = "/tr8n/translations/view?translation_id=" + translation_id + "&section_key=" + section_key;
-	  }
-	  
 	  function deleteTranslationRow(translation_id, section_key) {
 	    if (!confirm("<%=trl('Are you sure you want to delete this translation?')%>")) {
 	      return;

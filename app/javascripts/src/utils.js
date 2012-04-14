@@ -119,8 +119,26 @@ Tr8n.Utils = {
     }
   },
 
+  getMetaAttributes: function() {
+    var meta_hash = {};
+    var meta = document.getElementsByTagName("meta");
+    for (var i=0; i<meta.length; i++) {
+      var name = meta[i].getAttribute('name'); 
+      var content = meta[i].getAttribute('content'); 
+      if (!name || !content) continue;
+      meta_hash[name] = content;
+    }
+    return meta_hash;
+  },
+
   ajax: function(url, options) {
     options = options || {};
+    options.parameters = options.parameters || {};
+
+    var meta = Tr8n.Utils.getMetaAttributes();
+    if (meta['csrf-param'] && meta['csrf-token']) {
+      options.parameters[meta['csrf-param']] = meta['csrf-token'];
+    }
     options.parameters = Tr8n.Utils.toQueryParams(options.parameters);
     options.method = options.method || 'get';
 
@@ -188,6 +206,7 @@ Tr8n.Utils = {
     }
   },
 
+  // deprecated
   cumulativeOffset: function(element) {
     var valueT = 0, valueL = 0;
     do {
@@ -196,6 +215,16 @@ Tr8n.Utils = {
       element = element.offsetParent;
     } while (element);
     return [valueL, valueT];
+  },
+
+  elementRect: function(element) {
+    var valueT = 0, valueL = 0, el = element;
+    do {
+      valueT += el.offsetTop  || 0;
+      valueL += el.offsetLeft || 0;
+      el = el.offsetParent;
+    } while (el);
+    return {left: valueL, top: valueT, width: element.offsetWidth, height: element.offsetHeight};
   },
 
   wrapText: function (obj_id, beginTag, endTag) {

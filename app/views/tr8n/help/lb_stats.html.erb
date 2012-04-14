@@ -19,42 +19,42 @@
 	<div class="bd">
 			<table class="stats" style="width:100%" celppading="0px" cellspacing="0px">
 				<tr>
-					<td style="">Total Languages</td>
+					<td style=""><%=tr("Total Languages")%></td>
 			    <td style="text-align:right;"><%=Tr8n::Language.count%></td>
 				</tr>
 				<tr>
-					<td style="">Enabled Languages</td>
+					<td style=""><%=tr("Enabled Languages")%></td>
 			    <td style="text-align:right;"><%=Tr8n::Language.enabled_languages.count%></td>
 				</tr>
 				<tr>
-					<td style="">Translators</td>
+					<td style=""><%=tr("Translators")%></td>
 			    <td style="text-align:right;"><%=Tr8n::Translator.count%></td>
 				</tr>
 				<tr>
-					<td style="">Translation Keys</td>
+					<td style=""><%=tr("Translation Keys")%></td>
 			    <td style="text-align:right;"><%=Tr8n::TranslationKey.count%></td>
 				</tr>
 				<tr>
-					<td style="">Translations</td>
+					<td style=""><%=tr("Translations")%></td>
 			    <td style="text-align:right;"><%=Tr8n::Translation.count%></td>
 				</tr>
 				<tr>
-					<td style="">Translation Votes</td>
+					<td style=""><%=tr("Translation Votes")%></td>
 			    <td style="text-align:right;"><%=Tr8n::TranslationVote.count%></td>
 				</tr>
 				<tr>
-					<td style="">Sources</td>
+					<td style=""><%=tr("Sources")%></td>
 			    <td style="text-align:right;"><%=Tr8n::TranslationSource.count%></td>
 				</tr>
 
 				<tr>
-					<td style="">Cache Enabled</td>
+					<td style=""><%=tr("Cache Enabled")%></td>
 			    <td style="text-align:right;"><%=Tr8n::Cache.enabled?%></td>
 				</tr>
 
 				<% if Tr8n::Cache.enabled? %>
 				<tr>
-					<td style="">Cache Version</td>
+					<td style=""><%=tr("Cache Version")%></td>
 			    <td style="text-align:right;"><%=Tr8n::Cache.version%></td>
 				</tr>
 				<% end %>

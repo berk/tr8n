@@ -76,7 +76,7 @@ class Tr8n::LanguageUser < ActiveRecord::Base
   def self.create_or_touch(user, language)
     return unless user.id
     lu = Tr8n::LanguageUser.find_or_create(user, language)
-    lu.update_attributes(:updated_at => Time.now)
+    lu.touch
     lu
   end
   

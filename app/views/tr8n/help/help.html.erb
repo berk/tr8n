@@ -6,8 +6,9 @@
 
 <div class="documentation_section">
 	<p>
-    Help section is what you are looking at right now.
-		Throughout the translation system you may see the help icon: <%= image_tag("tr8n/help.png") %> Click on it and it will take you to the help section regarding the topic of your interest.
+    <%= tr("Help section is what you are looking at right now.") %>
+		<%= tr("Throughout the translation system you may see the help icon: {icon}", nil, :icon => image_tag("tr8n/help.png")) %> 
+		<%= tr("Click on this icon and it will take you to the help section regarding the topic of your interest.") %>
 	</p>
 </div>
 

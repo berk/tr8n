@@ -29,9 +29,9 @@
       <%=link_to_function(image_tag("tr8n/exclamation.png"), "tr8nLightbox.show('/tr8n/translator/lb_report?translation_id=#{translation.id}', {width:600, height:360});")%>
 		</div>
 	<% else %>
-    <%=link_to_function(image_tag("tr8n/thumb_up.png"), "tr8nTranslator.voteOnTranslation('#{translation.translation_key.key}', '#{translation.id}', 1)")%> 
-    <%=link_to_function(image_tag("tr8n/thumb_down.png"), "tr8nTranslator.voteOnTranslation('#{translation.translation_key.key}','#{translation.id}', -1)")%> 
-    <%=link_to_function(image_tag("tr8n/exclamation.png"), "tr8nLightbox.show('/tr8n/translator/lb_report?translation_id=#{translation.id}', {width:600, height:360});")%>
+    <%=link_to_function(image_tag("tr8n/thumb_up.png"), "Tr8n.Translation.vote('#{translation.translation_key.key}', '#{translation.id}', 1)")%> 
+    <%=link_to_function(image_tag("tr8n/thumb_down.png"), "Tr8n.Translation.vote('#{translation.translation_key.key}','#{translation.id}', -1)")%> 
+    <%=link_to_function(image_tag("tr8n/exclamation.png"), "Tr8n.postMessage('tr8n:translation:report:#{translation.id}')")%>
   <% end %>   
 </td>
 

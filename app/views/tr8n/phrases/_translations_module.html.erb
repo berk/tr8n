@@ -17,14 +17,14 @@
          <%=hidden_field_tag(:section_key, @section_key) %>
          <%=hidden_field_tag(:translation_key_id, @translation_key.id) %>
          <div style="padding-top:5px;">
-              <%=trla("Show")%>
-              <%=select_tag(:with_status, options_for_select(Tr8n::Translation.filter_status_options, params[:with_status]), :onChange => "Tr8n.Effects.submit('translations_search_form')")%>
-              <%=trla("submitted by")%>
-              <%=select_tag(:submitted_by, options_for_select(Tr8n::Translation.filter_submitter_options, params[:submitted_by]), :onChange => "Tr8n.Effects.submit('translations_search_form')")%>
-              <%=trla("created on")%>
-              <%=select_tag(:submitted_on, options_for_select(Tr8n::Translation.filter_date_options, params[:submitted_on]), :onChange => "Tr8n.Effects.submit('translations_search_form')")%>
-              <%=trla("grouped by")%>
-              <%=select_tag(:grouped_by, options_for_select(Tr8n::Translation.filter_group_by_options, params[:grouped_by]), :onChange => "Tr8n.Effects.submit('translations_search_form')")%>
+            <%=trla("Show", "Show translations")%>
+            <%=select_tag(:with_status, options_for_select(Tr8n::Translation.filter_status_options, params[:with_status]), :onChange => "Tr8n.Effects.submit('translations_search_form')")%>
+            <%=trla("submitted by", "Translations subbmitted by")%>
+            <%=select_tag(:submitted_by, options_for_select(Tr8n::Translation.filter_submitter_options, params[:submitted_by]), :onChange => "Tr8n.Effects.submit('translations_search_form')")%>
+            <%=trla("created on", "Translations created on")%>
+            <%=select_tag(:submitted_on, options_for_select(Tr8n::Translation.filter_date_options, params[:submitted_on]), :onChange => "Tr8n.Effects.submit('translations_search_form')")%>
+            <%=trla("grouped by", "Translations grouped by")%>
+            <%=select_tag(:grouped_by, options_for_select(Tr8n::Translation.filter_group_by_options, params[:grouped_by]), :onChange => "Tr8n.Effects.submit('translations_search_form')")%>
          </div>
       <% end %>
     </div>
@@ -55,13 +55,11 @@
     <div style="font-size: 12px; color: grey; padding-top:15px; padding-bottom:15px;">
     <%= trla("You can only edit or delete translations submitted by you.") %>
      
-    <%= trla("If you don't like any of the translations for this phrase, [link: add your own translation].", "",
-          :link => lambda{|str| link_to_function(str, "addTranslation()")}) %>
+    <%= trla("If you don't like any of the translations for this phrase, [link: add your own translation].", nil, :link => lambda{|str| link_to_function(str, "addTranslation()")}) %>
 
     <% if @translation_key.permutatable? %>
-        <%=trla("If this translation depends on a {token} or a gender of the viewing user, then [link: generate context rules for this phrase].", "",
-              :token => "{token}",
-              :link => lambda{|str| link_to_function(str, "addContextRules()")}) %>
+        <%=trla("If this translation depends on a {token} or a gender of the viewing user, then [link: generate context rules for this phrase].", nil,
+              :token => "{token}", :link => lambda{|str| link_to_function(str, "addContextRules()")}) %>
     <% end %>        
     </div>
   <% end %>

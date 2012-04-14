@@ -271,7 +271,7 @@ module Tr8n
     # regular tokens lambda, symbol, string, with parameters that follow
     #
     # if you want to pass options, then make the second parameter an array as well    
-    # tr("{user_list} joined Geni", "", 
+    # tr("{user_list} joined the site", "", 
     #       {:user_list => [[user1, user2, user3], 
     #                         [:name],      # this can be any of the value methods
     #                         { :expandable => true, 

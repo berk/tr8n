@@ -12,9 +12,7 @@
 			
 			  <table style="width:100%; ">
 			    <% @comments.each do |comment| %>
-			      <%
-			        style = (comment == @comments.last ? "" : "border-bottom:1px dotted #ccc;" )
-			      %>  
+			      <% style = (comment == @comments.last ? "" : "border-bottom:1px dotted #ccc;" ) %>  
 			      <tr style="<%=style%>">
 			        <%= render :partial => "comment", :locals => {:comment => comment} %> 
 			      </tr>

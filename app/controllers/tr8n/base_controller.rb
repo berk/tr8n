@@ -184,7 +184,7 @@ module Tr8n
       end
 
       unless tr8n_current_user_is_translator? and tr8n_current_translator.manager? 
-        trfe("In order to manage a language you first must request to become a manager of that language. Please send your request to Geni support.")
+        trfe("In order to manage a language you first must request to become a manager of that language.")
         return redirect_to(tr8n_features_tabs.first[:link])
       end
     end

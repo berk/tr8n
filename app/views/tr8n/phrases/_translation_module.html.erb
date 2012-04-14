@@ -1,9 +1,10 @@
 <div id="translation_module" class="section grey" style="display:none">
 	<div style="font-size:17px;padding-bottom:3px;font-weight:bold;">
-	  <%=trla("Translation for {language} Language", "", :language => tr8n_current_language.native_name)%>
+	  <%=trla("Translation for {language} Language", nil, :language => tr8n_current_language.native_name)%>
 	</div>
 	
-	<%= form_for(@translation, :as => :translation, :url => {:controller => "/tr8n/translations", :action => :translate}, :html => {:id => 'translation_form', :method => :post}) do |f| %>
+	<%= form_for(@translation, :as => :translation, :url => {:controller => "/tr8n/translations", :action => :submit}, :html => {:id => 'translation_form', :method => :post}) do |f| %>
+			<%= hidden_field_tag(:destination_url, "/tr8n/phrases/view?translation_key_id=#{@translation_key.id}") %>
 		  <%= hidden_field_tag(:translation_id, @translation.id) %>
 		  <%= hidden_field_tag(:new_translation, (@translation.id == nil).to_s ) %>
 		  <%= hidden_field_tag(:translation_key_id, @translation_key.id) %>
@@ -31,11 +32,9 @@
 				    <%=image_tag("tr8n/right_quote.png", :style=>"text-align:bottom;padding-top:5px;") %>
 				    
             <% sanitized_label = @translation_key.tokenless_label.gsub('"', '\"') %>
-				    <script type="text/javascript">
-					    addEvent(window, "load", function(event) {
-                 suggestTranslation("<%=@translation_key.id %>", "<%=sanitized_label %>", "<%=@translation_key.suggestion_tokens.join(',')%>", "<%=@translation_key.language.google_key%>", "<%=tr8n_current_language.google_key%>");
-					    });
-				    </script>
+            <script type="text/javascript">
+            		Tr8n.Translation.suggest("<%=@translation_key.id %>", "<%=sanitized_label %>", "<%=@translation_key.suggestion_tokens.join(',')%>", "<%=@translation_key.language.google_key%>", "<%=tr8n_current_language.google_key%>");
+            </script>
 				  
 				    <div style="color:grey; font-size:12px; padding-top:10px;">
 				       <%=trla("Click on the suggested translation to insert it into the label")%>
@@ -74,11 +73,11 @@
 						</div>
 	          
 						<div id="tr8n_dictionary_opener" style="font-size:12px; font-weight:normal;">
-							  <%=link_to_function(trla("Click here to download dictionary definitions for the phrase words"), "downloadDictionaryDefinitions(); ") %>
+							<%=link_to_function(trla("Click here to download dictionary definitions for the phrase words"), "downloadDictionaryDefinitions(); ") %>
 						</div>	
 	
 	          <div id="tr8n_dictionary_shower" style="display:none; font-size:12px; font-weight:normal;">
-	              <%=link_to_function(trla("show dictionary definitions {raquo}"), "Tr8n.Effects.hide('tr8n_dictionary_shower'); Tr8n.Effects.show('tr8n_dictionary_hider'); Tr8n.Effects.appear('tr8n_dictionary'); Tr8n.Effects.scrollTo('buttons_container');") %>
+	            <%=link_to_function(trla("show dictionary definitions {raquo}"), "Tr8n.Effects.hide('tr8n_dictionary_shower'); Tr8n.Effects.show('tr8n_dictionary_hider'); Tr8n.Effects.appear('tr8n_dictionary'); Tr8n.Effects.scrollTo('buttons_container');") %>
 	          </div>  
 	
 	  			  <%=tr8n_spinner_tag("tr8n_dictionary_spinner", "Downloading words definitions...") %>

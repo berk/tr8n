@@ -1,41 +1,41 @@
-<div style="padding-bottom:5px;">
-  <table style="width:100%;border-collapse: collapse;" cellpadding="5px" cellspacing="0px;" >
-      <tr style="border-bottom:1px dotted #ccc;">
-        <td style="width:20px; color:grey; font-size:10px; text-align:right; padding-bottom:3px;"><%=trla("Rank", "Translator label")%></td>
-        <td style="width:75px; color:grey; font-size:10px; text-align:center; padding-bottom:3px;"><%=trla("Your Vote", "Translator label")%></td>
-        <td style="color:grey; font-size:10px; padding-bottom:3px;"><%=trla("Translation", "Translator label")%></td>
-      </tr>  
-      <% translations[0..9].each do |trn| %>
-        <% style = "border-bottom:1px dotted #ccc;" unless translations.last == trn %>
-        <tr style="<%=style%>">
-          <td style="text-align:right;vertical-align:top; padding-top:3px;">
-					  <%=tr8n_spinner_tag("tr8n_spinner_for_#{trn.id}", "", "")%>
-					 
-            <div id="tr8n_votes_for_<%=trn.id%>" style="font-size:12px;white-space:nowrap;">
-              <%= trn.rank_label %> 
-            </div>  
-          </td>  
-          <td style="text-align:center;vertical-align:top; padding-top:3px;">
-            <% if trn.translation_key.locked? %>
-              <div style="text-align:center; padding-top:1px;">
-							  <%=image_tag("tr8n/lock.png", :style=>"height:14px", :title => trla("This phrase is locked", "Translator label"))%>
-                <%=link_to_function(image_tag("tr8n/exclamation.png", :title=> trla("Report this translation", "Translator label")), "tr8nLightbox.show('/tr8n/translator/lb_report?translation_id=#{trn.id}', {width:600, height:360});")%>
-							</div>
-						<% else %>
-              <%=link_to_function(image_tag("tr8n/thumb_up.png", :title=>trla("Vote up this translation", "Translator label")), "tr8nTranslator.voteOnTranslation('#{trn.translation_key.key}', '#{trn.id}', 1)")%> 
-              <%=link_to_function(image_tag("tr8n/thumb_down.png", :title=>trla("Vote down this translation", "Translator label")), "tr8nTranslator.voteOnTranslation('#{trn.translation_key.key}','#{trn.id}', -1)")%> 
-              <%=link_to_function(image_tag("tr8n/exclamation.png", :title=>trla("Report this translation", "Translator label")), "tr8nLightbox.show('/tr8n/translator/lb_report?translation_id=#{trn.id}', {width:600, height:360});")%>
-            <% end %>   
-          </td>
-          <td style="text-align:left;vertical-align:top;font-size:11px; padding-top:3px;">
-            <%= trn.label %>
-            <% if trn.context %>
-              <div style="font-size: 10px; color: grey; padding-top:3px;">
-                <%=trla("Context:", "Translator label")%> <%= trn.context %>  
-              </div>
-            <% end %>
-          </td>
-        </tr>
-      <% end %>
-  </table>
-</div>
+  <div style="padding-bottom:5px;">
+    <table style="width:100%;border-collapse: collapse;" cellpadding="5px" cellspacing="0px;" >
+        <tr style="border-bottom:1px dotted #ccc;">
+          <td style="width:20px; color:grey; font-size:10px; text-align:right; padding-bottom:3px;"><%=trla("Rank", "Translation rank")%></td>
+          <td style="width:75px; color:grey; font-size:10px; text-align:center; padding-bottom:3px;"><%=trla("Your Vote", "Your vote on a translation")%></td>
+          <td style="color:grey; font-size:10px; padding-bottom:3px;"><%=trla("Translation")%></td>
+        </tr>  
+        <% translations[0..9].each do |trn| %>
+          <% style = "border-bottom:1px dotted #ccc;" unless translations.last == trn %>
+          <tr style="<%=style%>">
+            <td style="text-align:right;vertical-align:top; padding-top:3px;">
+              <%=tr8n_spinner_tag("tr8n_spinner_for_#{trn.id}", "", "")%>
+             
+              <div id="tr8n_votes_for_<%=trn.id%>" style="font-size:12px;white-space:nowrap;">
+                <%= trn.rank_label %> 
+              </div>  
+            </td>  
+            <td style="text-align:center;vertical-align:top; padding-top:3px;">
+              <% if trn.translation_key.locked? %>
+                <div style="text-align:center; padding-top:1px;">
+                  <%=image_tag("tr8n/lock.png", :style=>"height:14px", :title => trla("This phrase is locked"))%>
+                  <%=link_to_function(image_tag("tr8n/exclamation.png", :title=> trla("Report this translation")), "Tr8n.postMessage('tr8n:translation:report:#{trn.id}')")%>
+                </div>
+              <% else %>
+                <%=link_to_function(image_tag("tr8n/thumb_up.png", :title=>trla("This translation is good")), "Tr8n.Translation.vote('#{trn.translation_key.id}', '#{trn.id}', 1)")%> 
+                <%=link_to_function(image_tag("tr8n/thumb_down.png", :title=>trla("This translation is bad")), "Tr8n.Translation.vote('#{trn.translation_key.id}', '#{trn.id}', -1)")%> 
+                <%=link_to_function(image_tag("tr8n/exclamation.png", :title=>trla("This translation contains abusive language")), "Tr8n.postMessage('tr8n:translation:report:#{trn.id}')")%>
+              <% end %>   
+            </td>
+            <td style="text-align:left;vertical-align:top;font-size:11px; padding-top:3px;">
+              <%= trn.label %>
+              <% if trn.context %>
+                <div style="font-size: 10px; color: grey; padding-top:3px;">
+                  <%=trla("Context:", "Translator label")%> <%= trn.context %>  
+                </div>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+    </table>
+  </div>

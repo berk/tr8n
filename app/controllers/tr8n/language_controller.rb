@@ -260,21 +260,21 @@ module Tr8n
 
     # inline translator popup window as well as translation backend method
     def translator
-      @translation_key = Tr8n::TranslationKey.find(params[:translation_key_id])
-      @translations = @translation_key.inline_translations_for(tr8n_current_language)
-      @source_url = params[:source_url] || request.env['HTTP_REFERER']
-      @translation = Tr8n::Translation.default_translation(@translation_key, tr8n_current_language, tr8n_current_translator)
-    
-      if params[:mode]  # switching modes
-        @mode = params[:mode]
-        return render(:partial => "translator_#{@mode}")
-      else 
-        @mode = (@translations.empty? ? "submit" : "votes") unless @mode
+      if params[:translation_key_id]
+        @translation_key = Tr8n::TranslationKey.find_by_id(params[:translation_key_id].to_i)
+        @translations = @translation_key.inline_translations_for(tr8n_current_language)
+        @translation = Tr8n::Translation.default_translation(@translation_key, tr8n_current_language, tr8n_current_translator)
+        @mode = params[:mode] || (@translations.empty? ? 'submit' : 'votes')
+      else  
+        @mode = 'done'
       end
-
       render(:layout => false)
     end
     
+    def splash_screen
+      render :layout => false
+    end
+
     def table
       @source_url = params[:source_url] || request.env['HTTP_REFERER']
     end

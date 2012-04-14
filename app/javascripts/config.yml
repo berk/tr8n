@@ -10,6 +10,7 @@ all:
   src/ui/language_selector.js
   src/ui/lightbox.js
   src/ui/translator.js
+  src/ui/translation.js
   src/proxy.js
   src/logger.js
   src/language.js
@@ -26,7 +27,7 @@ all:
   src/rules/gender_list_rule.js
   src/tml/label.js
   src/tml/token.js
-  src/init.js
+  src/boot.js
 
 ui:
   src/ext/shortcut.js
@@ -38,7 +39,8 @@ ui:
   src/ui/language_selector.js
   src/ui/lightbox.js
   src/ui/translator.js
-  src/init.js
+  src/ui/translation.js
+  src/boot.js
 
 proxy:
   src/ext/inflector.js

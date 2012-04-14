@@ -29,7 +29,63 @@ var Tr8n = Tr8n || {
     if (typeof element_id == 'string') return document.getElementById(element_id);
     return element_id;
   },
+
   value:function(element_id) {
     return Tr8n.element(element_id).value;
+  },
+
+  postMessage: function(msg, origin) {
+    if (top.Tr8n) {
+      top.Tr8n.onMessage(msg);
+    } else {
+      if (window.postMessage) {
+        window.postMessage(msg, origin);
+      } else {
+        alert("Failed to deliver a tr8n message: " + msg + " to origin: " + origin);
+      }       
+    }
+  },
+
+  onMessage:function(event) {
+    var msg = '';
+    if (typeof event == 'string') {
+      msg = event;
+    } else {
+      msg = event.data;
+    }
+
+    var elements = msg.split(':');
+    if (elements[0] != 'tr8n') {
+      alert("Received an unkown message: " + msg);
+      return;
+    }
+
+    if (elements[1] == 'reload') {
+      window.location.reload();
+      return;
+    }
+
+    if (elements[1] == 'translation') {
+      if (elements[2] == 'report') {
+        tr8nTranslator.hide();
+        tr8nLightbox.show('/tr8n/translator/lb_report?translation_id=' + elements[3], {width:600, height:360});
+        return;
+      } 
+    }
+
+    if (elements[1] == 'translator') {
+      if (elements[2] == 'resize') {
+        tr8nTranslator.resize(elements[3]);
+        return;
+      } 
+
+      if (elements[2] == 'hide') {
+        tr8nTranslator.hide();
+        return;
+      }
+    } 
+
+    alert("Unknown message: " + msg);
   }
+
 };
