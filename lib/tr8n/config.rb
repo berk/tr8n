@@ -99,7 +99,7 @@ module Tr8n
          Tr8n::Translation, Tr8n::TranslationVote,
          Tr8n::Translator, Tr8n::TranslatorLog, Tr8n::TranslatorMetric, 
          Tr8n::TranslatorFollowing, Tr8n::TranslatorReport, 
-         Tr8n::LanguageForumTopic, Tr8n::LanguageForumMessage, Tr8n::LanguageForumAbuseReport,
+         Tr8n::LanguageForumTopic, Tr8n::LanguageForumMessage,
          Tr8n::Glossary, Tr8n::IpLocation, Tr8n::SyncLog
       ]    
     end

@@ -73,16 +73,22 @@ var Tr8n = Tr8n || {
       } 
     }
 
-    if (elements[1] == 'translator') {
-      if (elements[2] == 'resize') {
-        tr8nTranslator.resize(elements[3]);
+    if (elements[1] == 'language_case_map') {
+      if (elements[2] == 'report') {
+        tr8nTranslator.hide();
+        tr8nLightbox.show('/tr8n/translator/lb_report?language_case_map_id=' + elements[3], {width:600, height:360});
         return;
       } 
+    }
 
-      if (elements[2] == 'hide') {
-        tr8nTranslator.hide();
-        return;
-      }
+    if (elements[1] == 'lightbox') {
+      if (elements[2] == 'resize') { tr8nLightbox.resize(elements[3]); return; } 
+      if (elements[2] == 'hide') { tr8nLightbox.hide(); return;}
+    }
+
+    if (elements[1] == 'translator') {
+      if (elements[2] == 'resize') { tr8nTranslator.resize(elements[3]); return; } 
+      if (elements[2] == 'hide') { tr8nTranslator.hide(); return; }
     } 
 
     alert("Unknown message: " + msg);

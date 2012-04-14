@@ -39,7 +39,7 @@ Tr8n.Translator = function(options) {
   this.container.appendChild(this.stem_image);
 
   this.content_frame = document.createElement('iframe');
-  this.content_frame.src = '/tr8n/language/splash_screen';
+  this.content_frame.src = '/tr8n/language/translator_splash_screen';
   this.content_frame.style.border = '0px';
   this.container.appendChild(this.content_frame);
 
@@ -59,9 +59,11 @@ Tr8n.Translator = function(options) {
     if (Tr8n.Utils.isOpera() && !e.ctrlKey) return;
 
     var translatable_node = Tr8n.Utils.findElement(e, ".tr8n_translatable");
+    var language_case_node = Tr8n.Utils.findElement(e, ".tr8n_language_case");
+
     var link_node = Tr8n.Utils.findElement(e, "a");
 
-    if (translatable_node == null) return;
+    if (translatable_node == null && language_case_node == null) return;
 
     // We don't want to trigger links when we right-mouse-click them
     if (link_node) {
@@ -79,7 +81,11 @@ Tr8n.Translator = function(options) {
     if (e.preventDefault) e.preventDefault();
     if (e.stopPropagation) e.stopPropagation();
 
-    self.show(translatable_node);
+    if (language_case_node)
+      self.show(language_case_node, true);
+    else 
+      self.show(translatable_node, false);
+
     return false;
   });
 }
@@ -90,18 +96,15 @@ Tr8n.Translator.prototype = {
     Tr8n.Utils.showFlash();
   },
 
-  show: function(translatable_node) {
+  show: function(translatable_node, is_language_case) {
     var self = this;
     if (tr8nLanguageSelector) tr8nLanguageSelector.hide();
     if (tr8nLightbox) tr8nLightbox.hide();
-    if (tr8nLanguageCaseManager) tr8nLanguageCaseManager.hide();
     Tr8n.Utils.hideFlash();
-
-    this.translation_key_id = translatable_node.getAttribute('translation_key_id');
 
     this.content_frame.style.width = '100%';
     this.content_frame.style.height = '10px';
-    this.content_frame.src = '/tr8n/language/splash_screen';
+    this.content_frame.src = '/tr8n/language/translator_splash_screen';
 
     var stem = {v: "top", h: "left", width: 10, height: 12};
     var label_rect = Tr8n.Utils.elementRect(translatable_node);
@@ -136,7 +139,21 @@ Tr8n.Translator.prototype = {
     this.container.style.display  = "block";
 
     window.setTimeout(function() {
-      self.content_frame.src = '/tr8n/language/translator?translation_key_id=' + self.translation_key_id + '&origin=' + escape(window.location);
+      var url = "";
+      if (is_language_case) {
+        self.language_case_id = translatable_node.getAttribute('case_id');
+        self.language_case_rule_id = translatable_node.getAttribute('rule_id');
+        self.language_case_key = translatable_node.getAttribute('case_key');
+        url += '/tr8n/language_cases/manager?case_id=' + self.language_case_id;
+        url += '&rule_id=' + self.language_case_rule_id;
+        url += '&case_key=' + self.language_case_key;
+        url += '&origin=' + escape(window.location);
+      } else {
+        self.translation_key_id = translatable_node.getAttribute('translation_key_id');
+        url += '/tr8n/language/translator?translation_key_id=' + self.translation_key_id;
+        url += '&origin=' + escape(window.location);
+      }
+      self.content_frame.src = url;
     }, 500);
   },
 

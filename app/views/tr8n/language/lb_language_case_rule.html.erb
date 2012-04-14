@@ -1,3 +1,4 @@
+<%= render :partial => "/tr8n/common/lightbox_header" %>
 <style>
   .lightbox {
     background-color: white;
@@ -22,7 +23,7 @@
 <div class="inner">
 	<div class="hd">
 		<div style="float:right;">
-			<%=link_to_function(image_tag("tr8n/close.gif"), "tr8nLightbox.hide()") %>
+			<%=link_to_function(image_tag("tr8n/close.gif"), "hideLightbox()") %>
 		</div>
 	  <div style="font-size:14px; font-weight:bold;">
 	     <%= @case.native_name.blank? ? 'New Language Case' : @case.native_name %>
@@ -35,11 +36,10 @@
 	  <%= form_tag({}, {:id => :language_case_rule_form}) do %>
 		  
 		  <% rule_prefix = "edit_rule" %>
-		
-		
+
 		  <%=hidden_field_tag("#{rule_prefix}[position]", @rule_index)%>
 		
-		  <div class='content'>
+		  <div class='content' style="height:200px">
 			  <div style="font-weight:bold; font-size:14px; padding-bottom:10px;"><%=tra("Language Case Rule Definition")%></div>
 			  <table>
 			  	<tr>
@@ -91,10 +91,11 @@
 	</div>
 
 	<div class="ft">
-	    <button type="button" class="translator_btn translator_submit_btn" onClick="tr8nLightbox.hide(); updateLanguageCaseRule(); return false;">
+	    <button type="button" class="translator_btn translator_submit_btn" onClick="hideLightbox(); top.updateLanguageCaseRule(Tr8n.Utils.serializeForm('language_case_rule_form')); return false;">
 	        <span><%=trla(@new_rule ? "Add Rule" : "Update Rule", "Tr8n lightbox close button")%></span>
 	    </button>
      <%=tra("or")%>
-     <%=link_to_function(trla("Cancel", "Tr8n lightbox close button"), "tr8nLightbox.hide()") %>
+     <%=link_to_function(trla("Cancel", "Tr8n lightbox close button"), "hideLightbox()") %>
 	</div>
 </div>
+<%= render :partial => "/tr8n/common/lightbox_footer" %>

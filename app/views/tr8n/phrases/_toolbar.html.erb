@@ -29,7 +29,6 @@
     end 
 
     actions << link_to_function("#{image_tag('tr8n/exclamation.png', :style=>'height:15px; vertical-align:bottom')} #{tra("Report")}".html_safe, "tr8nLightbox.show('/tr8n/translator/lb_report?translation_key_id=#{@translation_key.id}', {width:600, height:360});")
-    actions << link_to("#{image_tag('tr8n/random.png', :style=>'height:15px; vertical-align:bottom')} #{tra("Find Random")}".html_safe, :action => :view, :translation_key_id => @translation_key.id, :dir => :random)
   %>
   
   <%= actions.join(' &nbsp;|&nbsp; ').html_safe %>  

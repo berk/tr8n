@@ -1,7 +1,7 @@
 <div class="original_text">
   <div class="supplemental">
   	<% if @map.id %>
-      <%=link_to_function(image_tag("tr8n/exclamation.png", :title=>trla("Report these language case values")), "tr8nLanguageCaseManager.reportCaseMap('#{@map.id}')")%>
+      <%=link_to_function(image_tag("tr8n/exclamation.png", :title=>trla("Report these language case values")), "Tr8n.postMessage('tr8n:language_case_map:report:#{@map.id}')")%>
 		<% end %>
     <%= tr8n_help_icon_tag %>
   </div>

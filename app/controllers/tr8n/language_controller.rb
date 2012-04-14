@@ -225,6 +225,16 @@ module Tr8n
       redirect_to_source
     end
   
+    def enable_inline_translations
+      tr8n_current_translator.enable_inline_translations!
+      redirect_to_source
+    end
+
+    def disable_inline_translations
+      tr8n_current_translator.disable_inline_translations!
+      redirect_to_source
+    end
+
     # language selector processor
     def switch
       language_action = params[:language_action]
@@ -271,7 +281,7 @@ module Tr8n
       render(:layout => false)
     end
     
-    def splash_screen
+    def translator_splash_screen
       render :layout => false
     end
 

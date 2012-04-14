@@ -67,25 +67,33 @@ class Tr8n::TranslatorController < Tr8n::BaseController
   
   def lb_report
     if params[:translation_key_id]
-      @reported_object = Tr8n::TranslationKey.find_by_id(params[:translation_key_id])
+      @reported_object = Tr8n::TranslationKey.find_by_id(params[:translation_key_id].to_i)
     elsif params[:translation_id]
-      @reported_object = Tr8n::Translation.find_by_id(params[:translation_id])
+      @reported_object = Tr8n::Translation.find_by_id(params[:translation_id].to_i)
     elsif params[:message_id]
-      @reported_object = Tr8n::LanguageForumMessage.find_by_id(params[:message_id])
+      @reported_object = Tr8n::LanguageForumMessage.find_by_id(params[:message_id].to_i)
     elsif params[:comment_id]
-      @reported_object = Tr8n::TranslationKeyComment.find_by_id(params[:comment_id])
+      @reported_object = Tr8n::TranslationKeyComment.find_by_id(params[:comment_id].to_i)
+    elsif params[:language_case_map_id]
+      @reported_object = Tr8n::LanguageCaseValueMap.find_by_id(params[:language_case_map_id].to_i)
+    elsif params[:forum_topic_id]
+      @reported_object = Tr8n::LanguageForumTopic.find_by_id(params[:forum_topic_id].to_i)
     end
     render :layout => false
   end
   
   def submit_report
     if request.post?
-      reported_object = params[:object_type].constantize.find(params[:object_id])
-      Tr8n::TranslatorReport.submit(Tr8n::Config.current_translator, reported_object, params[:reason], params[:comment])
-      trfn("Thank you for submitting your report.")
+      klass = params[:object_type].constantize
+      if [  Tr8n::TranslationKey, Tr8n::Translation, 
+            Tr8n::LanguageForumMessage,  Tr8n::LanguageForumTopic,
+            Tr8n::TranslationKeyComment, Tr8n::LanguageCaseValueMap].include?(klass)
+        reported_object = klass.find_by_id(params[:object_id].to_i)
+        Tr8n::TranslatorReport.submit(Tr8n::Config.current_translator, reported_object, params[:reason], params[:comment])
+      end    
     end
     
-    redirect_to_source
+    redirect_to(:controller => "/tr8n/help", :action => "lb_done", :origin => params[:origin])
   end
   
 end

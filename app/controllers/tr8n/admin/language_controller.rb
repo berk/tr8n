@@ -100,7 +100,7 @@ class Tr8n::Admin::LanguageController < Tr8n::Admin::BaseController
       language.reset!
     end
     
-    redirect_to_source
+    redirect_to(:controller => "/tr8n/help", :action => "lb_done", :origin => params[:origin])
   end
 
   def case_rules

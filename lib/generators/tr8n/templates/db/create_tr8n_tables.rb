@@ -248,17 +248,6 @@ class CreateTr8nTables < ActiveRecord::Migration
     add_index :tr8n_language_forum_messages, [:translator_id], :name => :tr8n_lfm_t
     add_index :tr8n_language_forum_messages, [:language_id, :language_forum_topic_id], :name => :tr8n_lfm_ll
     
-    create_table :tr8n_language_forum_abuse_reports do |t|
-      t.integer :language_id, :null => false
-      t.integer :translator_id, :null => false
-      t.integer :language_forum_message_id, :null => false
-      t.string  :reason
-      t.timestamps
-    end
-    add_index :tr8n_language_forum_abuse_reports, [:language_id], :name => :tr8n_lfar_l
-    add_index :tr8n_language_forum_abuse_reports, [:language_id, :translator_id], :name => :tr8n_lfar_lt
-    add_index :tr8n_language_forum_abuse_reports, [:language_forum_message_id], :name => :tr8n_lfar_lfm
-    
     create_table :tr8n_translation_key_comments do |t|
       t.integer :language_id, :null => false
       t.integer :translation_key_id, :null => false
@@ -359,7 +348,6 @@ class CreateTr8nTables < ActiveRecord::Migration
     drop_table :tr8n_glossary
     drop_table :tr8n_language_forum_messages
     drop_table :tr8n_language_forum_topics
-    drop_table :tr8n_language_forum_abuse_reports
     drop_table :tr8n_translation_key_comments
     drop_table :tr8n_language_case_rules
     drop_table :tr8n_translation_domains

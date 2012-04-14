@@ -27,6 +27,9 @@
                   :actor => "{actor}")%>
 					<br><br>
           <%=tra("This section allows you to define the various cases of your language so that translators can provide the correct form for each dynamic value of any token.")%>
+          <br><br>
+          <%=tra("The translation engine evaluates rules in the order you have specified here until it finds the first rule that matches the criteria and applies that rule.")%>
+          <%=tra("If you are dealing with an exceptional case for a specific word, you can add exceptions by following the link below.")%>
 				</div>
 
         <div id="language_cases">
@@ -40,7 +43,7 @@
 					  <% @cases.each_with_index do |lcase, index| %>
 						    <div>
 							    <div style="padding-bottom:5px; font-size:12px;">
-                    <%=tr8n_toggler_tag("case_#{index}_content")%>
+                    <%=tr8n_toggler_tag("case_#{index}_content", "", false)%>
 					          <strong><%= lcase.native_name %></strong>
 					          <span style="color:grey; font-size:10px;">
 					            <% if lcase.application == 'phrase' %>
@@ -53,7 +56,12 @@
                     <span style="color:grey; font-size:10px; padding-left:15px;">(::<%= lcase.keyword %>) <%= lcase.description %> </span>
 									</div>
 									
-									<div id="case_<%=index%>_content">
+									<div id="case_<%=index%>_content" style="display:none">
+                    <% if lcase.rules.empty? %>
+                      <div style="padding:10px;padding-left:15px;color:red; font-size:10px;">
+                        <%=tra("No rules have been configured for this language case") %>
+                      </div>
+                    <% end %>
 		                <ol style="font-size: 12px; padding-left:20px; margin:1em; list-style-type:decimal; margin-top:0px;">
 		                <% lcase.rules.each do |rule| %>
 		                    <li style=""><%=rule.description %></li>
@@ -159,13 +167,12 @@
     tr8nLightbox.show('/tr8n/language/lb_language_case_rule?' + Tr8n.Utils.toQueryParams(form_hash), {width:600, height:300});
   }
 
-  function updateLanguageCaseRule() {
+  function updateLanguageCaseRule(rule_hash) {
     var form_hash = Tr8n.Utils.serializeForm('language_cases_form');
     form_hash['case_index'] = edit_case_index;
     form_hash['rule_index'] = edit_rule_index;
     form_hash['case_action'] = edit_case_action;
 		
-		var rule_hash = Tr8n.Utils.serializeForm('language_case_rule_form');
 		for (attrname in rule_hash) { form_hash[attrname] = rule_hash[attrname]; }
 
     performLanguageCaseRuleOperation(edit_case_index, form_hash);

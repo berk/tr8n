@@ -89,19 +89,6 @@ ActiveRecord::Schema.define(:version => 20111026230545) do
   add_index "tr8n_language_cases", ["language_id", "translator_id"], :name => "index_tr8n_language_cases_on_language_id_and_translator_id"
   add_index "tr8n_language_cases", ["language_id"], :name => "index_tr8n_language_cases_on_language_id"
 
-  create_table "tr8n_language_forum_abuse_reports", :force => true do |t|
-    t.integer  "language_id",               :null => false
-    t.integer  "translator_id",             :null => false
-    t.integer  "language_forum_message_id", :null => false
-    t.string   "reason"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "tr8n_language_forum_abuse_reports", ["language_forum_message_id"], :name => "tr8n_forum_reports_message_id"
-  add_index "tr8n_language_forum_abuse_reports", ["language_id", "translator_id"], :name => "tr8n_forum_reports_lang_id_translator_id"
-  add_index "tr8n_language_forum_abuse_reports", ["language_id"], :name => "tr8n_forum_reports_lang_id"
-
   create_table "tr8n_language_forum_messages", :force => true do |t|
     t.integer  "language_id",             :null => false
     t.integer  "language_forum_topic_id", :null => false

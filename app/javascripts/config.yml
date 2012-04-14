@@ -6,7 +6,6 @@ all:
   src/base.js
   src/utils.js
   src/effects.js
-  src/ui/language_case_manager.js
   src/ui/language_selector.js
   src/ui/lightbox.js
   src/ui/translator.js
@@ -35,7 +34,6 @@ ui:
   src/base.js
   src/utils.js
   src/effects.js
-  src/ui/language_case_manager.js
   src/ui/language_selector.js
   src/ui/lightbox.js
   src/ui/translator.js

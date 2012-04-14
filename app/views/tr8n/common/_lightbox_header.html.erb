@@ -1,0 +1,39 @@
+<html>
+  <head>
+  	<%= stylesheet_link_tag('tr8n/tr8n.css') %>
+    <%= javascript_include_tag('tr8n/tr8n-compiled.js') %>
+		<script type="text/javascript">
+		  function resizeFrame() {
+		    var height = document.body.scrollHeight;
+				Tr8n.postMessage('tr8n:lightbox:resize:' + height, '<%=params[:origin]%>');
+		  }
+		  
+		  function hideLightbox() {
+		  	Tr8n.postMessage('tr8n:lightbox:hide', '<%=params[:origin]%>');
+		  }
+
+		  function reloadOrigin() {
+		  	Tr8n.postMessage('tr8n:reload', '<%=params[:origin]%>');
+		  }
+
+	    Tr8n.Utils.addEvent(document, "keyup", function(event) {
+	      if (event.keyCode == 27) {
+					hideLightbox();
+	      }
+	    });		  
+		</script>
+		<style>
+			body {
+				font-family: Arial;
+			}
+			a {
+				text-decoration: none;
+				color: darkblue;
+			}
+			img {
+				border: 0px;
+			}
+		</style>
+  </head>	
+  <body topmargin="0" bottommargin="0" leftmargin="0" rightmargin="0" style="padding:0px;margin:0px;" onload="resizeFrame()">
+    <div class="tr8n_lightbox_content">

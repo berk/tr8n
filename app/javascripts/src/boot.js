@@ -24,21 +24,18 @@
 var tr8nTranslator = null;
 var tr8nLanguageSelector = null;
 var tr8nLightbox = null;
-var tr8nLanguageCaseManager = null;
 
 function initializeTr8n() {
   var setup = function() {
     tr8nTranslator            = new Tr8n.Translator();
     tr8nLanguageSelector      = new Tr8n.LanguageSelector();
     tr8nLightbox              = new Tr8n.Lightbox();
-    tr8nLanguageCaseManager   = new Tr8n.LanguageCaseManager();
 
     Tr8n.Utils.addEvent(document, "keyup", function(event) {
       if (event.keyCode == 27) { // Capture Esc key
         tr8nTranslator.hide();
         tr8nLanguageSelector.hide();
         tr8nLightbox.hide();
-        tr8nLanguageCaseManager.hide();
       }
     });
   }

@@ -1,14 +1,15 @@
+<%= render :partial => "/tr8n/common/lightbox_header" %>
+<%= form_for(@language, :as => :language, :url => {:action => :update}, :html => {:id => 'tr8n_form', :method => :post, :class => "tr8n"}) do |form| %>
+<%= form.hidden_field(:id)%>
+<%= hidden_field_tag(:origin, params[:origin]) %>
 <div class="inner">
     <div class="hd">
         <div style="float:right;">
-            <%=link_to_function(image_tag("tr8n/close.gif"), "tr8nLightbox.hide();") %>
+            <%=link_to_function(image_tag("tr8n/close.gif"), "hideLightbox();") %>
         </div>
         Language Details
     </div>
-    <div class="bd">
-				<%= form_for(@language, :as => :language, :url => {:action => :update}, :html => {:id => 'tr8n_form', :method => :post, :class => "tr8n"}) do |form| %>
-        <%= form.hidden_field :id %>
-        <%= hidden_field_tag :source_url, request.env['HTTP_REFERER'] %>
+    <div class="bd" style="height:330px">
         <table class="admin_table">
             <tr>
                 <th>
@@ -78,9 +79,10 @@
         <div>
             <em>Note: providing google key/locale will enable google suggestions for that language.</em>
         </div>
-        <% end %>
     </div>
     <div class="ft">
-        <%= render :partial => "/tr8n/admin/common/lightbox_buttons" %>
+        <%= render :partial => "/tr8n/common/lightbox_buttons" %>
     </div>
 </div>
+<% end %>
+<%= render :partial => "/tr8n/common/lightbox_footer" %>

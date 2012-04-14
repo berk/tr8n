@@ -11,7 +11,7 @@
 	        <table style="display:inline">
 	        	<tr>
 	        		<td style="vertical-align:top;width:1%; padding-right:3px;">
-	              <%=tr8n_toggler_tag("language_case_rules_#{index}")%>			
+	              <%=tr8n_toggler_tag("language_case_rules_#{index}", "", false)%>			
 	        		</td>
 							<td>
 				        <div id="language_case_labels_<%=index%>" style="<%='display:none' if lcase.native_name.blank? %>">
@@ -51,7 +51,7 @@
 	       </table>
       </div>              
 				
-	    <div id="language_case_rules_<%=index%>" style="padding:5px; border: 1px dotted #ccc; margin-top:0px; margin-bottom:5px; border-top: 0px; background-color:white;">
+	    <div id="language_case_rules_<%=index%>" style="display:none;padding:5px; border: 1px dotted #ccc; margin-top:0px; margin-bottom:5px; border-top: 0px; background-color:white;">
 	        <%= render(:partial => "edit_language_case_rules", :locals => {:lcase => lcase, :case_index => index}) %>
 			</div>		 
 				

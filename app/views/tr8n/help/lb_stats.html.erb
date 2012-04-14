@@ -1,63 +1,65 @@
-<div class="inner">
-	<div class="hd">
-		<span style="float:right;">
-			<%=link_to_function(image_tag("tr8n/close.gif"), "tr8nLightbox.hide();")%>
-		</span>
-		<%=trl("Tr8n Translation Memory Statistics")%>
-	</div>
-	
-	<style>
-		.stats td {
-			font-size:12px; 
-			font-weight:bold; 
-			padding:5px; 
-			text-align:left;
-			border-bottom:1px solid #ccc;
-		}
-	</style>
+<%= render :partial => "/tr8n/common/lightbox_header" %>
+			<div class="inner">
+				<div class="hd">
+					<span style="float:right;">
+						<%=link_to_function(image_tag("tr8n/close.gif"), "hideLightbox()")%>
+					</span>
+					<%=trl("Tr8n Translation Memory Statistics")%>
+				</div>
+				
+				<style>
+					.stats td {
+						font-size:12px; 
+						font-weight:bold; 
+						padding:5px; 
+						text-align:left;
+						border-bottom:1px solid #ccc;
+					}
+				</style>
 
-	<div class="bd">
-			<table class="stats" style="width:100%" celppading="0px" cellspacing="0px">
-				<tr>
-					<td style=""><%=tr("Total Languages")%></td>
-			    <td style="text-align:right;"><%=Tr8n::Language.count%></td>
-				</tr>
-				<tr>
-					<td style=""><%=tr("Enabled Languages")%></td>
-			    <td style="text-align:right;"><%=Tr8n::Language.enabled_languages.count%></td>
-				</tr>
-				<tr>
-					<td style=""><%=tr("Translators")%></td>
-			    <td style="text-align:right;"><%=Tr8n::Translator.count%></td>
-				</tr>
-				<tr>
-					<td style=""><%=tr("Translation Keys")%></td>
-			    <td style="text-align:right;"><%=Tr8n::TranslationKey.count%></td>
-				</tr>
-				<tr>
-					<td style=""><%=tr("Translations")%></td>
-			    <td style="text-align:right;"><%=Tr8n::Translation.count%></td>
-				</tr>
-				<tr>
-					<td style=""><%=tr("Translation Votes")%></td>
-			    <td style="text-align:right;"><%=Tr8n::TranslationVote.count%></td>
-				</tr>
-				<tr>
-					<td style=""><%=tr("Sources")%></td>
-			    <td style="text-align:right;"><%=Tr8n::TranslationSource.count%></td>
-				</tr>
+				<div class="bd">
+						<table class="stats" style="width:100%" celppading="0px" cellspacing="0px">
+							<tr>
+								<td style=""><%=trl("Total Languages")%></td>
+						    <td style="text-align:right;"><%=Tr8n::Language.count%></td>
+							</tr>
+							<tr>
+								<td style=""><%=trl("Enabled Languages")%></td>
+						    <td style="text-align:right;"><%=Tr8n::Language.enabled_languages.count%></td>
+							</tr>
+							<tr>
+								<td style=""><%=trl("Translators")%></td>
+						    <td style="text-align:right;"><%=Tr8n::Translator.count%></td>
+							</tr>
+							<tr>
+								<td style=""><%=trl("Translation Keys")%></td>
+						    <td style="text-align:right;"><%=Tr8n::TranslationKey.count%></td>
+							</tr>
+							<tr>
+								<td style=""><%=trl("Translations")%></td>
+						    <td style="text-align:right;"><%=Tr8n::Translation.count%></td>
+							</tr>
+							<tr>
+								<td style=""><%=trl("Translation Votes")%></td>
+						    <td style="text-align:right;"><%=Tr8n::TranslationVote.count%></td>
+							</tr>
+							<tr>
+								<td style=""><%=trl("Sources")%></td>
+						    <td style="text-align:right;"><%=Tr8n::TranslationSource.count%></td>
+							</tr>
 
-				<tr>
-					<td style=""><%=tr("Cache Enabled")%></td>
-			    <td style="text-align:right;"><%=Tr8n::Cache.enabled?%></td>
-				</tr>
+							<tr>
+								<td style=""><%=trl("Cache Enabled")%></td>
+						    <td style="text-align:right;"><%=Tr8n::Cache.enabled?%></td>
+							</tr>
 
-				<% if Tr8n::Cache.enabled? %>
-				<tr>
-					<td style=""><%=tr("Cache Version")%></td>
-			    <td style="text-align:right;"><%=Tr8n::Cache.version%></td>
-				</tr>
-				<% end %>
-			</table>
-	</div>
-</div>
+							<% if Tr8n::Cache.enabled? %>
+							<tr>
+								<td style=""><%=trl("Cache Version")%></td>
+						    <td style="text-align:right;"><%=Tr8n::Cache.version%></td>
+							</tr>
+							<% end %>
+						</table>
+				</div>
+			</div>
+<%= render :partial => "/tr8n/common/lightbox_footer" %>

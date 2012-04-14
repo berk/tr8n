@@ -1,7 +1,8 @@
-<div style="padding-bottom:10px;padding-top:5px;">
+<div style="padding-bottom:10px;padding-top:5px; border:1px dotted #eee; padding:5px; margin-bottom:10px; margin-top:10px;">
   <table style="width:100%;">
     <tr>
-      <td style="text-align:left; vertical-align:top;font-size:11px; font-family:arial;">
+      <td style="text-align:left; vertical-align:top; font-size:11px; font-family:arial;"><%= paginate(collection) %></td>
+      <td style="text-align:right; vertical-align:top;font-size:11px; font-family:arial;">
 				<% 
 					entry_name = options[:subject] || (collection.empty? ? 'entry' : collection.first.class.name.underscore.gsub('_', ' '))
 					output = ""
@@ -26,7 +27,6 @@
 				%>
 				<%= output %>
 			</td>
-      <td style="text-align:right; vertical-align:top; font-size:11px; font-family:arial;"><%= paginate(collection) %></td>
     </tr>
   </table>
 </div>

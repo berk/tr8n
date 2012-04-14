@@ -1,0 +1,32 @@
+<%= render(:partial => "manager_header")%>
+
+<div id="tr8n_language_case_container" style="border: 1px dotted #ccc; padding:5px;">
+  <div style="float:right; color:grey; font-size:10px;">::<%= @lcase.keyword %></div>
+<div style="font-size:12px; color:grey; padding-bottom:10px;"><%= @lcase.native_name %></div>
+
+<div style="padding-bottom:10px;">
+    <ol style="font-size: 10px; padding-left:10px; margin:0.5em; list-style-type:decimal; margin-top:0px;">
+    <% rule_met = false %>	
+    <% @lcase.rules.each do |rule| %>
+    	<% unless rule_met %>
+			<% style = (@rule == rule ? "color:green" : "color:red") %>
+		<% end %>
+        <li style="<%=style%>">
+        	<% if @rule == rule %>
+        		<% rule_met = true %>
+        		<%= image_tag('tr8n/checkmark.png', :style=>'height:10px;') %>
+        	<% elsif not rule_met %>
+        		<%= image_tag('tr8n/cross.png', :style=>'height:10px;') %>
+        	<% end %>
+        	<%=rule.description %>
+       	</li>
+    <% end %> 
+    </ol>
+	</div>
+	
+	<%=link_to(trla("Click here if this word is an exceptional case."), 
+						:case_id => params[:case_id], :rule_id => params[:rule_id], 
+						:case_key => params[:case_key], :mode => :gender_neutral,
+						:origin => params[:origin]	
+	)%>
+</div>

@@ -1,3 +1,4 @@
+<%= render :partial => "/tr8n/common/lightbox_header" %>
 <%
   examples = [
     {:label => "Hello World", :tokens => "", :alt => "The simplest possible example. No tokens used"},
@@ -19,7 +20,7 @@
 <div class="inner">
 	<div class="hd">
 		<span style="float:right;">
-		<%=link_to_function(image_tag("tr8n/close.gif"), "tr8nLightbox.hide();")%>
+		<%=link_to_function(image_tag("tr8n/close.gif"), "hideLightbox();")%>
 		</span>
 		Tr8n Client SDK JavaScript Examples
 	</div>
@@ -38,14 +39,14 @@
 				</tr>
 
 				<% examples.each_with_index do |ex, index| %>
-					<tr style='cursor:pointer;' onClick="useExample(<%=index%>)" title="<%=ex[:alt]%>">
+					<tr style='cursor:pointer;' onClick="top.useExample(Tr8n.value('tr8n_example_label_<%=index%>'), Tr8n.value('tr8n_example_tokens_<%=index%>'))" title="<%=ex[:alt]%>">
 						<td>
-						<%=hidden_field_tag("tr8n_example_label_#{index}", ex[:label]) %>
-						<%=h(ex[:label])%>
+							<%=hidden_field_tag("tr8n_example_label_#{index}", ex[:label]) %>
+							<%=h(ex[:label])%>
 						</td>
 						<td>
-						<%=hidden_field_tag("tr8n_example_tokens_#{index}", ex[:tokens]) %>
-						<%=h(ex[:tokens])%>
+							<%=hidden_field_tag("tr8n_example_tokens_#{index}", ex[:tokens]) %>
+							<%=h(ex[:tokens])%>
 						</td>
 					</tr>
 				<% end %>
@@ -55,3 +56,4 @@
 		<% end %>
 	</div>
 </div>
+<%= render :partial => "/tr8n/common/lightbox_footer" %>

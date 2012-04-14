@@ -51,17 +51,8 @@ class Tr8n::LanguageForumMessage < ActiveRecord::Base
   belongs_to :translator,             :class_name => "Tr8n::Translator"  
   belongs_to :language_forum_topic,   :class_name => "Tr8n::LanguageForumTopic"
   
-  has_many :language_forum_abuse_reports, :class_name => "Tr8n::LanguageForumAbuseReport", :dependent => :destroy
-
   alias :topic :language_forum_topic
 
-  def submit_abuse_report(reporter)
-    report = Tr8n::LanguageForumAbuseReport.where("language_forum_message_id = ? and translator_id = ?", self.id, reporter.id).first
-    report ||= Tr8n::LanguageForumAbuseReport.create(:language_forum_message => self, :translator => reporter, :language => language)
-    translator.update_attributes(:reported => true)
-    report
-  end
-  
   def toHTML
     return "" unless message
     ERB::Util.html_escape(message).gsub("\n", "<br>")

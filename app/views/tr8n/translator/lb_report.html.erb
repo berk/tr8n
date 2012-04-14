@@ -1,3 +1,4 @@
+<%= render :partial => "/tr8n/common/lightbox_header" %>
 <style>
   .lightbox {
   	background-color: white;
@@ -37,6 +38,17 @@
     <% if @reported_object.is_a?(Tr8n::TranslationKey) %>
        <% @translation_key = @reported_object %>
 			 <%= render :partial => '/tr8n/phrases/header' %>
+    <% elsif @reported_object.is_a?(Tr8n::LanguageForumTopic) %>
+      <div class="header">
+        <div style="color:grey;font-size:20px;padding-bottom:10px;">
+            <%=trl("Forum Topic")%>
+        </div>
+        <div style="padding-bottom:5px;font-size:14px; max-height:50px; overflow:auto;">
+            <%=image_tag("tr8n/left_quote.png", :style=>"text-align:bottom;padding-bottom:5px;") %>
+            <%=@reported_object.topic %>
+            <%=image_tag("tr8n/right_quote.png", :style=>"text-align:bottom;padding-top:5px;") %>
+        </div>
+      </div>        
     <% elsif @reported_object.is_a?(Tr8n::LanguageForumMessage) %>
       <div class="header">
         <div style="color:grey;font-size:20px;padding-bottom:10px;">
@@ -56,6 +68,17 @@
         <div style="padding-bottom:5px;font-size:14px; max-height:50px; overflow:auto;">
             <%=image_tag("tr8n/left_quote.png", :style=>"text-align:bottom;padding-bottom:5px;") %>
             <%=@reported_object.toHTML %>
+            <%=image_tag("tr8n/right_quote.png", :style=>"text-align:bottom;padding-top:5px;") %>
+        </div>
+      </div>        
+    <% elsif @reported_object.is_a?(Tr8n::LanguageCaseValueMap) %>
+      <div class="header">
+        <div style="color:grey;font-size:20px;padding-bottom:10px;">
+            <%=trl("Language Case Exceptions")%>
+        </div>
+        <div style="padding-bottom:5px;font-size:14px; max-height:50px; overflow:auto;">
+            <%=image_tag("tr8n/left_quote.png", :style=>"text-align:bottom;padding-bottom:5px;") %>
+            <%=@reported_object.keyword %>
             <%=image_tag("tr8n/right_quote.png", :style=>"text-align:bottom;padding-top:5px;") %>
         </div>
       </div>        
@@ -84,7 +107,7 @@
 
 	<div class="bd">
 	    <%= form_tag({:action => :submit_report}, {:method => :post, :id => :tr8n_form}) do %>
-	      <%= hidden_field_tag :source_url, request.env['HTTP_REFERER'] %>
+	      <%= hidden_field_tag(:origin, params[:origin]) %>
 	      <%= hidden_field_tag(:object_id, @reported_object.id) %>
 	      <%= hidden_field_tag(:object_type, @reported_object.class.name) %>
 	      <div class="content">
@@ -109,7 +132,9 @@
 	            </td>
 	            <td>
 	              <%= text_area_tag("comment", '', :style => "width:450px; height:40px;") %>
-								<div style="font-size:10px; color:grey; padding-top:10px; font-style:italic;"><%=trl('Note: Please submit your comments in English.')%></div>
+								<div style="font-size:10px; color:grey; padding-top:10px; font-style:italic;">
+                  <%=trl('Note: Please submit your comments in English.')%>
+                </div>
 	            </td>
 	          </tr>
 	        </table>
@@ -117,6 +142,7 @@
 	    <% end %>
 	</div>
 	<div class="ft">
-      <%= render :partial => '/tr8n/admin/common/lightbox_buttons' %>  
+      <%= render :partial => '/tr8n/common/lightbox_buttons' %>  
 	</div>
 </div>
+<%= render :partial => "/tr8n/common/lightbox_footer" %>

@@ -69,7 +69,7 @@ class Tr8n::Admin::TranslatorController < Tr8n::Admin::BaseController
   
   def update_stats
     Tr8n::Translator.all.each do |trans|
-      trans.update_total_metrics!
+      trans.update_metrics!
     end
   
     redirect_to :action => :index
@@ -88,12 +88,9 @@ class Tr8n::Admin::TranslatorController < Tr8n::Admin::BaseController
     end
     
     translator = Tr8n::Translator.find_by_user_id(user.id)
-    if translator
-      return redirect_to_source
-    end
+    translator ||= Tr8n::Translator.create(:user_id => params[:translator][:user_id])
     
-    Tr8n::Translator.create(:user_id => params[:translator][:user_id])
-    redirect_to_source
+    redirect_to(:controller => "/tr8n/help", :action => "lb_done", :origin => params[:origin])
   end
 
   def following

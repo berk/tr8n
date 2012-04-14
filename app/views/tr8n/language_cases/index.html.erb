@@ -3,14 +3,14 @@
 	<%= render :partial => "/tr8n/common/header" %>
 	
 	<div class="section_title">
-	  <%=tra("Language Case Values") %>
+	  <%=tra("Language Case Exceptions") %>
 	</div>
 	
 	<div style="background:#EFF8FF; border: 1px dotted #ccc; padding:10px;">
 	  <%= form_tag({:action => :index}, {:method => :get, :id => "case_search_form"}) do %>
 	      <div style="float:right">
 	        <button type="submit" class="translator_btn translator_small_btn" onClick="Tr8n.Effects.submit('case_search_form'); return false;">
-	            <span><%=tra("Search", "Search button label")%></span>
+	            <span><%=tra("Search")%></span>
 	        </button>
 	      </div>
 	      
@@ -18,36 +18,69 @@
 	  <% end %>
 	</div>
 	
+
 	<div style="margin-top:10px; margin-bottom:10px; border: 1px dotted #ccc; padding:10px;">
-		<%= tr8n_paginator_tag(@maps, :subject => 'case map') %>	
-	  
-		<table>
-			<tr style="border-bottom:1px solid #ccc;">
-				<th class="topic_header"><%=tra("Keyword Noun")%></th>
-	    	<% tr8n_current_language.cases.each do |lcase| %>
-		      <th class="topic_header"><%=lcase.native_name%></th>
-			  <% end %>
-				<th></th>
-			</tr>
-			
-			<% @maps.each do |map| %>
-			  <tr style="border-bottom:1px dotted #ccc;">
-				  <td style="padding:2px; font-weight:bold;">
-					  <span case_key="<%=map.keyword%>" case_id="" rule_id="" class="tr8n_language_case"><%=map.keyword%></span>
-					</td>
-		      <% tr8n_current_language.cases.each do |lcase| %>
-		        <td style="padding:2px;"><%=map.implied_value_for(lcase.keyword) %></td>
-		      <% end %>
-					<td style="text-align:right; vertical-align:top; width:60px; padding:2px;">
-						<%=link_to(image_tag("/tr8n/images/cross.png"), "/tr8n/language_cases/delete_value_map?map_id=#{map.id}", :confirm => trla("Are you sure you want to delete this case map?"))%>
-					</td>
-				</tr>
-			<% end %>
-			
+
+		<%= tr8n_paginator_tag(@maps, :subject => 'exception') %>	
+
+		<table style="width:100%;" cellpadding="5px" cellspacing="3px">
+		  <tr style="border-bottom:1px solid #ccc;">
+		    <td class="topic_header" style="width:200px;"><%=tra("Translator")%></td>
+		    <td class="topic_header" style="width:100px;"><%=tra("Word")%></td>
+		    <td class="topic_header" style=""><%=tra("Variants")%></td>
+	      <td class="topic_header" style="width:50px;">&nbsp;</td>
+		  </tr>  
+
+		  <% @maps.each do |ex| %>
+		    <% style = "border-bottom:1px dotted #ccc;" unless @maps.last == ex %>
+		    <tr style="<%=style%>">
+						<td style="text-align:left; vertical-align:top; padding-top:3px;">
+						  <table>
+						    <tr>
+						      <td style="vertical-align:top;padding-right:2px;">
+						        <%=tr8n_user_mugshot_tag(ex.translator, :linked => true)%>
+						      </td>
+						      <td style="vertical-align:top">
+						        <%=tr8n_user_tag(ex.translator, :linked => true)%>
+						        <div style="color:grey;">
+						            <%=ex.created_at.trl(:date_time) %>
+						        </div>
+										<%=tr8n_translator_rank_tag(ex.translator)%>
+						      </td>
+						    </tr>
+						  </table>
+						</td>
+						<td style="padding:5px;">
+							<span class="tr8n_language_case" case_id="60" rule_id="81" case_key="<%=ex.keyword%>"><%=ex.keyword%></span>
+						</td>
+						<td style="padding:5px;">
+					    <% tr8n_current_language.cases.each do |lcase| %>
+					    	<% value = ex.implied_value_for(lcase.keyword) %>
+					    	<% next if value.blank? %>
+				        <div style="padding:5px;float:left;border:1px dotted #ccc; border-radius:10px; background-color:#eee; margin-right:3px; margin-bottom:3px;">
+				        	<span><%=lcase.keyword%>:</span>
+				        	<% if ex.gender_based? %>
+				        		<span style="font-weight:bold;"><%=ex.gender_value_for(lcase.keyword, 'male') %>, <%=ex.gender_value_for(lcase.keyword, 'female') %></span>
+				        	<% else %>
+				        		<span style="font-weight:bold;"><%=ex.implied_value_for(lcase.keyword) %></span>
+				        	<% end %>	
+				       	</div>
+				      <% end %>
+						</td>
+						<td style="padding:5px;text-align:right;">
+							<%=link_to(image_tag("tr8n/cross.png"), "/tr8n/language_cases/delete_value_map?map_id=#{ex.id}", :confirm => trla("Are you sure you want to delete this case map?"))%>
+						</td>
+		    </tr>
+		  <% end %>
 		</table>
-	
-		<%= tr8n_paginator_tag(@maps, :subject => 'case map') %>	
+
+		<% if @maps.empty? %>
+		    <div style="text-align:left; padding-top:10px; font-size:12px;"><%=trla("No language case exceptions found")%></div>
+		<% end %>
+
+		<%= tr8n_paginator_tag(@maps, :subject => 'exception') %>	
 	</div>
+
 	
 	<%= render :partial => "/tr8n/common/footer" %>
 	

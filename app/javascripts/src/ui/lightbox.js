@@ -25,12 +25,19 @@ Tr8n.Lightbox = function() {
   this.container                = document.createElement('div');
   this.container.className      = 'tr8n_lightbox';
   this.container.id             = 'tr8n_lightbox';
+  this.container.style.height   = "100px";
   this.container.style.display  = "none";
 
   this.overlay                  = document.createElement('div');
   this.overlay.className        = 'tr8n_lightbox_overlay';
   this.overlay.id               = 'tr8n_lightbox_overlay';
   this.overlay.style.display    = "none";
+
+  this.content_frame              = document.createElement('iframe');
+  this.content_frame.src          = '/tr8n/help/splash_screen';
+  this.content_frame.style.border = '0px';
+  this.content_frame.style.width  = '100%';
+  this.container.appendChild(this.content_frame);
 
   document.body.appendChild(this.container);
   document.body.appendChild(this.overlay);
@@ -47,26 +54,34 @@ Tr8n.Lightbox.prototype = {
   show: function(url, opts) {
     var self = this;
     opts = opts || {};
+
     if(tr8nTranslator) tr8nTranslator.hide();
     if(tr8nLanguageSelector) tr8nLanguageSelector.hide();
-    if(tr8nLanguageCaseManager) tr8nLanguageCaseManager.hide();
     Tr8n.Utils.hideFlash();
 
-    this.container.innerHTML = "<div class='inner'><div class='bd'><img src='/assets/tr8n/spinner.gif' style='vertical-align:middle'> Loading...</div></div>";
-    
+    this.content_frame.src = '/tr8n/help/splash_screen';
+
     this.overlay.style.display  = "block";
 
     opts["width"] = opts["width"] || 700;
-    opts["height"] = opts["height"] || 520;
+    var default_height = 100;
 
-    this.container.style.width  = opts["width"] + 'px';
-    this.container.style.height = opts["height"] + 'px';
-    this.container.style.marginLeft  = -opts["width"]/2 + 'px';
-    this.container.style.marginTop  = -opts["height"]/2 + 'px';
-    this.container.style.display  = "block";
+    this.container.style.width        = opts["width"] + 'px';
+    this.container.style.marginLeft   = -opts["width"]/2 + 'px';
+    this.resize(default_height);
 
-    Tr8n.Utils.update('tr8n_lightbox', url, {
-      evalScripts: true
-    });
+    this.container.style.display      = "block";
+
+    window.setTimeout(function() {
+      url += ((url.indexOf('?') == -1) ? '?' : '&');
+      url += 'origin=' + escape(window.location);
+      self.content_frame.src = url;
+    }, 500);
+  },
+
+  resize: function(height) {
+    this.container.style.height       = height + 'px';
+    this.container.style.marginTop    = -height/2 + 'px';
+    this.content_frame.style.height   = height + 'px';
   }
 }

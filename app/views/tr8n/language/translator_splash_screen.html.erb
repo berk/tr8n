@@ -1,0 +1,21 @@
+<html>
+  <head>
+  	<%=stylesheet_link_tag('tr8n/tr8n.css') %>
+    <%= javascript_include_tag('tr8n/tr8n-compiled.js') %>
+		<script type="text/javascript">
+		  function resizeFrame() {
+		    var height = Tr8n.element('tr8n_translator_content').offsetHeight + 10;
+				Tr8n.postMessage('tr8n:translator:resize:' + height, '<%=params[:origin]%>');
+		  }
+		</script>
+  </head>	
+  <body style="padding:0px;margin:0px;" onload="resizeFrame()">
+  	<div id="tr8n_translator_content" class="tr8n_translator_content"> 
+			<div id="tr8n_translator_container" class="bd" style="padding:15px;">
+		    <%= image_tag "tr8n/rotating_world.gif", :style => "float:left;margin-right:10px;" %>
+	      <div style="color:#444;font-weight:bold;font-size:12px;"><%= trl('Please wait.') %></div>
+	      <div style="font-size:11px"><%= trl('loading...') %></div>
+	    </div> 
+		</div>
+	</body>	
+</html>

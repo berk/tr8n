@@ -53,7 +53,6 @@ Tr8n.LanguageSelector.prototype = {
     var self = this;
     if (tr8nTranslator) tr8nTranslator.hide();
     if (tr8nLightbox) tr8nLightbox.hide();
-    if (tr8nLanguageCaseManager) tr8nLanguageCaseManager.hide();
     Tr8n.Utils.hideFlash();
 
     var splash_screen = Tr8n.element('tr8n_splash_screen');

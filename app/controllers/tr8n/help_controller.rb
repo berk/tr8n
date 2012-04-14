@@ -38,6 +38,10 @@ class Tr8n::HelpController < Tr8n::BaseController
   def lb_stats
     render :layout => false
   end
+
+  def lb_done
+    render :layout => false
+  end
   
   def credits
     
@@ -45,6 +49,10 @@ class Tr8n::HelpController < Tr8n::BaseController
 
   def license
     
+  end
+
+  def splash_screen
+    render :layout => false
   end
   
 end

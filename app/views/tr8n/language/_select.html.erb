@@ -1,8 +1,17 @@
+<%= render :partial => "/tr8n/common/lightbox_header" %>
+<script>
+  function removeLanguage(language_id) {
+    Tr8n.Utils.ajax('/tr8n/language/lists', {
+      parameters: {language_action: "remove", language_id: language_id},
+      method: 'post'
+    });
+  }
+</script>
 <% Tr8n::Config.with_options(:default_locale => 'en-US', :admin => true) do %>
 <div class="inner">
     <div class="hd" style="background-color:white;font-size:12px;">
         <div style="float:right">
-            <%=link_to_function(image_tag("tr8n/close.gif", :style => "border:0px; padding:5px;", :alt=>trla("Close")), "tr8nLightbox.hide()") %>
+            <%=link_to_function(image_tag("tr8n/close.gif", :style => "border:0px; padding:5px;", :alt=>trla("Close")), "hideLightbox()") %>
         </div>
         <div style="padding-top:3px">
             <%=trla("Select your language") %>
@@ -20,12 +29,13 @@
                     <% language = user_language.language %>
                     <% next unless language %>
                     <li id="lang_<%=user_language.id%>">
-                        <span style="font-size:8px; float:right; color:#ccc;"><% if language.default? %>
+                        <span style="font-size:8px; float:right; color:#ccc;">
+                            <% if language.default? %>
 	                            <%=trl('default', 'Default language label') %>
                             <% else %>
                             <%= "#{language.completeness || 0}%" if Tr8n::Config.enable_language_stats? %>
 	                            <% unless user_language.manager? %>
-	                            	<%=link_to_function(image_tag("tr8n/close.gif", :style=>"width:5px; padding-right:3px; padding-left:3px;"), "tr8nLanguageSelector.removeLanguage('#{language.id}');Tr8n.Effects.hide('lang_#{user_language.id}');") %>
+	                            	<%=link_to_function(image_tag("tr8n/close.gif", :style=>"width:5px; padding-right:3px; padding-left:3px;"), "removeLanguage('#{language.id}');Tr8n.Effects.hide('lang_#{user_language.id}');") %>
 	                            <% end %>
                             <% end %>
                         </span>
@@ -64,43 +74,43 @@
         </div>
         <% unless tr8n_current_user_is_guest? %>
         <div style="padding:5px 5px 5px 5px">
-            <% if @inline_translations_allowed %>
+          <% if @inline_translations_allowed %>
             <div style="padding-top:5px;font-size: 11px; font-weight:bold; ">
                 <% if @inline_translations_enabled %>
-                    <%=link_to_function(trla("Disable Inline Translations"), "tr8nLanguageSelector.disableInlineTranslations();") %>
+                    <%=link_to(trla("Disable Inline Translations"), {:controller => "/tr8n/language", :action => :disable_inline_translations, :source_url => params[:origin]}, :target => "_top") %>
                 <% else %>
-                    <%=link_to_function(trla("Enable Inline Translations"), "tr8nLanguageSelector.enableInlineTranslations();") %>
+                    <%=link_to(trla("Enable Inline Translations"), {:controller => "/tr8n/language", :action => :enable_inline_translations, :source_url => params[:origin]}, :target => "_top") %>
                 <% end %>
                 <div style="font-weight:normal; color:grey;"><%=trla("Use right-mouse-click or ctr+click to translate the site.") %></div>
             </div>
             <% end %>
             <% if tr8n_current_user_is_translator? %>
-            <div style="padding-top:5px;font-size: 11px; font-weight:bold;">
-                <%=link_to_function(trla("Translation Tools"), "tr8nLanguageSelector.showDashboard()") %>
-                <div style="font-weight:normal; color:grey;"><%=trla("Search for translations by other users, vote on translations or add your own translations.") %></div>
-            </div>
+              <div style="padding-top:5px;font-size: 11px; font-weight:bold;">
+                  <%=link_to(trla("Translation Tools"), "/tr8n/dashboard", :target => "_top") %>
+                  <div style="font-weight:normal; color:grey;"><%=trla("Search for translations by other users, vote on translations or add your own translations.") %></div>
+              </div>
             <% end %>
             <% if tr8n_current_user_is_admin? or (tr8n_current_user_is_translator? and tr8n_current_translator.manager?) %>
-            <div style="padding-top:5px;font-size: 11px; font-weight:bold;">
-                <%=link_to_function(trla("Manage Language"), "tr8nLanguageSelector.manageLanguage()") %>
-                <span style="color: grey; font-size: 10px; padding-left:0.5em; font-style:italic;">language admins only</span>
-                <div style="font-weight:normal; color:grey;"><%=trla("Change language native name and define language rules.") %></div>
-            </div>
+              <div style="padding-top:5px;font-size: 11px; font-weight:bold;">
+                  <%=link_to(trla("Manage Language"), "/tr8n/language", :target => "_top") %>
+                  <span style="color: grey; font-size: 10px; padding-left:0.5em; font-style:italic;">language admins only</span>
+                  <div style="font-weight:normal; color:grey;"><%=trla("Change language native name and define language rules.") %></div>
+              </div>
             <% end %>
             <% if tr8n_current_user_is_admin? %>
-            <div style="padding-top:5px;font-size: 11px; font-weight:bold;">
-                <%=link_to(trla("Configure tr8n"), "/tr8n/admin/language") %>
-                <span style="color: grey; font-size: 10px; padding-left:0.5em; font-style:italic;">tr8n admins only</span>
-                <div style="font-weight:normal; color:grey;"><%=trla("Manage translators, languages and translations.") %></div>
-            </div>
+              <div style="padding-top:5px;font-size: 11px; font-weight:bold;">
+                  <%=link_to(trla("Configure tr8n"), "/tr8n/admin/language", :target => "_top") %>
+                  <span style="color: grey; font-size: 10px; padding-left:0.5em; font-style:italic;">tr8n admins only</span>
+                  <div style="font-weight:normal; color:grey;"><%=trla("Manage translators, languages and translations.") %></div>
+              </div>
             <% end %>
-            <% end %>
-            <%= form_tag({:controller => :language, :action => :switch}, :id => "language_selector_form", :style=>"padding:0px;margin:0px;") do %>
-            	<%=hidden_field_tag(:source_url, @source_url) %>
-            	<%=hidden_field_tag(:locale, tr8n_current_language.locale, :id => "language_selector_locale") %>
-            	<%=hidden_field_tag(:language_action, "switch_language", :id => "language_selector_action") %>
-            <% end %>
-        </div>
+          <% end %>
+          <%= form_tag({:controller => :language, :action => :switch}, {:id => "language_selector_form", :style=>"padding:0px;margin:0px;", :target => "_top"}) do %>
+          	<%=hidden_field_tag(:source_url, params[:origin]) %>
+          	<%=hidden_field_tag(:locale, tr8n_current_language.locale, :id => "language_selector_locale") %>
+          	<%=hidden_field_tag(:language_action, "switch_language", :id => "language_selector_action") %>
+          <% end %>
+      </div>
         <div class="ft" style="font-size:10px;height:10px;">
             <%=tr8n_help_icon_tag %>
             &nbsp;<%=trla("Click this icon to view [link: translation help] in a new window.", "", :link => lambda{|txt| link_to(txt, {:controller => "tr8n/help", :action => :index}, :target => "new")}) %>
@@ -108,3 +118,4 @@
     </div>
 </div>
 <% end %>
+<%= render :partial => "/tr8n/common/lightbox_footer" %>

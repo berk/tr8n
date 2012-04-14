@@ -78,9 +78,9 @@
 		tr8nProxy.initTranslations(true);
 	}
 	
-	function useExample(index) {
-    Tr8n.element('label').value = Tr8n.value('tr8n_example_label_' + index);
-		Tr8n.element('tokens').value = Tr8n.value('tr8n_example_tokens_' + index);
+	function useExample(label, tokens) {
+    Tr8n.element('label').value = label
+		Tr8n.element('tokens').value = tokens;
 		clearResults();
 		tr8nLightbox.hide();
 	}
