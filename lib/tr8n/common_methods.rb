@@ -108,6 +108,24 @@ module Tr8n::CommonMethods
     end
   end
 
+  def pig(word)
+    leading_cap = word =~ /^[A-Z]/
+    word.downcase!
+    res = case word
+      when /^[aeiouy]/
+        word+"way"
+      when /^([bcdfghjklmnpqrstvwxz]+)([a-z]*)/
+        $2+$1+"ay"
+      else
+        word
+    end
+    leading_cap ? res.capitalize : res
+  end
+
+  def pig_string(s)
+    s.split.collect{|w| pig(w)}.join(" ")
+  end
+
   # translation functions
   def tr(label, desc = "", tokens = {}, options = {})
     unless desc.nil? or desc.is_a?(String)
@@ -134,6 +152,10 @@ module Tr8n::CommonMethods
       return Tr8n::TranslationKey.substitute_tokens(label, tokens, options)
     end
     
+    if Tr8n::Config.enable_pig_latin?  
+      return pig_string(Tr8n::TranslationKey.substitute_tokens(label, tokens, options))
+    end
+
     Tr8n::Config.current_language.translate(label, desc, tokens, options)
   end
 

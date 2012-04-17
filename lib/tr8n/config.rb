@@ -214,6 +214,10 @@ class Tr8n::Config
     not enabled?
   end
 
+  def self.enable_pig_latin?
+    config[:enable_pig_latin] 
+  end
+
   def self.enable_software_keyboard?
     config[:enable_software_keyboard]
   end
