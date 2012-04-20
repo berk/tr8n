@@ -5,14 +5,14 @@
         <% if current_user.guest? %>
           <li><%=link_to(tr("Login"), "/login")%></li>
         <% else %>
-          <li><%=tr("Welcome {user}!", "", :user => [current_user, current_user.name]) %></li>
+          <li><%=current_user.name %></li>
           <li><%=link_to(tr("Logout"), "/login/out")%></li>
         <% end %>
         <li><%= tr8n_language_selector_tag(:lightbox=>false) %></li>
       </ul>
       <h1 class="logo">
 				<%=image_tag("tr8n/tr8n_logo2.png", :style => "width:60px")%>
-				<%=link_to("Tr8n Translation Memory Server", "/home", :style=>"text-decorations:none;")%>
+				<%=link_to("Translation Server", "/home", :style=>"text-decorations:none;")%>
 			</h1>
     </div>
   </div>

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111026230545) do
+ActiveRecord::Schema.define(:version => 20120420004007) do
 
   create_table "admins", :force => true do |t|
     t.integer  "user_id"
@@ -381,19 +381,20 @@ ActiveRecord::Schema.define(:version => 20111026230545) do
 
   create_table "users", :force => true do |t|
     t.string   "email"
-    t.string   "password"
     t.string   "first_name"
     t.string   "last_name"
     t.string   "gender"
     t.string   "mugshot"
     t.string   "locale"
     t.string   "link"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
+    t.string   "crypted_password"
+    t.string   "salt"
   end
 
-  add_index "users", ["email", "password"], :name => "index_users_on_email_and_password"
   add_index "users", ["email"], :name => "index_users_on_email"
+  add_index "users", ["email"], :name => "index_users_on_email_and_password"
 
   create_table "will_filter_filters", :force => true do |t|
     t.string   "type"

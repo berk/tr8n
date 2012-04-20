@@ -39,7 +39,7 @@ Tr8n.Translator = function(options) {
   this.container.appendChild(this.stem_image);
 
   this.content_frame = document.createElement('iframe');
-  this.content_frame.src = '/tr8n/language/translator_splash_screen';
+  this.content_frame.src = 'about:blank';
   this.content_frame.style.border = '0px';
   this.container.appendChild(this.content_frame);
 

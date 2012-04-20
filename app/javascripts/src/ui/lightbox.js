@@ -34,7 +34,7 @@ Tr8n.Lightbox = function() {
   this.overlay.style.display    = "none";
 
   this.content_frame              = document.createElement('iframe');
-  this.content_frame.src          = '/tr8n/help/splash_screen';
+  this.content_frame.src          = 'about:blank';
   this.content_frame.style.border = '0px';
   this.content_frame.style.width  = '100%';
   this.container.appendChild(this.content_frame);

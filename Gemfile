@@ -9,3 +9,6 @@ gemspec
 # gem 'ruby-debug19', :require => 'ruby-debug'
 
 # Gems for a standalone instance only
+
+# To use ActiveModel has_secure_password
+gem "bcrypt-ruby", :require => "bcrypt"
