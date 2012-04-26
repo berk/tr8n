@@ -144,12 +144,12 @@ module Tr8n::CommonMethods
 
   # flash notice
   def trfn(label, desc = "", tokens = {}, options = {})
-    flash[:trfn] = tr(label, desc, tokens, options)
+    flash[:trfn] = label.tr8n_translated? ? label : tr(label, desc, tokens, options)
   end
 
   # flash error
   def trfe(label, desc = "", tokens = {}, options = {})
-    flash[:trfe] = tr(label, desc, tokens, options)
+    flash[:trfe] = label.tr8n_translated? ? label : tr(label, desc, tokens, options)
   end
   # end translation helper methods
 
