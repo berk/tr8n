@@ -21,33 +21,37 @@
   WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ****************************************************************************/
 
-;(function() {
+Tr8n.SDK.TML.Label = function(node) {
+  this.node = node;
+  this.label = "";
+  this.description = "";
+  this.tokens = {};
+  this.options = {};
 
-  var setup = function() {
-    Tr8n.UI.Translator.init({});
-    Tr8n.UI.Lightbox.init({});
-    Tr8n.UI.LanguageSelector.init({});
+  for (var i=0; i < this.node.childNodes.length; i++) {
+    var childNode = this.node.childNodes[i];
 
-    Tr8n.Utils.addEvent(document, "keyup", function(event) {
-      if (event.keyCode == 27) { // Capture Esc key
-        Tr8n.UI.Translator.hide();
-        Tr8n.UI.LanguageSelector.hide();
-        Tr8n.UI.Lightbox.hide();
-      }
-    });
+    // text should just be added to the label
+    if (childNode.nodeType == 3) {
+      this.label = this.label + " " + Tr8n.Utils.trim(childNode.nodeValue);
+    } else if (childNode.nodeName == "TML:TOKEN") {
+      var token = new Tr8n.SDK.TML.Token(childNode, this.tokens);
+      this.label = Tr8n.Utils.trim(this.label) + " " + token.toTokenString();
+    }
+    
   }
 
-  window.Tr8n = window.$tr8n = Tr8n.Utils.extend(Tr8n, {
-    element     : Tr8n.Utils.element,
-    value       : Tr8n.Utils.value,
-    log         : Tr8n.Logger.log,
-    getStatus   : Tr8n.SDK.Auth.getStatus,
-    connect     : Tr8n.SDK.Auth.connect,
-    disconnect  : Tr8n.SDK.Auth.disconnect,
-    logout      : Tr8n.SDK.Auth.logout,
-    api         : Tr8n.SDK.Api.get          //most api calls are gets
-  });
+  this.description = this.node.attributes['desc'] || this.node.attributes['description']; 
+  this.description = this.description ? this.description.value : null;
 
-  Tr8n.Utils.addEvent(window, 'load', setup);
-  
-}).call(this);
+  this.label = this.label.replace(/\n/g, '');
+  this.label = Tr8n.Utils.trim(this.label);
+
+  // console.log(this.label + " : " + this.description);
+}
+
+Tr8n.SDK.TML.Label.prototype = {
+  translate: function() {
+    this.node.innerHTML = Tr8n.SDK.Proxy.translate(this.label, this.description, this.tokens, this.options);
+  }
+}

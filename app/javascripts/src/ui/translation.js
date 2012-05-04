@@ -20,10 +20,11 @@
   OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
   WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ****************************************************************************/
-var tr8n_suggestion_tokens;
-var tr8n_suggestion_key_id;
 
 Tr8n.Translation = {
+
+  suggestion_key_id: null,  
+  suggestion_tokens: [],
 
   report: function(translation_key, translation_id) {
     // TODO: wrap in trl
@@ -83,8 +84,8 @@ Tr8n.Translation = {
   suggest: function(translation_key_id, original, tokens, from_lang, to_lang) {
     if (Tr8n.google_api_key == null) return;
     
-    tr8n_suggestion_tokens = tokens;
-    tr8n_suggestion_key_id = translation_key_id;
+    this.suggestion_tokens = tokens;
+    this.suggestion_key_id = translation_key_id;
 
     var new_script = document.createElement('script');
     new_script.type = 'text/javascript';
@@ -100,17 +101,17 @@ Tr8n.Translation = {
       return;
     var suggestion = response.data.translations[0].translatedText;
 
-    if (tr8n_suggestion_tokens) {
-      var tokens = tr8n_suggestion_tokens.split(",");
-      tr8n_suggestion_tokens = null;
+    if (this.suggestion_tokens) {
+      var tokens = this.suggestion_tokens.split(",");
+      this.suggestion_tokens = null;
 
       for (var i=0; i<tokens.length; i++) {
         suggestion = Tr8n.Utils.replaceAll(suggestion, "(" + i + ")", tokens[i]);
       }
     }  
 
-    Tr8n.element("tr8n_translation_suggestion_" + tr8n_suggestion_key_id).innerHTML = suggestion;
-    Tr8n.element("tr8n_google_suggestion_container_" + tr8n_suggestion_key_id).style.display = "block";
+    Tr8n.element("tr8n_translation_suggestion_" + this.suggestion_key_id).innerHTML = suggestion;
+    Tr8n.element("tr8n_google_suggestion_container_" + this.suggestion_key_id).style.display = "block";
     var suggestion_section = Tr8n.element('tr8n_google_suggestion_section');
     if (suggestion_section) suggestion_section.style.display = "block";
   }

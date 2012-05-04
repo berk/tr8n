@@ -21,22 +21,20 @@
   WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ****************************************************************************/
 
-Tr8n.Proxy.Token = function() {}
+Tr8n.SDK.Tokens.Base = function() {
+}
 
-Tr8n.Proxy.Token.prototype = {
-  getProxy: function() {
-    return this.options['proxy'];
-  },
-  getLogger: function() {
-    return this.getProxy().logger;
-  },
+Tr8n.SDK.Tokens.Base.prototype = {
+  
   getExpression: function() {
     // must be implemented by the extending class
     return null;
   },
-  register: function(label, options) {
-    if (this.getExpression() == null)
-      alert("Token expression must be provided");
+
+  parse: function(label, options) {
+    if (this.getExpression() == null) {
+      Tr8n.Logger.error("Token expression must be provided");
+    }
       
     var tokens = label.match(this.getExpression());
     if (!tokens) return [];
@@ -45,51 +43,59 @@ Tr8n.Proxy.Token.prototype = {
     var uniq = {};
     for(i=0; i<tokens.length; i++) {
       if (uniq[tokens[i]]) continue;
-      options['proxy'].debug("Registering data token: " + tokens[i]);
+      Tr8n.log("Registering data token: " + tokens[i]);
       objects.push(new Tr8n.Proxy.TransformToken(label, tokens[i], options)); 
       uniq[tokens[i]] = true;
     }
     return objects;
   },
+
   getFullName: function() {
     return this.full_name;
   },
+
   getDeclaredName: function() {
     if (!this.declared_name) {
       this.declared_name = this.getFullName().replace(/[{}\[\]]/g, '');
     }
     return this.declared_name;
   },
+
   getName: function() {
     if (!this.name) {
       this.name = Tr8n.Utils.trim(this.getDeclaredName().split(':')[0]); 
     }
     return this.name;
   },
+
   getLanguageRule: function() {
     
     return null;
   },
+
   substitute: function(label, token_values) {
     var value = token_values[this.getName()];
     
     if (value == null) {
-      this.getLogger().error("Value for token: " + this.getFullName() + " was not provided");
+      Tr8n.Logger.error("Value for token: " + this.getFullName() + " was not provided");
       return label;
     }
 
     return Tr8n.Utils.replaceAll(label, this.getFullName(), this.getTokenValue(value)); 
   },
+
   getTokenValue: function(token_value) {
     if (typeof token_value == 'string') return token_value;
     if (typeof token_value == 'number') return token_value;
     return token_value['value'];
   },
+
   getTokenObject: function(token_value) {
     if (typeof token_value == 'string') return token_value;
     if (typeof token_value == 'number') return token_value;
     return token_value['subject'];
   },
+
   getType: function() {
     if (this.getDeclaredName().indexOf(':') == -1)
       return null;
@@ -101,6 +107,7 @@ Tr8n.Proxy.Token.prototype = {
     
     return this.type;     
   },
+
   getSuffix: function() {
     if (!this.suffix) {
       this.suffix = this.getName().split('_');
@@ -108,12 +115,13 @@ Tr8n.Proxy.Token.prototype = {
     }
     return this.suffix;
   },
+
   getLanguageRule: function() {
     if (!this.language_rule) {
       if (this.getType()) {
-        this.language_rule = this.getProxy().getLanguageRuleForType(this.getType()); 
+        this.language_rule = Tr8n.SDK.Proxy.getLanguageRuleForType(this.getType()); 
       } else {
-        this.language_rule = this.getProxy().getLanguageRuleForTokenSuffix(this.getSuffix());
+        this.language_rule = Tr8n.SDK.Proxy.getLanguageRuleForTokenSuffix(this.getSuffix());
       }
     }
     return this.language_rule;

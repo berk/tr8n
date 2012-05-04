@@ -21,17 +21,34 @@
   WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ****************************************************************************/
 
-Tr8n.Proxy.GenderListRule = function(definition, options) {
-  this.definition = definition;
-  this.options = options;
+Tr8n.SDK.Rules.Base = function() {
+
 }
 
-Tr8n.Proxy.GenderListRule.prototype = new Tr8n.Proxy.LanguageRule();
+Tr8n.SDK.Rules.Base.prototype = {
 
-Tr8n.Proxy.GenderListRule.transform = function(object, values) {
-  return "";
-}
+  getTokenValue: function(token_name, token_values) {
+    var object = token_values[token_name];
+    if (object == null) { 
+      Tr8n.Logger.error("Invalid token value for token: " + token_name);
+    }
+    
+    return object;    
+  },
 
-Tr8n.Proxy.GenderListRule.prototype.evaluate = function(token, token_values) {
-  return true;
+  getDefinitionDescription: function() {
+    var result = [];
+    for (var key in this.definition)
+      result.push(key + ": '" + this.definition[key] + "'");
+    return "{" + result.join(", ") + "}";   
+  },
+
+  sanitizeArrayValue: function(value) {
+    var results = [];
+    var arr = value.split(',');
+    for (var index = 0; index < arr.length; index++) {
+      results.push(Tr8n.Utils.trim(arr[index]));
+    }   
+    return results;
+  }
 }

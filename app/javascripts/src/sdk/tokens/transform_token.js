@@ -21,15 +21,15 @@
   WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ****************************************************************************/
 
-Tr8n.Proxy.TransformToken = function(label, token, options) {
+Tr8n.SDK.Tokens.TransformToken = function(label, token, options) {
   this.label = label;
   this.full_name = token;
   this.options = options;
 }
 
-Tr8n.Proxy.TransformToken.prototype = new Tr8n.Proxy.Token();
+Tr8n.SDK.Tokens.TransformToken.prototype = new Tr8n.SDK.Tokens.Base();
 
-Tr8n.Proxy.TransformToken.parse = function(label, options) {
+Tr8n.SDK.Tokens.TransformToken.parse = function(label, options) {
   var tokens = label.match(/(\{[^_][\w]+(:[\w]+)?\s*\|\|?[^{^}]+\})/g);
   if (!tokens) return [];
   
@@ -37,21 +37,21 @@ Tr8n.Proxy.TransformToken.parse = function(label, options) {
   var uniq = {};
   for(i=0; i<tokens.length; i++) {
     if (uniq[tokens[i]]) continue;
-    options['proxy'].debug("Registering transform token: " + tokens[i]);
-    objects.push(new Tr8n.Proxy.TransformToken(label, tokens[i], options)); 
+    Tr8n.log("Registering transform token: " + tokens[i]);
+    objects.push(new Tr8n.SDK.Tokens.TransformToken(label, tokens[i], options)); 
     uniq[tokens[i]] = true;
   }
   return objects;
 }
 
-Tr8n.Proxy.TransformToken.prototype.getName = function() {
+Tr8n.SDK.Tokens.TransformToken.prototype.getName = function() {
   if (!this.name) {
     this.name = Tr8n.Utils.trim(this.getDeclaredName().split('|')[0].split(':')[0]); 
   }
   return this.name;
 }
 
-Tr8n.Proxy.TransformToken.prototype.getPipedParams = function() {
+Tr8n.SDK.Tokens.TransformToken.prototype.getPipedParams = function() {
   if (!this.piped_params) {
     var temp = this.getDeclaredName().split('|');
     temp = temp[temp.length - 1].split(",");
@@ -63,27 +63,27 @@ Tr8n.Proxy.TransformToken.prototype.getPipedParams = function() {
   return this.piped_params;
 }
 
-Tr8n.Proxy.TransformToken.prototype.substitute = function(label, token_values) {
+Tr8n.SDK.Tokens.TransformToken.prototype.substitute = function(label, token_values) {
   var object = token_values[this.getName()];
   if (object == null) {
-    this.getLogger().error("Value for token: " + this.getFullName() + " was not provided");
+    Tr8n.Logger.error("Value for token: " + this.getFullName() + " was not provided");
     return label;
   }
   
   var token_object = this.getTokenObject(object);
-  this.getLogger().debug("Registered " + this.getPipedParams().length + " piped params");
+  Tr8n.log("Registered " + this.getPipedParams().length + " piped params");
   
   var lang_rule_name = this.getLanguageRule();
   
   if (!lang_rule_name) {
-    this.getLogger().error("Rule type cannot be determined for the transform token: " + this.getFullName());
+    Tr8n.Logger.error("Rule type cannot be determined for the transform token: " + this.getFullName());
     return label;
   } else {
-    this.getLogger().debug("Transform token uses rule: " + lang_rule_name);
+    Tr8n.log("Transform token uses rule: " + lang_rule_name);
   }
 
   var transform_value = eval(lang_rule_name).transform(token_object, this.getPipedParams());
-  this.getLogger().debug("Registered transform value: " + transform_value);
+  Tr8n.log("Registered transform value: " + transform_value);
   
   // for double pipes - show the actual value as well
   if (this.isAllowedInTranslation()) {
@@ -94,13 +94,13 @@ Tr8n.Proxy.TransformToken.prototype.substitute = function(label, token_values) {
   return Tr8n.Utils.replaceAll(label, this.getFullName(), transform_value);
 }
 
-Tr8n.Proxy.TransformToken.prototype.getPipedSeparator = function() {
+Tr8n.SDK.Tokens.TransformToken.prototype.getPipedSeparator = function() {
   if (!this.piped_separator) {
     this.piped_separator = (this.getFullName().indexOf("||") != -1 ? "||" : "|");
   }
   return this.piped_separator;
 }
 
-Tr8n.Proxy.TransformToken.prototype.isAllowedInTranslation = function(){
+Tr8n.SDK.Tokens.TransformToken.prototype.isAllowedInTranslation = function(){
   return this.getPipedSeparator() == "||";
 }

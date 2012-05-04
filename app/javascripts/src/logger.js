@@ -21,55 +21,62 @@
   WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ****************************************************************************/
 
-Tr8n.Proxy.Logger = function(options) {
-  this.options = options;
-  this.object_keys = [];
-}
+Tr8n.Logger = {
 
-Tr8n.Proxy.Logger.prototype = {
+  console_element_id: 'tr8n_console',
+  object_keys: {},
+
   clear: function() {
-    if (!this.options['proxy'].logger_enabled) return;
-    if (!this.options['element_id']) return;
-    if (!Tr8n.element(this.options['element_id'])) return;
-    Tr8n.element(this.options['element_id']).innerHTML = ""; 
+    if (!Tr8n.element(Tr8n.Logger.console_element_id)) return;
+    Tr8n.element(Tr8n.Logger.console_element_id).innerHTML = ""; 
   },
-  append: function(msg) {
-    if (!this.options['proxy'].logger_enabled) return;
-    if (!this.options['element_id']) return;
-    if (!Tr8n.element(this.options['element_id'])) return;
 
-    var str = msg + "<br>" + Tr8n.element(this.options['element_id']).innerHTML;
-    Tr8n.element(this.options['element_id']).innerHTML = str; 
+  append: function(msg) {
+    if (!Tr8n.element(Tr8n.Logger.console_element_id)) return;
+    Tr8n.element(Tr8n.Logger.console_element_id).innerHTML = msg + "<br>" + Tr8n.element(Tr8n.Logger.console_element_id).innerHTML; 
   },
-  log: function(msg) {
-    if (!this.options['proxy'].logger_enabled) return;
+
+  timestampMessage: function(msg) {
     var now = new Date();
-    var str = "<span style='color:#ccc;'>" + (now.toLocaleDateString() + " " + now.toLocaleTimeString()) + "</span>: " + msg;  
-    this.append(str); 
+    return "<span style='color:#ccc;'>" + (now.toLocaleDateString() + " " + now.toLocaleTimeString()) + "</span>: " + msg;
   },
+
+  log: function(msg) {
+    if (!Tr8n.logging) return;
+
+    if (window.console) window.console.log(msg);
+
+    Tr8n.Logger.append(Tr8n.Logger.timestampMessage(msg)); 
+  },
+
   debug: function(msg) {
-    if (!this.options['proxy'].logger_enabled) return;
-    if (window.console && console.log) {
-       console.log(msg);
-    }
-    this.log("<span style='color:grey'>" + msg + "</span>");
+    if (!Tr8n.logging) return;
+
+    if (window.console) window.console.debug(msg);
+
+    Tr8n.Logger.append(Tr8n.Logger.timestampMessage("<span style='color:grey'>" + msg + "</span>")); 
   },
+
   error: function(msg) {
-    if (!this.options['proxy'].logger_enabled) return;
-    if (window.console && console.error) {
-       console.error(msg);
-    }
-    this.log("<span style='color:red'>" + msg + "</span>");
+    if (!Tr8n.logging) return;
+
+    if (window.console) window.console.error(msg);
+
+    Tr8n.Logger.append(Tr8n.Logger.timestampMessage("<span style='color:red'>" + msg + "</span>")); 
   },
+
   S4: function() {
     return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
   },
+
   guid: function() {
-    return (this.S4()+this.S4()+"-"+this.S4()+"-"+this.S4()+"-"+this.S4()+"-"+this.S4()+this.S4()+this.S4());
+    return (Tr8n.Logger.S4()+Tr8n.Logger.S4()+"-"+Tr8n.Logger.S4()+"-"+Tr8n.Logger.S4()+"-"+Tr8n.Logger.S4()+"-"+Tr8n.Logger.S4()+Tr8n.Logger.S4()+Tr8n.Logger.S4());
   },
+
   escapeHTML: function(str) { 
     return( str.replace(/&/g,'&amp;').replace(/>/g,'&gt;').replace(/</g,'&lt;').replace(/"/g,'&quot;')); 
   },
+
   showObject: function (obj_key, flag) {
     if (flag) {
       Tr8n.Effects.hide("no_object_" + obj_key);
@@ -81,25 +88,29 @@ Tr8n.Proxy.Logger.prototype = {
       Tr8n.element("expander_" + obj_key).innerHTML = "<img src='/assets/tr8n/plus_node.png'>";
     } 
   },
+
   toggleNode: function(obj_key) {
-    this.showObject(obj_key, (Tr8n.element("object_" + obj_key).style.display == 'none'));
+    Tr8n.Logger.showObject(obj_key, (Tr8n.element("object_" + obj_key).style.display == 'none'));
   },
+
   expandAllNodes: function() {
-    for (var i=0; i<this.object_keys.length; i++) {
-      this.showObject(this.object_keys[i], true);
+    for (var i=0; i<Tr8n.Logger.object_keys.length; i++) {
+      this.showObject(Tr8n.Logger.object_keys[i], true);
     }
   },
+
   collapseAllNodes: function() {
     for (var i=0; i<this.object_keys.length; i++) {
       this.showObject(this.object_keys[i], false);
     }
   },
+
   logObject: function(data) {
     this.object_keys = [];
     html = []
     html.push("<div style='float:right;padding-right:10px;'>");
-    html.push("<span style='padding:2px;' onClick=\"tr8nProxy.logger.expandAllNodes()\"><img src='/assets/tr8n/plus_node.png'></span>");
-    html.push("<span style='padding:2px;' onClick=\"tr8nProxy.logger.collapseAllNodes()\"><img src='/assets/tr8n/minus_node.png'></span>");
+    html.push("<span style='padding:2px;' onClick=\"Tr8n.Logger.expandAllNodes()\"><img src='/assets/tr8n/plus_node.png'></span>");
+    html.push("<span style='padding:2px;' onClick=\"Tr8n.Logger.collapseAllNodes()\"><img src='/assets/tr8n/minus_node.png'></span>");
     html.push("</div>");
 
     var results = data;
@@ -119,12 +130,13 @@ Tr8n.Proxy.Logger.prototype = {
     }
     this.append(html.join(""));
   },
+
   formatObject: function(obj, level) {
     if (obj == null) return "{<br>}";
 
     var html = [];
     var obj_key = this.guid();  
-    html.push("<span class='tr8n_logger_expander' id='expander_" + obj_key + "' onClick=\"tr8nProxy.logger.toggleNode('" + obj_key + "')\"><img src='/assets/tr8n/minus_node.png'></span> <span style='display:none' id='no_object_" + obj_key + "'>{...}</span> <span id='object_" + obj_key + "'>{");
+    html.push("<span class='tr8n_logger_expander' id='expander_" + obj_key + "' onClick=\"Tr8n.Logger.toggleNode('" + obj_key + "')\"><img src='/assets/tr8n/minus_node.png'></span> <span style='display:none' id='no_object_" + obj_key + "'>{...}</span> <span id='object_" + obj_key + "'>{");
     this.object_keys.push(obj_key);
 
     var keys = Object.keys(obj).sort();
@@ -144,12 +156,13 @@ Tr8n.Proxy.Logger.prototype = {
     html.push(this.createSpacer(level-1) + "}</span>");
     return html.join("<br>");
   },
+
   formatArray: function(arr, level) {
     if (arr == null) return "[<br>]";
 
     var html = [];
     var obj_key = this.guid();  
-    html.push("<span class='tr8n_logger_expander' id='expander_" + obj_key + "' onClick=\"tr8nProxy.logger.toggleNode('" + obj_key + "')\"><img src='/assets/tr8n/minus_node.png'></span> <span style='display:none' id='no_object_" + obj_key + "'>[...]</span> <span id='object_" + obj_key + "'>[");
+    html.push("<span class='tr8n_logger_expander' id='expander_" + obj_key + "' onClick=\"Tr8n.Logger.toggleNode('" + obj_key + "')\"><img src='/assets/tr8n/minus_node.png'></span> <span style='display:none' id='no_object_" + obj_key + "'>[...]</span> <span id='object_" + obj_key + "'>[");
     this.object_keys.push(obj_key);
 
     for (var i=0; i<arr.length; i++) {
@@ -166,6 +179,7 @@ Tr8n.Proxy.Logger.prototype = {
     html.push(this.createSpacer(level-1) + "]</span>");
     return html.join("<br>");
   },
+
   formatProperty: function(key, value) {
     if (value == null) return "<span class='tr8n_logger_obj_key'>" + key + ":</span><span class='obj_value_null'>null</span>";
     
@@ -182,20 +196,25 @@ Tr8n.Proxy.Logger.prototype = {
       
     return "<span class='tr8n_logger_obj_key'>" + key + ":</span>" + value_span;
   },
+
   createSpacer: function(level) {
     return "<img src='/assets/tr8n/pixel.gif' style='height:1px;width:" + (level * 20) + "px;'>";
   },
+
   isArray: function(obj) {
     if (obj == null) return false;
     return !(obj.constructor.toString().indexOf("Array") == -1);
   },
+
   isObject: function(obj) {
     if (obj == null) return false;
     return (typeof obj == 'object');
   },
+
   isString: function(obj) {
     return (typeof obj == 'string');
   },
+
   isURL: function(str) {
     str = "" + str;
     return (str.indexOf("http://") != -1) || (str.indexOf("https://") != -1);

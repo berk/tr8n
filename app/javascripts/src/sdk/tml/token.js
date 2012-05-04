@@ -21,9 +21,7 @@
   WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ****************************************************************************/
 
-Tr8n.Tml = Tr8n.Tml || {};
-
-Tr8n.Tml.Token = function(node, tokens) {
+Tr8n.SDK.TML.Token = function(node, tokens) {
   this.node = node;
   
   this.type = this.node.attributes['type'];
@@ -40,9 +38,9 @@ Tr8n.Tml.Token = function(node, tokens) {
 
   for (var i=0; i < this.node.childNodes.length; i++) {
     var childNode = this.node.childNodes[i];
-    // console.log(childNode.nodeType + " " + childNode.nodeValue);
+    Tr8n.log(childNode.nodeType + " " + childNode.nodeValue);
     var token_type = this.node.attributes['type'] ? this.node.attributes['type'].nodeValue : 'data';
-    // console.log(this.name + " " + token_type);
+    Tr8n.log(this.name + " " + token_type);
 
     if (childNode.nodeType == 3) {
       // text should just be added to the label
@@ -84,7 +82,7 @@ Tr8n.Tml.Token = function(node, tokens) {
         if (grandChildNode.nodeType == 3) {
           this.content = Tr8n.Utils.trim(this.content) + " " + Tr8n.Utils.trim(grandChildNode.nodeValue);
         } else if (grandChildNode.nodeName == "TML:TOKEN") {
-          var token = new Tr8n.Tml.Token(grandChildNode, tokens);
+          var token = new Tr8n.SDK.TML.Token(grandChildNode, tokens);
           this.content = Tr8n.Utils.trim(this.content) + " " + token.toTokenString();
         }    
       }
@@ -95,7 +93,8 @@ Tr8n.Tml.Token = function(node, tokens) {
   this.content = Tr8n.Utils.trim(this.content);
 }
 
-Tr8n.Tml.Token.prototype = {
+Tr8n.SDK.TML.Token.prototype = {
+  
   toTokenString: function() {
     if (this.type == "data") {
       // TODO: we may need to add dependencies here: gender, number and language cases
@@ -104,4 +103,5 @@ Tr8n.Tml.Token.prototype = {
       return "[" + this.name + ": " + this.content + "]";
     }
   }
+  
 }

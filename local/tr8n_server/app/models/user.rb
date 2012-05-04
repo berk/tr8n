@@ -1,5 +1,5 @@
 class User < ActiveRecord::Base
-  attr_accessible :email, :password, :password_confirmation, :first_name, :last_name, :gender, :mugshot, :link
+  attr_accessible :email, :password, :password_confirmation, :first_name, :last_name, :gender, :mugshot, :link, :remote_id
 
   attr_accessor :password
   before_save :encrypt_password
@@ -12,7 +12,6 @@ class User < ActiveRecord::Base
                       :length => {:minimum => 3, :maximum => 254},
                       :uniqueness => true,
                       :format => {:with => /^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/i}        
-
 
   has_one :admin
   

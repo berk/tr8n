@@ -12,10 +12,6 @@
   <%=stylesheet_link_tag("tr8n/tr8n.css") -%>
   <%=javascript_include_tag("tr8n/tr8n-compiled.js", :charset => "UTF-8") -%>
 
-  <script type="text/javascript">
-     initializeTr8n();
-  </script>
-
   <% if Tr8n::Config.enable_effects? %>
     <%=javascript_include_tag(Tr8n::Config.effects_library_path) -%>
 	<% end %>

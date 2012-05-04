@@ -21,18 +21,25 @@
   WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ****************************************************************************/
 
-Tr8n.Proxy.Language = function(options) {
+Tr8n.SDK.Tokens.DataToken = function(label, token, options) {
+  this.label = label;
+  this.full_name = token;
   this.options = options;
 }
 
-Tr8n.Proxy.Language.prototype = {
-  getProxy: function() {
-    return this.options['proxy'];
-  },
-  getLogger: function() {
-    return this.getProxy().logger;
-  },
-  translate: function(label, description, tokens, options) {
-    return (new Tr8n.Proxy.TranslationKey(label, description, {'proxy': this.getProxy()}).translate(this, tokens, options));
+Tr8n.SDK.Tokens.DataToken.prototype = new Tr8n.SDK.Tokens.Base();
+
+Tr8n.SDK.Tokens.DataToken.parse = function(label, options) {
+  var tokens = label.match(/(\{[^_][\w]+(:[\w]+)?\})/g);
+  if (!tokens) return [];
+  
+  var objects = [];
+  var uniq = {};
+  for(i=0; i<tokens.length; i++) {
+    if (uniq[tokens[i]]) continue;
+    Tr8n.log("Registering data token: " + tokens[i]);
+    objects.push(new Tr8n.SDK.Tokens.DataToken(label, tokens[i], options));
+    uniq[tokens[i]] = true;
   }
+  return objects;
 }

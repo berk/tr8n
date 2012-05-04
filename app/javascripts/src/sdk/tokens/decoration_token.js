@@ -21,15 +21,15 @@
   WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ****************************************************************************/
 
-Tr8n.Proxy.DecorationToken = function(label, token, options) {
+Tr8n.SDK.Tokens.DecorationToken = function(label, token, options) {
   this.label = label;
   this.full_name = token;
   this.options = options;
 }
 
-Tr8n.Proxy.DecorationToken.prototype = new Tr8n.Proxy.Token();
+Tr8n.SDK.Tokens.DecorationToken.prototype = new Tr8n.SDK.Tokens.Base();
 
-Tr8n.Proxy.DecorationToken.parse = function(label, options) {
+Tr8n.SDK.Tokens.DecorationToken.parse = function(label, options) {
   var tokens = label.match(/(\[\w+:[^\]]+\])/g);
   if (!tokens) return [];
   
@@ -37,14 +37,14 @@ Tr8n.Proxy.DecorationToken.parse = function(label, options) {
   var uniq = {};
   for(i=0; i<tokens.length; i++) {
     if (uniq[tokens[i]]) continue;
-    options['proxy'].debug("Registering decoration token: " + tokens[i]);
-    objects.push(new Tr8n.Proxy.DecorationToken(label, tokens[i], options));
+    Tr8n.log("Registering decoration token: " + tokens[i]);
+    objects.push(new Tr8n.SDK.Tokens.DecorationToken(label, tokens[i], options));
     uniq[tokens[i]] = true;
   }
   return objects;
 }
 
-Tr8n.Proxy.DecorationToken.prototype.getDecoratedValue = function() {
+Tr8n.SDK.Tokens.DecorationToken.prototype.getDecoratedValue = function() {
   if (!this.decorated_value) {
     var value = this.getFullName().replace(/[\]]/g, '');
     value = value.substring(value.indexOf(':') + 1, value.length);
@@ -53,15 +53,15 @@ Tr8n.Proxy.DecorationToken.prototype.getDecoratedValue = function() {
   return this.decorated_value;
 }
 
-Tr8n.Proxy.DecorationToken.prototype.substitute = function(label, token_values) {
+Tr8n.SDK.Tokens.DecorationToken.prototype.substitute = function(label, token_values) {
   var object = token_values[this.getName()];
   var decoration = object;
   
   if (!object || typeof object == 'object') {
     // look for the default decoration
-    decoration = this.getProxy().getDecorationFor(this.getName());
+    decoration = Tr8n.SDK.Proxy.getDecorationFor(this.getName());
     if (!decoration) {
-      this.getLogger().error("Default decoration is not defined for token " + this.getName());
+      Tr8n.Logger.error("Default decoration is not defined for token " + this.getName());
       return label;
     }
     
@@ -74,7 +74,7 @@ Tr8n.Proxy.DecorationToken.prototype.substitute = function(label, token_values) 
   } else if (typeof object == 'string') {
     decoration = Tr8n.Utils.replaceAll(decoration, '{$0}', this.getDecoratedValue());
   } else {
-    this.getLogger().error("Unknown type of decoration token " + this.getFullName());
+    Tr8n.Logger.error("Unknown type of decoration token " + this.getFullName());
     return label;
   }
   

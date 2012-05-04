@@ -21,20 +21,25 @@
   WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ****************************************************************************/
 
-Tr8n.LanguageSelector = function(options) {
-  this.options = options || {};
-  this.keyboardMode = false;
-  this.loaded = false;
+Tr8n.UI.LanguageSelector = {
 
-  this.container                = document.createElement('div');
-  this.container.className      = 'tr8n_language_selector';
-  this.container.id             = 'tr8n_language_selector';
-  this.container.style.display  = "none";
+  options: {},
+  keyboardMode: false,
+  loaded: false,
+  container: null,
 
-  document.body.appendChild(this.container);
-}
+  init: function(options) {
+    this.options = options || {};
+    this.keyboardMode = false;
+    this.loaded = false;
 
-Tr8n.LanguageSelector.prototype = {
+    this.container                = document.createElement('div');
+    this.container.className      = 'tr8n_language_selector';
+    this.container.id             = 'tr8n_language_selector';
+    this.container.style.display  = "none";
+
+    document.body.appendChild(this.container);
+  },
 
   toggle: function() {
     if (this.container.style.display == "none") {
@@ -51,8 +56,9 @@ Tr8n.LanguageSelector.prototype = {
 
   show: function() {
     var self = this;
-    if (tr8nTranslator) tr8nTranslator.hide();
-    if (tr8nLightbox) tr8nLightbox.hide();
+    
+    Tr8n.UI.Translator.hide();
+    Tr8n.UI.Lightbox.hide();
     Tr8n.Utils.hideFlash();
 
     var splash_screen = Tr8n.element('tr8n_splash_screen');

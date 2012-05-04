@@ -19,7 +19,7 @@
       html << "<div style='color:grey; font-size:10px;'>"
       if key_source.details
         key_source.details.each do |key, value|
-          html << link_to_function(value.first, "tr8nLightbox.show('/tr8n/admin/domain/lb_caller?key_source_id=#{key_source.id}&caller_key=#{key}', {height:550, width:1000})")
+          html << link_to_function(value.first, "Tr8n.UI.Lightbox.show('/tr8n/admin/domain/lb_caller?key_source_id=#{key_source.id}&caller_key=#{key}', {height:550, width:1000})")
           html << "<br>"
         end
       end

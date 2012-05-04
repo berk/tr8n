@@ -21,39 +21,44 @@
   WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ****************************************************************************/
 
-Tr8n.Proxy.TranslationKey = function(label, description, options) {
+Tr8n.SDK.TranslationKey = function(label, description, options) {
   this.label = label;
   this.description = description;
   this.options = options;
   this.generateKey();
 }
 
-Tr8n.Proxy.TranslationKey.prototype = {
-  getProxy: function() {
-    return this.options['proxy'];
+Tr8n.SDK.TranslationKey.prototype = {
+
+  generateKey: function() {
+    this.key = this.label + ";;;";
+    if (this.description) this.key = this.key + this.description;
+       
+    Tr8n.log('Preparing label signature: ' + this.key);
+    this.key = MD5(this.key);
+    Tr8n.log('Label signature: ' + this.key);
   },
-  getLogger: function() {
-    return this.getProxy().logger;
-  },
+
   findFirstAcceptableTranslation: function(translations, token_values) {
     // check for a single translation case - no context rules
     if (translations['label']!=null) {
-      this.getLogger().debug('Found a single translation: ' + translations['label']);
+      Tr8n.log('Found a single translation: ' + translations['label']);
       return translations;    
     }
   
     translations = translations['labels'];
     if (!translations) {
-      this.getLogger().error("Translations are in a weird form...");
+      Tr8n.error("Translations are in a weird form...");
       return null;
     }
 
-    this.getLogger().debug('Found translations: ' + translations.length);
+    Tr8n.log('Found translations: ' + translations.length);
+
     for (var i=0; i<translations.length; i++) {
-      this.getLogger().debug("Checking context rules for:" + translations[i]['label']);
+      Tr8n.log("Checking context rules for:" + translations[i]['label']);
       
       if (!translations[i]['context']) {
-        this.getLogger().debug("Translation has no context, using it by default");
+        Tr8n.log("Translation has no context, using it by default");
         return translations[i];
       }
       var valid_context = true;
@@ -61,78 +66,69 @@ Tr8n.Proxy.TranslationKey.prototype = {
       for (var token in translations[i]['context']) {
         if (!valid_context) continue;
         var token_context = translations[i]['context'][token];
-        var rule_name = this.getProxy().getLanguageRuleForType(token_context['type']);
-        this.getLogger().debug("Evaluating rule: " + rule_name);
-        var options = {'proxy': this.getProxy()};
+        var rule_name = Tr8n.SDK.Proxy.getLanguageRuleForType(token_context['type']);
+
+        Tr8n.log("Evaluating rule: " + rule_name);
         var rule = eval("new " + rule_name + "()");
         rule.definition = token_context;
-        rule.options = options;
+        rule.options = {};
         valid_context = valid_context && rule.evaluate(token, token_values);
       }
       
       if (valid_context) {
-        this.getLogger().debug("Found valid translation: " + translations[i].label);
+        Tr8n.log("Found valid translation: " + translations[i].label);
         return translations[i];
       } else {
-        this.getLogger().debug("The rules were not matched for: " + translations[i].label);
+        Tr8n.log("The rules were not matched for: " + translations[i].label);
       }
     }
     
-    this.getLogger().debug('No acceptable ranslations found');
+    Tr8n.log('No acceptable ranslations found');
     return null;        
   },
   
   translate: function(language, token_values, options) {
     if (!this.label) {
-      this.getLogger().error('Label must always be provided for the translate method');
+      Tr8n.log('Label must always be provided for the translate method');
       return '';
     }
     
-    var translations = this.getProxy().getTranslations();
+    var translations = Tr8n.SDK.Proxy.translations;
     var translation_key = translations[this.key];
         
     if (translation_key) {
-      this.getLogger().debug("Found translations, evaluating rules...");      
+      Tr8n.log("Found translations, evaluating rules...");      
       
       this.id = translation_key.id;
       this.original = translation_key.original;
       var translation = this.findFirstAcceptableTranslation(translation_key, token_values);
 
       if (translation) {
-        this.getLogger().debug("Found a valid match: " + translation.label);      
+        Tr8n.log("Found a valid match: " + translation.label);      
         return this.substituteTokens(translation['label'], token_values, options);
       } else {
-        this.getLogger().debug("No valid match found, using default language");      
+        Tr8n.log("No valid match found, using default language");      
         return this.substituteTokens(this.label, token_values, options);
       }
       
     } else {
-      this.getLogger().debug("Translation not found, using default language");      
+      Tr8n.log("Translation not found, using default language");      
     }
 
-    this.getProxy().registerMissingTranslationKey(this, token_values, options);
-    this.getLogger().debug('No translation found. Using default...');
+    Tr8n.SDK.Proxy.registerMissingTranslationKey(this, token_values, options);
+    Tr8n.log('No translation found. Using default...');
     return this.substituteTokens(this.label, token_values, options);    
-  },
-  
-  generateKey: function() {
-    this.key = this.label + ";;;";
-    if (this.description) this.key = this.key + this.description;
-       
-    this.getLogger().debug('Preparing label signature: ' + this.key);
-    this.key = MD5(this.key);
-    this.getLogger().debug('Label signature: ' + this.key);
   },
   
   registerDataTokens: function(label) {
     this.data_tokens = [];
-    this.data_tokens = this.data_tokens.concat(Tr8n.Proxy.DataToken.parse(label, {'key': this, 'proxy':this.getProxy()}));
-    this.data_tokens = this.data_tokens.concat(Tr8n.Proxy.TransformToken.parse(label, {'key': this, 'proxy':this.getProxy()}));
+    this.data_tokens = this.data_tokens.concat(Tr8n.SDK.Tokens.DataToken.parse(label, {}));
+    this.data_tokens = this.data_tokens.concat(Tr8n.SDK.Tokens.TransformToken.parse(label, {}));
   },
 
   registerDecorationTokens: function(label) {
     this.decoration_tokens = [];
-    this.decoration_tokens = this.decoration_tokens.concat(Tr8n.Proxy.DecorationToken.parse(label, {'key': this, 'proxy':this.getProxy()}));
+    this.decoration_tokens = this.decoration_tokens.concat(Tr8n.SDK.Tokens.DecorationToken.parse(label, {}));
   },
 
   substituteTokens: function(label, token_values, options) {
@@ -172,7 +168,7 @@ Tr8n.Proxy.TranslationKey.prototype = {
     else  
       klasses.push('tr8n_translated');
 
-    if (this.getProxy().inline_translations_enabled && this.id)
+    if (Tr8n.SDK.Proxy.inline_translations_enabled && this.id)
       html.push(" class='" + klasses.join(' ') + "'");
       
     html.push(">");

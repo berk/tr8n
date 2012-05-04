@@ -21,45 +21,59 @@
   WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ****************************************************************************/
 
-Tr8n.Lightbox = function() {
-  this.container                = document.createElement('div');
-  this.container.className      = 'tr8n_lightbox';
-  this.container.id             = 'tr8n_lightbox';
-  this.container.style.height   = "100px";
-  this.container.style.display  = "none";
+Tr8n.UI.Lightbox = {
+  
+  options: {},  
+  container: null,
+  overlay: null,
+  content_frame: null,
 
-  this.overlay                  = document.createElement('div');
-  this.overlay.className        = 'tr8n_lightbox_overlay';
-  this.overlay.id               = 'tr8n_lightbox_overlay';
-  this.overlay.style.display    = "none";
+  init: function(options) {
+    var self = this;
+    this.options = options;
+    this.container                = document.createElement('div');
+    this.container.className      = 'tr8n_lightbox';
+    this.container.id             = 'tr8n_lightbox';
+    this.container.style.height   = "100px";
+    this.container.style.display  = "none";
 
-  this.content_frame              = document.createElement('iframe');
-  this.content_frame.src          = 'about:blank';
-  this.content_frame.style.border = '0px';
-  this.content_frame.style.width  = '100%';
-  this.container.appendChild(this.content_frame);
+    this.overlay                  = document.createElement('div');
+    this.overlay.className        = 'tr8n_lightbox_overlay';
+    this.overlay.id               = 'tr8n_lightbox_overlay';
+    this.overlay.style.display    = "none";
 
-  document.body.appendChild(this.container);
-  document.body.appendChild(this.overlay);
-}
+    this.content_frame              = document.createElement('iframe');
+    this.content_frame.src          = 'about:blank';
+    this.content_frame.style.border = '0px';
+    this.content_frame.style.width  = '100%';
+    this.container.appendChild(this.content_frame);
 
-Tr8n.Lightbox.prototype = {
+    document.body.appendChild(this.container);
+    document.body.appendChild(this.overlay);
+  },
 
   hide: function() {
     this.container.style.display = "none";
     this.overlay.style.display = "none";
+    this.content_frame.src = 'about:blank';
     Tr8n.Utils.showFlash();
+  },
+
+  urlFor: function(url, params) {
+    params = params || {};
+    url = Tr8n.host + url;
+    params.origin = window.location
   },
 
   show: function(url, opts) {
     var self = this;
     opts = opts || {};
 
-    if(tr8nTranslator) tr8nTranslator.hide();
-    if(tr8nLanguageSelector) tr8nLanguageSelector.hide();
+    Tr8n.UI.Translator.hide();
+    Tr8n.UI.LanguageSelector.hide();
     Tr8n.Utils.hideFlash();
 
-    this.content_frame.src = '/tr8n/help/splash_screen';
+    this.content_frame.src = Tr8n.Utils.toUrl('/tr8n/help/splash_screen');
 
     this.overlay.style.display  = "block";
 
@@ -73,9 +87,7 @@ Tr8n.Lightbox.prototype = {
     this.container.style.display      = "block";
 
     window.setTimeout(function() {
-      url += ((url.indexOf('?') == -1) ? '?' : '&');
-      url += 'origin=' + escape(window.location);
-      self.content_frame.src = url;
+      self.content_frame.src = Tr8n.Utils.toUrl(url);
     }, 500);
   },
 

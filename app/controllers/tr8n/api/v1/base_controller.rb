@@ -89,6 +89,10 @@ private
   end
   
   def sanitize_api_response(response)
+    if params[:callback]
+      return render(:text => "#{params[:callback]}(#{response.to_json});", :content_type => "text/javascript")
+    end 
+    
     if Tr8n::Config.api[:response_encoding] == "xml"
       render(:text => response.to_xml)
     else

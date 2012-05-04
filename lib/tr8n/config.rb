@@ -819,5 +819,34 @@ module Tr8n
       synchronization[:push_servers]
     end
     
+    #########################################################
+    # Sharing
+    #########################################################
+    def self.shared_secret
+      config[:sharing][:secret]
+    end
+
+    def self.sign_and_encode_params(params)  
+      payload = Base64.encode64(params.merge(:algorithm => 'HMAC-SHA256', :ts => Time.now.to_i).to_json)
+      sig = OpenSSL::HMAC.digest('sha256', shared_secret, payload)
+      "#{Base64.encode64(sig)}.#{payload}"
+    end
+
+    def self.decode_and_verify_params(signed_request)  
+      encoded_sig, payload = signed_request.split('.', 2)
+      sig = Base64.decode64(encoded_sig)
+
+      data = JSON.parse(Base64.decode64(payload))
+      if data['algorithm'].to_s.upcase != 'HMAC-SHA256'
+        raise Tr8n::Exception.new("Bad signature algorithm: %s" % data['algorithm'])
+      end
+      expected_sig = OpenSSL::HMAC.digest('sha256', shared_secret, payload)
+
+      if expected_sig != sig
+        raise Tr8n::Exception.new("Bad signature")
+      end
+      HashWithIndifferentAccess.new(data)
+    end
+
   end
 end

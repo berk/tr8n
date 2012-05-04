@@ -19,7 +19,7 @@
     end
 		
 		if @translation_key.sources?
-      actions << link_to_function("#{image_tag('tr8n/table_multiple.png', :style=>'height:15px; vertical-align:bottom')} #{tra("View Sources")}".html_safe, "tr8nLightbox.show('/tr8n/phrases/lb_sources?translation_key_id=#{@translation_key.id}', {width:600, height:340});")
+      actions << link_to_function("#{image_tag('tr8n/table_multiple.png', :style=>'height:15px; vertical-align:bottom')} #{tra("View Sources")}".html_safe, "Tr8n.UI.Lightbox.show('/tr8n/phrases/lb_sources?translation_key_id=#{@translation_key.id}', {width:600, height:340});")
 		end
 			
     if @translation_key.followed?
@@ -28,7 +28,7 @@
       actions << link_to("#{image_tag('tr8n/eye.png', :style=>'height:15px; vertical-align:bottom')} #{tra("Follow")}".html_safe, :controller => '/tr8n/translator', :action => :follow, :translation_key_id => @translation_key.id)
     end 
 
-    actions << link_to_function("#{image_tag('tr8n/exclamation.png', :style=>'height:15px; vertical-align:bottom')} #{tra("Report")}".html_safe, "tr8nLightbox.show('/tr8n/translator/lb_report?translation_key_id=#{@translation_key.id}', {width:600, height:360});")
+    actions << link_to_function("#{image_tag('tr8n/exclamation.png', :style=>'height:15px; vertical-align:bottom')} #{tra("Report")}".html_safe, "Tr8n.UI.Lightbox.show('/tr8n/translator/lb_report?translation_key_id=#{@translation_key.id}', {width:600, height:360});")
   %>
   
   <%= actions.join(' &nbsp;|&nbsp; ').html_safe %>  

@@ -2,7 +2,7 @@
 <%= render :partial => "tabs" %>
 <%= tr8n_will_filter(@translators) %>
 
-<%= link_to_function("+ Register new translator", "tr8nLightbox.show('/tr8n/admin/translator/lb_register', {height:150})") %>
+<%= link_to_function("+ Register new translator", "Tr8n.UI.Lightbox.show('/tr8n/admin/translator/lb_register', {height:150})") %>
  | 
 <%= link_to("Update translators stats", {:action => :update_stats}, :confirm => "Are you sure you want to run this opperation?")%>
 

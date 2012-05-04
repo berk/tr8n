@@ -28,6 +28,17 @@ FSSM.monitor('./src/', '**/*') do
   end
 
   def compile
+    comments_regexp = /\/\*(!)*[^*]*\*+(?:[^*\/][^*]*\*+)*\//
+  
+    File.open("../assets/javascripts/tr8n/tr8n.js", 'w') do |file| 
+      config['all'].split(" ").each do |fl|
+        pp "Processing #{fl}..."
+        content = File.read(fl)
+        content = content.gsub(comments_regexp, '')        
+        file.write(content)
+      end
+    end
+
     command = "java -jar compressors/google/compiler.jar --js #{config['all']} --js_output_file ../assets/javascripts/tr8n/tr8n-compiled.js; echo 'Done'"
     pp command
     Kernel.spawn(command)

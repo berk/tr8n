@@ -21,18 +21,21 @@
   WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ****************************************************************************/
 
-Tr8n.Proxy.GenderRule = function(definition, options) {
+Tr8n.SDK.Rules.GenderRule = function(definition, options) {
   this.definition = definition;
   this.options = options;
 }
 
-Tr8n.Proxy.GenderRule.prototype = new Tr8n.Proxy.LanguageRule();
+Tr8n.SDK.Rules.GenderRule.prototype = new Tr8n.SDK.Rules.Base();
 
+////////////////////////////////////////////////////////////////////////////
 //  FORM: [male, female, unknown]
 //  {user | registered on}
 //  {user | he, she}
 //  {user | he, she, he/she}
-Tr8n.Proxy.GenderRule.transform = function(object, values) {
+////////////////////////////////////////////////////////////////////////////
+
+Tr8n.SDK.Rules.GenderRule.transform = function(object, values) {
   if (values.length == 1) return values[0];
   
   if (typeof object == 'string') {
@@ -47,7 +50,7 @@ Tr8n.Proxy.GenderRule.transform = function(object, values) {
   return values[0] + "/" + values[1]; 
 }
 
-Tr8n.Proxy.GenderRule.prototype.evaluate = function(token_name, token_values) {
+Tr8n.SDK.Rules.GenderRule.prototype.evaluate = function(token_name, token_values) {
 
   var object = this.getTokenValue(token_name, token_values);
   if (!object) return false;
@@ -55,12 +58,12 @@ Tr8n.Proxy.GenderRule.prototype.evaluate = function(token_name, token_values) {
   var gender = "";
   
   if (typeof object != 'object') {
-    this.getLogger().error("Invalid token value for gender based token: " + token_name + ". Token value must be an object.");
+    Tr8n.Logger.error("Invalid token value for gender based token: " + token_name + ". Token value must be an object.");
     return false;
   } 
 
   if (!object['subject']) {
-    this.getLogger().error("Invalid token subject for gender based token: " + token_name + ". Token value must contain a subject. Subject can be a string or an object with a gender.");
+    Tr8n.Logger.error("Invalid token subject for gender based token: " + token_name + ". Token value must contain a subject. Subject can be a string or an object with a gender.");
     return false;
   }
   
@@ -69,11 +72,11 @@ Tr8n.Proxy.GenderRule.prototype.evaluate = function(token_name, token_values) {
   } else if (typeof object['subject'] == 'object') {
     gender = object['subject']['gender'];
     if (!gender) {
-      this.getLogger().error("Cannot determine gender for token subject: " + token_name);
+      Tr8n.Logger.error("Cannot determine gender for token subject: " + token_name);
       return false;
     }
   } else {
-    this.getLogger().error("Invalid token subject for gender based token: " + token_name + ". Subject does not have a gender.");
+    Tr8n.Logger.error("Invalid token subject for gender based token: " + token_name + ". Subject does not have a gender.");
     return false;
   }
   

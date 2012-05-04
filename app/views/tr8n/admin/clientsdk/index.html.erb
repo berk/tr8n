@@ -36,10 +36,10 @@
              <button style="width:100%;" onClick="searchPhrase();return false;">View Translation Key</button>
              <br><br>
              <button style="width:100%;" onClick="clearResults();return false;">Clear Results</button>
-             <button style="width:100%;" onClick="tr8nLightbox.show('/tr8n/admin/clientsdk/lb_samples', {height:500});return false;">View Examples</button>
+             <button style="width:100%;" onClick="Tr8n.UI.Lightbox.show('/tr8n/admin/clientsdk/lb_samples', {height:500});return false;">View Examples</button>
              <button style="width:100%;" onClick="reloadTranslations();return false;">Reload Translations</button>
-             <button style="width:100%;" onClick="tr8nProxy.logSettings();return false;">Print Settings</button>
-             <button style="width:100%;" onClick="tr8nProxy.logTranslations();return false;">Print Translation Cache</button>
+             <button style="width:100%;" onClick="Tr8n.SDK.Proxy.logSettings();return false;">Print Settings</button>
+             <button style="width:100%;" onClick="Tr8n.SDK.Proxy.logTranslations();return false;">Print Translation Cache</button>
           </div> 
 				 </center>
       </td>
@@ -62,27 +62,25 @@
 <% end %>
 </div>
 
-<div id="tr8n_debugger" class="section_box colored" style="font-size:10px; height:350px; overflow:auto; margin: 10px;">
+<div id="tr8n_console" class="section_box colored" style="font-size:10px; height:350px; overflow:auto; margin: 10px;">
 </div>
 
 <script>
-  tr8nProxy.enableLogger();
-
   function clearResults() {
 		Tr8n.element('result').value = '';
     Tr8n.element('result_html').innerHTML = '';
-    tr8nProxy.logger.clear();
+    Tr8n.Logger.clear();
 	}
 	
   function reloadTranslations() {
-		tr8nProxy.initTranslations(true);
+		Tr8n.SDK.Proxy.initTranslations();
 	}
 	
 	function useExample(label, tokens) {
     Tr8n.element('label').value = label
 		Tr8n.element('tokens').value = tokens;
 		clearResults();
-		tr8nLightbox.hide();
+		Tr8n.UI.Lightbox.hide();
 	}
 	
   function translate(opts) {
@@ -100,33 +98,6 @@
   function searchPhrase() {
     url = "/tr8n/phrases/index?search=" + encodeURI(Tr8n.value('label'));
     window.open(url,'translation_key');
-  }
-
-  function speedTest() {
-		var tokens = null;
-
-    clearResults();
-
-    if (Tr8n.element('tokens').value != "") {
-      tokens = eval("[" + Tr8n.value('tokens') + "]")[0];
-    }
-
-    tr8nProxy.log("Running tests (100 itterations)... ");
-    tr8nProxy.log("Disabling logger... ");
-		tr8nProxy.disableLogger();
-		
-		var result = '';
-    var t0 = new Date().getTime();
-    for(var i=0; i<100; i++) {
-      result = tr8nProxy.tr(Tr8n.value('label'), '', tokens);
-    }
-    var t1 = new Date().getTime();
-		
-		Tr8n.element('result').value = result;
-		
-    tr8nProxy.enableLogger();
-    tr8nProxy.log("Enabling logger... ");
-    tr8nProxy.log('Test took: ' + (t1 - t0) + ' mls');
   }
 </script>
 

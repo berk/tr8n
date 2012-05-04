@@ -23,6 +23,21 @@
 
 Tr8n.Utils = {
 
+  element: function(element_id) {
+    if (typeof element_id == 'string') return document.getElementById(element_id);
+    return element_id;
+  },
+
+  value: function(element_id) {
+    return Tr8n.element(element_id).value;
+  },
+
+  extend: function(destination, source) {
+    for (var property in source) 
+      destination[property] = source[property];
+    return destination;
+  },
+
   hideFlash: function() {
     // alert("Hiding");
     var embeds = document.getElementsByTagName('embed');
@@ -43,6 +58,10 @@ Tr8n.Utils = {
     return /Opera/.test(navigator.userAgent);
   },
 
+  uuid: function() {
+    return 'tr8n' + (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+  },
+
   addEvent: function(elm, evType, fn, useCapture) {
     useCapture = useCapture || false;
     if (elm.addEventListener) {
@@ -56,6 +75,28 @@ Tr8n.Utils = {
     }
   },
 
+  // Create a URL-encoded query string from an object
+  encodeQueryString: function(obj,prefix) {
+    var str = [];
+    for(var p in obj) str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+    return str.join("&");
+  },
+
+  // Parses a query string and returns an object composed of key/value pairs
+  decodeQueryString: function(qs) {
+    var
+      obj = {},
+      segments = qs.split('&'),
+      kv;
+    for (var i=0; i<segments.length; i++) {
+      kv = segments[i].split('=', 2);
+      if (kv && kv[0]) {
+        obj[decodeURIComponent(kv[0])] = decodeURIComponent(kv[1]);
+      }
+    }
+    return obj;
+  },
+
   toQueryParams: function (obj) {
     if (typeof obj == 'undefined' || obj == null) return "";
     if (typeof obj == 'string') return obj;
@@ -65,6 +106,13 @@ Tr8n.Utils = {
         qs.push(p + "=" + encodeURIComponent(obj[p]))
     }
     return qs.join("&")
+  },
+
+  toUrl: function(url, params) {
+    params = params || {};
+    params['origin'] = window.location;
+    url = Tr8n.host + url + (url.indexOf('?') == -1 ? '?' : '&') + Tr8n.Utils.toQueryParams(params);
+    return url
   },
 
   serializeForm: function(form) {
@@ -303,13 +351,30 @@ Tr8n.Utils = {
   },
 
   displayShortcuts: function() {
-    if (tr8nLightbox)
-      tr8nLightbox.show('/tr8n/help/lb_shortcuts', {width:400, height:480});
+      Tr8n.UI.Lightbox.show('/tr8n/help/lb_shortcuts', {width:400, height:480});
   },
 
   displayStatistics: function() {
-    if (tr8nLightbox)
-      tr8nLightbox.show('/tr8n/help/lb_stats', {width:420, height:400});
+      Tr8n.UI.Lightbox.show('/tr8n/help/lb_stats', {width:420, height:400});
+  },
+
+  isArray: function(obj) {
+    if (obj == null) return false;
+    return !(obj.constructor.toString().indexOf("Array") == -1);
+  },
+
+  isObject: function(obj) {
+    if (obj == null) return false;
+    return (typeof obj == 'object');
+  },
+
+  isString: function(obj) {
+    return (typeof obj == 'string');
+  },
+
+  isURL: function(str) {
+    str = "" + str;
+    return (str.indexOf("http://") != -1) || (str.indexOf("https://") != -1);
   }
 
 }

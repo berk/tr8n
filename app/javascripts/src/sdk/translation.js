@@ -21,40 +21,13 @@
   WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ****************************************************************************/
 
-Tr8n.Tml = Tr8n.Tml || {};
-
-Tr8n.Tml.Label = function(node, proxy) {
-  this.node = node;
-  this.label = "";
-  this.description = "";
-  this.tokens = {};
-  this.options = {};
-  this.proxy = proxy;
-
-  for (var i=0; i < this.node.childNodes.length; i++) {
-    var childNode = this.node.childNodes[i];
-
-    // text should just be added to the label
-    if (childNode.nodeType == 3) {
-      this.label = this.label + " " + Tr8n.Utils.trim(childNode.nodeValue);
-    } else if (childNode.nodeName == "TML:TOKEN") {
-      var token = new Tr8n.Tml.Token(childNode, this.tokens);
-      this.label = Tr8n.Utils.trim(this.label) + " " + token.toTokenString();
-    }
-    
-  }
-
-  this.description = this.node.attributes['desc'] || this.node.attributes['description']; 
-  this.description = this.description ? this.description.value : null;
-
-  this.label = this.label.replace(/\n/g, '');
-  this.label = Tr8n.Utils.trim(this.label);
-
-  // console.log(this.label + " : " + this.description);
+Tr8n.SDK.Translation = function(translation_key, language, label, options) {
+  this.translaton_key = translation_key;
+  this.language = language;
+  this.label = label;
+  this.options = options;
 }
 
-Tr8n.Tml.Label.prototype = {
-  translate: function() {
-    this.node.innerHTML = this.proxy.translate(this.label, this.description, this.tokens, this.options);
-  }
+Tr8n.SDK.Translation.prototype = {
+
 }

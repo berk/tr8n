@@ -37,7 +37,7 @@
 	                    <% if tr8n_current_user_is_translator? and topic.translator == tr8n_current_translator %>  
                          <%= link_to(tra("Delete"), {:action => :delete_topic, :topic_id => topic.id}, {:confirm => trl("Are you sure you want to delete this topic and all of the messages under it?")})%>
 	                    <% else %>
-											   <%= link_to_function(tra("Report"), "tr8nLightbox.show('/tr8n/translator/lb_report?forum_topic_id=#{topic.id}', {width:600, height:360});") %>
+											   <%= link_to_function(tra("Report"), "Tr8n.UI.Lightbox.show('/tr8n/translator/lb_report?forum_topic_id=#{topic.id}', {width:600, height:360});") %>
 	                    <% end %>
 	                  </div>
 	                </td>

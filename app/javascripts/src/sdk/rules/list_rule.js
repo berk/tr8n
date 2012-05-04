@@ -21,25 +21,17 @@
   WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ****************************************************************************/
 
-Tr8n.Proxy.DataToken = function(label, token, options) {
-  this.label = label;
-  this.full_name = token;
+Tr8n.SDK.Rules.ListRule = function(definition, options) {
+  this.definition = definition;
   this.options = options;
 }
 
-Tr8n.Proxy.DataToken.prototype = new Tr8n.Proxy.Token();
+Tr8n.SDK.Rules.ListRule.prototype = new Tr8n.SDK.Rules.Base();
 
-Tr8n.Proxy.DataToken.parse = function(label, options) {
-  var tokens = label.match(/(\{[^_][\w]+(:[\w]+)?\})/g);
-  if (!tokens) return [];
-  
-  var objects = [];
-  var uniq = {};
-  for(i=0; i<tokens.length; i++) {
-    if (uniq[tokens[i]]) continue;
-    options['proxy'].debug("Registering data token: " + tokens[i]);
-    objects.push(new Tr8n.Proxy.DataToken(label, tokens[i], options));
-    uniq[tokens[i]] = true;
-  }
-  return objects;
+Tr8n.SDK.Rules.ListRule.transform = function(object, values) {
+  return "";
+}
+
+Tr8n.SDK.Rules.ListRule.prototype.evaluate = function(token, token_values) {
+  return true;
 }

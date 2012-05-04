@@ -73,7 +73,7 @@
         <td>
           <%=link_to("view translations", "/tr8n/admin/translation/index?wf_c0=translation_key_id&wf_o0=is&wf_v0_0=#{@key.id}") %>
           |          
-          <%= link_to_function("Update", "tr8nLightbox.show('/tr8n/admin/translation_key/lb_update?key_id=#{@key.id}', {height:250})") %>
+          <%= link_to_function("Update", "Tr8n.UI.Lightbox.show('/tr8n/admin/translation_key/lb_update?key_id=#{@key.id}', {height:250})") %>
           |          
           <%=link_to("delete", {:action => :delete, :key_id => @key.id, :source => :key}, {:confirm => "Are you sure you want to delete this key?"}) %>
         </td>
@@ -106,7 +106,7 @@
       <td>
         <% if key_source.details %>
             <% key_source.details.each do |key, value| %>
-              <%=link_to_function(value.first, "tr8nLightbox.show('/tr8n/admin/translation_key/lb_caller?key_source_id=#{key_source.id}&caller_key=#{key}', {height:550, width:1000})") %>
+              <%=link_to_function(value.first, "Tr8n.UI.Lightbox.show('/tr8n/admin/translation_key/lb_caller?key_source_id=#{key_source.id}&caller_key=#{key}', {height:550, width:1000})") %>
               <br>
             <% end %>
         <% end %>

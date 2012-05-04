@@ -21,17 +21,12 @@
   WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ****************************************************************************/
 
-Tr8n.Proxy.ListRule = function(definition, options) {
-  this.definition = definition;
-  this.options = options;
+Tr8n.SDK.Language = function() {
+
 }
 
-Tr8n.Proxy.ListRule.prototype = new Tr8n.Proxy.LanguageRule();
-
-Tr8n.Proxy.ListRule.transform = function(object, values) {
-  return "";
-}
-
-Tr8n.Proxy.ListRule.prototype.evaluate = function(token, token_values) {
-  return true;
+Tr8n.SDK.Language.prototype = {
+  translate: function(label, description, tokens, options) {
+    return (new Tr8n.SDK.TranslationKey(label, description).translate(this, tokens, options));
+  }
 }

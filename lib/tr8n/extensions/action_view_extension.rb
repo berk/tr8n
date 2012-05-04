@@ -43,7 +43,7 @@ module Tr8n
 
           opts[:sources].each do |source_name|
             source = Tr8n::TranslationSource.find_or_create(source_name, request.url)
-            js_source = "/tr8n/api/v1/language/translate.js?cache=true&sdk_jsvar=#{client_sdk_var_name}&source=#{CGI.escape(source_name)}&t=#{source.updated_at.to_i}"
+            js_source = "/tr8n/api/v1/language/translate.js?cache=true&callback=Tr8n.SDK.Proxy.registerTranslationKeys&source=#{CGI.escape(source_name)}&t=#{source.updated_at.to_i}"
             html << "<script type='text/javascript' src='#{js_source}'></script>"
           end  
 
@@ -66,7 +66,7 @@ module Tr8n
             translations << trn 
           end
 
-          html << "#{client_sdk_var_name}.updateTranslations(#{translations.to_json});"
+          html << "Tr8n.SDK.Proxy.registerTranslationKeys(#{translations.to_json});"
           html << "</script>"
         end
           
@@ -88,28 +88,9 @@ module Tr8n
         }
 
         client_var_name = opts[:client_var_name] || :tr8nProxy
+        opts.merge!(:enable_tml => Tr8n::Config.enable_tml?)
 
-        html = []
-        html << "<script>"
-        html << "  var #{client_var_name} = new Tr8n.Proxy(#{opts.to_json});"
-        html << "  function reloadTranslations() { "
-        html << "    #{client_var_name}.initTranslations(true); "
-        html << "  } "
-        html << "  function tr(label, description, tokens, options) { "
-        html << "    return #{client_var_name}.tr(label, description, tokens, options); "
-        html << "  } "
-        html << "  function trl(label, description, tokens, options) { "
-        html << "    return #{client_var_name}.trl(label, description, tokens, options); "
-        html << "  } "
-
-        if Tr8n::Config.enable_tml?
-          html << "  Tr8n.Utils.addEvent(window, 'load', function() { "
-          html << "    #{client_var_name}.initTml(); "                               
-          html << "  }) "                              
-        end
-
-        html << "</script>"
-        html.join("\n").html_safe
+        "<script>Tr8n.SDK.Proxy.init(#{opts.to_json});</script>".html_safe
       end
 
       # translation functions

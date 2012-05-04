@@ -79,7 +79,7 @@
             
         </th>
         <td>
-        	<%=link_to_function("Update", "tr8nLightbox.show('/tr8n/admin/language/lb_update?lang_id=#{@lang.id}', {height:300})") %>
+        	<%=link_to_function("Update", "Tr8n.UI.Lightbox.show('/tr8n/admin/language/lb_update?lang_id=#{@lang.id}', {height:300})") %>
           |
           <%=link_to("View Users", "/tr8n/admin/language/users?wf_c0=language_id&wf_o0=is&wf_v0_0=#{@lang.id}") %>
 					|

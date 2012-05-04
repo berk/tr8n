@@ -21,57 +21,109 @@
   WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ****************************************************************************/
 
-Tr8n.Proxy = function(options) {
-  var self = this;
-  this.options = options;
-  this.options['url'] = this.options['url'] || '/tr8n/api/v1/language/translate'; 
-  this.options['scheduler_interval'] = this.options['scheduler_interval'] || 20000; 
-  this.logger_enabled = false;
-  this.missing_translations_locked = false;
-  this.inline_translations_enabled = this.options['enable_inline_translations'];
-  this.logger = new Tr8n.Proxy.Logger({
-    'proxy': self,
-    'element_id': options['logger_element_id'] || 'tr8n_debugger'
-  });
-        
-  this.language = new Tr8n.Proxy.Language({
-    'proxy': self
-  });
-  
-  this.initTranslations();
-  this.runScheduledTasks();
-}
+///////////////////////////////////////////////////////////////////////////
+// Tr8n.SDK.Proxy.init({
+//   "default_source": "welcome/index/JS",
+//   "scheduler_interval": 5000,
+//   "enable_inline_translations": true,
+//   "enable_tml": true,
+//   "default_decorations": {
+//     "strong":"<strong>{$0}</strong>",
+//     "bold":"<strong>{$0}</strong>",
+//     "b":"<strong>{$0}</strong>",
+//     "em":"<em>{$0}</em>",
+//     "italic":"<i>{$0}</i>",
+//     "i":"<i>{$0}</i>",
+//     "link":"<a href='{$href}'>{$0}</a>",
+//     "br":"<br>{$0}",
+//     "div":"<div id='{$id}' class='{$class}' style='{$style}'>{$0}</div>",
+//     "span":"<span id='{$id}' class='{$class}' style='{$style}'>{$0}</span>",
+//     "h1":"<h1>{$0}</h1>",
+//     "h2":"<h2>{$0}</h2>",
+//     "h3":"<h3>{$0}</h3>"
+//   },
+//   "default_tokens": {
+//     "ndash":"&ndash;",
+//     "mdash":"&mdash;",
+//     "iexcl":"&iexcl;",
+//     "iquest":"&iquest;",
+//     "quot":"&quot;",
+//     "ldquo":"&ldquo;",
+//     "rdquo":"&rdquo;",
+//     "lsquo":"&lsquo;",
+//     "rsquo":"&rsquo;",
+//     "laquo":"&laquo;",
+//     "raquo":"&raquo;",
+//     "nbsp":"&nbsp;",
+//     "lsaquo":"&lsaquo;",
+//     "rsaquo":"&rsaquo;",
+//     "br":"<br/>",
+//     "lbrace":"{",
+//     "rbrace":"}"
+//   },
+//   "rules": {
+//     "number": {
+//       "token_suffixes": ["count","num","age","hours","minutes","years","seconds"],
+//       "object_method": "to_i"
+//     },
+//     "gender": {
+//       "token_suffixes": ["user","profile","actor","target","partner"], 
+//       "object_method": "gender",
+//       "method_values": {
+//         "female": "female",
+//         "male": "male",
+//         "neutral": "neutral",
+//         "unknown": "unknown"
+//       }
+//     },
+//     "list": {
+//       "object_method": "size",
+//       "token_suffixes": ["list"]
+//     }, 
+//     "date": {
+//       "token_suffixes": ["date"],
+//       "object_method": "to_date"
+//     }
+//   }
+// });
+///////////////////////////////////////////////////////////////////////////
 
-Tr8n.Proxy.prototype = {
-  log: function(msg) {
-    this.logger.debug(msg);
+
+Tr8n.SDK.Proxy = {
+
+  options: {},
+  missing_translations_locked: false,
+  inline_translations_enabled: false,
+  tml_enabled: false,
+  scheduler_interval: 20000,
+  language: null,
+  translations: {},
+  missing_translation_keys: {},
+  source: window.location,
+  
+  init: function(opts) {
+    Tr8n.log("Initializing Tr8n Client SDK...");
+
+    this.options = opts || (opts = {});
+    this.scheduler_interval = this.options['scheduler_interval'] || this.scheduler_interval; 
+    this.inline_translations_enabled = this.options['enable_inline_translations'];
+    this.tml_enabled = this.options['enable_tml'];
+    this.source = this.options['source'] || this.source;
+
+    this.language = new Tr8n.SDK.Language();
+
+    this.initTranslations();
+    this.runScheduledTasks();
+
+    if ( this.tml_enabled ) {
+      Tr8n.Utils.addEvent(window, 'load', function() {
+        Tr8n.SDK.Proxy.initTml();
+      });
+    }
+
+    return this;
   },
-  logSettings: function() {
-    this.logger.clear();
-    this.logger.logObject(this.options);
-  },
-  logTranslations: function() {
-    this.logger.clear();
-    this.translations = this.translations || {};
-    this.logger.logObject(this.translations);
-  },
-  logMissingTranslations: function() {
-    this.logger.clear();
-    this.missing_translation_keys = this.missing_translation_keys || {};
-    this.logger.logObject(this.missing_translation_keys);
-  },
-  disableLogger: function() {
-    this.logger_enabled = false;
-  },
-  enableLogger: function() {
-    this.logger_enabled = true;
-  },
-  debug: function(msg) {
-    this.logger.debug(msg);
-  },
-  error: function(msg) {
-    this.logger.error(msg);
-  },
+
   translate: function(label, description, tokens, options) {
     if (!label) return "";
     description = description || "";
@@ -79,32 +131,33 @@ Tr8n.Proxy.prototype = {
     options = options || {};
     return this.language.translate(label, description, tokens, options);
   },
+
   tr: function(label, description, tokens, options) {
     return this.translate(label, description, tokens, options);
   },
+
   trl: function(label, description, tokens, options) {
     options = options || {};
     options['skip_decorations'] = true;
     return this.translate(label, description, tokens, options);
   },
-  getTranslations: function() {
-    this.translations = this.translations || {};
-    return this.translations;
-  },
+
   getDecorationFor: function(decoration_name) {
     if (!this.options['default_decorations'])
       return null;
     return this.options['default_decorations'][decoration_name];
   },
+
   getLanguageRuleForType: function(rule_type) {
     // modify this section to add more rules
-    if (rule_type == 'number')        return 'Tr8n.Proxy.NumericRule';
-    if (rule_type == 'gender')        return 'Tr8n.Proxy.GenderRule';
-    if (rule_type == 'date')          return 'Tr8n.Proxy.DateRule';
-    if (rule_type == 'list')          return 'Tr8n.Proxy.ListRule';
-    if (rule_type == 'gender_list')   return 'Tr8n.Proxy.GenderListRule';
+    if (rule_type == 'number')        return 'Tr8n.SDK.Rules.NumericRule';
+    if (rule_type == 'gender')        return 'Tr8n.SDK.Rules.GenderRule';
+    if (rule_type == 'date')          return 'Tr8n.SDK.Rules.DateRule';
+    if (rule_type == 'list')          return 'Tr8n.SDK.Rules.ListRule';
+    if (rule_type == 'gender_list')   return 'Tr8n.SDK.Rules.GenderListRule';
     return null;    
   },
+
   getLanguageRuleForTokenSuffix: function(token_suffix) {
     if (!this.options['rules']) return null;
     
@@ -119,63 +172,57 @@ Tr8n.Proxy.prototype = {
   },
 
   registerTranslationKeys: function(translations) {
-    this.log("Found " + translations.length + " registered phrases");
+    if (!Tr8n.Utils.isArray(translations)) {
+      translations = translations['phrases'];
+    }
+
+    Tr8n.log("Found " + translations.length + " registered phrases");
+
     for (i = 0; i < translations.length; i++) {
        var translation_key = translations[i];
-       this.log("Registering " + translation_key['key']);
+       Tr8n.log("Registering " + translation_key['key']);
        this.translations[translation_key['key']] = translation_key;
     }
   },
 
-  initTranslations: function(forced) {
-    if (!forced && this.translations) return;
-    
-    this.translations = {};
-
+  initTranslations: function() {
     // Check for page variable to load translations from, if variable was provided
     if (this.options['translations_cache_id']) {
       this.log("Registering page translations from translations cache...");
-      this.updateTranslations(eval(this.options['translations_cache_id']));
+      this.registerTranslationKeys(eval(this.options['translations_cache_id']));
     }
 
     var self = this;
+    
+    Tr8n.log("Before fetching translations " + this.options['fetch_translations_on_init']);
 
     // Optionally, fetch translations from the server
     if (this.options['fetch_translations_on_init']) {
-      this.log("Fetching translations from the server...");
-      Tr8n.Utils.ajax(this.options['url'], {
-        method: 'get',
-        parameters: {'batch': true, 'source': self.options['default_source']},
-        onSuccess: function(response) {
-          self.log("Received response from the server");
-          self.log(response.responseText);
-          self.updateTranslations(eval("[" + response.responseText + "]")[0]['phrases']);
-        }
-      }); 
-    }
-  },
+      Tr8n.log("Fetching translations from the server...");
 
-  updateTranslations: function(new_translations) {
-    this.translations = this.translations || {};
-    this.log("Updating page translations...");
-    this.registerTranslationKeys(new_translations);
+      Tr8n.api('language/translate', {
+        'batch': true, 
+        'source': self.source
+      }, function(data) {
+          Tr8n.log("Received response from the server");
+          self.registerTranslationKeys(data['phrases']);
+      });
+    }
   },
     
   registerMissingTranslationKey: function(translation_key, token_values, options) {
-    this.missing_translation_keys = this.missing_translation_keys || {};
     if (!this.missing_translation_keys[translation_key.key]) {
-      this.log('Adding missing translation to the queue: ' + translation_key.key);
+      Tr8n.log('Adding missing translation to the queue: ' + translation_key.key);
       this.missing_translation_keys[translation_key.key] = {translation_key: translation_key, token_values: token_values, options:options};
     }
   },
+
   submitMissingTranslationKeys: function() {
     if (this.missing_translations_locked) {
-      this.log('Missing translations are being processed, postponding registration task.');
+      Tr8n.log('Missing translations are being processed, postponding registration task.');
       return;
     }
       
-    this.missing_translation_keys = this.missing_translation_keys || {};
-    
     var phrases = "[";
     for (var key in this.missing_translation_keys) {
       var translation_key = this.missing_translation_keys[key].translation_key;
@@ -189,30 +236,30 @@ Tr8n.Proxy.prototype = {
     phrases = phrases + "]";
     
     if (phrases == '[]') {
-//      this.log('No missing translation keys to submit...');
+      // Tr8n.log('No missing translation keys to submit...');
       return;
     }
     
     var self = this;
-    this.debug('Submitting missing translation keys: ' + phrases);
-    Tr8n.Utils.ajax(this.options['url'], {
-      method: 'put',
-      parameters: {'source': self.options['default_source'], 'phrases': phrases},
-      onSuccess: function(response) {
-        self.log("Received response from the server");
-        self.log(response.responseText);
-        self.updateMissingTranslationKeys(eval("[" + response.responseText + "]")[0]['phrases']);
-      }
-    }); 
+    Tr8n.log('Submitting missing translation keys: ' + phrases);
+
+    Tr8n.api('language/translate', {
+      phrases: phrases, 
+      source: self.source
+    }, function(data) {
+        Tr8n.log("Received response from the server");
+        self.updateMissingTranslationKeys(data['phrases']);
+    });
   },
   
   updateMissingTranslationKeys: function(translations) {
     this.missing_translations_locked = true;
-    this.log("Received " + translations.length + " registered phrases...");
+    Tr8n.log("Received " + translations.length + " registered phrases...");
+
     for (i = 0; i < translations.length; i++) {
        var translation_key_data = translations[i];
        
-       this.log("Registering new key " + translation_key_data.key);
+       Tr8n.log("Registering new key " + translation_key_data.key);
        this.translations[translation_key_data.key] = translation_key_data;
        var missing_key_data = this.missing_translation_keys[translation_key_data.key];
        var tr8nElement = Tr8n.element(translation_key_data.key);
@@ -230,7 +277,7 @@ Tr8n.Proxy.prototype = {
   runScheduledTasks: function() {
     var self = this;
     
-//    this.log("Running scheduled tasks...");
+//    Tr8n.log("Running scheduled tasks...");
     this.submitMissingTranslationKeys();
     
     window.setTimeout(function() {
@@ -248,7 +295,35 @@ Tr8n.Proxy.prototype = {
     }, false);
 
     while (tree_walker.nextNode()) {
-      new Tr8n.Tml.Label(tree_walker.currentNode, this).translate();
+      new Tr8n.SDK.TML.Label(tree_walker.currentNode).translate();
     }
+  },
+
+  logSettings: function() {
+    Tr8n.Logger.clear();
+    Tr8n.Logger.logObject(this.options);
+  },
+  
+  logTranslations: function() {
+    Tr8n.Logger.clear();
+    Tr8n.Logger.logObject(this.translations);
+  },
+  
+  logMissingTranslations: function() {
+    Tr8n.Logger.clear();
+    Tr8n.Logger.logObject(this.missing_translation_keys);
   }
+  
 }
+
+function reloadTranslations() { 
+  Tr8n.SDK.Proxy.initTranslations(true); 
+} 
+
+function tr(label, description, tokens, options) { 
+  return Tr8n.SDK.Proxy.tr(label, description, tokens, options); 
+} 
+
+function trl(label, description, tokens, options) { 
+  return Tr8n.SDK.Proxy.trl(label, description, tokens, options); 
+} 

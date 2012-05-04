@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120420004007) do
+ActiveRecord::Schema.define(:version => 20120421022625) do
 
   create_table "admins", :force => true do |t|
     t.integer  "user_id"
@@ -391,10 +391,12 @@ ActiveRecord::Schema.define(:version => 20120420004007) do
     t.datetime "updated_at",       :null => false
     t.string   "crypted_password"
     t.string   "salt"
+    t.integer  "remote_id"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email"
   add_index "users", ["email"], :name => "index_users_on_email_and_password"
+  add_index "users", ["remote_id"], :name => "index_users_on_remote_id"
 
   create_table "will_filter_filters", :force => true do |t|
     t.string   "type"

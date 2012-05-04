@@ -21,33 +21,31 @@
   WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ****************************************************************************/
 
-;(function() {
+Tr8n.Cookie = function (key, value, options) {
+	if (!Tr8n.cookies) return;
 
-  var setup = function() {
-    Tr8n.UI.Translator.init({});
-    Tr8n.UI.Lightbox.init({});
-    Tr8n.UI.LanguageSelector.init({});
+  if (arguments.length > 1 && String(value) !== "[object Object]") {
+		options = Tr8n.Utils.extend({}, options);
 
-    Tr8n.Utils.addEvent(document, "keyup", function(event) {
-      if (event.keyCode == 27) { // Capture Esc key
-        Tr8n.UI.Translator.hide();
-        Tr8n.UI.LanguageSelector.hide();
-        Tr8n.UI.Lightbox.hide();
-      }
-    });
+		if (value === null || value === undefined) options.expires = -1;
+
+		if (typeof options.expires === 'number') {
+			var days = options.expires, t = options.expires = new Date();
+			t.setDate(t.getDate() + days);
+		}
+
+		value = String(value);
+		return (document.cookie = [
+			encodeURIComponent(key), '=',
+			options.raw 		? value : encodeURIComponent(value),
+			options.expires ? '; expires=' + options.expires.toUTCString() : '',
+			options.path 		? '; path=' + options.path : '',
+			options.domain 	? '; domain=' + options.domain : '',
+			options.secure 	? '; secure' : ''
+		].join(''));
   }
-
-  window.Tr8n = window.$tr8n = Tr8n.Utils.extend(Tr8n, {
-    element     : Tr8n.Utils.element,
-    value       : Tr8n.Utils.value,
-    log         : Tr8n.Logger.log,
-    getStatus   : Tr8n.SDK.Auth.getStatus,
-    connect     : Tr8n.SDK.Auth.connect,
-    disconnect  : Tr8n.SDK.Auth.disconnect,
-    logout      : Tr8n.SDK.Auth.logout,
-    api         : Tr8n.SDK.Api.get          //most api calls are gets
-  });
-
-  Tr8n.Utils.addEvent(window, 'load', setup);
   
-}).call(this);
+  options = value || {};
+  var result, decode = options.raw ? function (s) { return s; } : decodeURIComponent;
+  return (result = new RegExp('(?:^|; )' + encodeURIComponent(key) + '=([^;]*)').exec(document.cookie)) ? decode(result[1]) : null;
+}

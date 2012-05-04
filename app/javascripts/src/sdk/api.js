@@ -21,17 +21,54 @@
   WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ****************************************************************************/
 
-Tr8n.Proxy.DateRule = function(definition, options) {
-  this.definition = definition;
-  this.options = options;
-}
+Tr8n.SDK.Api = {
 
-Tr8n.Proxy.DateRule.prototype = new Tr8n.Proxy.LanguageRule();
+	// Makes an oauth jsonp request to Tr8n's servers for data.
+	//
+	// 		Tr8n.SDK.Api.get('/translator', function(data){
+	//			// do something awesome with Tr8n data
+	//		})
+	//
+	get: function(path, params, cb) {
+    if (typeof params == 'function') {
+      cb = params;
+      params = {};
+    } 
 
-Tr8n.Proxy.DateRule.transform = function(object, values) {
-  return "";
-}
+    params || (params = {});
+    if (params.method) {
+      params['_method'] = params.method;
+      delete params.method;
+    }
 
-Tr8n.Proxy.DateRule.prototype.evaluate = function(token, token_values) {
-  return true;
+    path = Tr8n.host + Tr8n.url.api + "/" + path.replace(/^\//,'');
+
+    if (Tr8n.SDK.Request.sameOrigin()) {
+      var method = params['_method'] || 'get';
+      delete params._method;
+
+      return Tr8n.SDK.Request.ajax(path, {
+        method: method,
+        parameters: params,
+        onSuccess: cb
+      });
+    }
+  
+    Tr8n.SDK.Request.oauth(path, params, cb);
+	},	
+	
+	// Makes an oauth jsonp request to Tr8n's servers to save data. All jsonp
+	// requests use a GET method but we can get around this by adding a 
+	// _method=post parameter to our request.
+	//
+	// 		Tr8n.Api.post('/translator', function(data){
+	//			// Add awesome data to Tr8n
+	//		})
+	//
+	post: function(path, params, cb) {
+		params = Tr8n.Utils.extend({'_method':'post'}, params || {});
+		this.get(path, params, cb);
+	}
+		
 }
+	

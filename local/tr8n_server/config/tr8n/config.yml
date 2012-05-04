@@ -235,7 +235,7 @@ defaults:
     admin:                    10000     # reserved for admin tools
     application:              100000    # reserved for applications
     system:                   1000000   # reserved for system
-  
+
   default_translation_key_level: 0
   #############################################################################
   # Localization Settings
@@ -256,7 +256,7 @@ defaults:
       monthname_abbr:         '%b %d'               # Jul 4
       monthname_abbr_year:    '%b %d, %Y'           # Jul 4, 2008
       date_time:              '%m/%d/%Y at %H:%M'   # 01/03/1010 at 5:30
- 
+
   #############################################################################
   # You can synchronize your translation keys and translations with the 
   # tr8n.net service. This way you can get your site translated by 
@@ -280,15 +280,18 @@ defaults:
     all_languages:            false              # use only enabled languages, or all languages
     enable_push:              false              # allows translations to be pushed from the main server using the sync API        
     push_servers:             ["tr8n.net"]       # only allows those servers to push translations
-          
+
+  sharing:
+    secret:                   "DFHLERCHDIUFCHABSDIUHAISUWRWUE9DJKFHASBDFHWER9W8EYBAJHSDKFJHBAS"
+
 #############################################################################
 # Environment Settings
 # You can overload any feature defined in the defaults for any environment
 #############################################################################
 development:
-  
+
 test:
-      
+
 qa:
 
 stage:

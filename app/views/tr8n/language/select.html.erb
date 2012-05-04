@@ -1,7 +1,7 @@
 <%= tr8n_with_options_tag(:default_locale => 'en-US', :admin => true) do %>
 	<div class="head">
 	  <div class="action">
-	    <%=link_to_function(image_tag("tr8n/close.gif", :style => "border:0px; padding:5px;", :alt=>trla("Close")), "tr8nLanguageSelector.hide()")%>
+	    <%=link_to_function(image_tag("tr8n/close.gif", :style => "border:0px; padding:5px;", :alt=>trla("Close")), "Tr8n.UI.LanguageSelector.hide()")%>
 	  </div>
 	  <div style="padding-top:3px"><%=trla("Select you language")%></div>
 	</div>
@@ -15,9 +15,9 @@
       <% if @inline_translations_allowed %> 
         <div style="padding-top:5px;font-size: 11px; ">
           <% if @inline_translations_enabled %>
-            <%=link_to_function(trla("Disable Inline Translations"), "tr8nLanguageSelector.disableInlineTranslations();")%><br>
+            <%=link_to_function(trla("Disable Inline Translations"), "Tr8n.UI.LanguageSelector.disableInlineTranslations();")%><br>
           <% else %>
-            <%=link_to_function(trla("Enable Inline Translations"), "tr8nLanguageSelector.enableInlineTranslations();")%><br>
+            <%=link_to_function(trla("Enable Inline Translations"), "Tr8n.UI.LanguageSelector.enableInlineTranslations();")%><br>
           <% end %>
         
           <span style="font-size: 11px;"><%=trla("Use right-mouse-click or ctr+click to translate the site.")%></span>
@@ -26,7 +26,7 @@
 	  
 		  <% if tr8n_current_user_is_translator? %> 
 		    <div style="padding-top:5px;font-size: 11px;">
-		      <%=link_to_function(trla("Translation Tools"), "tr8nLanguageSelector.showDashboard()")%><br>
+		      <%=link_to_function(trla("Translation Tools"), "Tr8n.UI.LanguageSelector.showDashboard()")%><br>
 		
 		      <span style="font-size: 11px;"><%=trla("Search for translations by other users, vote on translations or add your own translations.")%></span>
 		    </div>
@@ -34,7 +34,7 @@
 			
 	    <% if tr8n_current_user_is_admin? or (tr8n_current_user_is_translator? and tr8n_current_translator.manager?) %>
 	      <div style="padding-top:5px;font-size: 11px;">
-	        <%=link_to_function(trla("Manage Language"), "tr8nLanguageSelector.manageLanguage()")%> 
+	        <%=link_to_function(trla("Manage Language"), "Tr8n.UI.LanguageSelector.manageLanguage()")%> 
 					<span style="color: grey; font-size: 10px; padding-left:0.5em;">language admins only</span>
 					<br>
 	  

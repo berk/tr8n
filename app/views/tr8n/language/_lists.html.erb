@@ -12,7 +12,7 @@
 							<% else %>
 	               <%= "#{language.completeness || 0}%" if Tr8n::Config.enable_language_stats?%>
                  <% unless user_language.manager? %>
-	                 <%=link_to_function(image_tag("tr8n/close.gif", :style=>"width:5px; padding-right:3px; padding-left:3px;"), "tr8nLanguageSelector.removeLanguage('#{language.id}');") %>
+	                 <%=link_to_function(image_tag("tr8n/close.gif", :style=>"width:5px; padding-right:3px; padding-left:3px;"), "Tr8n.UI.LanguageSelector.removeLanguage('#{language.id}');") %>
  								 <% end %>
 		          <% end %>
     			  </span>
