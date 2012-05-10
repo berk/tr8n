@@ -43,7 +43,7 @@ Tr8n.SDK.Tokens.Base.prototype = {
     var uniq = {};
     for(i=0; i<tokens.length; i++) {
       if (uniq[tokens[i]]) continue;
-      Tr8n.log("Registering data token: " + tokens[i]);
+      // Tr8n.log("Registering data token: " + tokens[i]);
       objects.push(new Tr8n.Proxy.TransformToken(label, tokens[i], options)); 
       uniq[tokens[i]] = true;
     }

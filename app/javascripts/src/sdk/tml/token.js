@@ -38,9 +38,9 @@ Tr8n.SDK.TML.Token = function(node, tokens) {
 
   for (var i=0; i < this.node.childNodes.length; i++) {
     var childNode = this.node.childNodes[i];
-    Tr8n.log(childNode.nodeType + " " + childNode.nodeValue);
+    // Tr8n.log(childNode.nodeType + " " + childNode.nodeValue);
     var token_type = this.node.attributes['type'] ? this.node.attributes['type'].nodeValue : 'data';
-    Tr8n.log(this.name + " " + token_type);
+    // Tr8n.log(this.name + " " + token_type);
 
     if (childNode.nodeType == 3) {
       // text should just be added to the label

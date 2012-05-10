@@ -37,7 +37,7 @@ Tr8n.SDK.Tokens.TransformToken.parse = function(label, options) {
   var uniq = {};
   for(i=0; i<tokens.length; i++) {
     if (uniq[tokens[i]]) continue;
-    Tr8n.log("Registering transform token: " + tokens[i]);
+    // Tr8n.log("Registering transform token: " + tokens[i]);
     objects.push(new Tr8n.SDK.Tokens.TransformToken(label, tokens[i], options)); 
     uniq[tokens[i]] = true;
   }
@@ -71,7 +71,7 @@ Tr8n.SDK.Tokens.TransformToken.prototype.substitute = function(label, token_valu
   }
   
   var token_object = this.getTokenObject(object);
-  Tr8n.log("Registered " + this.getPipedParams().length + " piped params");
+  // Tr8n.log("Registered " + this.getPipedParams().length + " piped params");
   
   var lang_rule_name = this.getLanguageRule();
   
@@ -79,11 +79,11 @@ Tr8n.SDK.Tokens.TransformToken.prototype.substitute = function(label, token_valu
     Tr8n.Logger.error("Rule type cannot be determined for the transform token: " + this.getFullName());
     return label;
   } else {
-    Tr8n.log("Transform token uses rule: " + lang_rule_name);
+    // Tr8n.log("Transform token uses rule: " + lang_rule_name);
   }
 
   var transform_value = eval(lang_rule_name).transform(token_object, this.getPipedParams());
-  Tr8n.log("Registered transform value: " + transform_value);
+  // Tr8n.log("Registered transform value: " + transform_value);
   
   // for double pipes - show the actual value as well
   if (this.isAllowedInTranslation()) {

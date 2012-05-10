@@ -29,14 +29,24 @@ class Tr8n::Api::V1::ProxyController < Tr8n::Api::V1::BaseController
     opts = {}
     opts[:scheduler_interval]         = Tr8n::Config.default_client_interval
     opts[:enable_inline_translations] = (Tr8n::Config.current_user_is_translator? and Tr8n::Config.current_translator.enable_inline_translations? and (not Tr8n::Config.current_language.default?))
-    opts[:enable_tml]                 = Tr8n::Config.enable_tml?
     opts[:default_decorations]        = Tr8n::Config.default_decoration_tokens
     opts[:default_tokens]             = Tr8n::Config.default_data_tokens
+
+    if params[:ext]
+      opts[:enable_text]              = true
+    else
+      opts[:enable_tml]               = Tr8n::Config.enable_tml?
+    end
 
     opts[:rules]                      = { 
       :number => Tr8n::Config.rules_engine[:numeric_rule],      :gender => Tr8n::Config.rules_engine[:gender_rule],
       :list   => Tr8n::Config.rules_engine[:gender_list_rule],  :date   => Tr8n::Config.rules_engine[:date_rule]
     }
+
+    uri = URI.parse(request.url)
+    host_url = "#{uri.scheme}://#{uri.host}#{uri.port ? ":#{uri.port}" : ''}"
+
+    script << "Tr8n.host = '#{host_url}';"
 
     script << "Tr8n.SDK.Proxy.init(#{opts.to_json});"
 

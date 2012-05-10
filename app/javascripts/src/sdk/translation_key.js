@@ -34,15 +34,15 @@ Tr8n.SDK.TranslationKey.prototype = {
     this.key = this.label + ";;;";
     if (this.description) this.key = this.key + this.description;
        
-    Tr8n.log('Preparing label signature: ' + this.key);
+    // Tr8n.log('Preparing label signature: ' + this.key);
     this.key = MD5(this.key);
-    Tr8n.log('Label signature: ' + this.key);
+    // Tr8n.log('Label signature: ' + this.key);
   },
 
   findFirstAcceptableTranslation: function(translations, token_values) {
     // check for a single translation case - no context rules
     if (translations['label']!=null) {
-      Tr8n.log('Found a single translation: ' + translations['label']);
+      // Tr8n.log('Found a single translation: ' + translations['label']);
       return translations;    
     }
   
@@ -52,13 +52,13 @@ Tr8n.SDK.TranslationKey.prototype = {
       return null;
     }
 
-    Tr8n.log('Found translations: ' + translations.length);
+    // Tr8n.log('Found translations: ' + translations.length);
 
     for (var i=0; i<translations.length; i++) {
-      Tr8n.log("Checking context rules for:" + translations[i]['label']);
+      // Tr8n.log("Checking context rules for:" + translations[i]['label']);
       
       if (!translations[i]['context']) {
-        Tr8n.log("Translation has no context, using it by default");
+        // Tr8n.log("Translation has no context, using it by default");
         return translations[i];
       }
       var valid_context = true;
@@ -68,7 +68,7 @@ Tr8n.SDK.TranslationKey.prototype = {
         var token_context = translations[i]['context'][token];
         var rule_name = Tr8n.SDK.Proxy.getLanguageRuleForType(token_context['type']);
 
-        Tr8n.log("Evaluating rule: " + rule_name);
+        // Tr8n.log("Evaluating rule: " + rule_name);
         var rule = eval("new " + rule_name + "()");
         rule.definition = token_context;
         rule.options = {};
@@ -76,20 +76,20 @@ Tr8n.SDK.TranslationKey.prototype = {
       }
       
       if (valid_context) {
-        Tr8n.log("Found valid translation: " + translations[i].label);
+        // Tr8n.log("Found valid translation: " + translations[i].label);
         return translations[i];
       } else {
-        Tr8n.log("The rules were not matched for: " + translations[i].label);
+        // Tr8n.log("The rules were not matched for: " + translations[i].label);
       }
     }
     
-    Tr8n.log('No acceptable ranslations found');
+    // Tr8n.log('No acceptable ranslations found');
     return null;        
   },
   
   translate: function(language, token_values, options) {
     if (!this.label) {
-      Tr8n.log('Label must always be provided for the translate method');
+      // Tr8n.log('Label must always be provided for the translate method');
       return '';
     }
     
@@ -97,26 +97,26 @@ Tr8n.SDK.TranslationKey.prototype = {
     var translation_key = translations[this.key];
         
     if (translation_key) {
-      Tr8n.log("Found translations, evaluating rules...");      
+      // Tr8n.log("Found translations, evaluating rules...");      
       
       this.id = translation_key.id;
       this.original = translation_key.original;
       var translation = this.findFirstAcceptableTranslation(translation_key, token_values);
 
       if (translation) {
-        Tr8n.log("Found a valid match: " + translation.label);      
+        // Tr8n.log("Found a valid match: " + translation.label);      
         return this.substituteTokens(translation['label'], token_values, options);
       } else {
-        Tr8n.log("No valid match found, using default language");      
+        // Tr8n.log("No valid match found, using default language");      
         return this.substituteTokens(this.label, token_values, options);
       }
       
     } else {
-      Tr8n.log("Translation not found, using default language");      
+      // Tr8n.log("Translation not found, using default language");      
     }
 
     Tr8n.SDK.Proxy.registerMissingTranslationKey(this, token_values, options);
-    Tr8n.log('No translation found. Using default...');
+    // Tr8n.log('No translation found. Using default...');
     return this.substituteTokens(this.label, token_values, options);    
   },
   

@@ -37,7 +37,7 @@ Tr8n.SDK.Tokens.DecorationToken.parse = function(label, options) {
   var uniq = {};
   for(i=0; i<tokens.length; i++) {
     if (uniq[tokens[i]]) continue;
-    Tr8n.log("Registering decoration token: " + tokens[i]);
+    // Tr8n.log("Registering decoration token: " + tokens[i]);
     objects.push(new Tr8n.SDK.Tokens.DecorationToken(label, tokens[i], options));
     uniq[tokens[i]] = true;
   }

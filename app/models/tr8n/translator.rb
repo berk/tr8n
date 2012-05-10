@@ -169,6 +169,10 @@ class Tr8n::Translator < ActiveRecord::Base
     Tr8n::TranslatorLog.log(self, :disabled_inline_translations, Tr8n::Config.current_language.id)
   end
 
+  def toggle_inline_translations!
+    inline_mode ? disable_inline_translations! : enable_inline_translations!
+  end
+
   def switched_language!(language)
     lu = Tr8n::LanguageUser.create_or_touch(user || self, language)
     lu.update_attributes(:translator_id => self.id) unless lu.translator

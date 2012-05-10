@@ -81,11 +81,11 @@ Tr8n.Logger = {
     if (flag) {
       Tr8n.Effects.hide("no_object_" + obj_key);
       Tr8n.Effects.show("object_" + obj_key);
-      Tr8n.element("expander_" + obj_key).innerHTML = "<img src='/assets/tr8n/minus_node.png'>";
+      Tr8n.element("expander_" + obj_key).innerHTML = "<img src='" + Tr8n.host + "/assets/tr8n/minus_node.png'>";
     } else {
       Tr8n.Effects.hide("object_" + obj_key);
       Tr8n.Effects.show("no_object_" + obj_key);
-      Tr8n.element("expander_" + obj_key).innerHTML = "<img src='/assets/tr8n/plus_node.png'>";
+      Tr8n.element("expander_" + obj_key).innerHTML = "<img src='" + Tr8n.host + "/assets/tr8n/plus_node.png'>";
     } 
   },
 
@@ -105,12 +105,16 @@ Tr8n.Logger = {
     }
   },
 
-  logObject: function(data) {
+  logObject: function(obj) {
+    this.append(this.objectToHtml(obj));
+  },
+
+  objectToHtml: function(data) {
     this.object_keys = [];
     html = []
     html.push("<div style='float:right;padding-right:10px;'>");
-    html.push("<span style='padding:2px;' onClick=\"Tr8n.Logger.expandAllNodes()\"><img src='/assets/tr8n/plus_node.png'></span>");
-    html.push("<span style='padding:2px;' onClick=\"Tr8n.Logger.collapseAllNodes()\"><img src='/assets/tr8n/minus_node.png'></span>");
+    html.push("<span style='padding:2px;' onClick=\"Tr8n.Logger.expandAllNodes()\"><img src='" + Tr8n.host + "/assets/tr8n/plus_node.png'></span>");
+    html.push("<span style='padding:2px;' onClick=\"Tr8n.Logger.collapseAllNodes()\"><img src='" + Tr8n.host + "/assets/tr8n/minus_node.png'></span>");
     html.push("</div>");
 
     var results = data;
@@ -128,7 +132,8 @@ Tr8n.Logger = {
     } else {
       html.push(results);
     }
-    this.append(html.join(""));
+
+    return html.join("\n");
   },
 
   formatObject: function(obj, level) {
@@ -136,7 +141,7 @@ Tr8n.Logger = {
 
     var html = [];
     var obj_key = this.guid();  
-    html.push("<span class='tr8n_logger_expander' id='expander_" + obj_key + "' onClick=\"Tr8n.Logger.toggleNode('" + obj_key + "')\"><img src='/assets/tr8n/minus_node.png'></span> <span style='display:none' id='no_object_" + obj_key + "'>{...}</span> <span id='object_" + obj_key + "'>{");
+    html.push("<span class='tr8n_logger_expander' id='expander_" + obj_key + "' onClick=\"Tr8n.Logger.toggleNode('" + obj_key + "')\"><img src='" + Tr8n.host + "/assets/tr8n/minus_node.png'></span> <span style='display:none' id='no_object_" + obj_key + "'>{...}</span> <span id='object_" + obj_key + "'>{");
     this.object_keys.push(obj_key);
 
     var keys = Object.keys(obj).sort();
@@ -162,7 +167,7 @@ Tr8n.Logger = {
 
     var html = [];
     var obj_key = this.guid();  
-    html.push("<span class='tr8n_logger_expander' id='expander_" + obj_key + "' onClick=\"Tr8n.Logger.toggleNode('" + obj_key + "')\"><img src='/assets/tr8n/minus_node.png'></span> <span style='display:none' id='no_object_" + obj_key + "'>[...]</span> <span id='object_" + obj_key + "'>[");
+    html.push("<span class='tr8n_logger_expander' id='expander_" + obj_key + "' onClick=\"Tr8n.Logger.toggleNode('" + obj_key + "')\"><img src='" + Tr8n.host + "/assets/tr8n/minus_node.png'></span> <span style='display:none' id='no_object_" + obj_key + "'>[...]</span> <span id='object_" + obj_key + "'>[");
     this.object_keys.push(obj_key);
 
     for (var i=0; i<arr.length; i++) {
@@ -198,7 +203,7 @@ Tr8n.Logger = {
   },
 
   createSpacer: function(level) {
-    return "<img src='/assets/tr8n/pixel.gif' style='height:1px;width:" + (level * 20) + "px;'>";
+    return "<img src='" + Tr8n.host + "/assets/tr8n/pixel.gif' style='height:1px;width:" + (level * 20) + "px;'>";
   },
 
   isArray: function(obj) {

@@ -62,14 +62,14 @@ Tr8n.SDK.Rules.NumericRule.prototype.evaluate = function(token_name, token_value
     return false;
   }
   
-  Tr8n.log("Rule value: '" + token_value + "' for definition: " + this.getDefinitionDescription());
+  // Tr8n.log("Rule value: '" + token_value + "' for definition: " + this.getDefinitionDescription());
   
   var result1 = this.evaluatePartialRule(token_value, this.definition['part1'], this.sanitizeArrayValue(this.definition['value1']));
   if (this.definition['multipart'] == 'false' || this.definition['multipart'] == false || this.definition['multipart'] == null) return result1;
-  Tr8n.log("Part 1: " + result1 + " Processing part 2...");
+  // Tr8n.log("Part 1: " + result1 + " Processing part 2...");
 
   var result2 = this.evaluatePartialRule(token_value, this.definition['part2'], this.sanitizeArrayValue(this.definition['value2']));
-  Tr8n.log("Part 2: " + result2 + " Completing evaluation...");
+  // Tr8n.log("Part 2: " + result2 + " Completing evaluation...");
   
   if (this.definition['operator'] == "or") return (result1 || result2);
   return (result1 && result2);

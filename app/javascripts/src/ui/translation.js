@@ -111,6 +111,11 @@ Tr8n.Translation = {
     }  
 
     Tr8n.element("tr8n_translation_suggestion_" + this.suggestion_key_id).innerHTML = suggestion;
+
+    if (Tr8n.element('tr8n_translator_translation_label')) {
+      Tr8n.element('tr8n_translator_translation_label').value = suggestion;  
+    }
+
     Tr8n.element("tr8n_google_suggestion_container_" + this.suggestion_key_id).style.display = "block";
     var suggestion_section = Tr8n.element('tr8n_google_suggestion_section');
     if (suggestion_section) suggestion_section.style.display = "block";

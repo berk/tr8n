@@ -74,9 +74,9 @@
           <% if @inline_translations_allowed %>
             <div style="padding-top:5px; padding-bottom:5px; font-size: 11px; font-weight:bold; ">
                 <% if @inline_translations_enabled %>
-                    <%=link_to(trla("Disable Inline Translations"), {:controller => "/tr8n/language", :action => :disable_inline_translations, :source_url => params[:origin]}, :target => "_top") %>
+                    <%=link_to_function(trla("Disable Inline Translations"), "Tr8n.postMessage('tr8n:language_selector:toggle_inline_translations', '#{params[:origin]}')") %>
                 <% else %>
-                    <%=link_to(trla("Enable Inline Translations"), {:controller => "/tr8n/language", :action => :enable_inline_translations, :source_url => params[:origin]}, :target => "_top") %>
+                    <%=link_to_function(trla("Enable Inline Translations"), "Tr8n.postMessage('tr8n:language_selector:toggle_inline_translations', '#{params[:origin]}')") %>
                 <% end %>
                 <div style="font-weight:normal; color:grey;"><%=trla("Use right-mouse-click or ctr+click to translate the site.") %></div>
             </div>

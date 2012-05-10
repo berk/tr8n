@@ -92,10 +92,11 @@
 Tr8n.SDK.Proxy = {
 
   options: {},
-  missing_translations_locked: false,
+  scheduler_enabled: true,
   inline_translations_enabled: false,
   tml_enabled: false,
-  scheduler_interval: 20000,
+  scheduler_interval: 5000,
+  batch_size: 5,
   language: null,
   translations: {},
   missing_translation_keys: {},
@@ -107,7 +108,9 @@ Tr8n.SDK.Proxy = {
     this.options = opts || (opts = {});
     this.scheduler_interval = this.options['scheduler_interval'] || this.scheduler_interval; 
     this.inline_translations_enabled = this.options['enable_inline_translations'];
+    Tr8n.inline_translations_enabled = this.options['enable_inline_translations'];
     this.tml_enabled = this.options['enable_tml'];
+    this.text_enabled = this.options['enable_text'];
     this.source = this.options['source'] || this.source;
 
     this.language = new Tr8n.SDK.Language();
@@ -118,6 +121,10 @@ Tr8n.SDK.Proxy = {
     if ( this.tml_enabled ) {
       Tr8n.Utils.addEvent(window, 'load', function() {
         Tr8n.SDK.Proxy.initTml();
+      });
+    } else if ( this.text_enabled ) {
+      Tr8n.Utils.addEvent(window, 'load', function() {
+        Tr8n.SDK.Proxy.initText();
       });
     }
 
@@ -180,7 +187,7 @@ Tr8n.SDK.Proxy = {
 
     for (i = 0; i < translations.length; i++) {
        var translation_key = translations[i];
-       Tr8n.log("Registering " + translation_key['key']);
+       // Tr8n.log("Registering " + translation_key['key']);
        this.translations[translation_key['key']] = translation_key;
     }
   },
@@ -194,7 +201,7 @@ Tr8n.SDK.Proxy = {
 
     var self = this;
     
-    Tr8n.log("Before fetching translations " + this.options['fetch_translations_on_init']);
+    // Tr8n.log("Before fetching translations " + this.options['fetch_translations_on_init']);
 
     // Optionally, fetch translations from the server
     if (this.options['fetch_translations_on_init']) {
@@ -212,54 +219,71 @@ Tr8n.SDK.Proxy = {
     
   registerMissingTranslationKey: function(translation_key, token_values, options) {
     if (!this.missing_translation_keys[translation_key.key]) {
-      Tr8n.log('Adding missing translation to the queue: ' + translation_key.key);
+      // Tr8n.log('Adding missing translation key to the queue: ' + translation_key.key);
       this.missing_translation_keys[translation_key.key] = {translation_key: translation_key, token_values: token_values, options:options};
     }
   },
 
   submitMissingTranslationKeys: function() {
-    if (this.missing_translations_locked) {
-      Tr8n.log('Missing translations are being processed, postponding registration task.');
-      return;
-    }
-      
-    var phrases = "[";
+    this.scheduler_enabled = false;
+
+    var phrases = [];
+    var count = 0;
+
     for (var key in this.missing_translation_keys) {
       var translation_key = this.missing_translation_keys[key].translation_key;
+      
       if (translation_key == null) continue;
-      if (phrases!="[") phrases = phrases + ",";
-      phrases = phrases + "{";
-      phrases = phrases + '"label":"' + translation_key.label + '", ';
-      phrases = phrases + '"description":"' + translation_key.description + '"';
-      phrases = phrases + "}";
+
+      // ignore lables that are too long
+      if (translation_key.label.length > 200) continue;
+
+      var phrase = {label: translation_key.label};
+      if (translation_key.description && translation_key.description.length > 0) phrase.description = translation_key.description;
+
+      phrases.push(phrase);
+
+      var url_params = JSON.stringify(phrases);
+
+      // Tr8n.log('Adding translation key ' + phrase.label + ' to the queue.');
+      // Tr8n.log('Params size is ' + url_params.length);
+
+      if (url_params.length > 200) { 
+        phrases.pop();
+        break;
+      }
     }
-    phrases = phrases + "]";
     
-    if (phrases == '[]') {
+    if (phrases.length == 0) {
       // Tr8n.log('No missing translation keys to submit...');
+      this.scheduler_enabled = true;
       return;
     }
     
     var self = this;
-    Tr8n.log('Submitting missing translation keys: ' + phrases);
+    Tr8n.log("Submitting " + phrases.length + " translation keys...");
 
     Tr8n.api('language/translate', {
-      phrases: phrases, 
+      phrases: JSON.stringify(phrases), 
       source: self.source
     }, function(data) {
-        Tr8n.log("Received response from the server");
+        // Tr8n.log("Received response from the server: " + JSON.stringify(data));
         self.updateMissingTranslationKeys(data['phrases']);
     });
   },
   
   updateMissingTranslationKeys: function(translations) {
-    this.missing_translations_locked = true;
-    Tr8n.log("Received " + translations.length + " registered phrases...");
+    if (!Tr8n.Utils.isArray(translations)) {
+      translations = translations['phrases'];
+    }
+
+    Tr8n.log("Received " + translations.length + " translation keys...");
 
     for (i = 0; i < translations.length; i++) {
        var translation_key_data = translations[i];
-       
-       Tr8n.log("Registering new key " + translation_key_data.key);
+
+       // Tr8n.log("Registering new key " + JSON.stringify(translation_key_data));
+
        this.translations[translation_key_data.key] = translation_key_data;
        var missing_key_data = this.missing_translation_keys[translation_key_data.key];
        var tr8nElement = Tr8n.element(translation_key_data.key);
@@ -271,14 +295,22 @@ Tr8n.SDK.Proxy = {
        
        delete this.missing_translation_keys[missing_key_data.translation_key.key];
     }
-    this.missing_translations_locked = false;
+
+    var keys = Object.keys(this.missing_translation_keys);
+
+    if (keys.length > 0) {
+      this.submitMissingTranslationKeys();  
+    } else {
+      this.scheduler_enabled = true;
+    }
   },  
 
   runScheduledTasks: function() {
     var self = this;
     
-//    Tr8n.log("Running scheduled tasks...");
-    this.submitMissingTranslationKeys();
+    if (this.scheduler_enabled) {
+      this.submitMissingTranslationKeys();
+    }
     
     window.setTimeout(function() {
       self.runScheduledTasks();
@@ -286,6 +318,8 @@ Tr8n.SDK.Proxy = {
   },
 
   initTml: function() {
+    if (Tr8n.element('tr8n_status_node')) return;
+
     var tree_walker = document.createTreeWalker(document.body, NodeFilter.SHOW_ALL, function(node) {
       if (node.nodeName == 'TML:LABEL') {
         return NodeFilter.FILTER_ACCEPT;
@@ -297,6 +331,103 @@ Tr8n.SDK.Proxy = {
     while (tree_walker.nextNode()) {
       new Tr8n.SDK.TML.Label(tree_walker.currentNode).translate();
     }
+
+    this.submitMissingTranslationKeys();
+  },
+
+  initText: function() {
+    if (Tr8n.element('tr8n_status_node')) return;
+
+    Tr8n.log("Initializing text nodes...");
+
+    // add node to the document so it is not processed twice
+    var tr8nStatusNode = document.createElement('div');
+    tr8nStatusNode.id = 'tr8n_status_node';
+    tr8nStatusNode.style.display = 'none';
+    document.body.appendChild(tr8nStatusNode);
+
+    var text_nodes = [];
+    var tree_walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+    while (tree_walker.nextNode()) {
+      text_nodes.push(tree_walker.currentNode);
+    }
+ 
+    Tr8n.log("Found " + text_nodes.length + " text nodes");
+
+    var disable_sentences = false;
+
+    for (var i = 0; i < text_nodes.length; i++) {
+      var current_node = text_nodes[i];
+      var parent_node = current_node.parentNode;
+       
+      if (!parent_node) continue;
+
+      // no scripts 
+      if (parent_node.tagName == "script" || parent_node.tagName == "SCRIPT") continue;
+      
+      var label = current_node.nodeValue || "";
+
+      // no html image tags
+      if (label.indexOf("<img") != -1) continue;
+
+      // we need to handle empty spaces better
+      var sanitized_label = Tr8n.Utils.sanitizeString(label);
+
+      if (Tr8n.Utils.isNumber(sanitized_label)) continue;
+
+      // no empty strings
+      if (sanitized_label == null || sanitized_label.length == 0) continue;
+
+      // no comments
+      // if (arr[i].nodeValue.indexOf("<!-") != -1) continue;
+
+      var sentences = sanitized_label.split(". ");
+
+      if (disable_sentences || sentences.length == 1) {
+        var translated_node = document.createElement("span");
+        // translated_node.style.border = '1px dotted red';
+        translated_node.innerHTML = this.translate(sanitized_label);
+        parent_node.replaceChild(translated_node, current_node);
+      } else {
+        var node_replaced = false;
+
+        for (var i=0; i<sentences.length; i++) {
+          var sanitized_sentence = sentences[i];
+          if (sanitized_sentence.length == 0) continue;
+
+          sanitized_sentence = Tr8n.Utils.sanitizeString(sanitized_sentence);
+          if (sanitized_sentence.length == 0) continue;
+
+          var sanitized_sentence = sanitized_sentence + ".";
+          var translated_node = document.createElement("span");
+          // translated_node.style.border = '1px dotted green';
+          translated_node.innerHTML = this.translate(sanitized_sentence);
+
+          if (node_replaced) {
+            parent_node.appendChild(translated_node);
+          } else {
+            parent_node.replaceChild(translated_node, current_node);
+            node_replaced = true;
+          }
+
+          var space_node = document.createElement("span");
+          // space_node.style.border = '1px dotted yellow';
+          space_node.innerHTML = " ";
+          parent_node.appendChild(space_node);
+        }
+      }
+    }
+
+    this.submitMissingTranslationKeys();
+  },
+
+  debug: function() {
+    var config = {
+      settings: this.options,
+      translations: this.translations,
+      translation_queue: this.missing_translation_keys
+    };
+    Tr8n.UI.Lightbox.showHTML(Tr8n.Logger.objectToHtml(config), {width:700, height:600});
   },
 
   logSettings: function() {

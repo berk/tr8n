@@ -141,7 +141,6 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   # creates associations between the translation keys and sources
   # used for the site map and javascript support
   def self.track_source(translation_key, options = {})
-
     # key source tracking must be enabled or request must come from an API (JavaScript) to get it registered with a source
     if Tr8n::Config.enable_key_source_tracking? or options[:api] == :translate
 
@@ -377,7 +376,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
       next if context_hash_matches[context_key]
       context_hash_matches[context_key] = true
       if translation.rules_definitions
-        valid_translations << {:label => translation.label, :context => translation.rules_definitions.clone}
+        valid_translations << {:label => translation.label, :context => translation.rules_definitions.dup}
       else
         valid_translations << {:label => translation.label}
       end
@@ -467,7 +466,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   end
 
   def substitute_tokens(translated_label, token_values, options = {}, language = Tr8n::Config.current_language)
-    processed_label = translated_label.to_s.clone
+    processed_label = translated_label.to_s.dup
 
     # substitute all data tokens
     Tr8n::TokenizedLabel.new(processed_label).data_tokens.each do |token|

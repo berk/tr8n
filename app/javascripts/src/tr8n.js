@@ -35,7 +35,8 @@ var Tr8n = {
   cookies: false,
   access_token: null,
   google_api_key: null,
-  
+  inline_translations_enabled: false,
+
   url: {
     api       : '/tr8n/api/v1',
     status    : '/oauth/status',
@@ -66,11 +67,8 @@ var Tr8n = {
   //
   ///////////////////////////////////////////////////////////////////////////////////////////////  
 
-  init: function(opts,cb) {
+  init: function(opts, cb) {
     opts || (opts = {});
-    if(!opts.app_id) {
-      return Tr8n.log('Tr8n Javascript SDK requires an Application ID');
-    }
     this.app_id     = opts.app_id;
     this.logging    = (window.location.toString().indexOf('debug=1') > 0)  || opts.logging || this.logging;
     this.cookies    = opts.cookies  || this.cookies;
@@ -122,6 +120,10 @@ var Tr8n = {
         Tr8n.UI.Lightbox.show('/tr8n/translator/lb_report?translation_id=' + elements[3], {width:600, height:360});
         return;
       } 
+    }
+
+    if (elements[1] == 'language_selector') {
+      if (elements[2] == 'toggle_inline_translations') { Tr8n.UI.LanguageSelector.toggleInlineTranslations(); return; } 
     }
 
     if (elements[1] == 'language_case_map') {

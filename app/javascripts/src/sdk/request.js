@@ -111,9 +111,8 @@ Tr8n.SDK.Request = {
 		params || (params = {});
 		if (Tr8n.access_token) {
 			Tr8n.Utils.extend(params, {access_token: Tr8n.access_token});
-		} else {
-			Tr8n.log('Tr8n.SDK.Request.oauth() called without an access token.');
-		}
+		} 
+		
 		this.jsonp(url, params, cb);
 	},
 

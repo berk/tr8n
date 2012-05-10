@@ -269,6 +269,15 @@ module Tr8n
       redirect_to_source
     end
 
+    # toggle inline translations popup window
+    def toggle_inline_translations
+      # redirect to login if not a translator
+      unless tr8n_current_user_is_guest?
+        tr8n_current_translator.toggle_inline_translations!
+      end
+      render(:layout => false)
+    end
+
     # inline translator popup window as well as translation backend method
     def translator
       if params[:translation_key_id]

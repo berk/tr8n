@@ -64,11 +64,11 @@ class Tr8n::Api::V1::LanguageController < Tr8n::Api::V1::BaseController
       
       translations = []
       Tr8n::TranslationKey.find(:all, :conditions => conditions).each_with_index do |tkey, index|
-        trn = tkey.translate(language, {}, {:api => true, :api => :cache})
+        trn = tkey.translate(language, {}, {:source => source, :url => source, :api => :cache})
         translations << trn 
       end
       
-      return sanitize_api_response({:phrases => translations, :api => :translate})
+      return sanitize_api_response({:phrases => translations})
     elsif params[:phrases]
       
       phrases = []
@@ -77,11 +77,11 @@ class Tr8n::Api::V1::LanguageController < Tr8n::Api::V1::BaseController
       rescue Exception => ex
         return sanitize_api_response({"error" => "Invalid request. JSON parsing failed: #{ex.message}"})
       end
-      
+
       translations = []
       phrases.each do |phrase|
         phrase = {:label => phrase} if phrase.is_a?(String)
-        translations << translate_phrase(language, phrase, {:source => source, :api => :translate})
+        translations << translate_phrase(language, phrase, {:source => source, :url => source, :api => :translate})
       end
       
       return sanitize_api_response({:phrases => translations})    

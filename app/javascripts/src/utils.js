@@ -350,12 +350,43 @@ Tr8n.Utils = {
     }
   },
 
-  displayShortcuts: function() {
-      Tr8n.UI.Lightbox.show('/tr8n/help/lb_shortcuts', {width:400, height:480});
+  insertCSS: function(cssHref, parent_element) {
+    var css = document.createElement('link');
+    css.setAttribute("type", "application/javascript");
+    css.setAttribute("href", cssHref);
+    css.setAttribute("type", "text/css");
+    css.setAttribute("rel", "stylesheet");
+    css.setAttribute("media", "screen");
+    parent_element = parent_element || document.getElementsByTagName('head')[0];
+    parent_element.appendChild(css);
   },
 
-  displayStatistics: function() {
-      Tr8n.UI.Lightbox.show('/tr8n/help/lb_stats', {width:420, height:400});
+  insertScript: function(scriptURL, onload, parent_element) {
+    parent_element = parent_element || document;
+    var script = document.createElement('script');
+    script.setAttribute("type", "application/javascript");
+    script.setAttribute("src", scriptURL);
+    script.setAttribute("charset", "UTF-8");
+    if (onload) script.onload = onload;
+    parent_element = parent_element || document.getElementsByTagName('head')[0];
+    parent_element.appendChild(script);
+  },
+
+  insertDiv: function(id, style, innerHTML) {
+    var div = document.createElement('div');
+    div.id = id;
+    if (style) div.setAttribute("style", style);
+    if (innerHTML) div.innerHTML = innerHTML;
+    document.body.appendChild(div);
+  },
+
+  sanitizeString: function(string) {
+    if (!string) return "";   
+    return string.replace(/^\s+|\s+$/g,"");
+  },
+
+  isNumber: function(str) {
+    return str.search(/^\s*\d+\s*$/) != -1;
   },
 
   isArray: function(obj) {

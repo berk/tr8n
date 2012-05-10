@@ -109,23 +109,11 @@ Tr8n.UI.LanguageSelector = {
     });
   },
 
-  enableInlineTranslations: function() {
-    window.location = "/tr8n/language/switch?language_action=enable_inline_mode&source_url=" + location;
-  },
-
-  disableInlineTranslations: function() {
-    window.location = "/tr8n/language/switch?language_action=disable_inline_mode&source_url=" + location;
-  },
-
-  showDashboard: function() {
-    window.location = "/tr8n/dashboard";
-  },
-
-  manageLanguage: function() {
-    window.location = "/tr8n/language";
-  },
-
   toggleInlineTranslations: function() {
-    window.location = "/tr8n/language/switch?language_action=toggle_inline_mode&source_url=" + location;
+    if (Tr8n.inline_translations_enabled) {
+        Tr8n.UI.Lightbox.show('/tr8n/language/toggle_inline_translations', {width:400, height:480, message:"Disabling inline translations..."});      
+    } else {
+        Tr8n.UI.Lightbox.show('/tr8n/language/toggle_inline_translations', {width:400, height:480, message:"Enabling inline translations..."});      
+    }
   }
 }

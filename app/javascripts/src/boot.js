@@ -24,9 +24,15 @@
 ;(function() {
 
   var setup = function() {
+    Tr8n.log("Initializing Tr8n user interface...");
+
+    Tr8n.Utils.insertDiv('tr8n_root', 'display:none');
+
     Tr8n.UI.Translator.init({});
     Tr8n.UI.Lightbox.init({});
     Tr8n.UI.LanguageSelector.init({});
+
+    Tr8n.log("Done initializing Tr8n user interface.");
 
     Tr8n.Utils.addEvent(document, "keyup", function(event) {
       if (event.keyCode == 27) { // Capture Esc key

@@ -37,7 +37,7 @@ Tr8n.SDK.Tokens.DataToken.parse = function(label, options) {
   var uniq = {};
   for(i=0; i<tokens.length; i++) {
     if (uniq[tokens[i]]) continue;
-    Tr8n.log("Registering data token: " + tokens[i]);
+    // Tr8n.log("Registering data token: " + tokens[i]);
     objects.push(new Tr8n.SDK.Tokens.DataToken(label, tokens[i], options));
     uniq[tokens[i]] = true;
   }
