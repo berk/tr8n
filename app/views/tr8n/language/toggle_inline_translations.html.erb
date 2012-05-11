@@ -2,11 +2,15 @@
 <% Tr8n::Config.with_options(:default_locale => 'en-US', :admin => true) do %>
 <div class="inner">
     <div style="text-align:center;padding-top:30px;">
+      <% if tr8n_current_translator %>
         <% if tr8n_current_translator.inline_mode %>
             <%=trla("Inline translations have been enabled.") %>
         <% else %>
             <%=trla("Inline translations have been disabled.") %>
         <% end %>            
+      <% else %>
+        <%=trla("You must be a registered translator.") %>
+      <% end %>
     </div>
 </div>
 <% end %>

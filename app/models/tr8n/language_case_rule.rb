@@ -43,7 +43,7 @@
 #++
 
 class Tr8n::LanguageCaseRule < ActiveRecord::Base
-  set_table_name :tr8n_language_case_rules
+  self.table_name = :tr8n_language_case_rules
 
   attr_accessible :language_case_id, :language_id, :translator_id, :definition, :position
   attr_accessible :language, :language_case, :translator

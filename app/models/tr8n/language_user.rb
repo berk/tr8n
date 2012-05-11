@@ -44,7 +44,7 @@
 #++
 
 class Tr8n::LanguageUser < ActiveRecord::Base
-  set_table_name :tr8n_language_users
+  self.table_name = :tr8n_language_users
 
   attr_accessible :language_id, :user_id, :translator_id, :manager
   attr_accessible :language, :translator, :user

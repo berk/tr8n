@@ -41,7 +41,7 @@
 #++
 
 class Tr8n::LanguageRule < ActiveRecord::Base
-  set_table_name :tr8n_language_rules
+  self.table_name = :tr8n_language_rules
 
   attr_accessible :language_id, :translator_id, :definition
   attr_accessible :language, :translator

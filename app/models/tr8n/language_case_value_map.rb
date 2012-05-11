@@ -42,7 +42,7 @@
 #++
 
 class Tr8n::LanguageCaseValueMap < ActiveRecord::Base
-  set_table_name :tr8n_language_case_value_maps
+  self.table_name = :tr8n_language_case_value_maps
 
   attr_accessible :keyword, :language_id, :translator_id, :map, :reported
   attr_accessible :language, :translator

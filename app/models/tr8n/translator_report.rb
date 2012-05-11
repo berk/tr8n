@@ -42,7 +42,7 @@
 #++
 
 class Tr8n::TranslatorReport < ActiveRecord::Base
-  set_table_name :tr8n_translator_reports
+  self.table_name = :tr8n_translator_reports
   
   attr_accessible :translator_id, :state, :object_id, :object_type, :reason, :comment
   attr_accessible :translator, :object

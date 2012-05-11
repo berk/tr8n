@@ -46,7 +46,7 @@
 #++
 
 class Tr8n::TranslatorMetric < ActiveRecord::Base
-  set_table_name :tr8n_translator_metrics
+  self.table_name = :tr8n_translator_metrics
   
   attr_accessible :translator_id, :language_id, :total_translations, :total_votes, :positive_votes, :negative_votes, :accepted_translations, :rejected_translations
   attr_accessible :translator, :language

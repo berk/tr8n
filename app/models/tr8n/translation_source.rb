@@ -38,7 +38,7 @@
 #++
 
 class Tr8n::TranslationSource < ActiveRecord::Base
-  set_table_name :tr8n_translation_sources
+  self.table_name = :tr8n_translation_sources
 
   attr_accessible :source, :translation_domain_id
   attr_accessible :translation_domain

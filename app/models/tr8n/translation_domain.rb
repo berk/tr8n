@@ -39,7 +39,7 @@
 #++
 
 class Tr8n::TranslationDomain < ActiveRecord::Base
-  set_table_name :tr8n_translation_domains
+  self.table_name = :tr8n_translation_domains
 
   attr_accessible :name, :description, :source_count
 

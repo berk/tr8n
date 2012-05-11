@@ -45,7 +45,7 @@
 #++
 
 class Tr8n::LanguageCase < ActiveRecord::Base
-  set_table_name :tr8n_language_cases
+  self.table_name = :tr8n_language_cases
   
   attr_accessible :language_id, :translator_id, :keyword, :latin_name, :native_name, :description, :application
   attr_accessible :language, :translator

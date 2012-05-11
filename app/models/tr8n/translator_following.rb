@@ -39,7 +39,7 @@
 #++
 
 class Tr8n::TranslatorFollowing < ActiveRecord::Base
-  set_table_name :tr8n_translator_following
+  self.table_name = :tr8n_translator_following
 
   attr_accessible :translator_id, :object_id, :object_type
   attr_accessible :translator, :object

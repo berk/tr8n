@@ -40,7 +40,7 @@
 #++
 
 class Tr8n::TranslationKeyLock < ActiveRecord::Base
-  set_table_name :tr8n_translation_key_locks
+  self.table_name = :tr8n_translation_key_locks
   
   attr_accessible :translation_key_id, :language_id, :translator_id, :locked
   attr_accessible :language, :translator, :translation_key
