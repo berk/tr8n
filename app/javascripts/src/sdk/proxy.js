@@ -119,10 +119,12 @@ Tr8n.SDK.Proxy = {
     this.runScheduledTasks();
 
     if ( this.tml_enabled ) {
+      Tr8n.log("Parsing tml...");
       Tr8n.Utils.addEvent(window, 'load', function() {
         Tr8n.SDK.Proxy.initTml();
       });
     } else if ( this.text_enabled ) {
+      Tr8n.log("Parsing text...");
       Tr8n.Utils.addEvent(window, 'load', function() {
         Tr8n.SDK.Proxy.initText();
       });
@@ -335,6 +337,32 @@ Tr8n.SDK.Proxy = {
     this.submitMissingTranslationKeys();
   },
 
+  translateTextNode: function(parent_node, text_node, label) {
+    // we need to handle empty spaces better
+    var sanitized_label = Tr8n.Utils.sanitizeString(label);
+
+    if (Tr8n.Utils.isNumber(sanitized_label)) return;
+
+    // no empty strings
+    if (sanitized_label == null || sanitized_label.length == 0) return;
+
+    var translated_node = null;
+    var translation = this.translate(sanitized_label);
+
+    if (/^\s/.test(label)) translation = " " + translation;
+    if (/\s$/.test(label)) translation = translation + " ";
+
+    if (this.inline_translations_enabled) {
+      translated_node = document.createElement("span");
+      translated_node.innerHTML = translation;
+    } else {
+      translated_node = document.createTextNode(translation);
+    }
+
+    // translated_node.style.border = '1px dotted red';
+    parent_node.replaceChild(translated_node, text_node);
+  },
+
   initText: function() {
     if (Tr8n.element('tr8n_status_node')) return;
 
@@ -370,32 +398,19 @@ Tr8n.SDK.Proxy = {
       // no html image tags
       if (label.indexOf("<img") != -1) continue;
 
-      // we need to handle empty spaces better
-      var sanitized_label = Tr8n.Utils.sanitizeString(label);
-
-      if (Tr8n.Utils.isNumber(sanitized_label)) continue;
-
-      // no empty strings
-      if (sanitized_label == null || sanitized_label.length == 0) continue;
-
       // no comments
-      // if (arr[i].nodeValue.indexOf("<!-") != -1) continue;
+      if (label.indexOf("<!-") != -1) continue;
 
-      var sentences = sanitized_label.split(". ");
+      var sentences = label.split(". ");
 
       if (disable_sentences || sentences.length == 1) {
-        var translated_node = document.createElement("span");
-        // translated_node.style.border = '1px dotted red';
-        translated_node.innerHTML = this.translate(sanitized_label);
-        parent_node.replaceChild(translated_node, current_node);
+        this.translateTextNode(parent_node, current_node, label);
+
       } else {
         var node_replaced = false;
 
         for (var i=0; i<sentences.length; i++) {
-          var sanitized_sentence = sentences[i];
-          if (sanitized_sentence.length == 0) continue;
-
-          sanitized_sentence = Tr8n.Utils.sanitizeString(sanitized_sentence);
+          var sanitized_sentence = Tr8n.Utils.sanitizeString(sentences[i]);
           if (sanitized_sentence.length == 0) continue;
 
           var sanitized_sentence = sanitized_sentence + ".";
@@ -409,11 +424,8 @@ Tr8n.SDK.Proxy = {
             parent_node.replaceChild(translated_node, current_node);
             node_replaced = true;
           }
+          parent_node.appendChild(document.createTextNode(" "));
 
-          var space_node = document.createElement("span");
-          // space_node.style.border = '1px dotted yellow';
-          space_node.innerHTML = " ";
-          parent_node.appendChild(space_node);
         }
       }
     }

@@ -136,6 +136,7 @@ DEPENDENCIES
   rr
   rspec
   rspec-rails (>= 2.1.0)
+  sass
   spork
   sqlite3
   tr8n!

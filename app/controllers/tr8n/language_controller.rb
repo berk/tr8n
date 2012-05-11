@@ -269,6 +269,12 @@ module Tr8n
       redirect_to_source
     end
 
+    # change language from lightbox
+    def change
+      Tr8n::LanguageUser.create_or_touch(tr8n_current_user, Tr8n::Language.find_by_locale(params[:locale]))
+      render(:layout => false)
+    end
+
     # toggle inline translations popup window
     def toggle_inline_translations
       # redirect to login if not a translator

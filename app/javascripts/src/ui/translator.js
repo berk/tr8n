@@ -30,41 +30,10 @@ Tr8n.UI.Translator = {
   stem_image: null, 
   content_frame: null,
 
-  init: function(options) {
+  init: function() {
     var self = this;
-    this.options = options;
-    this.translation_key_id = null;
-    this.suggestion_tokens = null;
-    this.container_width = 400;
 
-    this.container                = document.createElement('div');
-    this.container.className      = 'tr8n_translator';
-    this.container.id             = 'tr8n_translator';
-    this.container.style.display  = "none";
-    this.container.style.width    = this.container_width + "px";
-
-    this.stem_image = document.createElement('img');
-    this.stem_image.src = Tr8n.host + '/assets/tr8n/top_left_stem.png';
-    this.container.appendChild(this.stem_image);
-
-    this.content_frame = document.createElement('iframe');
-    this.content_frame.src = 'about:blank';
-    this.content_frame.style.border = '0px';
-    this.container.appendChild(this.content_frame);
-
-    document.body.appendChild(this.container);
-
-    if (window.addEventListener) {  // all browsers except IE before version 9
-      window.addEventListener("message", Tr8n.onMessage, false);
-    } else {
-      if (window.attachEvent) {   // IE before version 9
-          window.attachEvent("onmessage", Tr8n.onMessage);
-      }
-    }
-
-    var event_type = Tr8n.Utils.isOpera() ? 'click' : 'contextmenu';
-
-    Tr8n.Utils.addEvent(document, event_type, function(e) {
+    Tr8n.Utils.addEvent(document, Tr8n.Utils.isOpera() ? 'click' : 'contextmenu', function(e) {
       if (Tr8n.Utils.isOpera() && !e.ctrlKey) return;
 
       var translatable_node = Tr8n.Utils.findElement(e, ".tr8n_translatable");
@@ -99,13 +68,38 @@ Tr8n.UI.Translator = {
     });
   },
 
+  initContainer: function() {
+    if (this.container) return;
+
+    this.container                = document.createElement('div');
+    this.container.className      = 'tr8n_translator';
+    this.container.id             = 'tr8n_translator';
+    this.container.style.display  = "none";
+    this.container.style.width    = "400px";
+
+    this.stem_image = document.createElement('img');
+    this.stem_image.src = Tr8n.host + '/assets/tr8n/top_left_stem.png';
+    this.container.appendChild(this.stem_image);
+
+    this.content_frame = document.createElement('iframe');
+    this.content_frame.src = 'about:blank';
+    this.content_frame.style.border = '0px';
+    this.container.appendChild(this.content_frame);
+
+    document.body.appendChild(this.container);
+  },
+
   hide: function() {
+    if (!this.container) return;
+
     this.container.style.display = "none";
     this.content_frame.src = 'about:blank';
     Tr8n.Utils.showFlash();
   },
 
   show: function(translatable_node, is_language_case) {
+    this.initContainer();
+
     var self = this;
     Tr8n.UI.LanguageSelector.hide();
     Tr8n.UI.Lightbox.hide();
@@ -173,6 +167,3 @@ Tr8n.UI.Translator = {
   }
 
 }
-
-
-

@@ -73,6 +73,27 @@ var Tr8n = {
     this.logging    = (window.location.toString().indexOf('debug=1') > 0)  || opts.logging || this.logging;
     this.cookies    = opts.cookies  || this.cookies;
     this.host       = opts.host     || this.host;
+
+    Tr8n.log("Initializing Tr8n...");
+
+    if (window.addEventListener) {  // all browsers except IE before version 9
+      window.addEventListener("message", Tr8n.onMessage, false);
+    } else {
+      if (window.attachEvent) {   // IE before version 9
+          window.attachEvent("onmessage", Tr8n.onMessage);
+      }
+    }
+
+    Tr8n.UI.Translator.init();
+
+    Tr8n.Utils.addEvent(document, "keyup", function(event) {
+      if (event.keyCode == 27) { // Capture Esc key
+        Tr8n.UI.Translator.hide();
+        Tr8n.UI.LanguageSelector.hide();
+        Tr8n.UI.Lightbox.hide();
+      }
+    });
+
     return this;
   },
 
@@ -104,10 +125,8 @@ var Tr8n = {
     }
 
     var elements = msg.split(':');
-    if (elements[0] != 'tr8n') {
-      alert("Received an unkown message: " + msg);
-      return;
-    }
+    // if this is not a tr8n message, ignore it
+    if (elements[0] != 'tr8n') return;
 
     if (elements[1] == 'reload') {
       window.location.reload();
@@ -123,6 +142,7 @@ var Tr8n = {
     }
 
     if (elements[1] == 'language_selector') {
+      if (elements[2] == 'change') { Tr8n.UI.LanguageSelector.change(elements[3]); return; } 
       if (elements[2] == 'toggle_inline_translations') { Tr8n.UI.LanguageSelector.toggleInlineTranslations(); return; } 
     }
 

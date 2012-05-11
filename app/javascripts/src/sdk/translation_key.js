@@ -147,7 +147,10 @@ Tr8n.SDK.TranslationKey.prototype = {
     return this.decorateLabel(label, options);
   },
   
-  decorateLabel: function(label, options){
+  decorateLabel: function(label, options) {
+    if (!Tr8n.SDK.Proxy.inline_translations_enabled)
+      return label;
+
     options = options || {};
     if (options['skip_decorations'])
       return label;

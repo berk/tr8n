@@ -28,9 +28,13 @@ Tr8n.UI.Lightbox = {
   overlay: null,
   content_frame: null,
 
-  init: function(options) {
-    var self = this;
-    this.options = options;
+  init: function() {
+
+  },
+
+  initContainer: function() {
+    if (this.container) return;
+
     this.container                = document.createElement('div');
     this.container.className      = 'tr8n_lightbox';
     this.container.id             = 'tr8n_lightbox';
@@ -53,6 +57,8 @@ Tr8n.UI.Lightbox = {
   },
 
   hide: function() {
+    if (!this.container) return;
+
     this.container.style.display = "none";
     this.overlay.style.display = "none";
     this.content_frame.src = 'about:blank';
@@ -60,6 +66,8 @@ Tr8n.UI.Lightbox = {
   },
 
   showHTML: function(content, opts) {
+    this.initContainer();
+
     var self = this;
     opts = opts || {};
 
@@ -97,6 +105,8 @@ Tr8n.UI.Lightbox = {
   },
 
   show: function(url, opts) {
+    this.initContainer();
+
     var self = this;
     opts = opts || {};
 

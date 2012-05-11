@@ -30,6 +30,11 @@ Tr8n.UI.LanguageSelector = {
 
   init: function(options) {
     this.options = options || {};
+  },
+
+  initContainer: function() {
+    if (this.container) return;
+
     this.keyboardMode = false;
     this.loaded = false;
 
@@ -42,6 +47,8 @@ Tr8n.UI.LanguageSelector = {
   },
 
   toggle: function() {
+    this.initContainer();
+
     if (this.container.style.display == "none") {
       this.show();
     } else {
@@ -50,11 +57,15 @@ Tr8n.UI.LanguageSelector = {
   },
 
   hide: function() {
+    if (!this.container) return;
+
     this.container.style.display = "none";
     Tr8n.Utils.showFlash();
   },
 
   show: function() {
+    this.initContainer();
+
     var self = this;
     
     Tr8n.UI.Translator.hide();
@@ -107,6 +118,10 @@ Tr8n.UI.LanguageSelector = {
       parameters: {language_action: "remove", language_id: language_id},
       method: 'post'
     });
+  },
+
+  change: function(locale) {
+    Tr8n.UI.Lightbox.show('/tr8n/language/change?locale=' + locale, {width:400, height:480, message:"Changing language..."});      
   },
 
   toggleInlineTranslations: function() {

@@ -1,0 +1,17 @@
+<%= render :partial => "/tr8n/common/lightbox_header" %>
+<% Tr8n::Config.with_options(:default_locale => 'en-US', :admin => true) do %>
+<div class="inner">
+    <div style="text-align:center;padding-top:30px;">
+      <%=trla("Language has been changed to {language}", nil, :language => tr8n_current_language.native_name) %>
+    </div>
+</div>
+<% end %>
+<%= render :partial => "/tr8n/common/lightbox_footer" %>
+
+<script>
+  Tr8n.Utils.addEvent(window, "load", function(event) {
+    window.setTimeout(function() {
+      reloadOrigin();
+    }, 500);
+  });
+</script>

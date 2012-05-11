@@ -20,11 +20,15 @@ Ctrl+Shift+K:
 
 Ctrl+Shift+C:       
   description:  Displays Tr8n credits
-  script:       "window.location = Tr8n.host + '/tr8n/home/credits';"
+  script:       "window.location = Tr8n.host + '/tr8n/help/credits';"
 
 Ctrl+Shift+T:       
   description:  Displays Tr8n statistics
   script:       "Tr8n.UI.Lightbox.show('/tr8n/help/lb_stats', {width:420, height:400});"
+
+Ctrl+Shift+D:       
+  description:  Debug Tr8n Proxy 
+  script:       "Tr8n.SDK.Proxy.debug();"
 
 Alt+Shift+D: 
   description:  Opens dashboard

@@ -2369,6 +2369,27 @@ var Tr8n = {
     this.logging    = (window.location.toString().indexOf('debug=1') > 0)  || opts.logging || this.logging;
     this.cookies    = opts.cookies  || this.cookies;
     this.host       = opts.host     || this.host;
+
+    Tr8n.log("Initializing Tr8n...");
+
+    if (window.addEventListener) {  // all browsers except IE before version 9
+      window.addEventListener("message", Tr8n.onMessage, false);
+    } else {
+      if (window.attachEvent) {   // IE before version 9
+          window.attachEvent("onmessage", Tr8n.onMessage);
+      }
+    }
+
+    Tr8n.UI.Translator.init();
+
+    Tr8n.Utils.addEvent(document, "keyup", function(event) {
+      if (event.keyCode == 27) { // Capture Esc key
+        Tr8n.UI.Translator.hide();
+        Tr8n.UI.LanguageSelector.hide();
+        Tr8n.UI.Lightbox.hide();
+      }
+    });
+
     return this;
   },
 
@@ -2400,10 +2421,8 @@ var Tr8n = {
     }
 
     var elements = msg.split(':');
-    if (elements[0] != 'tr8n') {
-      alert("Received an unkown message: " + msg);
-      return;
-    }
+    // if this is not a tr8n message, ignore it
+    if (elements[0] != 'tr8n') return;
 
     if (elements[1] == 'reload') {
       window.location.reload();
@@ -2419,6 +2438,7 @@ var Tr8n = {
     }
 
     if (elements[1] == 'language_selector') {
+      if (elements[2] == 'change') { Tr8n.UI.LanguageSelector.change(elements[3]); return; } 
       if (elements[2] == 'toggle_inline_translations') { Tr8n.UI.LanguageSelector.toggleInlineTranslations(); return; } 
     }
 
@@ -3647,10 +3667,12 @@ Tr8n.SDK.Proxy = {
     this.runScheduledTasks();
 
     if ( this.tml_enabled ) {
+      Tr8n.log("Parsing tml...");
       Tr8n.Utils.addEvent(window, 'load', function() {
         Tr8n.SDK.Proxy.initTml();
       });
     } else if ( this.text_enabled ) {
+      Tr8n.log("Parsing text...");
       Tr8n.Utils.addEvent(window, 'load', function() {
         Tr8n.SDK.Proxy.initText();
       });
@@ -3863,6 +3885,32 @@ Tr8n.SDK.Proxy = {
     this.submitMissingTranslationKeys();
   },
 
+  translateTextNode: function(parent_node, text_node, label) {
+    // we need to handle empty spaces better
+    var sanitized_label = Tr8n.Utils.sanitizeString(label);
+
+    if (Tr8n.Utils.isNumber(sanitized_label)) return;
+
+    // no empty strings
+    if (sanitized_label == null || sanitized_label.length == 0) return;
+
+    var translated_node = null;
+    var translation = this.translate(sanitized_label);
+
+    if (/^\s/.test(label)) translation = " " + translation;
+    if (/\s$/.test(label)) translation = translation + " ";
+
+    if (this.inline_translations_enabled) {
+      translated_node = document.createElement("span");
+      translated_node.innerHTML = translation;
+    } else {
+      translated_node = document.createTextNode(translation);
+    }
+
+    // translated_node.style.border = '1px dotted red';
+    parent_node.replaceChild(translated_node, text_node);
+  },
+
   initText: function() {
     if (Tr8n.element('tr8n_status_node')) return;
 
@@ -3898,32 +3946,19 @@ Tr8n.SDK.Proxy = {
       // no html image tags
       if (label.indexOf("<img") != -1) continue;
 
-      // we need to handle empty spaces better
-      var sanitized_label = Tr8n.Utils.sanitizeString(label);
-
-      if (Tr8n.Utils.isNumber(sanitized_label)) continue;
-
-      // no empty strings
-      if (sanitized_label == null || sanitized_label.length == 0) continue;
-
       // no comments
-      // if (arr[i].nodeValue.indexOf("<!-") != -1) continue;
+      if (label.indexOf("<!-") != -1) continue;
 
-      var sentences = sanitized_label.split(". ");
+      var sentences = label.split(". ");
 
       if (disable_sentences || sentences.length == 1) {
-        var translated_node = document.createElement("span");
-        // translated_node.style.border = '1px dotted red';
-        translated_node.innerHTML = this.translate(sanitized_label);
-        parent_node.replaceChild(translated_node, current_node);
+        this.translateTextNode(parent_node, current_node, label);
+
       } else {
         var node_replaced = false;
 
         for (var i=0; i<sentences.length; i++) {
-          var sanitized_sentence = sentences[i];
-          if (sanitized_sentence.length == 0) continue;
-
-          sanitized_sentence = Tr8n.Utils.sanitizeString(sanitized_sentence);
+          var sanitized_sentence = Tr8n.Utils.sanitizeString(sentences[i]);
           if (sanitized_sentence.length == 0) continue;
 
           var sanitized_sentence = sanitized_sentence + ".";
@@ -3937,11 +3972,8 @@ Tr8n.SDK.Proxy = {
             parent_node.replaceChild(translated_node, current_node);
             node_replaced = true;
           }
+          parent_node.appendChild(document.createTextNode(" "));
 
-          var space_node = document.createElement("span");
-          // space_node.style.border = '1px dotted yellow';
-          space_node.innerHTML = " ";
-          parent_node.appendChild(space_node);
         }
       }
     }
@@ -4125,7 +4157,10 @@ Tr8n.SDK.TranslationKey.prototype = {
     return this.decorateLabel(label, options);
   },
   
-  decorateLabel: function(label, options){
+  decorateLabel: function(label, options) {
+    if (!Tr8n.SDK.Proxy.inline_translations_enabled)
+      return label;
+
     options = options || {};
     if (options['skip_decorations'])
       return label;
@@ -4800,6 +4835,11 @@ Tr8n.UI.LanguageSelector = {
 
   init: function(options) {
     this.options = options || {};
+  },
+
+  initContainer: function() {
+    if (this.container) return;
+
     this.keyboardMode = false;
     this.loaded = false;
 
@@ -4812,6 +4852,8 @@ Tr8n.UI.LanguageSelector = {
   },
 
   toggle: function() {
+    this.initContainer();
+
     if (this.container.style.display == "none") {
       this.show();
     } else {
@@ -4820,11 +4862,15 @@ Tr8n.UI.LanguageSelector = {
   },
 
   hide: function() {
+    if (!this.container) return;
+
     this.container.style.display = "none";
     Tr8n.Utils.showFlash();
   },
 
   show: function() {
+    this.initContainer();
+
     var self = this;
     
     Tr8n.UI.Translator.hide();
@@ -4879,6 +4925,10 @@ Tr8n.UI.LanguageSelector = {
     });
   },
 
+  change: function(locale) {
+    Tr8n.UI.Lightbox.show('/tr8n/language/change?locale=' + locale, {width:400, height:480, message:"Changing language..."});      
+  },
+
   toggleInlineTranslations: function() {
     if (Tr8n.inline_translations_enabled) {
         Tr8n.UI.Lightbox.show('/tr8n/language/toggle_inline_translations', {width:400, height:480, message:"Disabling inline translations..."});      
@@ -4895,9 +4945,13 @@ Tr8n.UI.Lightbox = {
   overlay: null,
   content_frame: null,
 
-  init: function(options) {
-    var self = this;
-    this.options = options;
+  init: function() {
+
+  },
+
+  initContainer: function() {
+    if (this.container) return;
+
     this.container                = document.createElement('div');
     this.container.className      = 'tr8n_lightbox';
     this.container.id             = 'tr8n_lightbox';
@@ -4920,6 +4974,8 @@ Tr8n.UI.Lightbox = {
   },
 
   hide: function() {
+    if (!this.container) return;
+
     this.container.style.display = "none";
     this.overlay.style.display = "none";
     this.content_frame.src = 'about:blank';
@@ -4927,6 +4983,8 @@ Tr8n.UI.Lightbox = {
   },
 
   showHTML: function(content, opts) {
+    this.initContainer();
+
     var self = this;
     opts = opts || {};
 
@@ -4964,6 +5022,8 @@ Tr8n.UI.Lightbox = {
   },
 
   show: function(url, opts) {
+    this.initContainer();
+
     var self = this;
     opts = opts || {};
 
@@ -5006,41 +5066,10 @@ Tr8n.UI.Translator = {
   stem_image: null, 
   content_frame: null,
 
-  init: function(options) {
+  init: function() {
     var self = this;
-    this.options = options;
-    this.translation_key_id = null;
-    this.suggestion_tokens = null;
-    this.container_width = 400;
 
-    this.container                = document.createElement('div');
-    this.container.className      = 'tr8n_translator';
-    this.container.id             = 'tr8n_translator';
-    this.container.style.display  = "none";
-    this.container.style.width    = this.container_width + "px";
-
-    this.stem_image = document.createElement('img');
-    this.stem_image.src = Tr8n.host + '/assets/tr8n/top_left_stem.png';
-    this.container.appendChild(this.stem_image);
-
-    this.content_frame = document.createElement('iframe');
-    this.content_frame.src = 'about:blank';
-    this.content_frame.style.border = '0px';
-    this.container.appendChild(this.content_frame);
-
-    document.body.appendChild(this.container);
-
-    if (window.addEventListener) {  // all browsers except IE before version 9
-      window.addEventListener("message", Tr8n.onMessage, false);
-    } else {
-      if (window.attachEvent) {   // IE before version 9
-          window.attachEvent("onmessage", Tr8n.onMessage);
-      }
-    }
-
-    var event_type = Tr8n.Utils.isOpera() ? 'click' : 'contextmenu';
-
-    Tr8n.Utils.addEvent(document, event_type, function(e) {
+    Tr8n.Utils.addEvent(document, Tr8n.Utils.isOpera() ? 'click' : 'contextmenu', function(e) {
       if (Tr8n.Utils.isOpera() && !e.ctrlKey) return;
 
       var translatable_node = Tr8n.Utils.findElement(e, ".tr8n_translatable");
@@ -5075,13 +5104,38 @@ Tr8n.UI.Translator = {
     });
   },
 
+  initContainer: function() {
+    if (this.container) return;
+
+    this.container                = document.createElement('div');
+    this.container.className      = 'tr8n_translator';
+    this.container.id             = 'tr8n_translator';
+    this.container.style.display  = "none";
+    this.container.style.width    = "400px";
+
+    this.stem_image = document.createElement('img');
+    this.stem_image.src = Tr8n.host + '/assets/tr8n/top_left_stem.png';
+    this.container.appendChild(this.stem_image);
+
+    this.content_frame = document.createElement('iframe');
+    this.content_frame.src = 'about:blank';
+    this.content_frame.style.border = '0px';
+    this.container.appendChild(this.content_frame);
+
+    document.body.appendChild(this.container);
+  },
+
   hide: function() {
+    if (!this.container) return;
+
     this.container.style.display = "none";
     this.content_frame.src = 'about:blank';
     Tr8n.Utils.showFlash();
   },
 
   show: function(translatable_node, is_language_case) {
+    this.initContainer();
+
     var self = this;
     Tr8n.UI.LanguageSelector.hide();
     Tr8n.UI.Lightbox.hide();
@@ -5149,9 +5203,6 @@ Tr8n.UI.Translator = {
   }
 
 }
-
-
-
 
 
 Tr8n.Translation = {
@@ -5256,39 +5307,24 @@ Tr8n.Translation = {
   
 }
 
-;(function() {
 
-  var setup = function() {
-    Tr8n.log("Initializing Tr8n user interface...");
+// Tr8n.Utils.addEvent(window, 'load', function() {
+//   alert("Booting Tr8n");
 
-    Tr8n.Utils.insertDiv('tr8n_root', 'display:none');
 
-    Tr8n.UI.Translator.init({});
-    Tr8n.UI.Lightbox.init({});
-    Tr8n.UI.LanguageSelector.init({});
+  // Tr8n.Utils.insertDiv('tr8n_root', 'display:none');
 
-    Tr8n.log("Done initializing Tr8n user interface.");
+window.Tr8n = window.$tr8n = Tr8n.Utils.extend(Tr8n, {
+  element     : Tr8n.Utils.element,
+  value       : Tr8n.Utils.value,
+  log         : Tr8n.Logger.log,
+  getStatus   : Tr8n.SDK.Auth.getStatus,
+  connect     : Tr8n.SDK.Auth.connect,
+  disconnect  : Tr8n.SDK.Auth.disconnect,
+  logout      : Tr8n.SDK.Auth.logout,
+  api         : Tr8n.SDK.Api.get          //most api calls are gets
+});
 
-    Tr8n.Utils.addEvent(document, "keyup", function(event) {
-      if (event.keyCode == 27) { // Capture Esc key
-        Tr8n.UI.Translator.hide();
-        Tr8n.UI.LanguageSelector.hide();
-        Tr8n.UI.Lightbox.hide();
-      }
-    });
-  }
+Tr8n.init();
 
-  window.Tr8n = window.$tr8n = Tr8n.Utils.extend(Tr8n, {
-    element     : Tr8n.Utils.element,
-    value       : Tr8n.Utils.value,
-    log         : Tr8n.Logger.log,
-    getStatus   : Tr8n.SDK.Auth.getStatus,
-    connect     : Tr8n.SDK.Auth.connect,
-    disconnect  : Tr8n.SDK.Auth.disconnect,
-    logout      : Tr8n.SDK.Auth.logout,
-    api         : Tr8n.SDK.Api.get          //most api calls are gets
-  });
-
-  Tr8n.Utils.addEvent(window, 'load', setup);
-  
-}).call(this);
+// });
