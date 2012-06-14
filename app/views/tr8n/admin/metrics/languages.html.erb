@@ -1,0 +1,16 @@
+<%= render :partial => "/tr8n/admin/common/header" %>
+<%= render :partial => "tabs" %>
+<%= tr8n_will_filter(@metrics) %>
+<%=link_to("Calculate daily metrics", {:action => :calculate_metrics}, :confirm => "Are you sure you want to run this opperation?")%>
+ | 
+<%=link_to("Calculate total metrics", {:action => :calculate_total_metrics}, :confirm => "Are you sure you want to run this opperation?")%>
+<br>
+
+<%= will_filter_table_tag(@metrics, :columns => [
+    [:language_id, lambda{|metric| metric.language.english_name}, :filterable => true],
+    [:type, :filterable => true], :metric_date, :user_count, :translator_count, 
+    :translation_count, :key_count, :locked_key_count
+  ]) 
+%>
+
+<%= render :partial => "/tr8n/admin/common/footer" %>
