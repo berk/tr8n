@@ -1,4 +1,4 @@
-<%= tr8n_with_options_tag(:default_locale => 'en-US', :admin => true) do %>
+<%= tr8n_with_options_tag(:default_locale => Tr8n::Config.default_admin_locale, :admin => true) do %>
 	<style>
 	  .tr8n_languages_table {
 	    text-align:center;
