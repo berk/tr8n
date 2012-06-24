@@ -377,8 +377,13 @@ module Tr8n
       site_info[:default_locale]
     end
 
+    def self.default_admin_locale
+      return block_options[:default_admin_locale] if block_options[:default_admin_locale]
+      site_info[:default_admin_locale]
+    end
+
     def self.multiple_base_languages?
-      'en-US' == default_locale
+      self.default_admin_locale == default_locale
     end
 
     def self.default_url
