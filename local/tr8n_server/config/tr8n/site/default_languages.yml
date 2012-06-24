@@ -463,7 +463,7 @@
   native_name: "Eesti"
   google_key: "et"
   facebook_key: ""
-  enabled:  tru
+  enabled:  true
   featured_index: 300
 "fo":
   english_name: "Faroese"
