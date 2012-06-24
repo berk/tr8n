@@ -25,7 +25,7 @@
       end
       html << "</div>"
       html.join("").html_safe
-    }],
+    }, :filterable => true],
     [:domain, lambda{|key_source|
       key_source.source and key_source.source.domain ? key_source.source.domain.name : 'unknown' 
     }],

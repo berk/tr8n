@@ -11,19 +11,19 @@
       else
          "Deleted Language"    
       end  
-    }], 
+    }, :filterable => true], 
     [:translator_id, lambda{|comment|
       if comment.translator
         link_to(comment.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :translator_id => comment.translator.id) 
       else
          "Deleted Translator"    
       end  
-    }], 
+    }, :filterable => true], 
     [:translation_key_id, lambda{|comment|
       html = link_to(comment.key.label[0..30], :action => :view, :key_id => comment.key.id)
       html << "..." if comment.key.label.length > 30
       html
-    }], 
+    }, :filterable => true], 
     [:message, lambda{|comment|
       comment.toHTML
     }], :created_at,

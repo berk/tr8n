@@ -11,20 +11,20 @@
     [:checkbox, :translators],
     [:name, lambda{|translator|
        link_to(translator.name, :action => :view, :translator_id => translator.id) 
-    }],
+    }, :style => ''],
     :country_code, 
     [:admin, lambda{|translator|
       translator.admin?  
-    }, 'text-align:right'],
+    }, :style => ''],
     [:level, lambda{|translator|
       if translator.admin?
-        "<span style='color:red'>#{translator.title}</span>".html_safe
+        "<span style='color:red;'>#{translator.title}</span> ".html_safe
       elsif translator.manager?
-        "<span style='color:brown'>#{translator.title}</span>".html_safe
+        "<span style='color:brown;'>#{translator.title}</span> ".html_safe
       else
         translator.title
       end     
-    }, 'text-align:right'],
+    }, :filterable => true, :style => ''],
     [:blocked, lambda{|translator|
       html = []
       if translator.blocked?
@@ -35,7 +35,7 @@
       html << translator.blocked?
       html << "</span>"
       html.join("").html_safe
-    }, 'text-align:right'],
+    }, :filterable => true, :style => ''],
     [:rank, lambda{|translator|
       translator.rank ? (translator.rank * 100).to_i / 100.0 : 0
     }, 'text-align:right'], 

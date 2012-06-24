@@ -37,14 +37,14 @@
       else
         "Deleted Translation"  
       end  
-    }],
+    }, :filterable => true],
     [:translator_id, lambda{|vote|
       if vote.translator
         link_to(vote.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :translator_id => vote.translator.id)
       else
         "Unknown" 
       end  
-    }],
+    }, :filterable => true],
     [:vote, lambda{|vote| 
       html = []
       if vote.vote == 1

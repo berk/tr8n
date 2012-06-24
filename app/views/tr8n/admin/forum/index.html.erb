@@ -10,7 +10,7 @@
       else
          "Deleted Language"    
       end  
-    }], 
+    }, :filterable => true], 
 
     [:translator_id, lambda{|topic|
       if topic.translator
@@ -18,7 +18,7 @@
       else
          "Deleted Translator"    
       end  
-    }], 
+    }, :filterable => true], 
     
     :topic,
 

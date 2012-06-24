@@ -18,7 +18,7 @@
 	    html << '</div>'  
       html.join('').html_safe
 	  }],
-    :locale,
+    [:locale, :filterable => true],
     [:admin, lambda{|key| key.admin}, 'padding:5px;text-align:right;'],
     [:level, lambda{|key| key.level}, 'padding:5px;text-align:right;'], 
 	  [:translation_count, lambda{|key| link_to(key.translation_count || 0, "/tr8n/admin/translation/index?wf_c0=translation_key_id&wf_o0=is&wf_v0_0=#{key.id}")}, 'padding:5px;text-align:right;'],

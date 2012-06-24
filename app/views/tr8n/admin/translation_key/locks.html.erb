@@ -11,7 +11,7 @@
       else
          "Deleted Language"    
       end  
-    }], 
+    }, :filterable => true], 
     [:translation_key_id, lambda{|lock|
       if lock.translation_key
         html = []
@@ -30,7 +30,7 @@
       else
          "Deleted Translator"    
       end  
-    }], 
+    }, :filterable => true], 
     :locked, :updated_at
   ]) %>
 <% end %>

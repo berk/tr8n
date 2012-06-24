@@ -26,7 +26,7 @@ module Tr8n
     extend ActiveSupport::Concern
 
     def tr8n_default_client_source
-      "#{params[:controller]}/#{params[:action]}/JS"
+      request.url
     end
 
     # Creates a hash of translations for a page source(s) or a component(s)
@@ -73,7 +73,7 @@ module Tr8n
 
     # Creates an instance of tr8nProxy object
     def tr8n_client_sdk_tag(opts = {})
-      opts[:default_source]           ||= tr8n_default_client_source
+      # opts[:default_source]           ||= tr8n_default_client_source
       opts[:scheduler_interval]       ||= Tr8n::Config.default_client_interval
 
       opts[:enable_inline_translations] = (Tr8n::Config.current_user_is_translator? and Tr8n::Config.current_translator.enable_inline_translations? and (not Tr8n::Config.current_language.default?))

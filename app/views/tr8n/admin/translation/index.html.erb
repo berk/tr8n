@@ -12,14 +12,14 @@
        html << translation.translation_key.description
        html << "</div>"
        html.join("").html_safe 
-    }],
+    }, :filterable => true],
     [:language_id, lambda{|translation|
       if translation.language
         link_to(translation.language.english_name, :controller => "/tr8n/admin/language", :action => :view, :lang_id => translation.language.id)
       else
          "Deleted Language"    
       end  
-    }],
+    }, :filterable => true],
     [:label, lambda{|translation|
       html = []
       html << link_to(translation.label, :action => :view, :translation_id => translation.id)
@@ -36,7 +36,7 @@
       else
         "Unknown" 
       end  
-    }],
+    }, :filterable => true],
     [:rank, lambda{|translation| 
       html = []
       if translation.rank >= Tr8n::Config.translation_threshold

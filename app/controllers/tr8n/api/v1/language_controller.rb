@@ -37,8 +37,6 @@ class Tr8n::Api::V1::LanguageController < Tr8n::Api::V1::BaseController
   
   def translate
     language = Tr8n::Language.for(params[:language]) || tr8n_current_language
-    source = CGI.unescape(params[:source] || "API") 
-    
     return sanitize_api_response(translate_phrase(language, params, {:source => source, :api => :translate})) if params[:label]
     
     # API signature
@@ -83,7 +81,7 @@ class Tr8n::Api::V1::LanguageController < Tr8n::Api::V1::BaseController
         phrase = {:label => phrase} if phrase.is_a?(String)
         translations << translate_phrase(language, phrase, {:source => source, :url => source, :api => :translate})
       end
-      
+
       return sanitize_api_response({:phrases => translations})    
     end
     
@@ -93,7 +91,7 @@ class Tr8n::Api::V1::LanguageController < Tr8n::Api::V1::BaseController
   end
 
 private
-  
+
   def translate_phrase(language, phrase, opts = {})
     return "" if phrase[:label].strip.blank?
     language.translate(phrase[:label], phrase[:description], {}, opts)

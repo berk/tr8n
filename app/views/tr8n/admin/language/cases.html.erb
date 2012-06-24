@@ -10,14 +10,14 @@
       else
          "Deleted Language"    
       end  
-    }], :keyword, :latin_name, :native_name, :description, 
+    }, :filterable => true], :keyword, :latin_name, :native_name, :description, 
     [:translator_id, lambda{|lcase|
       if lcase.translator
         link_to(lcase.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :translator_id => lcase.translator.id)
       else
         "System Generated" 
       end  
-    }], :created_at
+    }, :filterable => true], :created_at
    ]) %>
 <% end %>
 

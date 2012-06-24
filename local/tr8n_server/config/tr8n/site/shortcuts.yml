@@ -13,7 +13,7 @@ Ctrl+Shift+L:
 Ctrl+Shift+A:       
   description:  Displays all available languages  
   script:       "window.location = Tr8n.host + '/tr8n/language/table';"
-  
+
 Ctrl+Shift+K:       
   description:  Adds software keyboard for each entry field
   script:       "Tr8n.Utils.toggleKeyboards();"

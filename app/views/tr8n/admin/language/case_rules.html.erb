@@ -2,23 +2,23 @@
 <%= render :partial => "tabs" %>
 <%= tr8n_will_filter(@case_rules) %>
 
+<% pp @case_rules %>
+
 <%= form_tag("", :id => "rules_form") do %>
   <%= will_filter_table_tag(@case_rules, :columns => [
     [:language_id, lambda{|lcase|
       if lcase.language
-        link_to(lcase.language.english_name, :controller => "/tr8n/admin/language", :action => :view, :lang_id => lcase.language.id)
+        link_to(lcase.language.english_name, {:controller => "/tr8n/admin/language", :action => :view, :lang_id => lcase.language.id}, {:title => "Language Id: #{lcase.language_id}"})
       else
          "Deleted Language"    
       end  
-    }], :description, 
+    }, :filterable => true],
     [:translator_id, lambda{|lcase|
       if lcase.translator
-        link_to(lcase.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :translator_id => lcase.translator.id)
+        link_to(lcase.translator.name, {:controller => "/tr8n/admin/translator", :action => :view, :translator_id => lcase.translator.id}, {:title => "Translator Id: #{lcase.translator_id}"})
       else
         "System Generated" 
       end  
-    }], :created_at
+    }, :filterable => true], :definition, :created_at
    ]) %>
 <% end %>
-
-<%= render :partial => "/tr8n/admin/common/footer" %>

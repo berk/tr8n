@@ -61,7 +61,7 @@ class Tr8n::LanguageMetricFilter < Tr8n::BaseFilter
     end
 
     if criteria_key == :type
-      return ["DailyLanguageMetric", "MonthlyLanguageMetric", "TotalLanguageMetric"]
+      return ["Tr8n::DailyLanguageMetric", "Tr8n::MonthlyLanguageMetric", "Tr8n::TotalLanguageMetric"]
     end
 
     return []
@@ -79,7 +79,7 @@ class Tr8n::LanguageMetricFilter < Tr8n::BaseFilter
  
     case key
       when "totals"
-        return [:type, :is, "TotalLanguageMetric"]
+        return [:type, :is, "Tr8n::TotalLanguageMetric"]
     end   
   end
 

@@ -44,7 +44,7 @@
 #++
 
 class Tr8n::IpLocation < ActiveRecord::Base
-  set_table_name :tr8n_ip_locations
+  self.table_name = :tr8n_ip_locations
   attr_accessible :low, :high, :registry, :assigned, :ctry, :cntry, :country
 
   def self.no_country_clause

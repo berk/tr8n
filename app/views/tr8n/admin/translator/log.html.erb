@@ -11,8 +11,8 @@
       else
         "Unknown" 
       end  
-    }],
-    :action, 
+    }, :filterable => true],
+    [:action, :filterable => true], 
     :reference,
     [:description, lambda{|log|
       html = []

@@ -2962,15 +2962,15 @@ Tr8n.Utils = {
     return (el.className && exp.test(el.className))?true:false;
   },
 
-  findElement: function (e,selector,el) {
+  findElement: function (e, selector, el) {
     var event = e || window.event;
     var target = el || event.target || event.srcElement;
-    if(target == document.body) return null;
+    if (target == null || target == document.body || target.tagName == 'HTML') return null;
     var condition = (selector.match(/^\./)) ? this.hasClassName(target,selector.replace(/^\./,'')) : (target.tagName.toLowerCase() == selector.toLowerCase());
-    if(condition) {
+    if (condition) {
       return target;
     } else {
-      return this.findElement(e,selector,target.parentNode);
+      return this.findElement(e, selector, target.parentNode);
     }
   },
 
@@ -3648,7 +3648,7 @@ Tr8n.SDK.Proxy = {
   language: null,
   translations: {},
   missing_translation_keys: {},
-  source: window.location,
+  source: null,  // the source is only needed for custom components - in most cases referrer should be used to minimize jsonp urls
   
   init: function(opts) {
     Tr8n.log("Initializing Tr8n Client SDK...");
@@ -3659,7 +3659,7 @@ Tr8n.SDK.Proxy = {
     Tr8n.inline_translations_enabled = this.options['enable_inline_translations'];
     this.tml_enabled = this.options['enable_tml'];
     this.text_enabled = this.options['enable_text'];
-    this.source = this.options['source'] || this.source;
+    this.source = this.options['source'];
 
     this.language = new Tr8n.SDK.Language();
 
@@ -3812,11 +3812,13 @@ Tr8n.SDK.Proxy = {
     
     var self = this;
     Tr8n.log("Submitting " + phrases.length + " translation keys...");
+    
+    var params = {
+      phrases: JSON.stringify(phrases)
+    };
+    if (self.source) params['source'] = self.source;   // don't send it unless it is set
 
-    Tr8n.api('language/translate', {
-      phrases: JSON.stringify(phrases), 
-      source: self.source
-    }, function(data) {
+    Tr8n.api('language/translate', params, function(data) {
         // Tr8n.log("Received response from the server: " + JSON.stringify(data));
         self.updateMissingTranslationKeys(data['phrases']);
     });
@@ -3837,6 +3839,7 @@ Tr8n.SDK.Proxy = {
        this.translations[translation_key_data.key] = translation_key_data;
        var missing_key_data = this.missing_translation_keys[translation_key_data.key];
        var tr8nElement = Tr8n.element(translation_key_data.key);
+       // alert(tr8nElement);
       
        if (tr8nElement && missing_key_data.translation_key) {
          tr8nElement.setAttribute('translation_key_id', translation_key_data['id']);

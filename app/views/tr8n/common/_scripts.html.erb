@@ -10,7 +10,12 @@
   <% end %>  
 
   <%=stylesheet_link_tag("tr8n/tr8n.css") -%>
-  <%=javascript_include_tag("tr8n/tr8n-compiled.js", :charset => "UTF-8") -%>
+
+  <% if params[:debug_tr8n_js] %>
+    <%=javascript_include_tag("tr8n/tr8n.js", :charset => "UTF-8") -%>
+  <% else %>  
+    <%=javascript_include_tag("tr8n/tr8n-compiled.js", :charset => "UTF-8") -%>
+  <% end %>
 
   <% if Tr8n::Config.enable_effects? %>
     <%=javascript_include_tag(Tr8n::Config.effects_library_path) -%>

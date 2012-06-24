@@ -1,4 +1,4 @@
-<% if Tr8n::Config.enable_translator_tabs? %>
+<% if Tr8n::Config.enable_translator_tabs? and not tr8n_current_user_is_guest? %>
 	<%= render :partial => "/tr8n/common/tabs" %>
 <% end %>	
 

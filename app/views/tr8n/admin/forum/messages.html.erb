@@ -10,7 +10,7 @@
       else
          "Deleted Language"    
       end  
-    }], 
+    }, :filterable => true], 
 
     [:translator_id, lambda{|message|
       if message.translator
@@ -18,8 +18,10 @@
       else
          "Deleted Translator"    
       end  
-    }], 
+    }, :filterable => true], 
     
+    [:language_forum_topic_id, :filterable => true], 
+
     :message,
 
     [:actions, lambda{|message|

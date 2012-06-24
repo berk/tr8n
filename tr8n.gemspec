@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
   s.licenses = ['MIT']
   
   s.add_dependency "rails", "~> 3.2.3"
-  s.add_dependency 'will_filter', "~> 3.1.8"
+  s.add_dependency 'will_filter', "~> 3.1.9"
   s.add_dependency 'kaminari', ">= 0"
   s.add_dependency 'sass', ['>= 0']
   s.add_development_dependency 'fssm', ['>= 0']

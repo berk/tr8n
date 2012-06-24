@@ -5,7 +5,7 @@ PATH
       kaminari
       rails (~> 3.2.3)
       sass
-      will_filter (~> 3.1.8)
+      will_filter (~> 3.1.9)
 
 GEM
   remote: http://rubygems.org/
@@ -58,7 +58,7 @@ GEM
       treetop (~> 1.4.8)
     memcache-client (1.8.5)
     method_source (0.7.1)
-    mime-types (1.18)
+    mime-types (1.19)
     multi_json (1.2.0)
     polyglot (0.3.3)
     pry (0.9.8.4)
@@ -119,7 +119,7 @@ GEM
       polyglot (>= 0.3.1)
     tzinfo (0.3.33)
     watchr (0.7)
-    will_filter (3.1.8)
+    will_filter (3.1.9)
       kaminari
       rails (>= 3.2.3)
       sass

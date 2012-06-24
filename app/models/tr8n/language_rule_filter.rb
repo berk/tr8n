@@ -59,7 +59,7 @@ class Tr8n::LanguageRuleFilter < Tr8n::BaseFilter
   
   def value_options_for(criteria_key)
     if criteria_key == :type
-      return Tr8n::Config.language_rule_classes.collect{|cls| cls.name.split('::').last}
+      return Tr8n::Config.language_rule_classes.collect{|cls| cls.name}
     end
 
     return super

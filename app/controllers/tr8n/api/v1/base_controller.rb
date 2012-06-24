@@ -100,4 +100,16 @@ private
     end      
   end
 
+  def source
+    @source ||= begin
+      if params[:source].blank?
+        uri = URI.parse(request.env['HTTP_REFERER'])
+        uri.query = nil
+        uri.to_s
+      else 
+        CGI.unescape(params[:source])
+      end
+    end
+  end
+
 end
