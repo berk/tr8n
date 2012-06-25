@@ -92,7 +92,7 @@ class Tr8n::Translation < ActiveRecord::Base
   end
   
   def reset_votes!(translator)
-    Tr8n::TranslationVote.delete_all("translation_id = #{self.id}")
+    Tr8n::TranslationVote.delete_all(["translation_id = ?", self.id])
     vote!(translator, 1)
   end
   
