@@ -22,6 +22,7 @@
 #++
 
 class Tr8n::Api::V1::TranslationController < Tr8n::Api::V1::BaseController
+  unloadable
 
   # returns a list of all languages
   def submit

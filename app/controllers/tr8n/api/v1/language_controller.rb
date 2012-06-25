@@ -22,6 +22,7 @@
 #++
 
 class Tr8n::Api::V1::LanguageController < Tr8n::Api::V1::BaseController
+  unloadable
 
   # for ssl access to the translator - using ssl_requirement plugin  
   ssl_allowed :translate  if respond_to?(:ssl_allowed)
@@ -43,7 +44,11 @@ class Tr8n::Api::V1::LanguageController < Tr8n::Api::V1::BaseController
 #   return sanitize_api_response({"error" => "You must be logged in to use the api"}) if tr8n_current_user_is_guest?
 
     language = Tr8n::Language.for(params[:language]) || tr8n_current_language
+    if params[:source].blank?
+      source = "API"
+    else
     source = CGI.unescape(params[:source]) || "API"
+    end
     
     return sanitize_api_response(translate_phrase(language, params, {:source => source})) if params[:label]
     

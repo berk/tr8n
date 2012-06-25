@@ -22,6 +22,7 @@
 #++
 
 class Tr8n::Admin::TranslationKeyController < Tr8n::Admin::BaseController
+  unloadable
   
   def index
     @keys = Tr8n::TranslationKey.filter(:params => params, :filter => Tr8n::TranslationKeyFilter)

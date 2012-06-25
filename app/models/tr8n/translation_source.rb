@@ -47,6 +47,28 @@ class Tr8n::TranslationSource < ActiveRecord::Base
 
   def clear_cache
     Tr8n::Cache.delete("translation_source_#{translation_domain_id}_#{source}")
+    Tr8n::Cache.delete("cached_translation_keys_for_source_#{id}")
   end
   
+  def self.for(source_name, url)
+    return nil if source_name.blank?
+
+    translation_domain = Tr8n::TranslationDomain.find_or_create(url)
+    Tr8n::Cache.fetch("translation_source_#{translation_domain.id}_#{source_name}") do
+      find_or_create(source_name, translation_domain)
+    end
+  end
+
+  def cached_translation_keys
+    Tr8n::Cache.fetch("cached_translation_keys_for_source_#{id}") do
+
+      conditions = %'
+        ( id IN ( SELECT DISTINCT(translation_key_id)
+                    FROM tr8n_translation_key_sources
+                   WHERE translation_source_id = #{Integer(self.id)} ) )
+      '.squish
+
+      Tr8n::TranslationKey.find(:all, :conditions => conditions)
+    end
+  end
 end
