@@ -22,6 +22,7 @@
 #++
 
 class Tr8n::Admin::BaseController < Tr8n::BaseController
+  unloadable
 
   if Tr8n::Config.admin_helpers.any?
     helper *Tr8n::Config.admin_helpers

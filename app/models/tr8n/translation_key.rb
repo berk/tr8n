@@ -71,7 +71,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
                           :admin => Tr8n::Config.block_options[:admin])
         unless options[:source].blank?
           # at the time of creation - mark the first source of the key
-          Tr8n::TranslationKeySource.find_or_create(new_tkey, Tr8n::TranslationSource.find_or_create(options[:source], options[:url]))
+          Tr8n::TranslationKeySource.for(new_tkey, Tr8n::TranslationSource.for(options[:source], options[:url]))
         end  
         new_tkey
       end  
@@ -112,10 +112,14 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   # primarely used for the site map and only needs to be enabled 
   # for a short period of time on a single machine
   def self.track_source(tkey, options)
-    return unless Tr8n::Config.enable_key_source_tracking? 
     return if options[:source].blank?
+    return unless Tr8n::Config.enable_key_source_tracking? 
     
-    key_source = Tr8n::TranslationKeySource.find_or_create(tkey, Tr8n::TranslationSource.find_or_create(options[:source], options[:url]))
+    key_source = Tr8n::TranslationKeySource.for(tkey, Tr8n::TranslationSource.for(options[:source], options[:url]))
+    track_caller(key_source, options)
+ end
+
+  def self.track_caller(key_source, options)
     return unless Tr8n::Config.enable_key_caller_tracking?
     
     options[:caller] ||= caller
@@ -247,8 +251,10 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   
   # returns only the translations that meet the minimum rank
   def valid_translations_for(language)
-    Tr8n::Cache.fetch("translations_#{language.locale}_#{self.key}") do
-      translations_for(language, Tr8n::Config.translation_threshold)
+    Tr8n::LocalTranslationCache.fetch(self, language) do
+      Tr8n::Cache.fetch("translations_#{language.locale}_#{self.key}") do
+        translations_for(language, Tr8n::Config.translation_threshold)
+      end
     end
   end
   
@@ -449,9 +455,9 @@ class Tr8n::TranslationKey < ActiveRecord::Base
       classes << 'tr8n_not_translated'
     end
 
-    html = "<tr8n class='#{classes.join(' ')}' translation_key_id='#{id}'>"
+    html = "<span class='#{classes.join(' ')}' translation_key_id='#{id}'>"
     html << sanitized_label
-    html << "</tr8n>"
+    html << "</span>"
     html.html_safe    
   end
   
@@ -483,9 +489,9 @@ class Tr8n::TranslationKey < ActiveRecord::Base
       classes << (translated ? 'tr8n_translated' : 'tr8n_not_translated')
     end  
 
-    html = "<tr8n class='#{classes.join(' ')}' translation_key_id='#{id}'>"
+    html = "<span class='#{classes.join(' ')}' translation_key_id='#{id}'>"
     html << translated_label
-    html << "</tr8n>"
+    html << "</span>"
     html
   end
       
@@ -575,7 +581,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     end  
     
     unless params[:search].blank?
-      conditions[0] << " and (tr8n_translation_keys.label like ? or tr8n_translation_keys.description like ?)" 
+      conditions[0] << " and (lower(tr8n_translation_keys.label) like ? or lower(tr8n_translation_keys.description) like ?)"
       conditions << "%#{params[:search]}%"
       conditions << "%#{params[:search]}%"  
     end

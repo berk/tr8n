@@ -22,6 +22,7 @@
 #++
 
 class Tr8n::TranslationsController < Tr8n::BaseController
+  unloadable
 
   before_filter :validate_current_translator
   before_filter :validate_default_language, :except => [:translate, :permutate, :vote]

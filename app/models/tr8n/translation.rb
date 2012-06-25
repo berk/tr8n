@@ -39,6 +39,12 @@ class Tr8n::Translation < ActiveRecord::Base
 
   VIOLATION_INDICATOR = -10
 
+  before_save :escape_html_on_label
+
+  def escape_html_on_label
+    self.label = ERB::Util.html_escape(label)
+  end
+
   def vote!(translator, score)
     score = score.to_i
     vote = Tr8n::TranslationVote.find_or_create(self, translator)
@@ -205,10 +211,17 @@ class Tr8n::Translation < ActiveRecord::Base
   end
   
   def clear_cache
+    invalidate_cached_translation_keys_for_sources
     Tr8n::Cache.delete("translations_#{language.locale}_#{translation_key.key}")
     translation_key.update_translation_count!
   end
   
+  def invalidate_cached_translation_keys_for_sources
+    translation_key.sources.each do |s|
+      Tr8n::Cache.delete("client_side_for_source_#{s.source}_#{language.locale}")
+      Tr8n::Cache.delete("cached_translation_keys_for_source_#{s.id}")
+    end
+  end
   ###############################################################
   ## Search Related Stuff
   ###############################################################
@@ -251,7 +264,7 @@ class Tr8n::Translation < ActiveRecord::Base
     
     unless params[:search].blank?
       conditions[0] << " and " unless conditions[0].blank?
-      conditions[0] << "label like ?" 
+      conditions[0] << "lower(label) like ?"
       conditions << "%#{params[:search]}%"
     end
 

@@ -22,6 +22,7 @@
 #++
 
 class Tr8n::Admin::ClientsdkController < Tr8n::Admin::BaseController
+  unloadable
 
   def index
     

@@ -40,7 +40,7 @@ class Tr8n::Language < ActiveRecord::Base
   end
   
   def self.for(locale)
-    return nil if locale.nil?
+    locale = Tr8n::Config.default_locale if locale.blank?
     Tr8n::Cache.fetch("language_#{locale}") do 
       find_by_locale(locale)
     end
@@ -183,6 +183,24 @@ class Tr8n::Language < ActiveRecord::Base
     end
   end
 
+  def translation_key(label, desc, options)
+    if options[:source]
+      @translation_keys ||= begin
+        Tr8n::TranslationSource.for(options[:source], options[:url]).cached_translation_keys.each_with_object({}) do |ts, hash|
+          hash[ts.key] = ts
+        end
+      end
+
+      generated_key = Tr8n::TranslationKey.generate_key(label, desc)
+      if @translation_keys[generated_key]
+        @translation_keys[generated_key]
+      else
+        @translation_keys[generated_key] = Tr8n::TranslationKey.find_or_create(label, desc, options)
+      end
+    else
+      Tr8n::TranslationKey.find_or_create(label, desc, options)
+    end
+  end
   def self.translate(label, desc = "", tokens = {}, options = {})
     # raise Tr8n::Exception.new("The label is blank") if label.blank?
     raise Tr8n::Exception.new("The label is being translated twice") if label.tr8n_translated?
@@ -201,7 +219,7 @@ class Tr8n::Language < ActiveRecord::Base
     return Tr8n::TranslationKey.substitute_tokens(label, tokens, options, self).tr8n_translated unless Tr8n::Config.enabled?
     return Tr8n::TranslationKey.substitute_tokens(label, tokens, options, self).tr8n_translated if default?
 
-    translation_key = Tr8n::TranslationKey.find_or_create(label, desc, options)
+    translation_key = translation_key(label, desc, options)
     translation_key.translate(self, tokens.merge(:viewing_user => Tr8n::Config.current_user), options).tr8n_translated
   end
   alias :tr :translate

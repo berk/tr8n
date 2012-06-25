@@ -22,6 +22,7 @@
 #++
 
 class Tr8n::Api::V1::BaseController < ApplicationController
+  unloadable
 
 private
 
