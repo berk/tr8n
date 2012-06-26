@@ -74,7 +74,7 @@ class Tr8n::LanguageUser < ActiveRecord::Base
   end
 
   def self.create_or_touch(user, language)
-    return unless user.id
+    return if Tr8n::Config.guest_user?(user)
     lu = Tr8n::LanguageUser.find_or_create(user, language)
     lu.touch
     lu
