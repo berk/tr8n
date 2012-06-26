@@ -3163,6 +3163,16 @@ Tr8n.Effects = {
   focus: function(element_id) {
     Tr8n.element(element_id).focus();
   },
+  animateHeight: function(element_id, height) {
+   var obj = Tr8n.element(element_id);
+   var obj_height = obj.clientHeight;
+   if(obj_height >= height) return;
+
+   obj.style.height = (obj_height + 20) + "px";
+   setTimeout(function() {
+       Tr8n.Effects.animateHeight(obj, height);
+   }, 10); 
+  },
   scrollTo: function(element_id) {
     var theElement = Tr8n.element(element_id);
     var selectedPosX = 0;
@@ -5053,6 +5063,10 @@ Tr8n.UI.Lightbox = {
   },
 
   resize: function(height) {
+    // this.container.style.marginTop    = -height/2 + 'px';
+    // Tr8n.Effects.animateHeight(this.container, height);
+    // Tr8n.Effects.animateHeight(this.content_frame, height);
+
     this.container.style.height       = height + 'px';
     this.container.style.marginTop    = -height/2 + 'px';
     this.content_frame.style.height   = height + 'px';

@@ -133,6 +133,10 @@ Tr8n.UI.Lightbox = {
   },
 
   resize: function(height) {
+    // this.container.style.marginTop    = -height/2 + 'px';
+    // Tr8n.Effects.animateHeight(this.container, height);
+    // Tr8n.Effects.animateHeight(this.content_frame, height);
+
     this.container.style.height       = height + 'px';
     this.container.style.marginTop    = -height/2 + 'px';
     this.content_frame.style.height   = height + 'px';

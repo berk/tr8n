@@ -53,6 +53,16 @@ Tr8n.Effects = {
   focus: function(element_id) {
     Tr8n.element(element_id).focus();
   },
+  animateHeight: function(element_id, height) {
+   var obj = Tr8n.element(element_id);
+   var obj_height = obj.clientHeight;
+   if(obj_height >= height) return;
+
+   obj.style.height = (obj_height + 20) + "px";
+   setTimeout(function() {
+       Tr8n.Effects.animateHeight(obj, height);
+   }, 10); 
+  },
   scrollTo: function(element_id) {
     var theElement = Tr8n.element(element_id);
     var selectedPosX = 0;
