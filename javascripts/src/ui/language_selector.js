@@ -63,7 +63,12 @@ Tr8n.UI.LanguageSelector = {
     Tr8n.Utils.showFlash();
   },
 
-  show: function() {
+  show: function(lightbox) {
+    if (lightbox) { 
+      Tr8n.UI.Lightbox.show('/tr8n/language/select?lightbox=true', {height:500, width:400});
+      return;
+    }
+
     this.initContainer();
 
     var self = this;
