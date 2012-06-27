@@ -22,7 +22,7 @@ RDoc::Task.new(:rdoc) do |rdoc|
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
 
-APP_RAKEFILE = File.expand_path("../local/tr8n_server/Rakefile", __FILE__)
+APP_RAKEFILE = File.expand_path("../sample/tr8n_server/Rakefile", __FILE__)
 load 'rails/tasks/engine.rake'
 
 Bundler::GemHelper.install_tasks

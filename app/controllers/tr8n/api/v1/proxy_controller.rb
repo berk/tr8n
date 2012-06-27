@@ -23,6 +23,47 @@
 
 class Tr8n::Api::V1::ProxyController < Tr8n::Api::V1::BaseController
 
+  def boot
+    uri = URI.parse(request.url)
+
+    script = []
+    script << "function addTr8nCSS(doc, src) {"
+    script << "var css = doc.createElement('link');"
+    script << "css.setAttribute('type', 'application/javascript');"
+    script << "css.setAttribute('href', src);"
+    script << "css.setAttribute('type', 'text/css');"
+    script << "css.setAttribute('rel', 'stylesheet');"
+    script << "css.setAttribute('media', 'screen');"
+    script << "doc.getElementsByTagName('head')[0].appendChild(css);"
+    script << "};"
+    script << "function addTr8nScript(doc, id, src, onload) {"
+    script << "var script = doc.createElement('script');"
+    script << "script.setAttribute('id', id);"
+    script << "script.setAttribute('type', 'application/javascript');"
+    script << "script.setAttribute('src', src);"
+    script << "script.setAttribute('charset', 'UTF-8');"
+    script << "if (onload) script.onload = onload;"
+    script << "doc.getElementsByTagName('head')[0].appendChild(script);"
+    script << "};"
+    script << "(function(doc) {if (doc.getElementById('tr8n-jssdk')) return;"
+
+    uri.path = "/assets/tr8n/tr8n.css"
+    script << "addTr8nCSS(doc, '#{uri.to_s}');"
+
+    if params[:debug]
+      uri.path = "/assets/tr8n/tr8n.js"    
+    else
+      uri.path = "/assets/tr8n/tr8n-compiled.js"    
+    end  
+    script << "addTr8nScript(doc, 'tr8n-jssdk', '#{uri.to_s}', function() {"
+
+    uri.path = "/tr8n/api/v1/proxy/init.js"    
+    script << "addTr8nScript(doc, 'tr8n-proxy', '#{uri.to_s}', function() {});"
+
+    script << "});}(document));"
+    render(:text => script.join(''), :content_type => "text/javascript")
+  end
+
   def init
     script = []
 
@@ -31,6 +72,7 @@ class Tr8n::Api::V1::ProxyController < Tr8n::Api::V1::BaseController
     opts[:enable_inline_translations] = (Tr8n::Config.current_user_is_translator? and Tr8n::Config.current_translator.enable_inline_translations? and (not Tr8n::Config.current_language.default?))
     opts[:default_decorations]        = Tr8n::Config.default_decoration_tokens
     opts[:default_tokens]             = Tr8n::Config.default_data_tokens
+    opts[:locale]                     = Tr8n::Config.current_language.locale
 
     if params[:ext]
       opts[:enable_text]              = true

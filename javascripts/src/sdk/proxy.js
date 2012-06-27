@@ -101,7 +101,9 @@ Tr8n.SDK.Proxy = {
   translations: {},
   missing_translation_keys: {},
   source: null,  // the source is only needed for custom components - in most cases referrer should be used to minimize jsonp urls
-  
+  page_locale: "en-US", // this needs to be dynamically determined based on tha page content
+  selected_locale: "en-US",
+
   init: function(opts) {
     Tr8n.log("Initializing Tr8n Client SDK...");
 
@@ -112,6 +114,7 @@ Tr8n.SDK.Proxy = {
     this.tml_enabled = this.options['enable_tml'];
     this.text_enabled = this.options['enable_text'];
     this.source = this.options['source'];
+    this.selected_locale = this.options['locale'];
 
     this.language = new Tr8n.SDK.Language();
 
@@ -220,9 +223,12 @@ Tr8n.SDK.Proxy = {
   },
     
   registerMissingTranslationKey: function(translation_key, token_values, options) {
+    // if selected language is the same as the page language - do not submit the missing keys
+    if (this.page_locale == this.selected_locale) return;
+
     if (!this.missing_translation_keys[translation_key.key]) {
       // Tr8n.log('Adding missing translation key to the queue: ' + translation_key.key);
-      this.missing_translation_keys[translation_key.key] = {translation_key: translation_key, token_values: token_values, options:options};
+      this.missing_translation_keys[translation_key.key] = {translation_key:translation_key, token_values:token_values, options:options};
     }
   },
 
@@ -232,9 +238,13 @@ Tr8n.SDK.Proxy = {
     var phrases = [];
     var count = 0;
 
-    for (var key in this.missing_translation_keys) {
-      var translation_key = this.missing_translation_keys[key].translation_key;
+    var keys = Object.keys(this.missing_translation_keys).sort();
+    for (var i=0; i<keys.length; i++) {
+      key = keys[i];
+      var missing_translation_key_data = this.missing_translation_keys[key];
+      var translation_key = missing_translation_key_data.translation_key;
       
+      // when will this happen?
       if (translation_key == null) continue;
 
       // ignore lables that are too long
@@ -290,8 +300,8 @@ Tr8n.SDK.Proxy = {
 
        this.translations[translation_key_data.key] = translation_key_data;
        var missing_key_data = this.missing_translation_keys[translation_key_data.key];
+       
        var tr8nElement = Tr8n.element(translation_key_data.key);
-       // alert(tr8nElement);
       
        if (tr8nElement && missing_key_data.translation_key) {
          tr8nElement.setAttribute('translation_key_id', translation_key_data['id']);

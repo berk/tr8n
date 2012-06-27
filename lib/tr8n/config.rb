@@ -390,6 +390,10 @@ module Tr8n
       site_info[:default_url]
     end
 
+    def self.login_url
+      site_info[:login_url]
+    end
+
     def self.current_locale_method
       site_info[:current_locale_method]
     end
@@ -446,18 +450,9 @@ module Tr8n
     def self.current_user_method
       site_user_info[:current_user_method]
     end
-
-    def self.site_user_info_enabled?
-      site_user_info[:enabled].nil? ? true : site_user_info[:enabled]
-    end
-
-    def self.site_user_info_disabled?
-      !site_user_info_enabled?
-    end
   
     def self.user_class_name
-      return site_user_info[:class_name] if site_user_info_enabled?
-      "Tr8n::Translator"  
+      site_user_info[:class_name]
     end
 
     def self.user_class

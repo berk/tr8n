@@ -80,16 +80,7 @@ module Tr8n
       end
 
       def tr8n_init_current_user
-        unless Tr8n::Config.site_user_info_enabled? # deprecated - the site should run a standalone translation engine with a bridge
-          user = Tr8n::Translator.find_by_id(session[:tr8n_translator_id]) if session[:tr8n_translator_id]
-          user ||= Tr8n::Translator.new
-          return user
-        end
-          
         eval(Tr8n::Config.current_user_method)
-      rescue
-        Tr8n::Logger.error("Site user integration is enabled, but #{Tr8n::Config.current_user_method} method is not defined")
-        Tr8n::Translator.new
       end
 
       def init_tr8n

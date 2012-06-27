@@ -10,12 +10,16 @@
         <% end %>            
       <% else %>
         <%=trla("You must be a registered translator.") %>
+        <div style="font-size:12px;text-align:center;padding-top:15px;">
+          <%=trla("[link: Click here] to create a translator account.", nil, :link => lambda{|txt| link_to(txt, Tr8n::Config.login_url, :target => "_top")} ) %>
+        </div>
       <% end %>
     </div>
 </div>
 <% end %>
 <%= render :partial => "/tr8n/common/lightbox_footer" %>
 
+<% if tr8n_current_translator %>
 <script>
   Tr8n.Utils.addEvent(window, "load", function(event) {
     window.setTimeout(function() {
@@ -23,3 +27,4 @@
     }, 500);
   });
 </script>
+<% end %>
