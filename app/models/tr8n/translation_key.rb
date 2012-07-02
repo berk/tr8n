@@ -65,7 +65,8 @@ class Tr8n::TranslationKey < ActiveRecord::Base
                               :description => desc, 
                               :locale => (options[:locale] || Tr8n::Config.block_options[:default_locale] || Tr8n::Config.default_locale),
                               :level => (options[:level] || Tr8n::Config.block_options[:level] || 0),
-                              :admin => Tr8n::Config.block_options[:admin])
+                              :admin => Tr8n::Config.block_options[:admin],
+                              :verified_at => Time.now)
 
       mark_as_admin(existing_key, options)
       update_default_locale(existing_key, options)
