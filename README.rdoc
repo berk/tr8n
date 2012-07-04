@@ -23,7 +23,7 @@ You can visit their web sites and see how it is being used. If your company is u
 
 = Gem Status
 
-https://gemnasium.com/berk/tr8n.png
+http://gemnasium.com/berk/tr8n.png
 
 = Documentation
 
