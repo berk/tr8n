@@ -21,9 +21,6 @@ Yammer Inc, http://www.yammer.com
 
 You can visit their web sites and see how it is being used. If your company is using Tr8n, please let me know and you will be added to the list.
 
-= Gem Status
-
-https://gemnasium.com/berk/tr8n.png
 
 = Documentation
 
