@@ -138,22 +138,22 @@ class Tr8n::Config
     
     sys_translator = system_translator
     
-    default_language_cases.each do |locale, cases|
-      language = Tr8n::Language.for(locale)
-      puts ">> Initializing language cases for #{language.english_name}..."
-      
-      next unless language
-      cases.keys.sort.each do |lkey|
-        lcase = cases[lkey]
-        rules = lcase.delete(:rules)
-        language_case = Tr8n::LanguageCase.create(lcase.merge(:language => language, :translator => sys_translator))
-        next if rules.blank?
-        rules.keys.sort.each_with_index do |lrkey, index|
-          lcrule = rules[lrkey]
-          Tr8n::LanguageCaseRule.create(:language_case => language_case, :language => language, :translator => sys_translator, :position => index, :definition => lcrule)
-        end
-      end
-    end    
+    #default_language_cases.each do |locale, cases|
+    #  language = Tr8n::Language.for(locale)
+    #  puts ">> Initializing language cases for #{language.english_name}..."
+    #  
+    #  next unless language
+    #  cases.keys.sort.each do |lkey|
+    #    lcase = cases[lkey]
+    #    rules = lcase.delete(:rules)
+    #    language_case = Tr8n::LanguageCase.create(lcase.merge(:language => language, :translator => sys_translator))
+    #    next if rules.blank?
+    #    rules.keys.sort.each_with_index do |lrkey, index|
+    #      lcrule = rules[lrkey]
+    #      Tr8n::LanguageCaseRule.create(:language_case => language_case, :language => language, :translator => sys_translator, :position => index, :definition => lcrule)
+    #    end
+    #  end
+    #end    
   end
   
   def self.root
@@ -813,7 +813,7 @@ class Tr8n::Config
   end
     
   def self.system_translator
-    Tr8n::Translator.find_by_level(system_level) || Tr8n::Translator.create(:user => system_user, :level => system_level)
+    Tr8n::Translator.find_by_level(system_level) || Tr8n::Translator.create(:user => system_user.becomes(Tr8n::Translator), :level => system_level)
   end
   
   def self.init_relationship_keys
