@@ -120,7 +120,7 @@ module Tr8n::HelperMethods
   def tr8n_phrases_link_tag(search = "", phrase_type = :without, phrase_status = :any)
     return unless Tr8n::Config.enabled?
     return if Tr8n::Config.current_language.default?
-    return unless Tr8n::Config.open_registration_mode? or Tr8n::Config.current_user_is_translator?
+    return unless Tr8n::Config.current_user_is_translator?
     return unless Tr8n::Config.current_translator.enable_inline_translations?
     
     link_to(image_tag("/tr8n/images/translate_icn.gif", :style => "vertical-align:middle; border: 0px;", :title => search), 
