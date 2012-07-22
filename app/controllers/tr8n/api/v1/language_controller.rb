@@ -30,7 +30,7 @@ class Tr8n::Api::V1::LanguageController < Tr8n::Api::V1::BaseController
   def index
     languages = []
     Tr8n::Language.enabled_languages.each do |lang|
-      languages << {:locale => lang.locale, :name => lang.full_name}
+      languages << {:locale => lang.locale, :name => lang.full_name, :id => lang.id}
     end
     sanitize_api_response({:languages => languages})
   end
