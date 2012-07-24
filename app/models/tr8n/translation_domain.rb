@@ -63,7 +63,12 @@ class Tr8n::TranslationDomain < ActiveRecord::Base
   end
   
   def self.find_or_create(url = nil)
-    domain_name = URI.parse(url || 'localhost').host || 'localhost'
+    begin
+      domain_name = URI.parse(url || 'localhost').host || 'localhost'
+    rescue Exception => ex
+      domain_name = url # for custom urls  
+    end
+    
     Tr8n::Cache.fetch(cache_key(domain_name)) do 
       find_by_name(domain_name) || create(:name => domain_name)
     end  
