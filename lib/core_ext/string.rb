@@ -45,14 +45,16 @@ class String
   def tr8n_translated?
     @tr8n_translated
   end
-  
-  def html_safe
-    @html_safe = true
-    self
-  end
-  
-  def html_safe?
-    @html_safe
+
+  unless method_defined?(:html_safe)
+    def html_safe
+      @html_safe = true
+      self
+    end
+
+    def html_safe?
+      @html_safe
+    end
   end
   
 end
