@@ -675,7 +675,7 @@ class Tr8n::Config
   end
 
   def self.default_language_cases
-    @default_language_cases ||= load_yml("/config/tr8n/rules/default_language_cases.yml", nil)
+    @default_language_cases ||= load_yml("/config/tr8n/rules/default_cases.yml", nil)
   end
 
   #########################################################
