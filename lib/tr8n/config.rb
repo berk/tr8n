@@ -813,7 +813,7 @@ class Tr8n::Config
   end
     
   def self.system_translator
-    Tr8n::Translator.find_by_level(system_level) || Tr8n::Translator.create(:user => system_user.becomes(Tr8n::Translator), :level => system_level)
+    Tr8n::Translator.find_by_level(system_level) || Tr8n::Translator.create(:user => system_user, :level => system_level)
   end
   
   def self.init_relationship_keys
