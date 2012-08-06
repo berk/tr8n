@@ -339,7 +339,7 @@ class Tr8n::Token
       return result
     end             
              
-    uniq_id = Tr8n::TranslationKey.generate_key(original_label, objects.join(","))         
+    uniq_id = Tr8n::Config.guid        
     result << "<span id=\"tr8n_other_link_#{uniq_id}\">" << " " << "and".translate("List elements joiner", {}, options) << " "
     result << "<a href='#' onClick=\"Tr8n.Effects.hide('tr8n_other_link_#{uniq_id}'); Tr8n.Effects.show('tr8n_other_elements_#{uniq_id}'); return false;\">"
     result << "{num|| other}".translate("List elements joiner", {:num => remaining_ary.size}, options)

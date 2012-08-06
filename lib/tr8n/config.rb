@@ -867,6 +867,10 @@ class Tr8n::Config
     @default_configuration_keys ||= load_yml("/config/tr8n/data/default_configuration_keys.yml", nil)
   end
 
+  def self.guid
+    (0..16).to_a.map{|a| rand(16).to_s(16)}.join
+  end
+
   #########################################################
   # Sync Process
   #########################################################
