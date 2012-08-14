@@ -2,7 +2,7 @@
 	<div class="section_title">
 		<% if @translation_key.can_be_translated? %>
 	    <div style="float:right; font-size: 12px; font-weight:normal;">
-	      <%= link_to_function("#{image_tag('/tr8n/images/add.png', :style=>'vertical-align:bottom')} #{tra("add translation")}", "addTranslation()") %>
+	      <%= link_to_function("#{image_tag('/tr8n/images/add.png', :style=>'vertical-align:bottom')} #{tra("add translation")}".html_safe, "addTranslation()") %>
 	    </div> 
     <% end %>
 				
@@ -42,7 +42,7 @@
           
           <%=tr8n_toggler_tag("translations_section_#{index}", "", true)%>
 					<span style="font-size:14px;">
-            <%=key %>
+            <%=key.html_safe %>
 					</span>
         </div>
         <div id="translations_section_<%=index%>">
