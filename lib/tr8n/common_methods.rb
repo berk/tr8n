@@ -149,7 +149,7 @@ module Tr8n::CommonMethods
     options.merge!(:host => host)
     
     unless Tr8n::Config.enabled?
-      return Tr8n::TranslationKey.substitute_tokens(label, tokens, options)
+      return Tr8n::TranslationKey.substitute_tokens(label, tokens, options).html_safe
     end
     
     if Tr8n::Config.enable_pig_latin?  
