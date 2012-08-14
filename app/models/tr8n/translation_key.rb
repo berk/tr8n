@@ -468,7 +468,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     html = "<tr8n class='#{classes.join(' ')}' translation_key_id='#{id}'>"
     html << label
     html << "</tr8n>"
-    html    
+    html.html_safe
   end
   
   def level
