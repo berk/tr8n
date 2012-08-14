@@ -39,13 +39,13 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   alias :domains      :translation_domains
   alias :comments     :translation_key_comments
 
-  #def self.cache_key(key_hash)
-  #  "translation_key_#{key_hash}"
-  #end
-  #
-  #def cache_key
-  #  self.class.cache_key(key)
-  #end
+  def self.cache_key(key_hash)
+    "translation_key_#{key_hash}"
+  end
+  
+  def cache_key
+    self.class.cache_key(key)
+  end
 
   def self.find_or_create(label, desc = "", options = {})
     key = generate_key(label, desc)
