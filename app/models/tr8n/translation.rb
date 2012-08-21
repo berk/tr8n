@@ -123,7 +123,7 @@ class Tr8n::Translation < ActiveRecord::Base
       rules.each do |rule|
         context_rules << "<strong>#{rule[:token]}</strong> #{rule[:rule].description}" 
       end
-      context_rules.join(" and ")
+      context_rules.join(" and ").html_safe
     end
   end
 
