@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.description = %q{Crowd-sourced translation and localization for Rails}
   s.email = %q{michael@geni.com}
   s.extra_rdoc_files = [
-    "README"
+    "README.rdoc"
   ]
   s.files = [
     ".project",
