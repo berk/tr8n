@@ -29,11 +29,14 @@
 				       <span id="tr8n_translation_suggestion_<%=@translation_key.id%>" style="font-size:12px;"></span>
 				    </a>
 				    <%=image_tag("/tr8n/images/right_quote.png", :style=>"text-align:bottom;padding-top:5px;") %>
-				    
+
 				    <script type="text/javascript">
-					    addEvent(window, "load", function(event) {
-                 suggestTranslation("<%=@translation_key.id %>", "<%=@translation_key.suggestion_label %>", "<%=@translation_key.suggestion_tokens.join(',')%>", "<%=@translation_key.language.google_key%>", "<%=tr8n_current_language.google_key%>");
-					    });
+              <% sanitized_label = @translation_key.tokenless_label.gsub('"', '\"') %>
+              window.setTimeout(function() {
+              	if (tr8nTranslator) {
+            			tr8nTranslator.suggestTranslation("<%=@translation_key.id %>", "<%=sanitized_label %>", "<%=@translation_key.suggestion_tokens.join(',')%>", "<%=@translation_key.language.google_key%>", "<%=tr8n_current_language.google_key%>");
+            		}
+              }, 1000);
 				    </script>
 
 				    <div style="color:grey; font-size:12px; padding-top:10px;">

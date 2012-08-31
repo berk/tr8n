@@ -80,8 +80,8 @@ Tr8n.Translator.prototype = {
       html += splash_screen.innerHTML;
     } else {
       html += "<div style='font-size:18px;text-align:center; margin:5px; padding:10px; background-color:black;'>";
-      html += "  <img src='/assets/tr8n/tr8n_logo.jpg' style='width:280px; vertical-align:middle;'>";
-      html += "  <img src='/assets/tr8n/loading3.gif' style='width:200px; height:20px; vertical-align:middle;'>";
+      html += "  <img src='/tr8n/images/tr8n_logo.jpg' style='width:280px; vertical-align:middle;'>";
+      html += "  <img src='/tr8n/images/loading3.gif' style='width:200px; height:20px; vertical-align:middle;'>";
       html += "</div>"
     }
     this.container.innerHTML = html;
@@ -234,6 +234,15 @@ Tr8n.Translator.prototype = {
         suggestion = Tr8n.Utils.replaceAll(suggestion, "(" + i + ")", tokens[i]);
       }
     }  
+
+    if (Tr8n.element("tr8n_translator_translation_label")) {
+      Tr8n.element("tr8n_translator_translation_label").value = suggestion;
+    }
+
+    if (Tr8n.element("tr8n_translation_label_" + this.translation_key_id)) {
+      Tr8n.element("tr8n_translation_label_" + this.translation_key_id).value = suggestion;
+    }
+
     Tr8n.element("tr8n_translation_suggestion_" + this.translation_key_id).innerHTML = suggestion;
     Tr8n.element("tr8n_google_suggestion_container_" + this.translation_key_id).style.display = "block";
     var suggestion_section = Tr8n.element('tr8n_google_suggestion_section');

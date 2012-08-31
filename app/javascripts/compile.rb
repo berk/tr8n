@@ -1,6 +1,8 @@
+#!/usr/bin/env ruby
+
 # https://developers.google.com/closure/compiler/
 # http://developer.yahoo.com/yui/compressor
-
+require 'rubygems'
 require 'pp'
 require 'yaml'
 require 'fssm'
@@ -28,7 +30,20 @@ FSSM.monitor('./src/', '**/*') do
   end
 
   def compile
-    command = "java -jar compressors/google/compiler.jar --js #{config['all']} --js_output_file ../../public/tr8n/javascripts/tr8n-compiled.js; echo 'Done'"
+    comments_regexp = /\/\*(!)*[^*]*\*+(?:[^*\/][^*]*\*+)*\//
+
+    output_path = "../../public/tr8n/javascripts"
+  
+    File.open("#{output_path}/tr8n.js", 'w') do |file| 
+      config['all'].split(" ").each do |fl|
+        pp "Processing #{fl}..."
+        content = File.read(fl)
+        content = content.gsub(comments_regexp, '')        
+        file.write(content)
+      end
+    end
+
+    command = "java -jar compressors/google/compiler.jar --js #{config['all']} --js_output_file #{output_path}/tr8n-compiled.js; echo 'Done'"
     pp command
     Kernel.spawn(command)
   end
