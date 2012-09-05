@@ -73,7 +73,7 @@ class Tr8n::Translation < ActiveRecord::Base
     return "<span style='color:grey'>0</span>" if rank.blank?
     
     prefix = (rank > 0) ? "+" : ""
-    "<span style='#{rank_style(rank)}'>#{prefix}#{rank}</span>" 
+    "<span style='#{rank_style(rank)}'>#{prefix}#{rank}</span>".html_safe
   end
 
   # populate language rules from the internal rules hash
@@ -123,7 +123,7 @@ class Tr8n::Translation < ActiveRecord::Base
       rules.each do |rule|
         context_rules << "<strong>#{rule[:token]}</strong> #{rule[:rule].description}" 
       end
-      context_rules.join(" and ")
+      context_rules.join(" and ").html_safe
     end
   end
 

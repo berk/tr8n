@@ -71,7 +71,7 @@ module Tr8n::HelperMethods
       html << "</script>"
     end
       
-    html.join('')
+    html.join('').html_safe
   end
 
   # Creates an instance of tr8nProxy object
@@ -129,19 +129,20 @@ module Tr8n::HelperMethods
   end
 
   def tr8n_dir_attribute_tag
-    "dir='<%=Tr8n::Config.current_language.dir%>'"
+    "dir='<%=Tr8n::Config.current_language.dir%>'".html_safe
   end
 
   def tr8n_splash_screen_tag
     html = "<div id='tr8n_splash_screen' style='display:none'>"
     html << (render :partial => Tr8n::Config.splash_screen)
     html << "</div>"
+    html.html_safe
   end
 
   def tr8n_language_flag_tag(lang = Tr8n::Config.current_language, opts = {})
     return "" unless Tr8n::Config.enable_language_flags?
     html = image_tag("/tr8n/images/flags/#{lang.flag}.png", :style => "vertical-align:middle;", :title => lang.native_name)
-    html << "&nbsp;" 
+    html << "&nbsp;".html_safe
   end
 
   def tr8n_language_name_tag(lang = Tr8n::Config.current_language, opts = {})
@@ -169,6 +170,7 @@ module Tr8n::HelperMethods
     end
     
     html << "</span>"
+    html.html_safe
   end
 
   def tr8n_language_selector_tag(opts = {})
@@ -219,6 +221,7 @@ module Tr8n::HelperMethods
       end 
     end
     html << "</span>"
+    html.html_safe
   end
   
   def tr8n_help_icon_tag(filename = "index")
@@ -236,19 +239,21 @@ module Tr8n::HelperMethods
     html << image_tag("/tr8n/images/spinner.gif", :style => "vertical-align:middle;")
     html << " #{trl(label)}" if label
     html << "</div>"
+    html.html_safe
   end
   
   def tr8n_toggler_tag(content_id, label = "", open = true)
     html = "<span id='#{content_id}_open' "
     html << "style='display:none'" unless open
     html << ">"
-    html << link_to_function("#{image_tag("/tr8n/images/arrow_down.gif", :style=>'text-align:center; vertical-align:middle')} #{label}", "Tr8n.Effects.hide('#{content_id}_open'); Tr8n.Effects.show('#{content_id}_closed'); Tr8n.Effects.blindUp('#{content_id}');", :style=> "text-decoration:none")
+    html << link_to_function("#{image_tag("/tr8n/images/arrow_down.gif", :style=>'text-align:center; vertical-align:middle')} #{label}".html_safe, "Tr8n.Effects.hide('#{content_id}_open'); Tr8n.Effects.show('#{content_id}_closed'); Tr8n.Effects.blindUp('#{content_id}');", :style=> "text-decoration:none")
     html << "</span>" 
     html << "<span id='#{content_id}_closed' "
     html << "style='display:none'" if open
     html << ">"
-    html << link_to_function("#{image_tag("/tr8n/images/arrow_right.gif", :style=>'text-align:center; vertical-align:middle')} #{label}", "Tr8n.Effects.show('#{content_id}_open'); Tr8n.Effects.hide('#{content_id}_closed'); Tr8n.Effects.blindDown('#{content_id}');", :style=> "text-decoration:none")
+    html << link_to_function("#{image_tag("/tr8n/images/arrow_right.gif", :style=>'text-align:center; vertical-align:middle')} #{label}".html_safe, "Tr8n.Effects.show('#{content_id}_open'); Tr8n.Effects.hide('#{content_id}_closed'); Tr8n.Effects.blindDown('#{content_id}');", :style=> "text-decoration:none")
     html << "</span>" 
+    html.html_safe
   end  
   
   def tr8n_sitemap(sections, splitters, options = {})
@@ -262,6 +267,7 @@ module Tr8n::HelperMethods
     end 
     html << "</tr>"
     html << "</table>"
+    html.html_safe
   end
   
   def tr8n_breadcrumb_tag(source = nil, opts = {})
@@ -281,6 +287,7 @@ module Tr8n::HelperMethods
     html = "<div id='tr8n_breadcrumb' class='tr8n_breadcrumb'>"
     html << links.join(opts[:separator])
     html << '</div>'    
+    html.html_safe
   end
   
   def tr8n_user_tag(translator, options = {})
@@ -300,7 +307,7 @@ module Tr8n::HelperMethods
       img_url = Tr8n::Config.silhouette_image
     end
     
-    img_tag = "<img src='#{img_url}' style='width:48px'>"
+    img_tag = "<img src='#{img_url}' style='width:48px'>".html_safe
     
     if translator and options[:linked]
       link_to(img_tag, translator.link)
@@ -359,6 +366,7 @@ private
       html << "</li>"
     end
     html << "</ul>"
+    html.html_safe
   end
   
 end

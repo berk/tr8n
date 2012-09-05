@@ -34,7 +34,7 @@
       end     
       html << translator.blocked?
       html << "</span>"
-      html.join("")
+      html.join("").html_safe
     }, 'text-align:right'],
     [:rank, lambda{|translator|
       translator.rank ? (translator.rank * 100).to_i / 100.0 : 0
@@ -50,13 +50,13 @@
       html << "</span>/<span style='color:red'>"
       html << (translator.total_metric.negative_votes || 0)
       html << "</span>)"
-      html.join("")			
+      html.join("").html_safe
     }, 'text-align:right'],
     [:actions, lambda{|translator|
       html = []
       html << link_to("View", :action => :view, :translator_id => translator.id)
       html << link_to("Delete", {:action => :delete, :translator_id => translator.id}, :confirm => "Are you sure you want to do that?")
-      html.join(' | ')
+      html.join(' | ').html_safe
     }, 'text-align:right;white-space:nowrap;']
   ]) %>
 <% end %>

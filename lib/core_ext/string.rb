@@ -39,20 +39,21 @@ class String
   def tr8n_translated
     return self if frozen?
     @tr8n_translated = true
-    self
+    self.html_safe
   end
 
   def tr8n_translated?
     @tr8n_translated
   end
-  
-  def html_safe
-    @html_safe = true
-    self
+
+  unless method_defined?(:html_safe)
+    def html_safe
+      @html_safe = true
+      self
+    end
+
+    def html_safe?
+      @html_safe
+    end
   end
-  
-  def html_safe?
-    @html_safe
-  end
-  
 end

@@ -12,7 +12,7 @@ namespace :tr8n do
   
   desc "Initializes all of the tables with default data"
   task :init => :environment do
-    raise "This action is prohibited in this environment" if ['production', 'stage', 'staging'].include?(Rails.env) and env('force') != 'true'
+    raise "This action is prohibited in this environment" if ['production', 'stage', 'staging'].include?(Rails.env) and ENV['force'] != 'true'
     Tr8n::Config.reset_all!
   end
   

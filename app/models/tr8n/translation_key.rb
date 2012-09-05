@@ -42,7 +42,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   def self.cache_key(key_hash)
     "translation_key_#{key_hash}"
   end
-
+  
   def cache_key
     self.class.cache_key(key)
   end
@@ -468,7 +468,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     html = "<tr8n class='#{classes.join(' ')}' translation_key_id='#{id}'>"
     html << label
     html << "</tr8n>"
-    html    
+    html.html_safe
   end
   
   def level

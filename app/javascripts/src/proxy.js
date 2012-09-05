@@ -39,7 +39,9 @@ Tr8n.Proxy = function(options) {
   });
   
   this.initTranslations();
-  this.runScheduledTasks();
+  if (!this.options['dont_run_scheduled_tasks']) {
+    this.runScheduledTasks();
+  }
 }
 
 Tr8n.Proxy.prototype = {
