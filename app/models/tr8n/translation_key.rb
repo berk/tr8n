@@ -355,7 +355,10 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     self.limit(1).offset(count-1)
   end
 
-  # returns back grouped by context - used by API
+  ###########################################################################
+  # returns back grouped by context - used by API - deprecated - 
+  # MUST CHANGE JS to use the new method valid_translations_with_rules
+  ###########################################################################
   def find_all_valid_translations(translations)
     if translations.empty?
       return {:id => self.id, :key => self.key, :label => self.label, :original => true}
@@ -386,6 +389,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     valid_translations << {:label => self.label} unless context_hash_matches[""]
     {:id => self.id, :key => self.key, :labels => valid_translations}
   end
+  ###########################################################################
 
   def find_first_valid_translation(language, token_values)
     # find the first translation in the order of the rank that matches the rules
@@ -426,13 +430,37 @@ class Tr8n::TranslationKey < ActiveRecord::Base
 
     [language, nil]
   end
-  
-  def valid_translations(language = Tr8n::Config.current_language)
-    find_all_valid_translations(valid_translations_for_language(language))
+
+  # new way of getting translations for an API call
+  # TODO: switch to the new sync_hash method
+  def valid_translations_with_rules(language = Tr8n::Config.current_language)
+    translations = valid_translations_for_language(language)
+    return [] if translations.empty?
+    
+    # if the first translation does not depend on any of the context rules
+    # use it... we don't care about the rest of the rules.
+    return [{:label => translations.first.label}] if translations.first.rules_hash.blank?
+    
+    # build a context hash for every kind of context rules combinations
+    # only the first one in the list should be used
+    context_hash_matches = {}
+    valid_translations = []
+    translations.each do |translation|
+      context_key = translation.rules_hash || ""
+      next if context_hash_matches[context_key]
+      context_hash_matches[context_key] = true
+      if translation.rules_definitions
+        valid_translations << {:label => translation.label, :context => translation.rules_definitions.dup}
+      else
+        valid_translations << {:label => translation.label}
+      end
+    end
+
+    valid_translations
   end
 
   def translate(language = Tr8n::Config.current_language, token_values = {}, options = {})
-    return valid_translations(language) if options[:api]
+    return find_all_valid_translations(valid_translations_for_language(language)) if options[:api]
     
     if Tr8n::Config.disabled? or language.default?
       return substitute_tokens(label, token_values, options.merge(:fallback => false), language).html_safe
