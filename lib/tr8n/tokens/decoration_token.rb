@@ -90,8 +90,9 @@ module Tr8n
           end
         elsif decoration_token_values.is_a?(Hash)
           default_decoration.gsub!("{$0}", token_value.to_s)
+          
           decoration_token_values.keys.each do |key|
-            default_decoration.gsub!("{$#{key}}", decoration_token_values[key])
+            default_decoration.gsub!("{$#{key}}", decoration_token_values[key].to_s)
           end
         end
         

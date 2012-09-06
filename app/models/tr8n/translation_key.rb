@@ -427,8 +427,12 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     [language, nil]
   end
   
+  def valid_translations(language = Tr8n::Config.current_language)
+    find_all_valid_translations(valid_translations_for_language(language))
+  end
+
   def translate(language = Tr8n::Config.current_language, token_values = {}, options = {})
-    return find_all_valid_translations(valid_translations_for_language(language)) if options[:api]
+    return valid_translations(language) if options[:api]
     
     if Tr8n::Config.disabled? or language.default?
       return substitute_tokens(label, token_values, options.merge(:fallback => false), language).html_safe
@@ -609,6 +613,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     
   def to_sync_hash(opts = {})
     { 
+      "id" => self.id,
       "key" => self.key, 
       "label" => self.label, 
       "description" => self.description, 

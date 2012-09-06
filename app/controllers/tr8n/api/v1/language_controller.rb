@@ -96,9 +96,10 @@ class Tr8n::Api::V1::LanguageController < Tr8n::Api::V1::BaseController
 
 private
 
-  def translate_phrase(language, phrase, opts = {})
+  def translate_phrase(language, phrase, opts = {})    
     return "" if phrase[:label].strip.blank?
-    language.translate(phrase[:label], phrase[:description], {}, opts)
+    translation_key = Tr8n::TranslationKey.find_or_create(phrase[:label], phrase[:description], opts)
+    translation_key.translate(language, {}, opts)
   end
   
 end
