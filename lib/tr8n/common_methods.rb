@@ -25,7 +25,9 @@ module Tr8n::CommonMethods
 
   def self.included(base)
     if 'ApplicationController' == base.name
-      base.append_before_filter :init_tr8n
+      unless Tr8n::Config.application_init?
+        base.append_before_filter :init_tr8n
+      end
     end
   end
 

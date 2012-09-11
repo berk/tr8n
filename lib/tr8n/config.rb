@@ -379,6 +379,10 @@ class Tr8n::Config
     site_info[:title] 
   end
 
+  def self.application_init?
+    site_info[:application_init] 
+  end
+
   def self.splash_screen
     site_info[:splash_screen]  
   end

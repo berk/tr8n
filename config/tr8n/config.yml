@@ -127,6 +127,7 @@ defaults: &defaults
     before_filters:           []                              # filters from application controller
     skip_before_filters:      []                              # filters from application controller
     after_filters:            []                              # filters from application controller
+    application_init:         false                           # if set to true, application must call the tr8n_init as one of the before filters
     user_info:
       enabled:                false                           # if disabled, will fallback onto translators
       class_name:             User                            # class name for the User object type
