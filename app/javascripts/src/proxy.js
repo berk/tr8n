@@ -127,6 +127,20 @@ Tr8n.Proxy.prototype = {
     }
   },
 
+  reloadTranslationCache: function() {
+    var self = this;
+    this.log("Fetching translations from the server...");
+    Tr8n.Utils.ajax(this.options['url'], {
+      method: 'get',
+      parameters: {'batch': true, 'source': self.options['default_source']},
+      onSuccess: function(response) {
+        self.log("Received response from the server");
+        self.log(response.responseText);
+        self.updateTranslations(eval("[" + response.responseText + "]")[0]['phrases']);
+      }
+    }); 
+  },
+
   initTranslations: function(forced) {
     if (!forced && this.translations) return;
     
@@ -138,20 +152,9 @@ Tr8n.Proxy.prototype = {
       this.updateTranslations(eval(this.options['translations_cache_id']));
     }
 
-    var self = this;
-
     // Optionally, fetch translations from the server
     if (this.options['fetch_translations_on_init']) {
-      this.log("Fetching translations from the server...");
-      Tr8n.Utils.ajax(this.options['url'], {
-        method: 'get',
-        parameters: {'batch': true, 'source': self.options['default_source']},
-        onSuccess: function(response) {
-          self.log("Received response from the server");
-          self.log(response.responseText);
-          self.updateTranslations(eval("[" + response.responseText + "]")[0]['phrases']);
-        }
-      }); 
+      this.reloadTranslationCache();
     }
   },
 

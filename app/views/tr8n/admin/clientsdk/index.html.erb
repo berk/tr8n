@@ -31,8 +31,8 @@
       <td rowspan="3" style="width:15%; padding:2px; vertical-align:top;">
 			   <center>
 			   <div style="width:150px; text-align:center; padding-top:15px;">
-           <button style="width:100%;" onClick="translate();return false;">Translate</button>
-           <button style="width:100%;" onClick="translate({skip_decorations:true});return false;">Translate Label</button>
+           <button style="width:100%;" onClick="translateExample();return false;">Translate</button>
+           <button style="width:100%;" onClick="translateExample({skip_decorations:true});return false;">Translate Label</button>
            <button style="width:100%;" onClick="searchPhrase();return false;">View Translation Key</button>
            <br><br>
            <button style="width:100%;" onClick="clearResults();return false;">Clear Results</button>
@@ -78,7 +78,7 @@
 		tr8nLightbox.hide();
 	}
 	
-  function translate(opts) {
+  function translateExample(opts) {
     opts = opts || {};
     var tokens = null;
     
@@ -92,6 +92,10 @@
   function searchPhrase() {
     url = "/tr8n/phrases/index?search=" + encodeURI(Tr8n.value('label'));
     window.open(url,'translation_key');
+  }
+
+  function reloadTranslations() {
+    tr8nProxy.reloadTranslationCache();
   }
 
   function speedTest() {
