@@ -19,3 +19,9 @@ sample/tr8n_server/db/test.sqlite3
 sample/tr8n_server/log/*.log
 sample/tr8n_server/tmp/
 sample/tr8n_server/.sass-cache/
+
+local/tr8n_server/db/*.sqlite3
+local/tr8n_server/db/test.sqlite3
+local/tr8n_server/log/*.log
+local/tr8n_server/tmp/
+local/tr8n_server/.sass-cache/
