@@ -379,4 +379,11 @@ class Tr8n::Translator < ActiveRecord::Base
     )
   end
   
+  def merge_into(t, opts = {})
+    Tr8n::Config.models.each do |m|
+      next unless m.columns.collect{|c| c.name}.include?("translator_id")
+      m.connection.execute("update #{m.table_name} set translator_id = #{t.id} where translator_id = #{self.id}")
+    end
+    self.destroy if opts[:delete]
+  end
 end
