@@ -33,5 +33,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'spork', ['>= 0']
   s.add_development_dependency 'watchr', ['>= 0']
   s.add_development_dependency 'rr', ['>= 0']
-  s.add_development_dependency 'memcache-client', ['>= 1.8.5']
+  s.add_development_dependency 'dalli'
 end
