@@ -2,8 +2,6 @@
 <%= render :partial => "tabs" %>
 <%= tr8n_will_filter(@case_rules) %>
 
-<% pp @case_rules %>
-
 <%= form_tag("", :id => "rules_form") do %>
   <%= will_filter_table_tag(@case_rules, :columns => [
     [:language_id, lambda{|lcase|

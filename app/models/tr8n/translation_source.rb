@@ -64,6 +64,8 @@ class Tr8n::TranslationSource < ActiveRecord::Base
   end
 
   def self.find_or_create(source, url = nil)
+    # we don't want parameters in the source
+    source = source.split("?").first
     Tr8n::Cache.fetch(cache_key(source)) do 
       translation_domain = Tr8n::TranslationDomain.find_or_create(url)
       translation_source = where("source = ? and translation_domain_id = ?", source, translation_domain.id).first
