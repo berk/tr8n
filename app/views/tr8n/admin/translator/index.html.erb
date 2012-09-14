@@ -62,12 +62,30 @@
 <% end %>
 
 <%= will_filter_actions_bar_tag(@translators, [
-['Delete Selected Translators', 'deleteSelectedTranslators()'] 
+  ['Merge Selected Translators', 'mergeSelectedTranslators()'],
+  ['Delete Selected Translators', 'deleteSelectedTranslators()'] 
 ]) %>
 
 <%= render :partial => "/tr8n/admin/common/footer" %>
 
 <script>
+  function mergeSelectedTranslators() {
+    var i=0;
+    var checkbox = Tr8n.element('wf_check_' + i);
+    var keys = [];
+    while (checkbox) {
+      if (checkbox.checked) {
+        keys.push(checkbox.value);
+      }
+      checkbox = Tr8n.element('wf_check_' + (++i));
+    }
+    if (keys.length < 2) {
+      alert('At least two translators must be selected.');
+      return;
+    }
+    Tr8n.UI.Lightbox.show('/tr8n/admin/translator/lb_merge?ids=' + keys, {height:350});
+  }
+
   function deleteSelectedTranslators() {
     if (!confirm('Are you sure you want to run this opperation?'))
        return;

@@ -109,4 +109,30 @@ class Tr8n::Admin::TranslatorController < Tr8n::Admin::BaseController
     @ip_locations = Tr8n::IpLocation.filter(:params => params, :filter => Tr8n::IpLocationFilter)
   end
      
+  def lb_merge
+    @translators = params[:ids] || ''
+    @translators = @translators.split(',').select { |id| id =~ /^\d+$/ }
+    @translators = Tr8n::Translator.where("id in (?)", @translators)
+    
+    render :layout => false
+  end
+
+  def merge
+    master = Tr8n::Translator.find_by_id(params[:translator_id]) if params[:translator_id]
+    unless master 
+      trfe("Master translator was not selected")
+      return redirect_to_source
+    end
+
+    translators = params[:ids] || ''
+    translators = translators.split(',').select { |id| id =~ /^\d+$/ }
+    translators = Tr8n::Translator.where("id in (?)", translators)
+    
+    translators.each do |translator|
+      next if translator == master
+      translator.merge_into(master, :delete => true)
+    end
+
+    redirect_to_source
+  end
 end

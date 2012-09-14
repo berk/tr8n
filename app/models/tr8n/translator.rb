@@ -379,11 +379,17 @@ class Tr8n::Translator < ActiveRecord::Base
     )
   end
   
-  def merge_into(t, opts = {})
-    Tr8n::Config.models.each do |m|
-      next unless m.columns.collect{|c| c.name}.include?("translator_id")
-      m.connection.execute("update #{m.table_name} set translator_id = #{t.id} where translator_id = #{self.id}")
+  def merge_into(master, opts = {})
+    Tr8n::TranslatorMetric.delete_all_metrics_for_translator(self)
+    Tr8n::LanguageUser.delete_all_languages_for_translator(self)
+
+    Tr8n::Config.models.each do |model|
+      next unless model.columns.collect{|c| c.name}.include?("translator_id")
+      model.connection.execute("update #{model.table_name} set translator_id = #{master.id} where translator_id = #{self.id}")
     end
+    
+    Tr8n::TranslatorMetric.update_all_metrics_for_translator(master)
+
     self.destroy if opts[:delete]
   end
 end

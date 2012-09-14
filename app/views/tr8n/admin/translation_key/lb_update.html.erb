@@ -1,3 +1,5 @@
+<%= render :partial => "/tr8n/common/lightbox_header" %>
+
 <div class="inner">
     <div class="hd">
         <div style="float:right;">
@@ -5,7 +7,7 @@
         </div>
         Translation Key Details
     </div>
-    <div class="bd">
+    <div class="bd" style="height:250px;overflow:auto;">
         <%= form_for(@key, :as => :translation_key, :url => {:action => :update}, :html => {:id => 'tr8n_form', :method => :post, :class => "tr8n"}) do |form| %>
         <%= form.hidden_field :id %>
         <%= hidden_field_tag :source_url, request.env['HTTP_REFERER'] %>

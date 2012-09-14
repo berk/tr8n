@@ -1,0 +1,52 @@
+<%= render :partial => "/tr8n/common/lightbox_header" %>
+
+<div class="inner">
+    <div class="hd">
+        <div style="float:right;">
+            <%=link_to_function(image_tag("tr8n/close.gif"), "Tr8n.UI.Lightbox.hide();") %>
+        </div>
+        Merging Translators
+    </div>
+    <div class="bd" style="height:300px;overflow:auto;">
+        <%= form_tag({:action => :merge}, {:id => 'tr8n_form', :method => :post, :class => "tr8n"}) do %>
+          <%= hidden_field_tag :ids, @translators.collect{|trn| trn.id}.join(',') %>
+          <%= hidden_field_tag :source_url, request.env['HTTP_REFERER'] %>
+          
+          <h3>Select which translator would you like to merge others into.</h3>
+
+          <div style="padding:5px; max-height:120px; overflow:auto; margin-bottom: 10px; border: 1px solid #ccc;">
+            <table style="width:100%">
+              <tr>
+                <th style="padding:5px;border-bottom:1px solid #ccc"></td>
+                <th style="padding:5px;border-bottom:1px solid #ccc">Name</td>
+                <th style="padding:5px;border-bottom:1px solid #ccc">Translations</td>
+                <th style="padding:5px;border-bottom:1px solid #ccc">Votes</td>
+              </tr>  
+              <% @translators.each_with_index do |trn, index| %> 
+              <tr style="border-bottom:1px solid #eee;">
+                <td style="padding:5px; width:15px;">
+                  <%=radio_button_tag("translator_id", trn.id) %>
+                </td>
+                <td style="padding:5px;">
+                  <%=trn.name%>
+                </td>
+                <td style="padding:5px;">
+                  <%=trn.total_metric.total_translations%>
+                </td>
+                <td style="padding:5px;">
+                  <%=trn.total_metric.total_votes%>
+                </td>
+              </tr>
+              <% end %>
+            </table>
+          </div>
+        <% end %>
+    </div>
+    <div class="ft">
+        <div style="text-align:center;padding-top:5px;">
+           <%=link_to_function("<span>#{trl("Merge Translators", "Tr8n lightbox save button")}</span>".html_safe, "Tr8n.Effects.submit('tr8n_form');", :class => "tr8n_grey_button tr8n_pcb") %>
+            <%=trl('or')%>  
+           <%=link_to_function(trl("close", "Tr8n lightbox close button"), "hideLightbox()", :class => "tr8n_cancel_link") %>
+        </div>
+    </div>
+</div>

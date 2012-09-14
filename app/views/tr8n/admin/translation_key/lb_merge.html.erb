@@ -1,3 +1,5 @@
+<%= render :partial => "/tr8n/common/lightbox_header" %>
+
 <div class="inner">
     <div class="hd">
         <div style="float:right;">
@@ -5,7 +7,7 @@
         </div>
         Merging Translation Keys
     </div>
-    <div class="bd">
+    <div class="bd" style="height:300px;overflow:auto;">
 
 <%= form_for(@key, :as => :translation_key, :url => {:action => :merge}, :html => {:id => 'tr8n_form', :method => :post, :class => "tr8n"}) do |form| %>
   <%= form.hidden_field :id %>
@@ -26,7 +28,7 @@
 		</table>
 	</div>
 	
-  <table class="admin_table">
+  <table class="admin_table" >
       <tr>
           <th>
               Label:

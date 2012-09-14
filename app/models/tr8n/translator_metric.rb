@@ -62,6 +62,17 @@ class Tr8n::TranslatorMetric < ActiveRecord::Base
     create(:translator => translator, :language => language, :total_translations => 0, :total_votes => 0, :positive_votes => 0, :negative_votes => 0)
   end
   
+  def self.update_all_metrics_for_translator(translator)
+    Tr8n::LanguageUser.where(:user_id => translator.user_id).each do |lang|
+      find_or_create(translator, lang.language).update_metrics!
+    end
+    find_or_create(translator).update_metrics!
+  end
+
+  def self.delete_all_metrics_for_translator(translator)
+    Tr8n::TranslatorMetric.connection.execute("delete from #{Tr8n::TranslatorMetric.table_name} where translator_id = #{translator.id}")
+  end
+
   # updated when an action is done by the translator
   def update_metrics!
     if language
