@@ -5,10 +5,10 @@
 	    <%=link_to_function(opts[:label], "Tr8n.UI.Lightbox.show('/tr8n/language/select?lightbox=true', {height:500, width:400})")%>
 		<% else %>
 	    <span style="<%=opts[:style]%>; cursor:pointer;" onClick="Tr8n.UI.LanguageSelector.toggle();">
-			  <%= opts[:label] %>
 				<% if opts[:show_arrow] %>
-				 <span style="<%=opts[:arrow_style]%>" id="tr8n_language_selector_trigger">▼</span>
+				 <div style="float:right;margin-left:5px;margin-top:5px;width:0;height: 0;border-left: 5px solid transparent;border-right: 5px solid transparent;border-top: 5px solid black;" id="tr8n_language_selector_trigger"></div>
 				<% end %>
+			  <%= opts[:label] %>
 	    </span>
 		<% end %>
 <% end %>

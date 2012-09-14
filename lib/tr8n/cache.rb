@@ -68,8 +68,6 @@ module Tr8n
     def self.fetch(key, opts = {})
       return yield unless enabled?
       
-      # pp "fetch #{key}"
-      
       cache.fetch(versioned_key(key), opts) do 
         yield
       end

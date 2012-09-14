@@ -41,6 +41,7 @@ GEM
     bcrypt-ruby (3.0.1)
     builder (3.0.0)
     coderay (1.0.6)
+    dalli (2.2.1)
     diff-lcs (1.1.3)
     erubis (2.7.0)
     fssm (0.2.9)
@@ -56,7 +57,6 @@ GEM
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
-    memcache-client (1.8.5)
     method_source (0.7.1)
     mime-types (1.19)
     multi_json (1.2.0)
@@ -130,8 +130,8 @@ PLATFORMS
 DEPENDENCIES
   bcrypt-ruby
   bundler (>= 1.0.0)
+  dalli
   fssm
-  memcache-client (>= 1.8.5)
   pry
   rr
   rspec

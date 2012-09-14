@@ -62,6 +62,9 @@ class Tr8n::Translator < ActiveRecord::Base
   attr_accessible :user_id, :inline_mode, :blocked, :reported, :fallback_language_id, :rank, :name, :gender, :email, :password, :mugshot, :link, :locale, :level, :manager, :last_ip, :country_code, :remote_id
   attr_accessible :user
 
+  after_save      :clear_cache
+  after_destroy   :clear_cache
+
   belongs_to :user, :class_name => Tr8n::Config.user_class_name, :foreign_key => :user_id
   
   has_many  :translator_logs,               :class_name => "Tr8n::TranslatorLog",             :dependent => :destroy, :order => "created_at desc"
@@ -82,7 +85,7 @@ class Tr8n::Translator < ActiveRecord::Base
   end
 
   def cache_key
-    self.class.cache_key(key)
+    self.class.cache_key(user_id)
   end
 
   def self.for(user)
@@ -354,7 +357,11 @@ class Tr8n::Translator < ActiveRecord::Base
   def to_s
     name
   end
-  
+
+  def clear_cache
+    Tr8n::Cache.delete(cache_key)
+  end
+
   ###############################################################
   ## Synchronization Methods
   ###############################################################
