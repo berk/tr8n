@@ -698,10 +698,6 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   def self.for_params(params)
     results = self.where("tr8n_translation_keys.locale <> ? and (level is null or level <= ?)", Tr8n::Config.current_language.locale, Tr8n::Config.current_user_is_translator? ? Tr8n::Config.current_translator.level : 0)
     
-    if Tr8n::Config.enable_caching?
-      results = results.where("verified_at is not null")
-    end  
-    
     unless params[:search].blank?
       results = results.where("(tr8n_translation_keys.label like ? or tr8n_translation_keys.description like ?)", "%#{params[:search]}%", "%#{params[:search]}%")
     end
