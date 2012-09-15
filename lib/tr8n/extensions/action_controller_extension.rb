@@ -64,7 +64,7 @@ module Tr8n
       end
       
       def tr8n_init_current_source
-        request.url
+        "#{controller_name}/#{action_name}"
       rescue
         self.class.name
       end

@@ -32,7 +32,7 @@ module Tr8n
       opts[:translations_element_id] ||= :tr8n_translations
       client_sdk_var_name = opts[:client_var_name] || :tr8nProxy
 
-      default_source_url = request.url.split("?").first + ".js"
+      default_source_url = "#{controller.controller_name}/#{controller.action_name}.js"
       source = Tr8n::TranslationSource.find_or_create(opts[:source] || default_source_url)
 
       if Tr8n::Config.enable_browser_cache?  
