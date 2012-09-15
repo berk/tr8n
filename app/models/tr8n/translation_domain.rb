@@ -62,12 +62,11 @@ class Tr8n::TranslationDomain < ActiveRecord::Base
     self.class.cache_key(name)
   end
 
-  def self.find_or_create(url = nil)
-    # Allowing for custom path names
+  def self.find_or_create(source)
     begin
-      domain_name = URI.parse(url || 'localhost').host || 'localhost'
+      domain_name = URI.parse(source || 'localhost').host || 'localhost'
     rescue Exception => ex
-      domain_name = url # for custom urls  
+      domain_name = source # for custom urls  
     end
 
     Tr8n::Cache.fetch(cache_key(domain_name)) do 

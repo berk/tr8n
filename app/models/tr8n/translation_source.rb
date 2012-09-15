@@ -54,7 +54,7 @@ class Tr8n::TranslationSource < ActiveRecord::Base
   alias :domain   :translation_domain
   alias :sources  :translation_key_sources
   alias :keys     :translation_keys
-  
+
   def self.cache_key(source)
     "translation_source_#{source}"
   end
@@ -63,11 +63,11 @@ class Tr8n::TranslationSource < ActiveRecord::Base
     self.class.cache_key(source)
   end
 
-  def self.find_or_create(source, url = nil)
+  def self.find_or_create(url, translation_domain = nil)
     # we don't want parameters in the source
-    source = source.split("?").first
+    source = url.split("://").last.split("?").first
     Tr8n::Cache.fetch(cache_key(source)) do 
-      translation_domain = Tr8n::TranslationDomain.find_or_create(url)
+      translation_domain ||= Tr8n::TranslationDomain.find_or_create(url)
       translation_source = where("source = ? and translation_domain_id = ?", source, translation_domain.id).first
       translation_source ||= create(:source => source, :translation_domain => translation_domain)
       translation_source.update_attributes(:translation_domain => translation_domain) unless translation_source.translation_domain
@@ -78,5 +78,37 @@ class Tr8n::TranslationSource < ActiveRecord::Base
   def clear_cache
     Tr8n::Cache.delete(cache_key)
   end
-  
+
+  def cache_key_for_language(language = Tr8n::Config.current_language)
+    "valid_translations_for_source_#{self.id}_and_locale_#{language.locale}"
+  end
+
+  def cache(language = Tr8n::Config.current_language)
+    @cache ||= {}
+    @cache[language.locale] ||= begin
+      Tr8n::Cache.fetch(cache_key_for_language(language)) do 
+        hash = {}
+        translation_keys.each do |tkey|
+          hash[tkey.key] = {
+            "translation_key" => tkey,
+            "translations" => tkey.valid_translations_for_language(language)
+          }
+        end
+        hash
+      end
+    end
+  end
+
+  def translation_key_for_key(key)
+    (cache[key] || {})["translation_key"]
+  end
+
+  def valid_translations_for_key_and_language(key, language = Tr8n::Config.current_language)
+    (cache[key] || {})["translations"]
+  end
+
+  def clear_cache_for_language(language = Tr8n::Config.current_language)
+    Tr8n::Cache.delete(cache_key_for_language(language))
+  end
+
 end

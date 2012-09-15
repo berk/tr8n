@@ -105,47 +105,6 @@ module Tr8n
       return unless enabled?
       cache.decrement(name, amount, opts)
     end
-  
-    #################################################################
-    # Cache Source Methods
-    #################################################################
-    
-    # For local cache, the source+language = updated_at must always be present
-    # These keys cannot expire, or refreshing of the resources will never take place
-    def self.sources_timestamps
-      @sources_timestamps ||= {}
-    end
-    
-    def self.last_updated_at(translation_source_language)
-      sources_timestamps[translation_source_language.id] ||= 365.days.ago
-    end
 
-    def self.invalidate_source(source_name, language = Tr8n::Config.current_language)
-      return if disabled? or language.default? 
-      
-      # only memory store needs this kind of reloading
-      # memcached and other stores will expire shared keys 
-      return unless memory_store?
-      
-      # pp [:memory_times, sources_timestamps]
-      
-      translation_source = Tr8n::TranslationSource.find_or_create(source_name)
-
-      # this is the only record that will never be cached and will always be loaded from the database
-      translation_source_language = Tr8n::TranslationSourceLanguage.find_or_create(translation_source, language)
-
-      if last_updated_at(translation_source_language) < translation_source_language.updated_at
-        keys = Tr8n::TranslationKey.where(["id in (select translation_key_id from #{Tr8n::TranslationKeySource.table_name} where translation_source_id = ?) and updated_at > ?", 
-                                          translation_source.id, last_updated_at(translation_source_language)])
-                                          
-        # pp "****************************** Found #{keys.count} outdated keys for this language"                                  
-        keys.each do |key|
-          key.clear_translations_cache_for_language(language)
-        end
-        
-        sources_timestamps[translation_source_language.id] = translation_source_language.updated_at
-      end
-    end
-    
   end
 end

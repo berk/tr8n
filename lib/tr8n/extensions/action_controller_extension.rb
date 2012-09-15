@@ -64,7 +64,7 @@ module Tr8n
       end
       
       def tr8n_init_current_source
-        "#{self.class.name.underscore.gsub("_controller", "")}/#{self.action_name}"
+        request.url
       rescue
         self.class.name
       end
@@ -87,9 +87,6 @@ module Tr8n
         # initialize request thread variables
         Tr8n::Config.init(tr8n_init_current_locale, tr8n_init_current_user, tr8n_init_current_source)
         
-        # invalidate source for the current page
-        Tr8n::Cache.invalidate_source(Tr8n::Config.current_source)
-
         # track user's last ip address  
         if Tr8n::Config.enable_country_tracking? and Tr8n::Config.current_user_is_translator?
           Tr8n::Config.current_translator.update_last_ip(tr8n_request_remote_ip)

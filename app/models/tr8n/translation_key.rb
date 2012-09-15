@@ -51,9 +51,6 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   self.table_name = :tr8n_translation_keys
 
   attr_accessible :key, :label, :description, :verified_at, :translation_count, :admin, :locale, :level, :synced_at
-
-  after_save      :clear_cache
-  after_destroy   :clear_cache
   
   has_many :translations,             :class_name => "Tr8n::Translation",           :dependent => :destroy
   has_many :translation_key_locks,    :class_name => "Tr8n::TranslationKeyLock",    :dependent => :destroy
@@ -67,7 +64,6 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   alias :sources      :translation_sources
   alias :domains      :translation_domains
   alias :comments     :translation_key_comments
-  
 
   def self.cache_key(key_hash)
     "translation_key_#{key_hash}"
@@ -79,22 +75,19 @@ class Tr8n::TranslationKey < ActiveRecord::Base
 
   def self.find_or_create(label, desc = "", options = {})
     key = generate_key(label, desc).to_s
-    
-    tkey = Tr8n::Cache.fetch(cache_key(key)) do 
+
+    tkey = Tr8n::Config.current_source.translation_key_for_key(key)
+    tkey ||= begin
+      # pp "key for label #{label} not found in cache"
       existing_key = where(:key => key).first
-      
-      unless existing_key
-        if options[:api]==:translate and (not Tr8n::Config.api[:allow_key_registration])
-          raise Tr8n::KeyRegistrationException.new("Key registration through API is disabled!")  
-        end
-      end
       
       level = options[:level] || Tr8n::Config.block_options[:level] || Tr8n::Config.default_translation_key_level
       role_key = options[:role] || Tr8n::Config.block_options[:role] 
-      if role_key # role overrides level
+      if role_key
         level = Tr8n::Config.translator_roles[role_key]
         raise Tr8n::Exception("Unknown translator role: #{role_key}") unless level 
       end
+
       locale = options[:locale] || Tr8n::Config.block_options[:default_locale] || Tr8n::Config.default_locale
       
       existing_key ||= create(:key => key.to_s, 
@@ -104,30 +97,10 @@ class Tr8n::TranslationKey < ActiveRecord::Base
                               :level => level,
                               :admin => Tr8n::Config.block_options[:admin])
 
-      mark_as_admin(existing_key, options)
-      update_default_locale(existing_key, options)
-      verify_key(existing_key, options)
+      verify_key(existing_key, options) # no longer needed
+      track_source(existing_key, options)  
       existing_key
     end
-    
-    track_source(tkey, options)  
-    tkey  
-  end
-
-  # for backwards compatibility only - new keys will be marked as such
-  def self.mark_as_admin(tkey, options = {})
-    return if options[:skip_block_options]
-    return unless Tr8n::Config.block_options[:admin]
-    return if tkey.admin?
-    tkey.update_attributes(:admin => true)
-  end
-  
-  # for backwards compatibility only - if locale is provided update it in the key
-  def self.update_default_locale(tkey, options = {})
-    return if options[:skip_block_options]
-    return unless tkey.locale.blank?
-    key_locale = Tr8n::Config.block_options[:default_locale] || Tr8n::Config.default_locale
-    tkey.update_attributes(:locale => key_locale)
   end
 
   # mark each key as verified - but only if caching is enabled
@@ -135,28 +108,13 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   def self.verify_key(tkey, options)
     return unless Tr8n::Config.enable_key_verification?
     existing_key.update_attributes(:verified_at => Time.now)
-
   end
 
   # creates associations between the translation keys and sources
   # used for the site map and javascript support
   def self.track_source(translation_key, options = {})
-    # key source tracking must be enabled or request must come from an API (JavaScript) to get it registered with a source
-    if Tr8n::Config.enable_key_source_tracking? or options[:api] == :translate
-
-      # source can be passed into an individual key, or as a block or fall back on the controller/action
-      source = options[:source] || Tr8n::Config.block_options[:source] || Tr8n::Config.current_source
-
-      # should never be blank
-      return if source.blank?
-
-      # each page or component is identified by a translation source
-      translation_source = Tr8n::TranslationSource.find_or_create(source, options[:url])
-
-      # each key is associated with one or more sources
-      translation_key_source = Tr8n::TranslationKeySource.find_or_create(translation_key, translation_source)
-
-    end
+    translation_key_source = Tr8n::TranslationKeySource.find_or_create(translation_key, Tr8n::Config.current_source)
+    Tr8n::Config.current_source.clear_cache_for_language
 
     # for debugging purposes only - this will track the actual location of the key in the source
     if Tr8n::Config.enable_key_caller_tracking?    
@@ -171,9 +129,8 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     "#{Digest::MD5.hexdigest("#{label};;;#{desc}")}~"[0..-2]
   end
 
+  # for key merging
   def reset_key!
-    # remove old key from cache
-    Tr8n::Cache.delete(cache_key)
     self.update_attributes(:key => self.class.generate_key(label, description))
   end
   
@@ -289,14 +246,16 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     "translations_#{language.locale}_#{key}"
   end
   
-  def clear_translations_cache_for_language(language = Tr8n::Config.current_language)
-    Tr8n::Cache.delete(translations_cache_key(language)) 
-  end
-  
-  # returns only the translations that meet the minimum rank
   def valid_translations_for_language(language = Tr8n::Config.current_language)
-    Tr8n::Cache.fetch(translations_cache_key(language)) do
-      translations_for(language, Tr8n::Config.translation_threshold)
+    translations_for(language, Tr8n::Config.translation_threshold)
+  end
+
+  # used by all translation methods
+  def cached_translations_for_language(language = Tr8n::Config.current_language)
+    @cached_translations ||= begin 
+      translations = Tr8n::Config.current_source.valid_translations_for_key_and_language(self.key, language)
+      # pp "found #{translations.count} cached translations for #{self.label}" if translations
+      translations || valid_translations_for_language(language)
     end
   end
   
@@ -392,8 +351,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   ###########################################################################
 
   def find_first_valid_translation(language, token_values)
-    # find the first translation in the order of the rank that matches the rules
-    valid_translations_for_language(language).each do |translation|
+    cached_translations_for_language(language).each do |translation|
       return translation if translation.matches_rules?(token_values)
     end
     
@@ -434,7 +392,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   # new way of getting translations for an API call
   # TODO: switch to the new sync_hash method
   def valid_translations_with_rules(language = Tr8n::Config.current_language)
-    translations = valid_translations_for_language(language)
+    translations = cached_translations_for_language(language)
     return [] if translations.empty?
     
     # if the first translation does not depend on any of the context rules
@@ -460,7 +418,9 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   end
 
   def translate(language = Tr8n::Config.current_language, token_values = {}, options = {})
-    return find_all_valid_translations(valid_translations_for_language(language)) if options[:api]
+    if options[:api] # deprecated
+      return find_all_valid_translations(cached_translations_for_language(language)) 
+    end
     
     if Tr8n::Config.disabled? or language.default?
       return substitute_tokens(label, token_values, options.merge(:fallback => false), language).html_safe
@@ -524,7 +484,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
 
     classes = ['tr8n_translatable']
 
-    if valid_translations_for_language(language).any?
+    if cached_translations_for_language(language).any?
       classes << 'tr8n_translated'
     else
       classes << 'tr8n_not_translated'
@@ -590,14 +550,17 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   end
       
   def translations_changed!(language = Tr8n::Config.current_language)
-    clear_translations_cache_for_language(language)
-    
+    Tr8n::Config.current_source.clear_cache_for_language(language)
+
     # update timestamp and clear cache
     update_translation_count! 
-    
+
     # notify all language sources that translation has changed
     sources.each do |source|
-      Tr8n::TranslationSourceLanguage.touch(source, language)
+      source.touch
+      # Tr8n::TranslationSourceLanguage.touch(source, language)
+      # may need to be a delayed job
+      source.clear_cache_for_language(language)
     end
   end
         
@@ -613,23 +576,6 @@ class Tr8n::TranslationKey < ActiveRecord::Base
       end
       map
     end
-  end
-
-  def touch_sources
-    sources.each do |source|
-      source.touch
-    end
-  end
-  
-  def touch_sources
-    sources.each do |source|
-      source.touch
-    end
-  end
-
-  def clear_cache
-    # Tr8n::Cache.delete(cache_key)
-    touch_sources
   end
 
   ###############################################################

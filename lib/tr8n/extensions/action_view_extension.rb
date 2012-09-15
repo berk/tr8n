@@ -25,41 +25,27 @@ module Tr8n
   module ActionViewExtension
     extend ActiveSupport::Concern
 
-    def tr8n_default_client_source
-      request.url
-    end
-
     # Creates a hash of translations for a page source(s) or a component(s)
     def tr8n_translations_cache_tag(opts = {})
       html = []
 
       opts[:translations_element_id] ||= :tr8n_translations
-      opts[:sources] ||= [tr8n_default_client_source]
       client_sdk_var_name = opts[:client_var_name] || :tr8nProxy
 
-      if Tr8n::Config.enable_browser_cache?  # translations are loaded through a script
+      default_source_url = request.url.split("?").first + ".js"
+      source = Tr8n::TranslationSource.find_or_create(opts[:source] || default_source_url)
 
-        opts[:sources].each do |source_name|
-          source = Tr8n::TranslationSource.find_or_create(source_name, request.url)
-          js_source = "/tr8n/api/v1/language/translate.js?cache=true&callback=Tr8n.SDK.Proxy.registerTranslationKeys&source=#{CGI.escape(source_name)}&t=#{source.updated_at.to_i}"
-          html << "<script type='text/javascript' src='#{js_source}'></script>"
-        end  
-
-      else  # translations are embedded right into the page
-
+      if Tr8n::Config.enable_browser_cache?  
+        # translations are loaded through a script
+        js_source = "/tr8n/api/v1/language/translate.js?cache=true&callback=Tr8n.SDK.Proxy.registerTranslationKeys&source=#{CGI.escape(source.source)}&t=#{source.updated_at.to_i}"
+        html << "<script type='text/javascript' src='#{js_source}'></script>"
+      else  
+        # translations are embedded right into the page
         html << "<script>"
-        sources = Tr8n::TranslationSource.find(:all, :conditions => ["source in (?)", opts[:sources]])
-        source_ids = sources.collect{|source| source.id}
 
-        if source_ids.empty?
-          conditions = ["1=2"]
-        else
-          conditions = ["(id in (select distinct(translation_key_id) from tr8n_translation_key_sources where translation_source_id in (?)))"]
-          conditions << source_ids.uniq
-        end
-
+        keys = Tr8n::TranslationKey.where(["(id in (select distinct(translation_key_id) from tr8n_translation_key_sources where translation_source_id = ?))", source.id])
         translations = []
-        Tr8n::TranslationKey.find(:all, :conditions => conditions).each_with_index do |tkey, index|
+        keys.each_with_index do |tkey, index|
           trn = tkey.translate(Tr8n::Config.current_language, {}, {:api => true})
           translations << trn 
         end
@@ -81,9 +67,13 @@ module Tr8n
       opts[:default_tokens]             = Tr8n::Config.default_data_tokens
 
       opts[:rules]                      = { 
-        :number => Tr8n::Config.rules_engine[:numeric_rule],      :gender => Tr8n::Config.rules_engine[:gender_rule],
-        :list   => Tr8n::Config.rules_engine[:gender_list_rule],  :date   => Tr8n::Config.rules_engine[:date_rule]
+        :number => Tr8n::Config.rules_engine[:numeric_rule],      
+        :gender => Tr8n::Config.rules_engine[:gender_rule],
+        :list   => Tr8n::Config.rules_engine[:gender_list_rule],  
+        :date   => Tr8n::Config.rules_engine[:date_rule]
       }
+
+      # build a list of actual rules of the language
 
       client_var_name = opts[:client_var_name] || :tr8nProxy
       opts.merge!(:enable_tml => Tr8n::Config.enable_tml?)

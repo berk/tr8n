@@ -24,10 +24,10 @@
 class Tr8n::TranslationsController < Tr8n::BaseController
 
   before_filter :validate_current_translator
-  before_filter :validate_default_language, :except => [:translate, :permutate, :vote]
+  before_filter :validate_default_language, :except => [:submit, :permutate, :vote]
   
   # for ssl access to the translator - using ssl_requirement plugin  
-  ssl_allowed :translate  if respond_to?(:ssl_allowed)
+  ssl_allowed :submit  if respond_to?(:ssl_allowed)
   
   # main translation method used by the translator and translation screens
   def submit
