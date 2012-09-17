@@ -3,6 +3,8 @@ class Tr8n::LoginController < ApplicationController
 
   layout Tr8n::Config.site_info[:tr8n_layout]
 
+  before_filter :validate_open_registration_enabled, :only => :register
+
   def index
     if request.post?
       translator = Tr8n::Translator.find_by_email_and_password(params[:email], params[:password])
@@ -51,6 +53,13 @@ private
 
     if params[:password].blank?
       return trfe('Password is missing')
+    end
+  end
+
+  def validate_open_registration_enabled
+    if !Tr8n::Config.open_registration_mode?
+      trfe("You don't have rights to access that section.")
+      return redirect_to(Tr8n::Config.default_url)
     end
   end
 
