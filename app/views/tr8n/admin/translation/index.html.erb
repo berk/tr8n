@@ -11,7 +11,7 @@
        html << "<div style='font-size:10px;color:grey'>"
        html << translation.translation_key.description
        html << "</div>"
-       html.join("") 
+       html.join("").html_safe
     }],
     [:language_id, lambda{|translation|
       if translation.language
@@ -28,7 +28,7 @@
         html << "Context: #{translation.context}"
 				html << "</div>"
       end
-      html.join("") 
+      html.join("").html_safe
     }],
     [:translator_id, lambda{|translation|
       if translation.translator
@@ -48,13 +48,13 @@
       end     
       html << translation.rank
       html << "</span>"
-      html.join("")
+      html.join("".html_safe
     }, 'text-align:right;'],
     [:actions, lambda{|translation|
       html = []
       html << link_to("View", :action => :view, :translation_id => translation.id)
       html << link_to("Delete", {:action => :delete, :translation_id => translation.id}, {:confirm => "Are you sure you want to delete this translation?"})
-      html.join(' | ')
+      html.join(' | '.html_safe
     }, 'text-align:right;white-space:nowrap;']
   ]) %>
 <% end %>

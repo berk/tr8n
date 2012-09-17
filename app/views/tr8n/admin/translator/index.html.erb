@@ -18,9 +18,9 @@
     }, 'text-align:right'],
     [:level, lambda{|translator|
       if translator.admin?
-        "<span style='color:red'>#{translator.title}</span>"
+        "<span style='color:red'>#{translator.title}</span>".html_safe
       elsif translator.manager?
-        "<span style='color:brown'>#{translator.title}</span>"
+        "<span style='color:brown'>#{translator.title}</span>".html_safe
       else
         translator.title
       end     

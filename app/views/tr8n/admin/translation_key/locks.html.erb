@@ -17,7 +17,8 @@
 	      html = link_to(lock.translation_key.label, :action => :view, :key_id => lock.translation_key.id) 
 	      html << '<div style="color:grey; font-size:10px;">'
 	      html << lock.translation_key.description.to_s  
-	      html << '</div>'
+              html << '</div>'
+              html.html_safe
       else
         "Deleted Translation Key"
       end  

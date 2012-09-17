@@ -111,6 +111,7 @@ class Tr8n::ValueRule < Tr8n::LanguageRule
       when "is_not" then desc << " is not"        
     end
     desc << " <strong>'" << Tr8n::LanguageRule.humanize_values(definition["value"]) << "'</strong>"
+    desc.html_safe
   end
 
 end

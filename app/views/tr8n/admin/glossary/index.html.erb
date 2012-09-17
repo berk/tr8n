@@ -14,7 +14,7 @@
         actions = []
         actions << link_to_function("Update", "tr8nLightbox.show('/tr8n/admin/glossary/lb_update?glossary_id=#{term.id}', {height:450})")
         actions << link_to("Delete", {:action => :delete, :glossary_id => term.id}, {:confirm => "Are you sure you want to delete this glossary term?"})
-        actions.join(" | ")
+        actions.join(" | ").html_safe
      }, 'white-space: nowrap'] 
   ]) %>
 <% end %>

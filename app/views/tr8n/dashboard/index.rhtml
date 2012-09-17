@@ -65,7 +65,7 @@
 			                      next if lang.default?
 			                      langs << link_to(lang.english_name, :anchor => lang.locale)  
 			                     end %>       
-			                  <%= langs.join(" | ") %>
+			                  <%= langs.join(" | ").html_safe %>
 	                    </td>
 	                  </tr>
 									</table>

@@ -47,7 +47,7 @@
 
   <% if translation.context %>
     <div style="font-size: 11px; color: grey; padding-top:3px;">
-      <%=trla("Context:")%> <%= translation.context %>  
+      <%=trla("Context:")%> <%= translation.context.html_safe %>
     </div>
   <% end %>
 

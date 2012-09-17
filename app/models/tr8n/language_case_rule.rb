@@ -181,6 +181,7 @@ class Tr8n::LanguageCaseRule < ActiveRecord::Base
       when "is_not" then desc << " is not"        
     end
     desc << " <strong>'" << humanize_values(definition["value#{index}"]) << "'</strong>"
+    desc.html_safe
   end
   
 end

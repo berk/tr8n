@@ -395,7 +395,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     return find_all_valid_translations(valid_translations_for(language)) if options[:api]
     
     if Tr8n::Config.disabled? or language.default?
-      return substitute_tokens(label, token_values, options.merge(:fallback => false), language)
+      return substitute_tokens(label, token_values, options.merge(:fallback => false), language).html_safe
     end
     
     if Tr8n::Config.enable_translator_language? and Tr8n::Config.current_user_is_translator?
@@ -406,17 +406,17 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     
     # if you want to present the label in it's sanitized form - for the phrase list
     if options[:default_language] 
-      return decorate_translation(language, sanitized_label, translation != nil, options)
+      return decorate_translation(language, sanitized_label, translation != nil, options).html_safe
     end
     
     if translation
       translated_label = substitute_tokens(translation.label, token_values, options, language)
-      return decorate_translation(language, translated_label, translation != nil, options.merge(:fallback => (translation_language != language)))
+      return decorate_translation(language, translated_label, translation != nil, options.merge(:fallback => (translation_language != language))).html_safe
     end
 
     # no translation found  
     translated_label = substitute_tokens(label, token_values, options, Tr8n::Config.default_language)
-    decorate_translation(language, translated_label, translation != nil, options)  
+    decorate_translation(language, translated_label, translation != nil, options).html_safe
   end
 
   ###############################################################

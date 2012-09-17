@@ -4,7 +4,7 @@
       :definition_count => def_size, :_definitions => "definition".pluralize_for(def_size), 
       :word_count => @definitions.keys.size, :_words => "word".pluralize_for(@definitions.keys.size)) %>
 			 
-  <%= (sorted_words = @definitions.keys.sort).collect{|w| "<strong>#{w}</strong>"}.join(", ") %>
+  <%= (sorted_words = @definitions.keys.sort).collect{|w| "<strong>#{w}</strong>"}.join(", ").html_safe %>
 </div>
 
 <table style="width:100%">

@@ -12,7 +12,7 @@
 	      html << "<div style='font-size:10px;color:grey'>"
 	      html << vote.translation.translation_key.description
 	      html << "</div>"
-	      html.join("")
+	      html.join("").html_safe
       else
         "Deleted Translation"  
       end  
@@ -33,7 +33,7 @@
 	        html << "Context: #{vote.translation.context}"
 	        html << "</div>"
 	      end
-	      html.join("") 
+	      html.join("").html_safe
       else
         "Deleted Translation"  
       end  
@@ -54,12 +54,12 @@
       end     
       html << vote.vote
       html << "</span>"
-      html.join("")
+      html.join("").html_safe
     }, 'text-align:right;'],
     [:actions, lambda{|vote|
       html = []
       html << link_to("Delete", {:action => :delete_vote, :vote_id => vote.id}, {:confirm => "Are you sure you want to delete this vote?"})
-      html.join(' | ')
+      html.join(' | ').html_safe
     }, 'text-align:right;white-space:nowrap;']
   ]) %>
 <% end %>

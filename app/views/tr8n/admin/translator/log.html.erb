@@ -19,7 +19,7 @@
       html << "<div style='#{log.decoration}'>"
       html << log.describe
       html << "</div>"
-      html.join("")
+      html.join("").html_safe
     }]
   ]) %>
 <% end %>
