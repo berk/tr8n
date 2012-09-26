@@ -98,6 +98,7 @@ The best way to get going with Tr8n is to run the gem as a stand-alone applicati
 
   $ git clone git://github.com/berk/tr8n.git
   $ cd tr8n/sample/tr8n_server
+  $ bundle install
   $ rake db:migrate
   $ rake tr8n:init
   $ rails s
