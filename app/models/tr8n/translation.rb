@@ -71,7 +71,8 @@ class Tr8n::Translation < ActiveRecord::Base
   def vote!(translator, score)
     score = score.to_i
     vote = Tr8n::TranslationVote.find_or_create(self, translator)
-    vote.update_attributes(:vote => score.to_i)
+
+    vote.update_attributes(:vote => (score.to_i * translator.voting_power))
     
     update_rank!
     

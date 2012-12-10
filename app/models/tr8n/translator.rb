@@ -147,6 +147,10 @@ class Tr8n::Translator < ActiveRecord::Base
     total_metric.rank
   end
     
+  def voting_power
+    super || 1
+  end
+
   def block!(actor, reason = "No reason given")
     update_attributes(:blocked => true, :inline_mode => false)
     Tr8n::TranslatorLog.log_admin(self, :got_blocked, actor, reason)
