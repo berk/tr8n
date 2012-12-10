@@ -1,10 +1,12 @@
 PATH
   remote: .
   specs:
-    tr8n (3.2.3)
+    tr8n (3.2.4)
+      faraday
       kaminari
       rails (~> 3.2.3)
       sass
+      thor
       will_filter (~> 3.1.9)
 
 GEM
@@ -44,15 +46,16 @@ GEM
     dalli (2.2.1)
     diff-lcs (1.1.3)
     erubis (2.7.0)
+    faraday (0.8.4)
+      multipart-post (~> 1.1)
     fssm (0.2.9)
     hike (1.2.1)
     i18n (0.6.0)
     journey (1.0.3)
     json (1.6.6)
-    kaminari (0.13.0)
+    kaminari (0.14.1)
       actionpack (>= 3.0.0)
       activesupport (>= 3.0.0)
-      railties (>= 3.0.0)
     mail (2.4.4)
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
@@ -60,6 +63,7 @@ GEM
     method_source (0.7.1)
     mime-types (1.19)
     multi_json (1.2.0)
+    multipart-post (1.1.5)
     polyglot (0.3.3)
     pry (0.9.8.4)
       coderay (~> 1.0.5)
@@ -114,7 +118,7 @@ GEM
     sqlite3 (1.3.5)
     thor (0.14.6)
     tilt (1.3.3)
-    treetop (1.4.10)
+    treetop (1.4.11)
       polyglot
       polyglot (>= 0.3.1)
     tzinfo (0.3.33)
