@@ -110,7 +110,7 @@ class Tr8n::TranslatorLog < ActiveRecord::Base
     if [:got_blocked, :got_unblocked, :got_promoted, :got_demoted].include?(act)
       html << " by " << Tr8n::Config.user_name(user) if user
       html << " (" << reason << ")" unless reason.blank?
-    elsif [:got_new_level].include?(act)
+    elsif [:got_new_level, :got_new_voting_power].include?(act)
       html << " " << reference unless reference.blank?
       html << " from " << Tr8n::Config.user_name(user) if user
       html << " (" << reason << ")" unless reason.blank?

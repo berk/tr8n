@@ -19,7 +19,7 @@ module Tr8n
 
     desc 'lookup PHRASE', 'Lookup translations for a phrase'
     method_option :description, :type => :string, :aliases => "-d", 
-                  :required => false, :banner => "Contex in which the phrase is used", :default => ""
+                  :required => false, :banner => "Context in which the phrase is used", :default => ""
     def lookup(query)
       data = http_get('translation_key/lookup', {:query => query, :limit => 10, :only_list => true})
       # pp data

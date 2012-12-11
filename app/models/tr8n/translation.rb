@@ -71,8 +71,7 @@ class Tr8n::Translation < ActiveRecord::Base
   def vote!(translator, score)
     score = score.to_i
     vote = Tr8n::TranslationVote.find_or_create(self, translator)
-
-    vote.update_attributes(:vote => (score.to_i * translator.voting_power))
+    vote.update_attributes(:vote => score)
     
     update_rank!
     
@@ -89,7 +88,12 @@ class Tr8n::Translation < ActiveRecord::Base
   end
   
   def update_rank!
-    update_attributes(:rank => Tr8n::TranslationVote.where(:translation_id => self.id).sum(:vote))
+    new_rank = 0
+    Tr8n::TranslationVote.where(:translation_id => self.id).each do |tv|
+      next unless tv.translator
+      new_rank += (tv.translator.voting_power * tv.vote)
+    end
+    update_attributes(:rank => new_rank)
   end
   
   def reset_votes!(translator)

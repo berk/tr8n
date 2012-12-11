@@ -93,7 +93,7 @@ class Tr8n::TranslatorMetric < ActiveRecord::Base
   # updated when an action is done to the translator's translations
   def update_rank!
     if language
-      self.accepted_translations = Tr8n::Translation.where("translator_id = ? and language_id = ? and rank >= ?", translator.id, language.id, Tr8n::Config.translation_threshold).count
+      self.accepted_translations = Tr8n::Translation.where("translator_id = ? and language_id = ? and rank >= ?", translator.id, language.id, language.threshold).count
       self.rejected_translations = Tr8n::Translation.where("translator_id = ? and language_id = ? and rank < ?", translator.id, language.id, 0).count
     else
       self.accepted_translations = Tr8n::Translation.where("translator_id = ? and rank >= ?", translator.id, Tr8n::Config.translation_threshold).count

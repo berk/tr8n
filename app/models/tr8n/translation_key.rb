@@ -247,7 +247,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   end
   
   def valid_translations_for_language(language = Tr8n::Config.current_language)
-    translations_for(language, Tr8n::Config.translation_threshold)
+    translations_for(language, language.threshold)
   end
 
   # used by all translation methods

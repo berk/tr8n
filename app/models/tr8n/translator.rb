@@ -59,7 +59,7 @@
 class Tr8n::Translator < ActiveRecord::Base
   self.table_name = :tr8n_translators
 
-  attr_accessible :user_id, :inline_mode, :blocked, :reported, :fallback_language_id, :rank, :name, :gender, :email, :password, :mugshot, :link, :locale, :level, :manager, :last_ip, :country_code, :remote_id
+  attr_accessible :user_id, :inline_mode, :blocked, :reported, :fallback_language_id, :rank, :name, :gender, :email, :password, :mugshot, :link, :locale, :level, :manager, :last_ip, :country_code, :remote_id, :voting_power
   attr_accessible :user
 
   after_save      :clear_cache
@@ -141,12 +141,25 @@ class Tr8n::Translator < ActiveRecord::Base
     
     # calculate language specific rank
     metric_for(language).update_rank!
+
+    # for admin tool searches
+    update_attributes(:rank => rank)
   end
-    
+
   def rank
     total_metric.rank
   end
-    
+
+  def update_voting_power!(actor, new_voting_power, reason = "No reason given")
+    update_attributes(:voting_power => new_voting_power)
+
+    translation_votes.each do |tv|
+      tv.translation.vote!(self, tv.vote)
+    end
+
+    Tr8n::TranslatorLog.log_admin(self, :got_new_voting_power, actor, reason, new_voting_power.to_s)
+  end
+      
   def voting_power
     super || 1
   end
@@ -267,8 +280,8 @@ class Tr8n::Translator < ActiveRecord::Base
     level == Tr8n::Config.application_level
   end
   
-  def last_logs
-    Tr8n::TranslatorLog.where("translator_id = ?", self.id).order("created_at desc").limit(20)
+  def last_logs(limit = 20)
+    Tr8n::TranslatorLog.where("translator_id = ?", self.id).order("created_at desc").limit(limit)
   end
   
   def name

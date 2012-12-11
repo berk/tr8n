@@ -43,10 +43,30 @@
             </span>
             
             <span id="translator_level_options_container" style='display:none'>
-            	<%= form_tag do %>
+            	<%= form_tag(:action => :update, :translator_id => @translator.id) do %>
 	              <%= select_tag('translator_level', options_for_select(Tr8n::Translator.level_options, @translator.level.to_s)) %>
 	              <%= link_to_function('save', 'updateTranslatorLevel()')%> | <%= link_to_function('cancel', "Tr8n.Effects.show('translator_level_container'); Tr8n.Effects.hide('translator_level_options_container');")%>
 							<% end %>
+            </span>
+            
+        </td>
+    </tr> 
+    <tr>
+        <th>
+            Voting Power
+        </th>
+        <td>
+            <span id="translator_power_container"> 
+              <span id='translator_title'><%= @translator.voting_power %></span>
+              &nbsp;&nbsp;
+              <%= link_to_function('change', "Tr8n.Effects.hide('translator_power_container'); Tr8n.Effects.show('translator_power_value_container');") %>
+            </span>
+            
+            <span id="translator_power_value_container" style='display:none'>
+              <%= form_tag({:action => :update, :translator_id => @translator.id}, :id => :power_form) do %>
+                <%= text_field_tag(:new_voting_power, @translator.voting_power) %>
+                <%= link_to_function("save", "Tr8n.Effects.submit('power_form')")%> | <%= link_to_function('cancel', "Tr8n.Effects.show('translator_power_container'); Tr8n.Effects.hide('translator_power_value_container');")%>
+              <% end %>
             </span>
             
         </td>
@@ -131,7 +151,7 @@
         <td>
 					<%= @translator.language_users.collect{|lu|
                   link_to(lu.language.english_name, :controller => "/tr8n/admin/language", :action => :view, :lang_id => lu.language.id) 
-              }.join(", ") -%>
+              }.join(", ").html_safe -%>
         </td>
 		</tr>	    
     <tr>
@@ -223,6 +243,6 @@
 	function updateTranslatorLevel() {
 		var reason = prompt("Please provide the reason for promoting/demoting this translator:");
 		if (reason) reason = "";
-		location = "/tr8n/admin/translator/update_level?translator_id=<%=@translator.id%>&new_level=" + Tr8n.value('translator_level') + "&reason=" + reason;
+		location = "/tr8n/admin/translator/update?translator_id=<%=@translator.id%>&new_level=" + Tr8n.value('translator_level') + "&reason=" + reason;
 	}
 </script>

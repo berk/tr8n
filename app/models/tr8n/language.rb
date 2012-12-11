@@ -373,4 +373,8 @@ class Tr8n::Language < ActiveRecord::Base
     @recently_updated_votes ||= Tr8n::TranslationVote.where("translation_id in (select tr8n_translations.id from tr8n_translations where tr8n_translations.language_id = ? and tr8n_translations.translator_id = ?)", self.id, translator.id).order("updated_at desc").limit(5)
   end
   
+  def threshold
+    super || Tr8n::Config.translation_threshold
+  end
+
 end

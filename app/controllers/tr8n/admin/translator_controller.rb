@@ -55,9 +55,17 @@ class Tr8n::Admin::TranslatorController < Tr8n::Admin::BaseController
     redirect_to_source
   end
 
-  def update_level
+  def update
     @translator = Tr8n::Translator.find(params[:translator_id])
-    @translator.update_level!(tr8n_current_user, params[:new_level], params[:reason])
+
+    unless params[:new_level].blank?
+      @translator.update_level!(tr8n_current_user, params[:new_level], params[:reason])
+    end
+
+    unless params[:new_voting_power].blank?
+      @translator.update_voting_power!(tr8n_current_user, params[:new_voting_power].to_i)
+    end
+
     redirect_to_source
   end
 

@@ -27,6 +27,7 @@ class CreateTr8nTables < ActiveRecord::Migration
       t.string  :locale,        :null => false
       t.string  :english_name,  :null => false
       t.string  :native_name
+      t.integer :threshold,     :default => 1
       t.boolean :enabled
       t.boolean :right_to_left
       t.integer :completeness
@@ -105,11 +106,12 @@ class CreateTr8nTables < ActiveRecord::Migration
     
     create_table :tr8n_translators do |t|
       t.integer :user_id
-      t.boolean :inline_mode, :default => false
-      t.boolean :blocked,     :default => false
-      t.boolean :reported,    :default => false
+      t.boolean :inline_mode,   :default => false
+      t.boolean :blocked,       :default => false
+      t.boolean :reported,      :default => false
+      t.integer :voting_power,  :default => 1
+      t.integer :rank,          :default => 0
       t.integer :fallback_language_id
-      t.integer :rank,        :default => 0
       t.string  :name
       t.string  :gender
       t.string  :email
