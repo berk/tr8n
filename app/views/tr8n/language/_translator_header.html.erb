@@ -1,10 +1,10 @@
 <div class="original_text">
-  <div class="supplemental">
+  <div class="supplemental" style="<%=tr8n_style_attribute_tag('float', 'right')%>">
     <%= tr8n_help_icon_tag %>
   </div>
   
 	<% if @translation_key.is_a?(Tr8n::RelationshipKey) %>
-    <div class="quiet small"><%=trla("Relationship Key")%></div>
+    <div class="quiet small"><%=tra("Relationship Key")%></div>
     <div class="quote" dir="<%=Tr8n::Config.default_language.dir%>">
       <%=image_tag("/tr8n/images/left_quote.png") %>
       <%=@translation_key.sanitized_label %>
@@ -21,8 +21,8 @@
       </div>
     <% end %>
 	<% else %>
-	  <div class="quiet small"><%=trla("Original Phrase in {language}", nil, :language => @translation_key.language.native_name)%></div>
-	  <div class="quote" dir="<%=Tr8n::Config.default_language.dir%>">
+	  <div class="quiet small"><%=tra("Original Phrase in {language}", nil, :language => @translation_key.language.native_name)%></div>
+	  <div class="quote" dir="<%=Tr8n::Config.default_language.dir%>" style="<%=tr8n_style_attribute_tag('text-align', 'left')%>">
 	    <%=image_tag("/tr8n/images/left_quote.png") %>
 	    <%=@translation_key.sanitized_label %>
 	    <%=image_tag("/tr8n/images/right_quote.png") %>

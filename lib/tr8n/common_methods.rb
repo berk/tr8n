@@ -153,6 +153,24 @@ module Tr8n::CommonMethods
   def trfe(label, desc = "", tokens = {}, options = {})
     flash[:trfe] = label.tr8n_translated? ? label : tr(label, desc, tokens, options)
   end
+
+  # admin interface translations
+  def tra(label, desc = "", tokens = {}, options = {})
+    if Tr8n::Config.enable_admin_translations?
+      if Tr8n::Config.enable_admin_inline_mode?
+        tr(label, desc, tokens, options)
+      else
+        trl(label, desc, tokens, options)
+      end
+    else
+      Tr8n::Config.default_language.translate(label, desc, tokens, options)
+    end
+  end
+  
+  # admin interface translations
+  def trla(label, desc = "", tokens = {}, options = {})
+    tra(label, desc, tokens, options.merge(:skip_decorations => true))
+  end
   # end translation helper methods
 
 end

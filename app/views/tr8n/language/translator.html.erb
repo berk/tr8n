@@ -4,15 +4,15 @@
 	  <%=image_tag("/tr8n/images/top_left_stem.png", :class => "stem #{params[:stem_type]}", :style => "#{left_right}:#{params[:stem_offset]}px")%>
 	<% end %>  
 	
-	<div class="hd">
-	  <div class="supplemental">
+	<div class="hd" <%=tr8n_dir_attribute_tag%>>
+	  <div class="supplemental" style="<%=tr8n_style_attribute_tag('float', 'right')%>">
 	    <%=link_to_function(image_tag("/tr8n/images/close.gif", :title=>trla("Close")), "tr8nTranslator.hide()")%>
 	  </div>
 		<%= tr8n_language_flag_tag(tr8n_current_language) %>
 	  <%= trla("{language} Translation", nil, :language => tr8n_current_language.native_name) %>
 	</div>
 	
-	<div id="tr8n_translator_container" class="bd">
+	<div id="tr8n_translator_container" class="bd" <%=tr8n_dir_attribute_tag%>>
 	  <%= render(:partial => "translator_#{@mode}") %>
 	</div>  
 <% end %>
