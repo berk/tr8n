@@ -3,7 +3,7 @@
   
   <% form_for(:language, tr8n_current_language, :url => {:action => :index}, :html => {:id => 'basic_info_form', :method => :post}) do |f| %>
     <div id="basic_info_content" class="section_box colored">
-      <div style="float:right; padding-right:5px;">
+      <div style="<%=tr8n_float_style_tag(:right)%>; padding-right:5px;">
           <%=tr8n_help_icon_tag %>
       </div>
       <div>

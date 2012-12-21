@@ -1,14 +1,6 @@
 <% Tr8n::Config.with_options(:default_locale => 'en-US', :admin => true) do %>
 
 	<%= render :partial => "/tr8n/common/header" %>
-	<script language="JavaScript" src="/tr8n/javascripts/FusionCharts.js"></script>
-	<script type="text/javascript">
-	   function createChart(chartId, type, url) {
-	      var chart = new FusionCharts("/tr8n/charts/FCF_" + type + ".swf", chartId, "210", "110");
-	      chart.setDataURL(url);
-	      chart.render(chartId);
-	   }
-	</script>
 	
 	<div class="section_title">
 		<% if Tr8n::Config.enable_translator_language? %>
@@ -87,7 +79,7 @@
 		<% translator_metric = tr8n_current_translator.metric_for(lang) %>
 		
 		<div class="section_title">
-		  <div style="float:right; font-size:12px; font-weight:normal; padding-top:5px;">
+		  <div style="<%=tr8n_float_style_tag(:right)%>; font-size:12px; font-weight:normal; padding-top:5px;">
 	      <%=link_to(tra("select", "Language action link"), :locale => lang.locale)%>
 	      | <%=link_to(tra("site map", "Language action link"), "/tr8n/phrases/map?locale=#{lang.locale}")%>
 	      | <%=link_to(tra("phrases", "Language action link"), "/tr8n/phrases?locale=#{lang.locale}")%>
@@ -103,11 +95,10 @@
 	    <%=tr8n_toggler_tag("lang_content_#{lang.id}")%>
 			
 	    <%=image_tag("/tr8n/images/flags/#{lang.flag}.png", :title=>lang.native_name) if Tr8n::Config.enable_language_flags? %>&nbsp;
-	    <a name="<%=lang.locale%>" style="text-decoration:none;color:black;"><%=lang.english_name%></a>
-			
-			<% if tr8n_current_translator.manager? %> 
-			  <span style="color:#ccc; font-size:12px;">(<%=tra("You are managing this language") %>)</span>
-			<% end %>
+	    
+	    <span dir="ltr">
+	    	<a name="<%=lang.locale%>" style="text-decoration:none;color:black;"><%=lang.native_name%></a>
+	  	</span>
 		</div>
 		
 		<div id="lang_content_<%=lang.id%>" class="section_box colored">

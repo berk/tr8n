@@ -3,7 +3,7 @@
 	
 	<% unless @topics.empty? %>
 	<div class="section_title">
-	  <div style="float:right; padding-top:6px; font-size:12px; color: #ccc;">
+	  <div style="<%=tr8n_float_style_tag(:right)%>; padding-top:6px; font-size:12px; color: #ccc;">
 	    <%=image_tag('/tr8n/images/plus.png')%> <%= link_to(tra("Start a new discussion topic"), :action => :topic, :mode => :create) %>
 	  </div>
 	  

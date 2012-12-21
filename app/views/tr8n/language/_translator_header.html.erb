@@ -5,7 +5,7 @@
   
 	<% if @translation_key.is_a?(Tr8n::RelationshipKey) %>
     <div class="quiet small"><%=trla("Relationship Key")%></div>
-    <div class="quote">
+    <div class="quote" dir="<%=Tr8n::Config.default_language.dir%>">
       <%=image_tag("/tr8n/images/left_quote.png") %>
       <%=@translation_key.sanitized_label %>
       <%=image_tag("/tr8n/images/right_quote.png") %>
@@ -22,13 +22,13 @@
     <% end %>
 	<% else %>
 	  <div class="quiet small"><%=trla("Original Phrase in {language}", nil, :language => @translation_key.language.native_name)%></div>
-	  <div class="quote">
+	  <div class="quote" dir="<%=Tr8n::Config.default_language.dir%>">
 	    <%=image_tag("/tr8n/images/left_quote.png") %>
 	    <%=@translation_key.sanitized_label %>
 	    <%=image_tag("/tr8n/images/right_quote.png") %>
 	  </div>
 	  <% unless @translation_key.description.blank? %>
-	    <div class="desc">
+	    <div class="desc" style="border:0px;border-<%=tr8n_current_language.align(:left)%>:1px solid #ccc;padding-<%=tr8n_current_language.align(:left)%>:5px;">
 	      <%=@translation_key.description %>
 	    </div>
 	  <% end %>

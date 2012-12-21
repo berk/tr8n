@@ -3,7 +3,7 @@
     <table style="width:100%;">
       <tr>
         <td align='left'><%= page_entries_info(@messages, {:entry_name => "message", :skip_decorations => true, :params => params.merge(:last_page => nil)}) %></td>
-        <td align='right'><%= will_paginate(@messages, :style => "text-align:right", :skip_decorations => true, :params => params.merge(:last_page => nil)) %></td>
+        <td align='right'><%= will_paginate(@messages, :style => tr8n_float_style_tag(:right), :skip_decorations => true, :params => params.merge(:last_page => nil)) %></td>
       </tr>
     </table>
   </div>

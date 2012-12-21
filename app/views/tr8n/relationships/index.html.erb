@@ -3,7 +3,7 @@
 	
   <div class="section_box" style="margin-bottom:5px; background-color:#EFF8FF; margin-top:0px;">
 	  <% form_tag({:action => :index}, {:method => :get, :id => "translations_search_form"}) do %>
-		  <div style="float:right">
+		  <div style="<%=tr8n_float_style_tag(:right)%>">
 	        <button type="submit" class="translator_btn translator_small_btn" onClick="Tr8n.Effects.submit('translations_search_form'); return false;">
 	            <span><%=tra("Search", "Search button label")%></span>
 	        </button>
@@ -25,7 +25,7 @@
 	</div>
 	
 	<div id="relationship_keys_toolbar" style="font-size:12px; margin-top:0px; background-color:#f8f7f6; border:1px solid #eee; padding:5px; color:grey; background: url('/wf/images/sort_bg.gif') repeat-x scroll 0 0 transparent;">
-	  <div style="float:right;">
+	  <div style="<%=tr8n_float_style_tag(:right)%>">
       <%=tr8n_help_icon_tag("relationship_keys")%>
 	  </div>
 	  <%

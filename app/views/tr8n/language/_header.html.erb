@@ -1,5 +1,5 @@
 <div class="section_title">
-  <div style="float:right; padding-top:0px;">
+  <div style="<%=tr8n_float_style_tag(:right)%>; padding-top:0px;">
     <% if mode == :view %>
       <%=link_to_function("#{image_tag("/tr8n/images/table_edit.png")}", "switchSectionMode('#{section}', 'edit')") %>
     <% else %>
@@ -10,5 +10,5 @@
   
 	<%=tr8n_toggler_tag("#{section}_content")%>
 	
-  <%=trl(label, description) %>
+  <%=trla(label, description) %>
 </div>

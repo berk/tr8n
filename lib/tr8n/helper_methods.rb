@@ -129,7 +129,15 @@ module Tr8n::HelperMethods
   end
 
   def tr8n_dir_attribute_tag
-    "dir='<%=Tr8n::Config.current_language.dir%>'"
+    "dir='#{Tr8n::Config.current_language.dir}'"
+  end
+
+  def tr8n_float_style_tag(default = :right)
+    "float:#{Tr8n::Config.current_language.align(default)};"
+  end
+
+  def tr8n_text_align_style_tag(default = :right)
+    "text-align:#{Tr8n::Config.current_language.align(default)};"
   end
 
   def tr8n_splash_screen_tag
@@ -343,6 +351,7 @@ module Tr8n::HelperMethods
       :use_month_names => month_names.collect{|month_name| Tr8n::Language.translate(month_name, options[:description] || "Month name")} 
     ), html_options)
   end
+
 
 private
 

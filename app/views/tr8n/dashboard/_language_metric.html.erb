@@ -2,7 +2,7 @@
   <div style="font-size:14px; padding:3px;">
     <%=tra("Language Phrases", "Dashboard section header")%>
     <span style="font-size:10px;color:#ccc;">
-      (<%= tra("{count}% Complete", "Completeness of a language", :count => (language_metric.completeness || 0)) %>)
+      <%= tra("{count}% Complete", "Completeness of a language", :count => (language_metric.completeness || 0)) %>
     </span>
   </div>
 

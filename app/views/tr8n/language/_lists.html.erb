@@ -17,13 +17,15 @@
 		          <% end %>
     			  </span>
 						
-	          <div onClick="Tr8n.element('language_selector_locale').value='<%=language.locale%>'; Tr8n.element('language_selector_form').submit();">
+	          <div onClick="Tr8n.element('language_selector_locale').value='<%=language.locale%>'; Tr8n.element('language_selector_form').submit();" dir="ltr">
           	<%= tr8n_language_flag_tag(language) %>
-						<% if language == tr8n_current_language %>
-						  <strong><%=language.full_name%></strong>
-            <% else %>
-              <%=language.full_name%>
-						<% end %>
+            <span dir="ltr">
+  						<% if language == tr8n_current_language %>
+  						  <strong><%=language.full_name%></strong>
+              <% else %>
+                <%=language.full_name%>
+  						<% end %>
+            </span>
           </div>
         </li>
       <% end %>
@@ -45,12 +47,14 @@
   <ul class="language_list">
     <% @all_languages.each do |language|%>
       <li onClick="Tr8n.element('language_selector_locale').value='<%=language.locale%>'; Tr8n.element('language_selector_form').submit();">
-        <span style="font-size:8px; float:right; color:#ccc;">
+        <span style="font-size:8px; float:right; color:#ccc;" dir="ltr">
           <%= "#{language.default? ? '100' : (language.completeness || 0)}%" if Tr8n::Config.enable_language_stats? %>
 				</span>
 				  				
       	<%= tr8n_language_flag_tag(language) %>
-        <%= language.full_name %>
+        <span dir="ltr">
+          <%= language.full_name %>
+        </span>
       </li>
     <% end %>
   </ul>

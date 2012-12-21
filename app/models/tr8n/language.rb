@@ -159,7 +159,12 @@ class Tr8n::Language < ActiveRecord::Base
   def dir
     right_to_left? ? "rtl" : "ltr"
   end
-  
+
+  def align(dest)
+    return dest unless right_to_left?
+    dest.to_s == 'left' ? 'right' : 'left'
+  end
+
   def self.enabled_languages
     Tr8n::Cache.fetch("enabled_languages") do 
       find(:all, :conditions => ["enabled = ?", true], :order => "english_name asc")
