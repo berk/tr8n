@@ -4,7 +4,7 @@
 	
 	<div class="section_box" style="margin-bottom:10px; background-color:#EFF8FF; margin-top:0px;">
 	  <% form_tag({:action => :index}, {:method => :get, :id => "glossary_search_form"}) do %>
-       <div style="<%=tr8n_float_style_tag(:right)%>">
+       <div style="<%=tr8n_style_attribute_tag('float', 'right')%>">
             <button type="submit" class="translator_btn translator_small_btn" onClick="Tr8n.Effects.submit('glossary_search_form'); return false;">
                 <span><%=tra("Search")%></span>
             </button>

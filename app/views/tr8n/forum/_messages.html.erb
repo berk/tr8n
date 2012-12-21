@@ -1,11 +1,6 @@
 <div class="section_box">
   <div style="margin-bottom:5px; padding-bottom:2px; border-bottom:1px solid #ccc; ">
-    <table style="width:100%;">
-      <tr>
-        <td align='left'><%= page_entries_info(@messages, {:entry_name => "message", :skip_decorations => true, :params => params.merge(:last_page => nil)}) %></td>
-        <td align='right'><%= will_paginate(@messages, :style => tr8n_float_style_tag(:right), :skip_decorations => true, :params => params.merge(:last_page => nil)) %></td>
-      </tr>
-    </table>
+    <%= render :partial => "/tr8n/common/paginator", :locals => {:objects => @messages, :subject => 'message'} %>
   </div>
 
   <table style="width:100%; ">

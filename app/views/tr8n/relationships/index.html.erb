@@ -3,7 +3,7 @@
 	
   <div class="section_box" style="margin-bottom:5px; background-color:#EFF8FF; margin-top:0px;">
 	  <% form_tag({:action => :index}, {:method => :get, :id => "translations_search_form"}) do %>
-		  <div style="<%=tr8n_float_style_tag(:right)%>">
+		  <div style="<%=tr8n_style_attribute_tag('float', 'right')%>">
 	        <button type="submit" class="translator_btn translator_small_btn" onClick="Tr8n.Effects.submit('translations_search_form'); return false;">
 	            <span><%=tra("Search", "Search button label")%></span>
 	        </button>
@@ -25,7 +25,7 @@
 	</div>
 	
 	<div id="relationship_keys_toolbar" style="font-size:12px; margin-top:0px; background-color:#f8f7f6; border:1px solid #eee; padding:5px; color:grey; background: url('/wf/images/sort_bg.gif') repeat-x scroll 0 0 transparent;">
-	  <div style="<%=tr8n_float_style_tag(:right)%>">
+	  <div style="<%=tr8n_style_attribute_tag('float', 'right')%>">
       <%=tr8n_help_icon_tag("relationship_keys")%>
 	  </div>
 	  <%
@@ -57,14 +57,14 @@
 	          <% unless rk.can_be_translated? %>
 	            <div style="float:right"><%=image_tag("/tr8n/images/lock.png", :style=>"width:12px", :title => trla("This relationship is locked"))%></div>
 	          <% end %>
-						<div style="font-size:18px;font-family:Arial;">
+						<div style="font-size:18px;font-family:Arial;" dir="ltr">
 	           <%=link_to(rk.label, :controller => '/tr8n/phrases', :action => :view, :translation_key_id => rk.id)%>
 						</div>
 						<% unless rk.default_translation.blank? %>
-						  <div style="color:grey;font-size:12px;padding-top:3px;font-weight:bold;"><%=rk.default_translation%></div>
+						  <div style="color:grey;font-size:12px;padding-top:3px;font-weight:bold;" dir="ltr"><%=rk.default_translation%></div>
 						<% end %>
 						<% unless rk.default_translation == rk.description%>
-              <div style="color:grey;font-size:10px;padding-top:3px;"><%=rk.description%></div>
+              <div style="color:grey;font-size:10px;padding-top:3px;" dir="ltr"><%=rk.description%></div>
 						<% end %>
 	        </td>
 	        <td style="padding:5px; vertical-align:top">

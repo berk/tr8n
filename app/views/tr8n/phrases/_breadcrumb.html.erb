@@ -1,5 +1,5 @@
 <% if @section_key %>
-  <div style="padding-top:0px;padding-bottom:15px;<%=tr8n_text_align_style_tag(:left)%>;font-size:12px; margin-bottom: 0px;">
+  <div style="padding-top:0px;padding-bottom:15px;<%=tr8n_style_attribute_tag('text-align', 'left')%>;font-size:12px; margin-bottom: 0px;">
       <%=link_to(tra("Site Map"), :action => :map)%> 
 			<% @section.parents[1..-1].each do |section| %>
         >> <%=link_to(tra(section.label, section.description), :action => :index, :section_key => section.key) %>

@@ -14,7 +14,7 @@
 
 <% unless lang.recently_updated_votes.empty? %>
 	<div style="padding-top:10px; font-size:14px; border-bottom:1px solid #ccc; margin-bottom:5px;">
-    <div style="<%=tr8n_float_style_tag(:right)%>; font-size:12px;">
+    <div style="<%=tr8n_style_attribute_tag('float', 'right')%>; font-size:12px;">
        <%=link_to(tra("view all"), :controller => "/tr8n/translations", :action => :index, :with_translations=>:with, :submitted_by=>:me, :locale => lang.locale)%>
     </div>
 

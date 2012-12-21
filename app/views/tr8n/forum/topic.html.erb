@@ -5,7 +5,7 @@
 	<% if @topic %>
 	  <div class="section_title">
 	
-	    <div style="<%=tr8n_float_style_tag(:right)%>; padding-top:20px; font-size:12px; color: #ccc;">
+	    <div style="<%=tr8n_style_attribute_tag('float', 'right')%>; padding-top:20px; font-size:12px; color: #ccc;">
 	      <%=link_to(image_tag("/tr8n/images/reply.png") + " " + tra("Reply", "Reply button for forum topics"), :topic_id => @topic.id, :page => params[:page], :anchor => :reply_message) %> 
 	      &nbsp; |  &nbsp; 
 	      <%=link_to(image_tag("/tr8n/images/plus.png") + " " + tra("Start a new discussion topic"), :mode => :create) %>

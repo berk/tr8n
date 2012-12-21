@@ -128,16 +128,16 @@ module Tr8n::HelperMethods
            :search => search, :phrase_type => phrase_type, :phrase_status => phrase_status)
   end
 
-  def tr8n_dir_attribute_tag
-    "dir='#{Tr8n::Config.current_language.dir}'"
+  def tr8n_style_attribute_tag(attr_name = 'float', default = 'right', lang = Tr8n::Config.current_language)
+    "#{attr_name}:#{lang.align(default)}"
   end
 
-  def tr8n_float_style_tag(default = :right)
-    "float:#{Tr8n::Config.current_language.align(default)};"
+  def tr8n_style_directional_attribute_tag(attr_name = 'padding', default = 'right', value = '5px', lang = Tr8n::Config.current_language)
+    "#{attr_name}-#{lang.align(default)}:#{value}"
   end
 
-  def tr8n_text_align_style_tag(default = :right)
-    "text-align:#{Tr8n::Config.current_language.align(default)};"
+  def tr8n_dir_attribute_tag(lang = Tr8n::Config.current_language)
+    "dir='#{lang.dir}'"
   end
 
   def tr8n_splash_screen_tag
@@ -159,6 +159,7 @@ module Tr8n::HelperMethods
     
     html = "<span style='white-space: nowrap'>"
     html << tr8n_language_flag_tag(lang, opts) if show_flag
+    html << "<span dir='ltr'>"
     
     name = case name_type
       when :native  then lang.native_name
@@ -176,7 +177,7 @@ module Tr8n::HelperMethods
       html << name
     end
     
-    html << "</span>"
+    html << "</span></span>"
   end
 
   def tr8n_language_selector_tag(opts = {})

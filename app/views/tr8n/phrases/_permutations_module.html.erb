@@ -5,13 +5,13 @@
 	    <%= hidden_field_tag(:translation_has_dependencies, "true") %>
 	
       <div class="section_title">
-		    <%=trla("Context Rules")%>
+		    <%=tra("Context Rules")%>
 		  </div>
 	
       <div style="color:grey; font-size:12px; padding-top:5px; padding-bottom:10px;">
-       <%=trla("Some translations depend on the gender of the viewing user or the token values.")%>
-       <%=trla("Select all of the rules types that this translation depends on.")%>
-       <%=trla("For example, if the translation depends on the gender of the viewing user, select the gender context for the viewing_user token.")%>
+       <%=tra("Some translations depend on the gender of the viewing user or the token values.")%>
+       <%=tra("Select all of the rules types that this translation depends on.")%>
+       <%=tra("For example, if the translation depends on the gender of the viewing user, select the gender context for the viewing_user token.")%>
       </div>
 
       <div style="padding:15px; border: 1px dotted #ccc; background:#EFF8FF;" >
@@ -23,8 +23,8 @@
 
   <div id="buttons_container" style="padding-top:15px;padding-bottom:5px;text-align:center">
 	    <button type="submit" class="translator_btn translator_submit_btn" onClick="Tr8n.Effects.submit('permutation_form'); return false;">
-	        <span><%=trla("Generate")%></span>
+	        <span><%=tra("Generate")%></span>
 	    </button>
-       or <%= link_to_function(trla("Cancel"), "viewTranslations()") %>
+       <%=tra("or") %> <%= link_to_function(tra("Cancel"), "viewTranslations()") %>
 	</div>
 </div>

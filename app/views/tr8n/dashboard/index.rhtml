@@ -79,7 +79,7 @@
 		<% translator_metric = tr8n_current_translator.metric_for(lang) %>
 		
 		<div class="section_title">
-		  <div style="<%=tr8n_float_style_tag(:right)%>; font-size:12px; font-weight:normal; padding-top:5px;">
+		  <div style="<%=tr8n_style_attribute_tag('float', 'right')%>; font-size:12px; font-weight:normal; padding-top:5px;">
 	      <%=link_to(tra("select", "Language action link"), :locale => lang.locale)%>
 	      | <%=link_to(tra("site map", "Language action link"), "/tr8n/phrases/map?locale=#{lang.locale}")%>
 	      | <%=link_to(tra("phrases", "Language action link"), "/tr8n/phrases?locale=#{lang.locale}")%>

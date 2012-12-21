@@ -3,7 +3,7 @@
   
   <div class="section">
     <div class="small_section_title">
-      <div style="<%=tr8n_float_style_tag(:right)%>;font-weight:normal;font-size:10px;color:grey;">
+      <div style="<%=tr8n_style_attribute_tag('float', 'right')%>;font-weight:normal;font-size:10px;color:grey;">
         <%=link_to(trla("view all"), {:controller => "/tr8n/phrases", :action => :view, :translation_key_id => @translation_key.id, :anchor => "translations"}) %>
 				|
 				<% 

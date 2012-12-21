@@ -25,10 +25,10 @@
 	    </div>
 	    
 	    <div class="section_box" style="background-color:#f9f8f7;padding:5px;margin-bottom:15px;">
-	      <div style="float:right; padding-right:5px;">
+	      <div style="<%=tr8n_style_attribute_tag('float', 'right')%>; <%=tr8n_style_directional_attribute_tag('padding', 'right', '5px')%>">
 	        <%=tr8n_help_icon_tag %>
 	      </div>
-	      <div style="padding-left:15px; padding-bottom:20px">
+	      <div style="<%=tr8n_style_directional_attribute_tag('padding', 'left', '15px')%>; padding-bottom:20px">
 	        <%= tr8n_sitemap(section.children, section.data[:splitters]) %>
 	      </div>
 	    </div>

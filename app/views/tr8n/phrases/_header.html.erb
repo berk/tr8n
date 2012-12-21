@@ -1,6 +1,6 @@
 <% style = @translation_key.can_be_translated? ? "background-color:#FDFDDF; border: 1px solid #DDCF6F;" : "background-color:#ECFFEF; border: 1px solid #50B74F;"  %>
 <div class="section_box" style="margin-bottom:5px;<%=style%>;">
-  <div style="float:right; font-size:12px; padding-right:3px;">
+  <div style="<%=tr8n_style_attribute_tag('float', 'right')%>; font-size:12px; padding-right:3px;">
     <% if @translation_key.can_be_translated? %>
     	<%=image_tag("/tr8n/images/lock_open.png", :style=>"vertical-align:bottom;", :title => trla("This phrase is unlocked.")) %>
     <% else %>  
@@ -10,7 +10,7 @@
 	
   <div style="color:grey;font-size:20px;padding-bottom:10px;"><%=@translation_key.class.title%></div>
   
-  <div style="padding-top:5px;padding-bottom:10px;font-size:14px">
+  <div style="padding-top:5px;padding-bottom:10px;font-size:14px" <%=tr8n_dir_attribute_tag(Tr8n::Config.default_language)%>>
       <%=image_tag("/tr8n/images/left_quote.png", :style=>"text-align:bottom;padding-bottom:5px;") %>
       <%=@translation_key.sanitized_label %>
       <%=image_tag("/tr8n/images/right_quote.png", :style=>"text-align:bottom;padding-top:5px;") %>
@@ -23,13 +23,13 @@
 				</div>
       <% end %>
       <% unless @translation_key.default_translation == @translation_key.description%>
-        <div style="color:grey;font-size:12px;padding-left:10px;padding-top:1px;padding-bottom:1px;border-left:solid 1px #ccc;margin-left:10px;">
+        <div style="color:grey;font-size:12px;padding-left:10px;padding-top:1px;padding-bottom:1px;margin-left:10px;border:0px;border-<%=tr8n_current_language.align(:left)%>:1px solid #ccc;padding-<%=tr8n_current_language.align(:left)%>:5px;">
 				  <%=@translation_key.description%>
 				</div>
       <% end %>
   <% else %>
 	  <% unless @translation_key.description.blank? %>
-	    <div style="color:grey;font-size:12px;padding-left:10px;padding-top:1px;padding-bottom:1px;border-left:solid 1px #ccc;margin-left:10px;">
+	    <div style="color:grey;font-size:12px;padding-left:10px;padding-top:1px;padding-bottom:1px;margin-left:10px;border:0px;border-<%=tr8n_current_language.align(:left)%>:1px solid #ccc;padding-<%=tr8n_current_language.align(:left)%>:5px;">
 	      <%=@translation_key.description %>
 	    </div>
 	  <% end %>
