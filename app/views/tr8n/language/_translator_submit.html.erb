@@ -8,19 +8,19 @@
         <%= render(:partial => "translator_header")%>
       
         <div id="tr8n_translator_translation_container"> 
-            <div class="strong small" style="padding-top:10px;"><%=trla("Enter {language} Translation:", nil, :language => tr8n_current_language.native_name)%></div>
+            <div class="strong small" style="padding-top:10px;"><%=tra("Enter {language} Translation:", nil, :language => tr8n_current_language.native_name)%></div>
             <%= f.text_area(:label, :id => "tr8n_translator_translation_label", :class => "keyboardInput", :style=>"padding: 5px 0px; width:100%;") %>
 		
             <% if @translation_key.permutatable? %>
 	            <div style="float:<%=tr8n_current_language.align(:right)%>; font-size:10px;">
-	               <%=link_to_function(trla("generate context rules for this phrase"), "tr8nTranslator.switchTranslatorMode('#{@translation_key.id}', 'dependencies', '#{@source_url}')", :class=>"translation_action") %>
+	               <%=link_to_function(tra("generate context rules for this phrase"), "tr8nTranslator.switchTranslatorMode('#{@translation_key.id}', 'dependencies', '#{@source_url}')", :class=>"translation_action") %>
 							</div>
 						<% end %>
             
             <% if @translation_key.translation_tokens? %>
                 <div id="tr8n_translator_tokens_simple_view" style="font-size:10px;">
 	                <div class="small_section_title" style="color: #999; font-size: 10px;">
-	                   <strong><%=trla("Translation Tokens")%></strong>
+	                   <strong><%=tra("Translation Tokens")%></strong>
 	                </div>
 									
                   <span dir="ltr">
@@ -35,7 +35,7 @@
 
 									<% if tr8n_current_language.cases.any? and @translation_key.data_tokens? %>
 										<div style="font-size: 10px; padding-top:15px;">
-											<%=link_to_function(trla("Click here if the token values depend on the language cases"), "Tr8n.Effects.hide('tr8n_translator_tokens_simple_view'); Tr8n.Effects.show('tr8n_translator_tokens_extended_view');")%>
+											<%=link_to_function(tra("Click here if the token values depend on the language cases"), "Tr8n.Effects.hide('tr8n_translator_tokens_simple_view'); Tr8n.Effects.show('tr8n_translator_tokens_extended_view');")%>
 									  </div>
 									<% end %>	
                 </div>
@@ -43,7 +43,7 @@
 	              <% if tr8n_current_language.cases.any? %>
 									<div id="tr8n_translator_tokens_extended_view" style="display:none">
 	                  <div class="small_section_title" style="color: #999; font-size: 10px;">
-	                     <strong><%=trla("Data Tokens")%></strong>
+	                     <strong><%=tra("Data Tokens")%></strong>
 	                  </div>
 	                  <div style="height:120px; overflow:auto; padding:2px; border:1px dotted #ccc; background-color:#f9f8f7;">
 										  <table style="width:100%;">
@@ -66,7 +66,7 @@
 										
 										<% if @translation_key.decoration_tokens? %>
 		                <div class="small_section_title" style="color: #999; font-size: 10px;">
-		                   <strong><%=trla("Decoration Tokens")%></strong>
+		                   <strong><%=tra("Decoration Tokens")%></strong>
 		                </div>
 										<div style="font-size:10px;">
 		                  <% @translation_key.decoration_tokens.each do |token| %>
@@ -82,7 +82,7 @@
 		        <% if Tr8n::Config.enable_google_suggestions? and tr8n_current_language.suggestible? and not @translation_key.suggestion_label.blank? %>
 		        <div id="tr8n_google_suggestion_section" style="display:none; padding-top:10px;"> 
 		            <div class="small_section_title" style="color: #999; font-size: 10px;">
-		               <strong><%=trla("Suggested Translation")%></strong>
+		               <strong><%=tra("Suggested Translation")%></strong>
 		            </div>
 		        
 		            <div id="tr8n_google_suggestion_container_<%=@translation_key.id%>" style="" class="small_section">  
@@ -101,7 +101,7 @@
 		        
 		        <% if Tr8n::Config.enable_glossary_hints? and @translation_key.glossary? %>  
 		          <div class="small_section_title" style="color: #999; font-size: 10px; padding-top:10px;">
-		             <strong><%=trla("Glossary")%></strong>
+		             <strong><%=tra("Glossary")%></strong>
 		          </div>
 		          
 		          <div id="tr8n_glossary_<%=@translation_key.id%>" class="small_section">
@@ -127,7 +127,7 @@
 
 <div id="tr8n_translator_buttons_container" class="buttons_container">
     <button type="submit" class="translator_btn translator_submit_btn" onClick="tr8nTranslator.submitTranslation(); return false;">
-        <span><%=trla("Translate")%></span>
+        <span><%=tra("Translate")%></span>
     </button>
 </div>
 

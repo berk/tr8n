@@ -9,7 +9,7 @@
 	    <%=link_to_function(image_tag("/tr8n/images/close.gif", :title=>trla("Close")), "tr8nTranslator.hide()")%>
 	  </div>
 		<%= tr8n_language_flag_tag(tr8n_current_language) %>
-	  <%= trla("{language} Translation", nil, :language => tr8n_current_language.native_name) %>
+	  <%= tra("{language} Translation", nil, :language => tr8n_current_language.native_name) %>
 	</div>
 	
 	<div id="tr8n_translator_container" class="bd" <%=tr8n_dir_attribute_tag%>>

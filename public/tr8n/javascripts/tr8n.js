@@ -2908,7 +2908,7 @@ Tr8n.Lightbox.prototype = {
     if(tr8nLanguageCaseManager) tr8nLanguageCaseManager.hide();
     Tr8n.Utils.hideFlash();
 
-    this.container.innerHTML = "<div class='inner'><div class='bd'><img src='/tr8n/images/spinner.gif' style='vertical-align:middle'> Loading...</div></div>";
+    this.container.innerHTML = "<div class='inner'><div class='bd' style='text-align:center;padding-top:50px;'><img src='/tr8n/images/loading_large.gif' style='vertical-align:middle'></div></div>";
     
     this.overlay.style.display  = "block";
 
