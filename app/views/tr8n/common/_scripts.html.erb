@@ -36,7 +36,7 @@
     <script type="text/javascript">
        <% Tr8n::Config.default_shortcuts.each do |key, data| %>     	
 				  shortcut.add("<%=key%>", function() {
-				    <%=data["script"]%>
+				    <%=data["script"].html_safe%>
 				  });
 			 <% end %>
     </script>

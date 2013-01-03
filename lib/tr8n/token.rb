@@ -402,6 +402,10 @@ module Tr8n
     end
   
     def substitute(label, values = {}, options = {}, language = Tr8n::Config.current_language)
+      # pp "TR8N ****************************"
+      # pp label, values, name_key
+      # pp "END TR8N ****************************"
+
       # get the object from the values
       object = values[name_key]
 
