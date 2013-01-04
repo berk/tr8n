@@ -1,12 +1,12 @@
-<td style="text-align:left; vertical-align:top; padding-top:3px;">
+<td style="<%=tr8n_style_attribute_tag('text-align', 'left')%>; vertical-align:top; padding-top:3px;">
   <table>
     <tr>
-      <td style="vertical-align:top;padding-right:2px;">
+      <td style="vertical-align:top;padding-right:2px;<%=tr8n_style_attribute_tag('text-align', 'left')%>;">
         <%=tr8n_user_mugshot_tag(translation.translator, :linked => true)%>
       </td>
-      <td style="vertical-align:top">
+      <td style="vertical-align:top;<%=tr8n_style_attribute_tag('text-align', 'left')%>;">
         <%=tr8n_user_tag(translation.translator, :linked => true)%>
-        <div style="color:grey;">
+        <div style="color:grey;<%=tr8n_style_attribute_tag('text-align', 'left')%>;">
             <%=translation.created_at.trl(:date_time) %>
         </div>
 				<%=tr8n_translator_rank_tag(translation.translator)%>
@@ -15,7 +15,7 @@
   </table>
 </td>
 
-<td style="text-align:right; vertical-align:top; padding-top:3px;">
+<td style="<%=tr8n_style_attribute_tag('text-align', 'right')%>; vertical-align:top; padding-top:3px;">
   <%=tr8n_spinner_tag("tr8n_spinner_for_#{translation.id}", "", "")%>
   <div id="tr8n_votes_for_<%=translation.id%>" style="white-space:nowrap;">
     <%= translation.rank_label %> 
@@ -35,7 +35,7 @@
   <% end %>   
 </td>
 
-<td style="text-align:left; vertical-align:top; padding-top:3px;">
+<td style="<%=tr8n_style_attribute_tag('text-align', 'left')%>; vertical-align:top; padding-top:3px;">
   <% if mode == :view and translation.can_be_edited_by?(tr8n_current_translator) %>
     <span onDblClick="updateTranslationRow('<%=translation.id%>', 'edit')" title="Translation for: <%=translation.key.label%>">
       <%= translation.label %> 

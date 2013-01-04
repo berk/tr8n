@@ -5,7 +5,7 @@
   }
   .title {
     padding: 5px;
-    text-align: left;
+    <%=tr8n_style_attribute_tag('text-align', 'left')%>;
     font-size: 14px;
     font-weight: bold;
   }
@@ -41,7 +41,7 @@
     <% elsif @reported_object.is_a?(Tr8n::LanguageForumTopic) %>
       <div class="header">
         <div style="color:grey;font-size:20px;padding-bottom:10px;">
-            <%=trl("Forum Topic")%>
+            <%=tra("Forum Topic")%>
         </div>
         <div style="padding-bottom:5px;font-size:14px; max-height:50px; overflow:auto;">
             <%=image_tag("tr8n/left_quote.png", :style=>"text-align:bottom;padding-bottom:5px;") %>
@@ -52,7 +52,7 @@
     <% elsif @reported_object.is_a?(Tr8n::LanguageForumMessage) %>
       <div class="header">
         <div style="color:grey;font-size:20px;padding-bottom:10px;">
-            <%=trl("Forum Message")%>
+            <%=tra("Forum Message")%>
         </div>
         <div style="padding-bottom:5px;font-size:14px; max-height:50px; overflow:auto;">
             <%=image_tag("tr8n/left_quote.png", :style=>"text-align:bottom;padding-bottom:5px;") %>
@@ -63,7 +63,7 @@
     <% elsif @reported_object.is_a?(Tr8n::TranslationKeyComment) %>
       <div class="header">
         <div style="color:grey;font-size:20px;padding-bottom:10px;">
-            <%=trl("Translation Key Comment")%>
+            <%=tra("Translation Key Comment")%>
         </div>
         <div style="padding-bottom:5px;font-size:14px; max-height:50px; overflow:auto;">
             <%=image_tag("tr8n/left_quote.png", :style=>"text-align:bottom;padding-bottom:5px;") %>
@@ -74,7 +74,7 @@
     <% elsif @reported_object.is_a?(Tr8n::LanguageCaseValueMap) %>
       <div class="header">
         <div style="color:grey;font-size:20px;padding-bottom:10px;">
-            <%=trl("Language Case Exceptions")%>
+            <%=tra("Language Case Exceptions")%>
         </div>
         <div style="padding-bottom:5px;font-size:14px; max-height:50px; overflow:auto;">
             <%=image_tag("tr8n/left_quote.png", :style=>"text-align:bottom;padding-bottom:5px;") %>
@@ -85,7 +85,7 @@
     <% elsif @reported_object.is_a?(Tr8n::Translation) %>
     	<div class="header">
         <div style="color:grey;font-size:20px;padding-bottom:10px;">
-            <%=trl("Translation in {language}", nil, :language => @reported_object.language.native_name)%>
+            <%=tra("Translation in {language}", nil, :language => @reported_object.language.native_name)%>
         </div>
         
         <div style="padding-bottom:5px;font-size:14px">
@@ -96,7 +96,7 @@
       
         <% if @reported_object.context %>
           <div style="font-size: 11px; color: grey; padding:3px;">
-            <%=trl("Context:")%> <%= @reported_object.context %>  
+            <%=tra("Context:")%> <%= @reported_object.context %>  
           </div>
         <% end %>
 
@@ -105,19 +105,19 @@
     <% end %>    
   </div>
 
-	<div class="bd">
+  <div class="bd" <%=tr8n_dir_attribute_tag%>>
 	    <%= form_tag({:action => :submit_report}, {:method => :post, :id => :tr8n_form}) do %>
 	      <%= hidden_field_tag(:origin, params[:origin]) %>
 	      <%= hidden_field_tag(:object_id, @reported_object.id) %>
 	      <%= hidden_field_tag(:object_type, @reported_object.class.name) %>
 	      <div class="content">
 	      	<div class="title">
-	      		<%= trl("Report Details")%> 
+	      		<%= tra("Report Details")%> 
 	      	</div>	
 	        <table>
 	          <tr>
 	            <td>
-	              <%= trl("Reason:")%>
+	              <%= tra("Reason:")%>
 	            </td>
 	            <td>
 	              <%= select_tag("reason", tr8n_options_for_select(Tr8n::TranslatorReport.default_reasons_for(@reported_object), '')) %>
@@ -125,15 +125,15 @@
 	          </tr>
 	          <tr>
 	            <td>
-	              <%= trl("Comment:")%>
+	              <%= tra("Comment:")%>
 	              <div style="color:#ccc;">
-	              <%= trl("optional")%>
+	              <%= tra("optional")%>
 	              </div>
 	            </td>
 	            <td>
 	              <%= text_area_tag("comment", '', :style => "width:450px; height:40px;") %>
 								<div style="font-size:10px; color:grey; padding-top:10px; font-style:italic;">
-                  <%=trl('Note: Please submit your comments in English.')%>
+                  <%=tra('Note: Please submit your comments in English.')%>
                 </div>
 	            </td>
 	          </tr>

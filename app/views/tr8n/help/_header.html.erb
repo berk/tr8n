@@ -6,13 +6,14 @@
       padding: 20px;
 			color: #888888 !important;
 			font-size: 20px;		
+      <%=tr8n_style_attribute_tag('text-align', 'left')%>;
 	}
 	
 	.documentation_section {
 		padding:10px;
 		font-family: arial;
+    <%=tr8n_style_attribute_tag('text-align', 'left')%>;
 	}
-	
 	
   .screenshot {
       -moz-box-shadow: 3px 3px 4px #000;
@@ -24,6 +25,7 @@
 	.documentation_section p {
 		margin-bottom: 15px;
     font-family: arial;
+    <%=tr8n_style_attribute_tag('text-align', 'left')%>;
 	}
 	
   .documentation_section h2 {
@@ -33,8 +35,23 @@
       letter-spacing: -1px;
       margin: 0 0 5px;
       padding: 3px 0 0;
+      <%=tr8n_style_attribute_tag('text-align', 'left')%>;
   }
 	
+  .documentation_section h3 {
+      color: #888888;
+      font-size: 18px;
+      font-weight: normal;
+      letter-spacing: -1px;
+      margin: 0 0 5px;
+      padding: 3px 0 0;
+      <%=tr8n_style_attribute_tag('text-align', 'left')%>;
+  }  
+
+  .documentation_section li {
+      <%=tr8n_style_attribute_tag('text-align', 'left')%>;
+  }
+
 	.documentation_table {
 	}
 
@@ -42,12 +59,13 @@
     font-weight:bold;
 		padding: 5px;
     border: 1px solid #ccc;
-		text-align:left;
+		<%=tr8n_style_attribute_tag('text-align', 'left')%>;
   }
 
   .documentation_table td {
     padding: 5px;
 		border: 1px solid #ccc;
+    <%=tr8n_style_attribute_tag('text-align', 'left')%>;
   }
 
   .documentation_table tr {
@@ -62,6 +80,7 @@
 		color: #666;
 		font-style:italic;
 		font-size: 10px;
+    <%=tr8n_style_attribute_tag('text-align', 'left')%>;
 	}
 	
 	.code_snippet {
@@ -72,6 +91,7 @@
 		border: 1px dotted #ccc;
 		font-size:12px;
 		font-family: arial;
+    <%=tr8n_style_attribute_tag('text-align', 'left')%>;
 	}
 	
   .data_list {
@@ -80,6 +100,7 @@
     padding:5px;
 		margin-left:20px;
 		list-style:circle;
+    <%=tr8n_style_attribute_tag('text-align', 'left')%>;
   }
 	
   .snippet {
@@ -88,10 +109,12 @@
     padding:10px; 
     font:12px 'Bitstream Vera Sans Mono','Courier',monospace;
     margin-bottom:10px;
+    <%=tr8n_style_attribute_tag('text-align', 'left')%>;
   }
 
   .snippet li {
  	  font:12px 'Bitstream Vera Sans Mono','Courier',monospace;
+    <%=tr8n_style_attribute_tag('text-align', 'left')%>;
   }
 </style>
 

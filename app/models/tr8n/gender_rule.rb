@@ -67,6 +67,11 @@ class Tr8n::GenderRule < Tr8n::LanguageRule
   end
   
   def self.gender_token_value(token)
+    if token.is_a?(Hash)
+      return nil unless token and token[:object]
+      return token[:object][Tr8n::Config.rules_engine[:gender_rule][:object_method]]
+    end
+
     return nil unless token and token.respond_to?(Tr8n::Config.rules_engine[:gender_rule][:object_method])
     token.send(Tr8n::Config.rules_engine[:gender_rule][:object_method])
   end

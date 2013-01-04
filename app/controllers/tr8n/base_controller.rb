@@ -47,48 +47,6 @@ module Tr8n
     before_filter :validate_current_user, :except => [:select, :switch, :translate, :table, :registration]
   
     layout Tr8n::Config.site_info[:tr8n_layout]
-
-    def tr8n_current_user
-      Tr8n::Config.current_user
-    end
-    helper_method :tr8n_current_user
-
-    def tr8n_current_language
-      Tr8n::Config.current_language
-    end
-    helper_method :tr8n_current_language
-
-    def tr8n_default_language
-      Tr8n::Config.default_language
-    end
-    helper_method :tr8n_default_language
-
-    def tr8n_current_translator
-      Tr8n::Config.current_translator
-    end
-    helper_method :tr8n_current_translator
-  
-    def tr8n_current_user_is_admin?
-      Tr8n::Config.current_user_is_admin?
-    end
-    helper_method :tr8n_current_user_is_admin?
-  
-    def tr8n_current_user_is_translator?
-      Tr8n::Config.current_user_is_translator?
-    end
-    helper_method :tr8n_current_user_is_translator?
-
-    def tr8n_current_user_is_manager?
-      return true if Tr8n::Config.current_user_is_admin?
-      return false unless Tr8n::Config.current_user_is_translator?
-      tr8n_current_translator.manager?
-    end
-    helper_method :tr8n_current_user_is_manager?
-  
-    def tr8n_current_user_is_guest?
-      Tr8n::Config.current_user_is_guest?
-    end
-    helper_method :tr8n_current_user_is_guest?
   
   private
   
@@ -102,6 +60,11 @@ module Tr8n
         unless tr8n_current_user_is_translator? and tr8n_current_translator.manager?
           tabs = tabs.select{|tab| !tab[:manager_only]}  
         end
+
+        if tr8n_current_language.dir == 'rtl'
+          tabs = tabs.reverse 
+        end
+        
         tabs
       end
     end

@@ -106,7 +106,7 @@ var Tr8n = {
     var origin_domain = origin.split("/")[2];
 
     if (local_domain == origin_domain) {
-      top.Tr8n.onMessage(msg);
+      window.parent.Tr8n.onMessage(msg);
     } else {
       if (parent.postMessage) {
         parent.postMessage(msg, origin);

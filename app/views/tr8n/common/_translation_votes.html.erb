@@ -1,14 +1,14 @@
   <div style="padding-bottom:5px;">
     <table style="width:100%;border-collapse: collapse;" cellpadding="5px" cellspacing="0px;" >
         <tr style="border-bottom:1px dotted #ccc;">
-          <td style="width:20px; color:grey; font-size:10px; text-align:right; padding-bottom:3px;"><%=trla("Rank", "Translation rank")%></td>
-          <td style="width:75px; color:grey; font-size:10px; text-align:center; padding-bottom:3px;"><%=trla("Your Vote", "Your vote on a translation")%></td>
-          <td style="color:grey; font-size:10px; padding-bottom:3px;"><%=trla("Translation")%></td>
+          <td style="width:20px; color:grey; font-size:10px; <%=tr8n_style_attribute_tag('text-align', 'right')%>; padding-bottom:3px;"><%=tra("Rank", "Translation rank")%></td>
+          <td style="width:75px; color:grey; font-size:10px; text-align:center; padding-bottom:3px;"><%=tra("Your Vote", "Your vote on a translation")%></td>
+          <td style="color:grey; font-size:10px; padding-bottom:3px; <%=tr8n_style_attribute_tag('text-align', 'left')%>;"><%=tra("Translation")%></td>
         </tr>  
         <% translations[0..9].each do |trn| %>
           <% style = "border-bottom:1px dotted #ccc;" unless translations.last == trn %>
           <tr style="<%=style%>">
-            <td style="text-align:right;vertical-align:top; padding-top:3px;">
+            <td style="<%=tr8n_style_attribute_tag('text-align', 'right')%>; vertical-align:top; padding-top:3px;">
               <%=tr8n_spinner_tag("tr8n_spinner_for_#{trn.id}", "", "")%>
              
               <div id="tr8n_votes_for_<%=trn.id%>" style="font-size:12px;white-space:nowrap;">
@@ -27,11 +27,11 @@
                 <%=link_to_function(image_tag("tr8n/exclamation.png", :title=>trla("This translation contains abusive language")), "Tr8n.postMessage('tr8n:translation:report:#{trn.id}')")%>
               <% end %>   
             </td>
-            <td style="text-align:left;vertical-align:top;font-size:11px; padding-top:3px;">
+            <td style="<%=tr8n_style_attribute_tag('text-align', 'left')%>;vertical-align:top;font-size:11px; padding-top:3px;">
               <%= trn.label %>
               <% if trn.context %>
                 <div style="font-size: 10px; color: grey; padding-top:3px;">
-                  <%=trla("Context:", "Translator label")%> <%= trn.context %>  
+                  <%=tra("Context:")%> <%= trn.context %>  
                 </div>
               <% end %>
             </td>

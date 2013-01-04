@@ -1,31 +1,23 @@
+<style type="text/css">
+.pagination {
+	<%=tr8n_style_attribute_tag('text-align', 'left')%> important!;
+}
+.page {
+	border: 1px solid #eee;
+	padding: 2px;
+}
+.current {
+	background: #eee;
+}
+</style>
 <div style="padding-bottom:10px;padding-top:5px; border:1px dotted #eee; padding:5px; margin-bottom:10px; margin-top:10px;">
   <table style="width:100%;">
     <tr>
-      <td style="text-align:left; vertical-align:top; font-size:11px; font-family:arial;"><%= paginate(collection) %></td>
-      <td style="text-align:right; vertical-align:top;font-size:11px; font-family:arial;">
-				<% 
-					entry_name = options[:subject] || (collection.empty? ? 'entry' : collection.first.class.name.underscore.gsub('_', ' '))
-					output = ""
-				  if collection.num_pages < 2
-				    case collection.size
-				      when 0
-				        output = tr("None found", "Paginator message", {}, options)
-				      when 1
-				        output = tr("Displaying [bold: 1] #{entry_name}", "Paginator message", {}, options)
-				      else
-				        output = tr("Displaying [bold: all {count}] #{entry_name.pluralize}", "Paginator message", {:count => collection.size}, options)
-				    end
-				  else
-				    output = tr("Displaying #{entry_name.pluralize} [bold: {start_num} - {end_num}] of [bold: {total_count}] in total", 
-				       "Paginator message", {
-				          :start_num    => collection.offset_value + 1,
-				          :end_num      => collection.offset_value + collection.length,
-				          :total_count  => collection.total_count
-				       }, options
-				    )
-				  end
-				%>
-				<%= output %>
+      <td style="<%=tr8n_style_attribute_tag('text-align', 'left')%>; vertical-align:top; font-size:11px; font-family:arial;">
+      	<%= tr8n_page_links_tag(collection, options) %>
+      </td>
+      <td style="<%=tr8n_style_attribute_tag('text-align', 'right')%>; vertical-align:top; font-size:11px; font-family:arial;">
+      	<%=tr8n_page_entries_info_tag(collection, options) %>
 			</td>
     </tr>
   </table>

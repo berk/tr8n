@@ -1,14 +1,14 @@
 <%= render :partial => "/tr8n/common/lightbox_header" %>
-<div class="inner">
+<div class="inner" <%=tr8n_dir_attribute_tag%>>
 	<div class="hd">
-		<span style="float:right;">
+		<span style="<%=tr8n_style_attribute_tag('float', 'right')%>;">
 			<%=link_to_function(image_tag("tr8n/close.gif"), "hideLightbox()")%>
 		</span>
-		<%=trl("Tr8n Translation Engine")%>
+		<%=tra("Tr8n Translation Engine")%>
 	</div>
 
 	<div class="bd" style="background-color:white;text-align:center;font-size:22px;padding-top:60px;height:50%;">
-		<%=trl("Thank you!") %>
+		<%=tra("Thank you!") %>
 	</div>
 </div>
 <%= render :partial => "/tr8n/common/lightbox_footer" %>

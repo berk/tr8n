@@ -32,6 +32,7 @@
 <style>
 .documentation_sidebar {
   font: 11px Arial,Helvetica,sans-serif;
+  <%=tr8n_style_attribute_tag('text-align', 'left')%>;
 }
 
 .navigation_header {
@@ -42,6 +43,7 @@
   padding-bottom: 10px;
   text-transform: uppercase;
 	color: #888888 !important;
+  <%=tr8n_style_attribute_tag('text-align', 'left')%>;
 }
 
 .section_link {
@@ -50,6 +52,7 @@
 
 .section_link a {
 	text-decoration:none;
+  <%=tr8n_style_attribute_tag('text-align', 'left')%>;
 }
 	
 .section_link a:hover {
@@ -77,10 +80,10 @@
 	<% sections.each do |sec| %>
     <div class="navigation_header"><%=tr(sec[:title])%></div>
 		<% (sec[:sections] || []).each do |sec1| %>
-      <div class="section_link <%="selected" if controller.action_name == sec1[:action].to_s %>"><%=link_to(tr(sec1[:title]), :action => sec1[:action])%></div>
+      <div class="section_link <%="selected" if controller.action_name == sec1[:action].to_s %>" style="<%=tr8n_style_attribute_tag('text-align', 'left')%>;"><%=link_to(tr(sec1[:title]), :action => sec1[:action])%></div>
 			<% if sec1[:sections] %>
 		    <% sec1[:sections].each do |sec2| %>
-	  	      <div style="padding-left:15px;" class="section_link <%="selected" if controller.action_name == sec2[:action].to_s %>"><%=link_to(tr(sec2[:title]), :action => sec2[:action])%></div>
+	  	      <div style="<%=tr8n_style_directional_attribute_tag('padding', 'left', '15px')%>; <%=tr8n_style_attribute_tag('text-align', 'left')%>;" class="section_link <%="selected" if controller.action_name == sec2[:action].to_s %>"><%=link_to(tr(sec2[:title]), :action => sec2[:action])%></div>
 		    <% end %> 
 			<% end %> 
 		<% end %>	

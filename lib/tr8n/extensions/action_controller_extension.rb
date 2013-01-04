@@ -140,6 +140,63 @@ module Tr8n
       def trfw(label, desc = "", tokens = {}, options = {})
         flash[:trfw] = tr(label, desc, tokens, options)
       end
+
+      # for admin translations
+      def tra(label, desc = "", tokens = {}, options = {})
+        if Tr8n::Config.enable_admin_translations?
+          if Tr8n::Config.enable_admin_inline_mode?
+            tr(label, desc, tokens, options)
+          else
+            trl(label, desc, tokens, options)
+          end
+        else
+          Tr8n::Config.default_language.translate(label, desc, tokens, options)
+        end
+      end
+      
+      # for admin translations
+      def trla(label, desc = "", tokens = {}, options = {})
+        tra(label, desc, tokens, options.merge(:skip_decorations => true))
+      end
+  
+      ######################################################################
+      ## Common methods
+      ######################################################################
+
+      def tr8n_current_user
+        Tr8n::Config.current_user
+      end
+
+      def tr8n_current_language
+        Tr8n::Config.current_language
+      end
+
+      def tr8n_default_language
+        Tr8n::Config.default_language
+      end
+
+      def tr8n_current_translator
+        Tr8n::Config.current_translator
+      end
+    
+      def tr8n_current_user_is_admin?
+        Tr8n::Config.current_user_is_admin?
+      end
+    
+      def tr8n_current_user_is_translator?
+        Tr8n::Config.current_user_is_translator?
+      end
+
+      def tr8n_current_user_is_manager?
+        return true if Tr8n::Config.current_user_is_admin?
+        return false unless Tr8n::Config.current_user_is_translator?
+        tr8n_current_translator.manager?
+      end
+    
+      def tr8n_current_user_is_guest?
+        Tr8n::Config.current_user_is_guest?
+      end
+
     end
   end
 end

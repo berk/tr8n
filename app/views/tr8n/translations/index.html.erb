@@ -4,14 +4,17 @@
 	<div class="section blue">
 	  <%= form_tag({}, {:method => :get, :id => "translations_search_form"}) do %>
 	     <%=hidden_field_tag(:section_key, @section_key) %>
-	     <div style="float:right">
+       <div style="<%=tr8n_style_attribute_tag('float', 'right')%>">
           <button type="submit" class="translator_btn translator_small_btn" onClick="Tr8n.Effects.submit('translations_search_form'); return false;">
               <span><%=tra("Search")%></span>
           </button>
 	     </div>
 			 
-	    <%=text_field_tag(:search, params[:search], {:style => "width:90%;font-size:12px;height:20px"})%><br>
-      <div style="margin-top:10px; padding:3px; font-size:11px; color:#666; font-weight:bold;">
+      <div style="<%=tr8n_style_attribute_tag('text-align', 'left')%>">
+	     <%=text_field_tag(:search, params[:search], {:style => "width:90%;font-size:12px;height:20px"})%>
+      </div>
+
+      <div style="margin-top:10px; padding:3px; font-size:11px; color:#666; font-weight:bold; <%=tr8n_style_attribute_tag('text-align', 'left')%>">
           <%=tra("Show", "Show translations")%>
           <%=select_tag(:with_status, options_for_select(Tr8n::Translation.filter_status_options, params[:with_status]))%>
           <%=tra("submitted by", "Show translations submitted by")%>

@@ -1,17 +1,17 @@
 <%= render :partial => "/tr8n/common/lightbox_header" %>
 <% Tr8n::Config.with_options(:default_locale => 'en-US', :admin => true) do %>
-<div class="inner">
+<div class="inner" <%=tr8n_dir_attribute_tag%>>
     <div style="text-align:center;padding-top:30px;">
       <% if tr8n_current_translator %>
         <% if tr8n_current_translator.inline_mode %>
-            <%=trla("Inline translations have been enabled.") %>
+            <%=tra("Inline translations have been enabled.") %>
         <% else %>
-            <%=trla("Inline translations have been disabled.") %>
+            <%=tra("Inline translations have been disabled.") %>
         <% end %>            
       <% else %>
-        <%=trla("You must be a registered translator.") %>
+        <%=tra("You must be a registered translator.") %>
         <div style="font-size:12px;text-align:center;padding-top:15px;">
-          <%=trla("[link: Click here] to create a translator account.", nil, :link => lambda{|txt| link_to(txt, Tr8n::Config.login_url, :target => "_top")} ) %>
+          <%=tra("[link: Click here] to create a translator account.", nil, :link => lambda{|txt| link_to(txt, Tr8n::Config.login_url, :target => "_top")} ) %>
         </div>
       <% end %>
     </div>

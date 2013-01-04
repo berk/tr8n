@@ -2,17 +2,19 @@
 	
 	<%= render :partial => "/tr8n/common/header" %>
 	
-	<div class="section_title">
+	<div class="section_title" <%=tr8n_dir_attribute_tag%>>
 		<% if Tr8n::Config.enable_translator_language? %>
-		  <div style="float:right; font-size:12px; padding-top:5px;">
+		  <div style="<%=tr8n_style_attribute_tag('float', 'right')%>; font-size:12px; padding-top:5px;">
 		     <%=link_to(tra("edit preferences", "Translator preferences link"), :controller => "/tr8n/translator", :action => :index)%>
 		  </div>
 		<% end %>
 		
-	  <%=tra("{user}'s Dashboard", "Dashboard section title", :user => [tr8n_current_translator, :name]) %>
+		<div style="<%=tr8n_style_attribute_tag('text-align', 'left')%>"> 
+	  	<%=tra("{user}'s Dashboard", "Dashboard section title", :user => [tr8n_current_translator, :name]) %>
+		</div>
 	</div>
 	
-	<div class="section yellow">
+	<div class="section yellow" <%=tr8n_dir_attribute_tag%> >
 	    <table style="width:100%">
 	      <tr>
 	        <td style="width:50%; padding-top:3px;">

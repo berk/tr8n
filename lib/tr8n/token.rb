@@ -373,6 +373,24 @@ module Tr8n
 
         # if the first item in the array is an object, process it
         return evaluate_token_method_array(object.first, object, options, language)
+      elsif object.is_a?(Hash) 
+        # if object is a hash, it must be of a form: {:object => {}, :value => "", :attribute => ""}
+        # either value can be passed, or the attribute. attribute will be used first
+        if object[:object].nil?
+          return raise Tr8n::TokenException.new("Hash token is missing an object key for a token: #{full_name}")
+        end
+
+        value = object[:value]
+
+        unless object[:attribute].blank?
+          value = object[:object][object[:attribute]]
+        end
+
+        if value.blank?
+          return raise Tr8n::TokenException.new("Hash object is missing a value or attribute key for a token: #{full_name}")
+        end
+
+        object = value
       end
 
       # simple token
@@ -402,10 +420,6 @@ module Tr8n
     end
   
     def substitute(label, values = {}, options = {}, language = Tr8n::Config.current_language)
-      # pp "TR8N ****************************"
-      # pp label, values, name_key
-      # pp "END TR8N ****************************"
-
       # get the object from the values
       object = values[name_key]
 

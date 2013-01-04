@@ -11,10 +11,10 @@
   </head>	
   <body style="padding:0px;margin:0px;" onload="resizeFrame()">
 		<div class="tr8n_lightbox_content">
-			<div class='inner'>
+			<div class='inner' <%=tr8n_dir_attribute_tag%>>
 				<div class='bd' style="text-align:center;padding:20px;">
 					<%=image_tag("tr8n/loading_large.gif", :style=>"vertical-align:middle") %> &nbsp; &nbsp;
-					<%=trl(params[:msg].blank? ? 'Loading...' : params[:msg]) %>
+					<%=tra(params[:msg].blank? ? 'Loading...' : params[:msg]) %>
 				</div>
 			</div>		
 		</div>

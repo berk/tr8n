@@ -109,6 +109,24 @@ module Tr8n
       tr(label, desc, tokens, options.merge(:skip_decorations => true))
     end
 
+    # for admin translations
+    def tra(label, desc = "", tokens = {}, options = {})
+      if Tr8n::Config.enable_admin_translations?
+        if Tr8n::Config.enable_admin_inline_mode?
+          tr(label, desc, tokens, options)
+        else
+          trl(label, desc, tokens, options)
+        end
+      else
+        Tr8n::Config.default_language.translate(label, desc, tokens, options)
+      end
+    end
+    
+    # for admin translations
+    def trla(label, desc = "", tokens = {}, options = {})
+      tra(label, desc, tokens, options.merge(:skip_decorations => true))
+    end
+
     def tr8n_options_for_select(options, selected = nil, description = nil, lang = Tr8n::Config.current_language)
       options_for_select(options.tro(description), selected)
     end
@@ -122,10 +140,6 @@ module Tr8n
       link_to(image_tag("tr8n/translate_icn.gif", :style => "vertical-align:middle; border: 0px;", :title => search), 
              :controller => "/tr8n/phrases", :action => :index, 
              :search => search, :phrase_type => phrase_type, :phrase_status => phrase_status).html_safe
-    end
-
-    def tr8n_dir_attribute_tag
-      "dir='<%=Tr8n::Config.current_language.dir%>'".html_safe
     end
 
     def tr8n_splash_screen_tag
@@ -149,6 +163,7 @@ module Tr8n
 
       html = "<span style='white-space: nowrap'>"
       html << tr8n_language_flag_tag(lang, opts) if show_flag
+      html << "<span dir='ltr'>"
 
       name = case name_type
         when :native  then lang.native_name
@@ -163,7 +178,7 @@ module Tr8n
         html << name
       end
 
-      html << "</span>"
+      html << "</span></span>"
       html.html_safe
     end
 
@@ -260,7 +275,7 @@ module Tr8n
     def tr8n_spinner_tag(id = "spinner", label = nil, cls='spinner')
       html = "<div id='#{id}' class='#{cls}' style='display:none'>"
       html << image_tag("tr8n/spinner.gif", :style => "vertical-align:middle;")
-      html << " #{trl(label)}" if label
+      html << " #{tr(label)}" if label
       html << "</div>"
       html.html_safe
     end
@@ -284,7 +299,7 @@ module Tr8n
       html << "<table style='width:100%'>"
       html << "<tr>"
       splitters.each do |splitter| 
-        html << "<td style='vertical-align:top; width:" << (100 / splitters.size).to_s << "%;'>"
+        html << "<td style='#{tr8n_style_attribute_tag('text-align', 'left')};vertical-align:top; width:" << (100 / splitters.size).to_s << "%;'>"
         html << generate_sitemap(sections[splitter.first..splitter.last], options)      
         html << "</td>"
       end 
@@ -363,13 +378,114 @@ module Tr8n
       render :partial => "/tr8n/common/paginator", :locals => {:collection => collection, :options => options}
     end
 
+    def tr8n_page_links_tag(collection, options = {})
+      paginator = Kaminari::Helpers::Paginator.new(self, options.reverse_merge(:current_page => collection.current_page, :total_pages => collection.total_pages, :per_page => collection.limit_value, :param_name => Kaminari.config.param_name, :remote => false, :params => params))
+      html = []
+      html << "<span class='pagination'>"
+      html << link_to("<span class='page'>#{tr('{laquo} First')}</span>".html_safe, params.merge(:page => 1)) unless collection.current_page == 1 
+      html << link_to("<span class='page'>#{tr('{lsaquo} Previous')}</span>".html_safe, params.merge(:page => collection.current_page - 1)) unless collection.current_page == 1 
+      paginator.each_page do |page|
+        if page.left_outer? || page.right_outer? || page.inside_window?
+          if collection.current_page == page
+            html << "<span class='page current'>#{page}</span>".html_safe
+          else  
+            html << link_to("<span class='page'>#{page}</span>".html_safe, params.merge(:page => page))
+          end
+        elsif !page.was_truncated? and html.last != '...'
+          html << "..."
+        end
+      end
+      html << link_to("<span class='page'>#{tr('Next {rsaquo}')}</span>".html_safe, params.merge(:page => collection.current_page + 1)) unless collection.current_page == collection.total_pages
+      html << link_to("<span class='page'>#{tr('Last {raquo}')}</span>".html_safe, params.merge(:page => collection.total_pages)) unless collection.current_page == collection.total_pages
+      html << "</span>"
+      html.join(' ').html_safe
+    end
+
+    def tr8n_page_entries_info_tag(collection, options = {})
+      entry_name = options[:subject] || (collection.empty? ? 'entry' : collection.first.class.name.underscore.sub('_', ' ').split('/').last)
+      
+      if collection.total_pages < 2
+        case collection.size
+          when 0
+            tr("None found", "Paginator no entries message", {}, options)
+          when 1
+            tr("Displaying [strong: 1] #{entry_name}", "Paginator one page message", {}, options)
+          else
+            tr("Displaying [strong: all {count}] #{entry_name.pluralize}", "Paginator all entries message", {:count => collection.size}, options)
+        end
+      else
+        tr("Displaying #{entry_name.pluralize} [strong: {start_num} - {end_num}] of [strong: {total_count}] in total", 
+           "Paginator custom message", {
+              :start_num    => collection.offset_value + 1,
+              :end_num      => collection.offset_value + collection.length,
+              :total_count  => collection.total_count
+           }, options
+        )
+      end
+    end    
+
+    ######################################################################
+    ## Language Direction Support
+    ######################################################################
+
+    def tr8n_style_attribute_tag(attr_name = 'float', default = 'right', lang = Tr8n::Config.current_language)
+      "#{attr_name}:#{lang.align(default)}".html_safe
+    end
+
+    def tr8n_style_directional_attribute_tag(attr_name = 'padding', default = 'right', value = '5px', lang = Tr8n::Config.current_language)
+      "#{attr_name}-#{lang.align(default)}:#{value}".html_safe
+    end
+
+    def tr8n_dir_attribute_tag(lang = Tr8n::Config.current_language)
+      "dir='#{lang.dir}'".html_safe
+    end
+
+    ######################################################################
+    ## Common methods
+    ######################################################################
+
+    def tr8n_current_user
+      Tr8n::Config.current_user
+    end
+
+    def tr8n_current_language
+      Tr8n::Config.current_language
+    end
+
+    def tr8n_default_language
+      Tr8n::Config.default_language
+    end
+
+    def tr8n_current_translator
+      Tr8n::Config.current_translator
+    end
+  
+    def tr8n_current_user_is_admin?
+      Tr8n::Config.current_user_is_admin?
+    end
+  
+    def tr8n_current_user_is_translator?
+      Tr8n::Config.current_user_is_translator?
+    end
+
+    def tr8n_current_user_is_manager?
+      return true if Tr8n::Config.current_user_is_admin?
+      return false unless Tr8n::Config.current_user_is_translator?
+      tr8n_current_translator.manager?
+    end
+  
+    def tr8n_current_user_is_guest?
+      Tr8n::Config.current_user_is_guest?
+    end
+
   private
 
     def generate_sitemap(sections, options = {})
       html = "<ul class='section_list'>"
+      text_align = tr8n_style_attribute_tag('text-align', 'left')
       sections.each do |section|
-        html << "<li class='section_list_item'>" 
-        html << "<a href='/tr8n/phrases/index?section_key=#{section.key}'>" << tr(section.label, section.description) << "</a>"
+        html << "<li class='section_list_item' style='#{text_align};'>" 
+        html << "<a href='/tr8n/phrases/index?section_key=#{section.key}'>" << tr(section.label, section.description) << "</a> "
         html << "<a href='" << section.data[:link] << "' target='_new'><img src='/assets/tr8n/bullet_go.png' style='border:0px; vertical-align:middle'></a>" if section.data[:link]
 
         if section.children.size > 0

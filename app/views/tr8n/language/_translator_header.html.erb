@@ -1,21 +1,21 @@
 <div class="original_text">
   
-  <div class="supplemental">
+  <div class="supplemental" style="<%=tr8n_style_attribute_tag('float', 'right')%>">
     <%= tr8n_help_icon_tag %>
   </div>
   
   <div class="quiet small">
-    <%=trla("Original Phrase in {language}", nil, :language => @translation_key.language.native_name)%>
+    <%=tra("Original Phrase in {language}", nil, :language => "<span dir='ltr'>#{@translation_key.language.native_name}</span>".html_safe)%>
   </div>
 
-  <div class="quote">
+  <div class="quote" <%=tr8n_dir_attribute_tag%>>
     <%=image_tag("tr8n/left_quote.png") %>
     <%=@translation_key.sanitized_label %>
     <%=image_tag("tr8n/right_quote.png") %>
   </div>
 
   <% unless @translation_key.description.blank? %>
-    <div class="desc">
+    <div class="desc" style="border:0px;<%=tr8n_style_directional_attribute_tag('border', 'left', '1px solid #ccc')%>;<%=tr8n_style_directional_attribute_tag('padding', 'left', '5px')%>;">
       <%=@translation_key.description %>
     </div>
   <% end %>
