@@ -14,16 +14,16 @@
   
   <%= form_for(tr8n_current_language, :as => :language, :url => {:action => :index}, :html => {:id => 'language_cases_form', :method => :post}) do |f| %>
     <div id="language_cases_content" class="section grey">
-      <div style="float:right; padding-right:5px;">
+      <div class="tr8n_fltr" style="padding-right:5px;">
           <%=tr8n_help_icon_tag %>
       </div>
 			
       <div>
-				<div style="padding-top:5px;padding-bottom:15px;font-size:12px;">
+				<div class="tr8n_txtl" style="padding-top:5px;padding-bottom:15px;font-size:12px;">
 					<%=tra("A language case is an inflection or use of a noun (or pronoun) to show its relation to other words in the sentence.")%>
 					<%=tra("In some languages, like Russian, the form of a token {actor} will changed based on where and how the token is used in a sentence.", "", :actor => "{actor}")%>
-          <%=tra("For instance, in '{example}', {actor} token will be in the genitive form of the language.", "", 
-                  :example => "{target} received a gift from {actor}",
+          <%=tra("For instance, in {example}, {actor} token will be in the genitive form of the language.", "", 
+                  :example => "<span dir='ltr' style='display:inline-block;font-weight:bold;'>{target} received a gift from {actor}</span>",
                   :actor => "{actor}")%>
 					<br><br>
           <%=tra("This section allows you to define the various cases of your language so that translators can provide the correct form for each dynamic value of any token.")%>
@@ -36,13 +36,13 @@
          <% if mode == :edit %>
             <%= render :partial => "edit_language_cases" %> 
 				 <% elsif @cases.empty? %>
-            <div style="font-style:italic; font-size: 10px; color: grey;">
+            <div class="tr8n_txtl" style="font-style:italic; font-size: 10px; color: grey;">
 					    <%=tra("There are no language cases defined for this language.")%>
 					  </div>
 				<% else %>
 					  <% @cases.each_with_index do |lcase, index| %>
 						    <div>
-							    <div style="padding-bottom:5px; font-size:12px;">
+							    <div class="tr8n_txtl" style="padding-bottom:5px; font-size:12px;">
                     <%=tr8n_toggler_tag("case_#{index}_content", "", false)%>
 					          <strong><%= lcase.native_name %></strong>
 					          <span style="color:grey; font-size:10px;">
@@ -53,25 +53,25 @@
 					            <% end %>
 					          </span> 
 										<br>
-                    <span style="color:grey; font-size:10px; padding-left:15px;">(::<%= lcase.keyword %>) <%= lcase.description %> </span>
+                    <span style="color:grey; font-size:10px; padding-left:15px;" dir="ltr">(::<%= lcase.keyword %>) <%= lcase.description %> </span>
 									</div>
 									
-									<div id="case_<%=index%>_content" style="display:none">
+									<div  class="tr8n_txtl" id="case_<%=index%>_content" style="display:none">
                     <% if lcase.rules.empty? %>
-                      <div style="padding:10px;padding-left:15px;color:red; font-size:10px;">
+                      <div class="tr8n_txtl" style="padding:10px;padding-left:15px;color:red; font-size:10px;">
                         <%=tra("No rules have been configured for this language case") %>
                       </div>
                     <% end %>
 		                <ol style="font-size: 12px; padding-left:20px; margin:1em; list-style-type:decimal; margin-top:0px;">
 		                <% lcase.rules.each do |rule| %>
-		                    <li style=""><%=rule.description %></li>
+		                    <li class="tr8n_txtl" dir="ltr"><%=rule.description %></li>
 		                <% end %> 
 		                </ol>
 									</div>
 								</div>	
 					  <% end %>
 						
-			      <div style="padding-top:15px;">
+			      <div class="tr8n_txtl" style="padding-top:15px;">
 			          <%=link_to(tra("Click here to view the exceptional case values submitted by translators"), :controller => "/tr8n/language_cases", :action => :index) %>
 			      </div>
 												    

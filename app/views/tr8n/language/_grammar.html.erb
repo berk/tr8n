@@ -3,22 +3,22 @@
 
   <%= form_for(tr8n_current_language, :as => :language, :url => {:action => :index}, :html => {:id => 'grammar_form', :method => :post}) do |f| %>
     <div id="grammar_content" class="section grey">
-      <div style="float:right; padding-right:5px;">
+      <div class="tr8n_fltr" style="padding-right:5px;">
         <%=tr8n_help_icon_tag %>
       </div>
 			
-			<div style="padding-top:5px;padding-bottom:10px;font-size:12px;">
+			<div class="tr8n_txtl" style="padding-top:5px;padding-bottom:10px;font-size:12px;">
           <%=tra("Tokens are parts of a phrase that are not translated, such as a profile name or a number.", "Tr8n language management") %> 
 					<%=tra("Translations in some languages can depend on the gender or numerical value of the tokens in the phrase.", "Tr8n language management") %>
-					<%=tra("For example, the translation for \"{english_sample}\" can depend on the gender of the actor and target as well as the number of photos.", "Tr8n language management", :english_sample => "{actor} tagged {target} in {count} photos")%> 
+					<%=tra("For example, the translation for {english_sample} can depend on the gender of the actor and target as well as the number of photos.", "Tr8n language management", :english_sample => "<span dir='ltr' style='display:inline-block;font-weight:bold;'>{actor} tagged {target} in {count} photos</span>")%> 
           <%=tra("If translations in your language depend on any of these rules, you can add them here.", "Tr8n language management") %>
 
-		      <div style="padding-top:10px;">
+		      <div class="tr8n_txtl" style="padding-top:10px;">
 		        <%=tra("Translations in this language may depend on the following token rules:")%>
 		      </div>
 			</div>
 
-      <div id="language_rules" style="font-size:12px;">
+      <div class="tr8n_txtl" id="language_rules" style="font-size:12px;">
         <% if mode == :edit %>
             <%= render(:partial => "edit_rules") %>  
 				<% else %>
@@ -26,22 +26,22 @@
                @rules.keys.each_with_index do |dependency, index| 
                  cls = Tr8n::Config.language_rule_dependencies[dependency] 
             %>
-									<div style="font-weight:bold; padding-bottom:5px;">
-                    <%=tr8n_toggler_tag("rules_#{index}")%>      
+									<div class="tr8n_txtl" style="font-weight:bold; padding-bottom:5px;">
+                    <%= tr8n_toggler_tag("rules_#{index}") %>      
 										<%= tra("#{cls.dependency_label.capitalize} Rules") %>
 									</div>
 
-                  <div id='<%="rules_#{index}"%>'>
+                  <div class="tr8n_txtl" id='<%="rules_#{index}"%>'>
                     <% if @rules[dependency].empty? %>
-  					          <div style="font-style:italic; font-size: 10px; color: grey;">
+  					          <div class="tr8n_txtl" style="font-style:italic; font-size: 10px; color: grey;">
   					            <%=tra("There are no #{cls.dependency_label} rules defined for this language.")%>
   					          </div>
   									<% end %>
   									 
-  									<ol style="font-size: 12px; padding-left:15px; margin:1em; list-style-type:square; margin-top:0px;">
-  									<% @rules[dependency].each do |rule| %> 
-  				              <li style=""><%=rule.description %></li>
-  									<% end %>	
+  									<ol class="tr8n_txtl" style="font-size: 12px; <%=tr8n_style_directional_attribute_tag('padding','left', '15px')%>; margin:1em; list-style-type:square; margin-top:0px;">
+    									<% @rules[dependency].each do |rule| %> 
+    				            <li class="tr8n_txtl" style=""><%=rule.description %></li>
+    									<% end %>	
   			            </ol>
                   </div>  
             <% end %> 

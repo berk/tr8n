@@ -1,7 +1,7 @@
 <% style = @translation_key.locked? ? "background-color:#ECFFEF; border: 1px solid #50B74F;" : "background-color:#FDFDDF; border: 1px solid #DDCF6F;" %>
 
-<div class="section" style="margin-bottom:5px;<%=style%>;">
-  <div style="float:right; font-size:12px; padding-right:3px;">
+<div class="section tr8n_txtl" style="margin-bottom:5px;<%=style%>;">
+  <div class="tr8n_fltr" style="font-size:12px; padding-right:3px;">
     <% if @translation_key.locked? %>
       <%=image_tag("tr8n/lock.png", :style=>"vertical-align:bottom;", :title => trla("This phrase is locked.")) %>
     <% else %>  
@@ -9,16 +9,18 @@
     <% end %>
   </div>
 	
-  <div style="color:grey;font-size:20px;padding-bottom:10px;"><%=@translation_key.class.title%></div>
+  <div class="tr8n_txtl" style="color:grey;font-size:20px;padding-bottom:10px;">
+    <%=@translation_key.class.title%>
+  </div>
   
-  <div style="padding-top:5px;padding-bottom:10px;font-size:14px">
-      <%=image_tag("tr8n/left_quote.png", :style=>"text-align:bottom;padding-bottom:5px;") %>
-      <%=@translation_key.sanitized_label %>
-      <%=image_tag("tr8n/right_quote.png", :style=>"text-align:bottom;padding-top:5px;") %>
+  <div  class="tr8n_txtl" style="padding-top:5px;padding-bottom:10px;font-size:14px">
+    <%=image_tag("tr8n/left_quote.png", :style=>"text-align:bottom;padding-bottom:5px;") %>
+    <%=@translation_key.sanitized_label %>
+    <%=image_tag("tr8n/right_quote.png", :style=>"text-align:bottom;padding-top:5px;") %>
   </div>
 
   <% unless @translation_key.description.blank? %>
-    <div style="color:grey;font-size:12px;padding-left:10px;padding-top:1px;padding-bottom:1px;border-left:solid 1px #ccc;margin-left:10px;">
+    <div class="tr8n_txtl" style="color:grey;font-size:12px;padding-left:10px;padding-top:1px;padding-bottom:1px;">
       <%=@translation_key.description %>
     </div>
   <% end %>

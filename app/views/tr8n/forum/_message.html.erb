@@ -1,10 +1,10 @@
-<td style="padding:5px; width:50px;"> 
+<td class="tr8n_txtl"  style="padding:5px; width:50px;"> 
   <%=tr8n_user_mugshot_tag(message.translator, :linked => true)%>
 </td>
-<td style="padding:5px; width:100px;">
+<td class="tr8n_txtl" style="padding:5px; width:100px;">
   <%=tr8n_user_tag(message.translator, :linked => true)%>
-  <div style="color:grey;font-size:10px;"><%=message.created_at.trl(:date_time) %></div>
-  <div style="font-size:10px;padding-top:5px;">
+  <div class="tr8n_txtl" style="color:grey;font-size:10px;"><%=message.created_at.trl(:date_time) %></div>
+  <div class="tr8n_txtl" style="font-size:10px;padding-top:5px;">
     <% if tr8n_current_user_is_translator? and message.translator == tr8n_current_translator %>  
       <%=link_to(tra("Delete", "Link to delete forum message"), {:action => :delete_message, :message_id => message.id}, {:confirm => trl("Are you sure you want to delete this message?")})%>
 		<% else %>	
@@ -12,6 +12,6 @@
     <% end %>
   </div>
 </td>
-<td style="padding:5px; width:700px;">
+<td class="tr8n_txtl" style="padding:5px; width:700px;">
   <%=message.toHTML %>
 </td>

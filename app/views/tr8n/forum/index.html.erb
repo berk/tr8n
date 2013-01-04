@@ -3,19 +3,20 @@
 	
 	<% unless @topics.empty? %>
 	<div class="section_title">
-	  <div style="float:right; padding-top:6px; font-size:12px; color: #ccc;">
+	  <div class="tr8n_fltr" style="padding-top:6px; font-size:12px; color: #ccc;">
 	    <%=image_tag('tr8n/plus.png')%> <%= link_to(tra("Start a new discussion topic"), :action => :topic, :mode => :create) %>
 	  </div>
-	  
-	  <%=tra("{language} Language Discussion Topics", nil, :language => tr8n_current_language.native_name) %>  
+	  <div class="tr8n_txtl">
+	  	<%=tra("{language} Language Discussion Topics", nil, :language => tr8n_current_language.native_name) %>  
+		</div>
 	</div>
 	<div class="section">
 	    <table style="width:100%;">
 	       <tr style="border-bottom: 1px solid #ccc;">
-	         <td class="topic_header" style="width:20%; padding:5px;"><%=tra("Author", "Forum column header")%></td>
-	         <td class="topic_header" style="width:50%; padding:5px;"><%=tra("Topic", "Forum column header")%></td>
-	         <td class="topic_header" style="width:10%; padding:5px;"><%=tra("Posts", "Forum column header")%></td>
-	         <td class="topic_header" style="width:20%; padding:5px;"><%=tra("Last Post", "Forum column header")%></td>
+	         <td class="tr8n_txtl" style="width:20%; padding:5px;"><%=tra("Author", "Forum column header")%></td>
+	         <td class="tr8n_txtl" style="width:50%; padding:5px;"><%=tra("Topic", "Forum column header")%></td>
+	         <td class="tr8n_txtl" style="width:10%; padding:5px;"><%=tra("Posts", "Forum column header")%></td>
+	         <td class="tr8n_txtl" style="width:20%; padding:5px;"><%=tra("Last Post", "Forum column header")%></td>
 	       </tr> 
 	      <% @topics.each do |topic| %>
 	        <%
@@ -44,15 +45,15 @@
 	              </tr>
 	            </table>
 	          </td>
-	          <td class="topic_value" style="padding:5px;">
+	          <td class="tr8n_txtl" style="padding:5px;">
 	            <%=link_to(topic.topic, :action => :topic, :topic_id => topic.id)%><br>
 	          </td>    
-	          <td class="topic_value" style="padding:5px;">
+	          <td class="tr8n_txtl" style="padding:5px;">
 	            <%=topic.post_count %>
 	          </td>
 	          <td class="topic_value" style="padding:5px;">
 	            <% if topic.last_post %>
-	               <div style="font-size:10px;"><%=topic.last_post.created_at.trl(:date_time) %> 
+	               <div class="tr8n_txtl" style="font-size:10px;"><%=topic.last_post.created_at.trl(:date_time) %> 
 								  <% if topic.translator and topic.translator.user %>
 	                  <%=tra("by {user}", "Name of the publisher", :user => [topic.translator.user, tr8n_user_tag(topic.translator, :linked => true)])%>
 									<% end %>
@@ -61,7 +62,7 @@
 	                  message = topic.last_post.message[0..60]
 	                  message << "..." if topic.last_post.message.length > 60 
 	               %> 
-	               <div style="font-style:italic; font-size:10px">"<%=link_to(h(message), :action => :topic, :topic_id =>topic.id, :last_page => true)%>"</div>
+	               <div class="tr8n_txtl" style="font-style:italic; font-size:10px">"<%=link_to(h(message), :action => :topic, :topic_id =>topic.id, :last_page => true)%>"</div>
 	            <% end %>
 	            &nbsp;
 	          </td>

@@ -5,9 +5,9 @@
     <div id="prohibited_words_content" class="section grey">
       <% if mode == :edit %>
         <%=f.text_area(:curse_words, :style => "width:100%; height:60px; background:white;")%>
-        <div style="color:grey; font-size:10px; padding-top:10px;"><%=tra("Add any prohibited/curse words that should not be allowed in translations for this language. Separate words with commas.")%></div>
+        <div class="tr8n_txtl"  style="color:grey; font-size:10px; padding-top:10px;"><%=tra("Add any prohibited/curse words that should not be allowed in translations for this language. Separate words with commas.")%></div>
       <% else %> 
-        <div style="width:99%; height:60px; overflow:auto;">
+        <div class="tr8n_txtl" style="width:99%; height:60px; overflow:auto;">
           <%=tr8n_current_language.curse_words%>
         </div>
       <% end %>  

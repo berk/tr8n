@@ -1,12 +1,12 @@
 <div id="comments_module">
-	<div class="section_title">
+	<div class="section_title tr8n_txtl">
 		<%=tr8n_toggler_tag("comments_content")%>
 	  <%=tra("Comments") %>
 		<a name="comments">&nbsp;</a>
 	</div>
 
 	<div class="section" id="comments_content">
-		<div style="margin-bottom:10px;">
+		<div class="tr8n_txtl" style="margin-bottom:10px;">
 			<% if @comments.any? %>
 				<%=tr8n_paginator_tag(@comments, :subject => "comment")%>
 			

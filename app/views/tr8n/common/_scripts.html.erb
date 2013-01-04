@@ -10,6 +10,20 @@
   <% end %>  
 
   <%=stylesheet_link_tag("tr8n/tr8n.css") -%>
+  <style type="text/css">
+  .tr8n_fltr {
+    <%=tr8n_style_attribute_tag('float', 'right')%> !important;
+  }
+  .tr8n_fltl {
+    <%=tr8n_style_attribute_tag('float', 'left')%> !important;
+  }
+  .tr8n_txtr {
+    <%=tr8n_style_attribute_tag('text-align', 'right')%> !important;
+  }
+  .tr8n_txtl {
+    <%=tr8n_style_attribute_tag('text-align', 'left')%> !important;
+  }
+  </style>
 
   <% if params[:tr8n_debug_js] %>
     <%=javascript_include_tag("tr8n/tr8n.js", :charset => "UTF-8") -%>

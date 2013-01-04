@@ -1,5 +1,5 @@
 <div id="translation_key_toolbar" style="font-size:12px; margin-top:0px; background-color:#f8f7f6; border:1px solid #eee; padding:5px; color:grey; background: url('/assets/tr8n/toolbar_bg.gif') repeat-x scroll 0 0 transparent;">
-  <div style="float:right;">
+  <div class="tr8n_fltr">
      <%=link_to(image_tag("tr8n/help.png", :style=>"vertical-align:bottom;", :title => trl("Help")), @translation_key.class.help_url) %>
   </div>
   <%
@@ -31,5 +31,7 @@
     actions << link_to_function("#{image_tag('tr8n/exclamation.png', :style=>'height:15px; vertical-align:bottom')} #{tra("Report")}".html_safe, "Tr8n.UI.Lightbox.show('/tr8n/translator/lb_report?translation_key_id=#{@translation_key.id}', {width:600, height:360});")
   %>
   
-  <%= actions.join(' &nbsp;|&nbsp; ').html_safe %>  
+  <div class="tr8n_txtl">
+    <%= actions.join(' &nbsp;|&nbsp; ').html_safe %>  
+  </div>
 </div>

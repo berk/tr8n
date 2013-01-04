@@ -1,23 +1,35 @@
 <style type="text/css">
-.pagination {
-	<%=tr8n_style_attribute_tag('text-align', 'left')%> important!;
+.tr8n_paginator {
+  width: 100%;
+  padding-bottom:10px;
+  padding-top:5px; 
+  border:1px dotted #eee; 
+  padding:5px; 
+  margin-bottom:10px; 
+  margin-top:10px;
 }
-.page {
-	border: 1px solid #eee;
-	padding: 2px;
+.tr8n_paginator table {
+  width: 100%;
 }
-.current {
-	background: #eee;
+.tr8n_paginator td {
+  vertical-align:top; font-size:11px; font-family:arial;
+}
+.tr8n_paginator .page {
+  border: 1px solid #eee;
+  padding: 2px;
+}
+.tr8n_paginator .current {
+  background: #eee;
 }
 </style>
-<div style="padding-bottom:10px;padding-top:5px; border:1px dotted #eee; padding:5px; margin-bottom:10px; margin-top:10px;">
-  <table style="width:100%;">
+<div class="tr8n_paginator">
+  <table>
     <tr>
-      <td style="<%=tr8n_style_attribute_tag('text-align', 'left')%>; vertical-align:top; font-size:11px; font-family:arial;">
-      	<%= tr8n_page_links_tag(collection, options) %>
+      <td class="tr8n_txtl">
+        <%=tr8n_page_entries_info_tag(collection, options) %>
       </td>
-      <td style="<%=tr8n_style_attribute_tag('text-align', 'right')%>; vertical-align:top; font-size:11px; font-family:arial;">
-      	<%=tr8n_page_entries_info_tag(collection, options) %>
+      <td class="tr8n_txtr">
+        <%= tr8n_page_links_tag(collection, options) %>
 			</td>
     </tr>
   </table>

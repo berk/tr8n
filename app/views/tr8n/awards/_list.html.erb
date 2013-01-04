@@ -1,15 +1,29 @@
-<table style="width:100%;" cellpadding="5">
+<style type="text/css">
+.awards th {
+  color:gray;
+  padding:5px;
+  <%=tr8n_style_attribute_tag('text-align', 'left')%>;
+}
+.awards td {
+  padding:5px;
+  vertical-align:top;
+  <%=tr8n_style_attribute_tag('text-align', 'left')%>;
+}
+.awards .txtr {
+  <%=tr8n_style_attribute_tag('text-align', 'right')%>;
+}
+</style>
+<table style="width:100%;" cellpadding="5" class="awards">
   <tr style="border-bottom: 1px solid #ccc;">
-    <th style="width:80px;color:grey;padding:5px;"><%=tra('Award', 'Awards section header')%></th>
-    <th style="width:200px;color:grey;padding:5px;"><%=tra('Name', 'Awards section header')%></th>
-    <th style="text-align:right;color:grey;padding:5px;"><%=tra('Total Translations', 'Awards section header')%></th>
-    <th style="text-align:right;color:grey;padding:5px;"><%=tra('Total Votes', 'Awards section header')%></th>
+    <th style="width:80px;"><%=tra('Award', 'Awards section header')%></th>
+    <th style="width:200px;"><%=tra('Name', 'Awards section header')%></th>
+    <th class="txtr"><%=tra('Total Translations', 'Awards section header')%></th>
+    <th class="txtr"><%=tra('Total Votes', 'Awards section header')%></th>
   </tr>
-  
   <% metrics.each_with_index do |tm, index| %>
     <% style = "border-bottom: 1px dotted #ccc;" unless metrics.last == tm %>
     <tr style="<%=style%>">
-      <td style="padding:5px;">
+      <td>
         <% if show_medals %> 
           <% if index == 0 %>
             <%=image_tag("tr8n/medals/gold.png", :style => "height:60px", :title => trla('Gold Medal', 'Awards section header'))%>
@@ -25,19 +39,19 @@
       <td style="padding:5px;">
         <table>
           <tr>
-            <td style="vertical-align:top;padding:5px;">
+            <td>
               <%=tr8n_user_mugshot_tag(tm.translator, :linked => true)%>
             </td>
-            <td style="vertical-align:top;padding:5px;">
+            <td>
               <%=tr8n_user_tag(tm.translator, :linked => true)%>
             </td>
           </tr>
         </table>        
       </td>
-      <td style="text-align:right;padding:5px;">
+      <td class="txtr">
         <%=tm.total_translations%>
       </td>
-      <td style="text-align:right;padding:5px;">
+      <td class="txtr">
         <%=tm.total_votes%>
         (<span style="color:green" title="<%=trla('Number of positive votes', 'Awards section header')%>"><%=tm.positive_votes || 0 %></span>/<span style="color:red" title="<%=trla('Number of negative votes', 'Awards section header')%>"><%=tm.negative_votes || 0 %></span>)
       </td>

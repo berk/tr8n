@@ -2,10 +2,10 @@
 
 <table style="width:100%;" cellpadding="5px" cellspacing="3px">
   <tr style="border-bottom:1px solid #ccc;">
-    <td class="topic_header" style="width:200px;<%=tr8n_style_attribute_tag('text-align', 'left')%>"><%=tra("Translator")%></td>
-    <td class="topic_header" style="width:25px;<%=tr8n_style_attribute_tag('text-align', 'left')%>"><%=tra("Rank")%></td>
-    <td class="topic_header" style="width:80px;text-align:center"><%=tra("Your Vote")%></td>
-    <td class="topic_header" style="<%=tr8n_style_attribute_tag('text-align', 'left')%>"><%=tra("Translation")%></td>
+    <td class="tr8n_txtl" style="width:200px;"><%=tra("Translator")%></td>
+    <td class="tr8n_txtl" style="width:25px;"><%=tra("Rank")%></td>
+    <td style="width:80px;text-align:center"><%=tra("Your Vote")%></td>
+    <td class="tr8n_txtl"><%=tra("Translation")%></td>
     <% if [:view, :edit].include?(mode) %> 
       <td class="topic_header" style="width:50px;">&nbsp;</td>
 		<% end %>
@@ -20,7 +20,7 @@
 </table>
 
 <% if translations.empty? %>
-    <div style="text-align:left; padding-top:10px; font-size:12px;"><%=trla("No translations found")%></div>
+    <div class="tr8n_txtl" style="padding-top:10px; font-size:12px;"><%=trla("No translations found")%></div>
 <% end %>
 
 <%= tr8n_paginator_tag(translations, :subject => 'translation') if mode == :list and translations.any? %>	

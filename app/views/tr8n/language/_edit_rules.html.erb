@@ -4,13 +4,13 @@
        cls = Tr8n::Config.language_rule_dependencies[dependency] 
   %>
 	    <div style="margin-bottom:10px; border-bottom: 1px dotted #ccc; padding-bottom:5px;">
-	      <div style="font-weight:bold; padding-bottom:5px; background-color:#f1f4fa; border:1px dotted #ccc; padding:5px;">
+	      <div class="tr8n_txtl" style="font-weight:bold; padding-bottom:5px; background-color:#f1f4fa; border:1px dotted #ccc; padding:5px;">
 				  <%= tra("#{cls.dependency_label.capitalize} Rules")%>
 				</div>
 	      
 				<div id="<%=dependency%>_rule_content" style="background-color:#eee; border:1px dotted #ccc; padding:5px;">
 					<% if @rules[dependency].empty? %>
-					  <div style="font-style:italic; font-size: 10px; color: grey;">
+					  <div class="tr8n_txtl" style="font-style:italic; font-size: 10px; color: grey;">
 					  	<%=tra("There are no #{cls.dependency_label} rules defined for this language.")%>
 							<%=link_to_function(tra("Click here to add a new #{cls.dependency_label} rule."), "addLanguageRule('#{cls.dependency}', '0')")%>
 					  </div>
@@ -20,11 +20,11 @@
 					    <div style="padding-bottom:3px;">
 							  <table> 
 								  <tr>
-								  	<td style="vertical-align:middle;width:1%;white-space:nowrap;padding-right:3px;">
+								  	<td class="tr8n_txtl" style="vertical-align:middle;width:1%;white-space:nowrap;padding:3px;">
 										  <%=link_to_function(image_tag("tr8n/add.png"), "addLanguageRule('#{dependency}','#{index+1}')")%>
 			                <%=link_to_function(image_tag("tr8n/delete.png"), "deleteLanguageRule('#{dependency}','#{index}')")%>
 										</td>	
-								    <td style="vertical-align:middle;text-align:left;">  
+								    <td class="tr8n_txtl" style="vertical-align:middle;text-align:left;">  
 								      <% rule.definition ||= {} %>
 								      
 								      <%=hidden_field_tag("rules[#{dependency}][#{index}][id]", rule.id)%>
@@ -41,6 +41,6 @@
   <% end %> 
 </div>
 
-<div style="color:grey; font-size:10px; padding-top:5px; padding-bottom:5px;">
+<div class="tr8n_txtl" style="color:grey; font-size:10px; padding-top:5px; padding-bottom:5px;">
   <%=tra("For numeric rules, you can enter multiple values seprated by commas.")%>
 </div>

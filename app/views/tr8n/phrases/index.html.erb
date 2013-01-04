@@ -2,20 +2,20 @@
 	<%= render :partial => "/tr8n/common/header" %>
 	<%= render :partial => "breadcrumb" %>
 	
-  <div class="section blue" <%=tr8n_dir_attribute_tag%>>
+  <div class="section blue">
 	  <%= form_tag({:action => :index}, {:method => :get, :id => "translations_search_form"}) do %>
 	      <%=hidden_field_tag(:section_key, @section_key) %>
-			  <div style="<%=tr8n_style_attribute_tag('float', 'right')%>">
+			  <div class="tr8n_fltr">
 	        <button type="submit" class="translator_btn translator_small_btn" onClick="Tr8n.Effects.submit('translations_search_form'); return false;">
 	            <span><%=tra("Search")%></span>
 	        </button>
 			  </div>
 				
-	    	<div style="<%=tr8n_style_attribute_tag('text-align', 'left')%>">
+	    	<div class="tr8n_txtl">
 	    		<%=text_field_tag(:search, params[:search], {:style => "width:90%;font-size:12px;height:20px;"})%>
 	    	</div>
 
-				<div style="margin-top:10px; padding:3px; font-size:11px; color:#666; font-weight:bold; <%=tr8n_style_attribute_tag('text-align', 'left')%>">
+				<div class="tr8n_txtl" style="margin-top:10px; padding:3px; font-size:11px; color:#666; font-weight:bold;">
 	          <%=tra("Search phrases")%>
 	          <%=select_tag(:phrase_type, tr8n_options_for_select(Tr8n::TranslationKey.filter_phrase_type_options, params[:phrase_type]), :onChange => "toggleFilterOptions()")%>
 	          <span id="extended_filter_options" style="<%='display:none' unless params[:phrase_type]=="with" %>">
@@ -29,15 +29,15 @@
 	  <% end %>
 	</div>
 	
-	<div class="section"<%=tr8n_dir_attribute_tag%>>
+	<div class="section">
   	<%= tr8n_paginator_tag(@translation_keys, :subject => 'phrase') if @translation_keys.any? %>	
 	
 	  <table style="width:100%">
 	    <tr style="border-bottom:2px solid #ccc;">
-	       <td style="width:30%;padding:5px; background: #f9f8f7; font-size:16px; color:grey; <%=tr8n_style_attribute_tag('text-align', 'left')%>">
+	       <td class="tr8n_txtl" style="width:30%;padding:5px; background: #f9f8f7; font-size:16px; color:grey;">
 				   <%=tra("Original Phrase")%>
 				 </td>
-	       <td style="width:70%;padding:5px; font-size:16px; color:grey; <%=tr8n_style_attribute_tag('text-align', 'left')%>" colspan="2">
+	       <td class="tr8n_txtl" style="width:70%;padding:5px; font-size:16px; color:grey;" colspan="2">
 				   <%=tra("Top {language} Translations", nil, :language => tr8n_current_language.native_name) %>
 				 </td>
 	    </tr>  
@@ -45,18 +45,18 @@
 	      <tr style="border-bottom:1px dotted #ccc;">
 
 	        <% color = tk.locked? ? "#ECFFEF" : "#FDFDDF" %>
-	        <td style="padding:5px; background: <%=color%>; <%=tr8n_style_attribute_tag('text-align', 'left')%>">
+	        <td class="tr8n_txtl" style="padding:5px; background: <%=color%>;">
 	          <% if tk.locked? %>
-	            <div style="<%=tr8n_style_attribute_tag('float', 'right')%>"><%=image_tag("tr8n/lock.png", :style=>"width:12px", :title => trla("This phrase is locked"))%></div>
+	            <div class="tr8n_fltr"><%=image_tag("tr8n/lock.png", :style=>"width:12px", :title => trla("This phrase is locked"))%></div>
 	          <% end %>
 	          <span dir='ltr'>
 	          	<%=link_to(tk.default_decoration, :action => :view, :translation_key_id => tk.id, :section_key => @section_key)%>
 	        	</span>
-	          <div dir='ltr' style="color:grey;font-size:10px;padding-top:3px;<%=tr8n_style_attribute_tag('text-align', 'left')%>"><%=tk.description%></div>
+	          <div class="tr8n_txtl" dir='ltr' style="color:grey;font-size:10px;padding-top:3px;"><%=tk.description%></div>
 	        </td>
 
 	        <td style="padding:5px; vertical-align:top">
-	          <div id="tr8n_translator_votes_for_<%=tk.key%>" style="<%=tr8n_style_attribute_tag('text-align', 'left')%>">
+	          <div id="tr8n_translator_votes_for_<%=tk.key%>" class="tr8n_txtl">
 	          <% translations = tk.translations_for(tr8n_current_language) %>
 				    <% if translations.empty? %>
 	            <%= tra("There are no translations for this phrase.") %> 
@@ -76,7 +76,7 @@
 	  </table>
 	  
 		<% if @translation_keys.empty? %>
-		    <div style="text-align:left; padding-top:10px; font-size:12px;"><%=trla("No phrases found")%></div>
+		    <div class="tr8n_txtl" style="padding-top:10px; font-size:12px;"><%=trla("No phrases found")%></div>
 		<% end %>
 		
   	<%= tr8n_paginator_tag(@translation_keys, :subject => 'phrase') if @translation_keys.any? %>	

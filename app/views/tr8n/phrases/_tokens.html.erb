@@ -1,27 +1,29 @@
 <% if @translation_key.tokens? or @translation_key.permutatable? %>
 
-<div id="translation_tokens" style="padding-bottom:5px; font-size:12px;">
-  <div class="section_title">
-  	 <%=trla("Translation Tokens")%>
+<div id="translation_tokens" class="tr8n_txtl" style="padding-bottom:5px; font-size:12px;">
+  <div class="section_title tr8n_txtl">
+  	 <%=tra("Translation Tokens")%>
 	</div>
 	
   <% if @translation_key.translation_tokens? %>
       <% @translation_key.translation_tokens.each do |token| %>
+        <span dir="ltr">
         <% if token.decoration? %>
           <%= link_to_function(token.sanitized_name, "Tr8n.Translation.insertDecorationToken('#{token.name}', 'tr8n_translation_label_#{@translation_key.id}');", :title => trla("Click to insert this token above") ) %>
         <% else %>
           <%= link_to_function(token.sanitized_name, "Tr8n.Translation.insertToken('#{token.name}', 'tr8n_translation_label_#{@translation_key.id}');", :title => trla("Click to insert this token above") ) %>
         <% end %>
+        </span>
       <% end %>
 			
-      <div style="color:grey; font-size:12px; padding-top:10px; padding-bottom:10px;">
-			   <%=trla("Click on a token to insert it into the label")%>
+      <div class="tr8n_txtl" style="color:grey; font-size:12px; padding-top:10px; padding-bottom:10px;">
+			   <%=tra("Click on a token to insert it into the label")%>
 			</div>
   <% end %>
 
   <% if @translation_key.data_tokens? and tr8n_current_language.cases.any? %>
-    <div id="cases_trigger" style="font-size:12px; font-weight:normal; padding-bottom:10px;">
-        <%=link_to_function(trla("Click here if the token values depend on the language cases"), "Tr8n.Effects.hide('cases_trigger'); Tr8n.Effects.blindDown('tr8n_translator_tokens_extended_view');") %>
+    <div id="cases_trigger"  class="tr8n_txtl" style="font-size:12px; font-weight:normal; padding-bottom:10px;">
+        <%=link_to_function(tra("Click here if the token values depend on the language cases"), "Tr8n.Effects.hide('cases_trigger'); Tr8n.Effects.blindDown('tr8n_translator_tokens_extended_view');") %>
     </div>
 	
     <div id="tr8n_translator_tokens_extended_view" style="padding:5px; border: 1px dotted #ccc; background:#EFF8FF; display:none; margin-bottom:10px;">
@@ -58,7 +60,7 @@
   <% end %> 
 
   <% if @translation_key.permutatable? %>
-    <div id="rules_trigger" style="font-size:12px; font-weight:normal;">
+    <div id="rules_trigger"  class="tr8n_txtl" style="font-size:12px; font-weight:normal;">
       <% 
          if @translation_key.translation_tokens? 
            link_label = tra("Click here if this translation depends on any of the token values or the gender of the viewing user")
@@ -70,8 +72,8 @@
     </div>
 		
     <div id="translation_rules" class="section blue" style="padding:5px; display:none;">
-      <div style="font-size:14px; font-weight:normal; border-bottom: 1px dotted #ccc;">
-			   <%=trla("Token Dependency Rules For This Translation")%>
+      <div class="tr8n_txtl" style="font-size:14px; font-weight:normal; border-bottom: 1px dotted #ccc;">
+			   <%=tra("Token Dependency Rules For This Translation")%>
 			</div>
       
       <%=hidden_field_tag("has_rules", "true") %>
@@ -80,8 +82,8 @@
 					<table style="border:1px; width:auto; width:100%;">
 					  <tr style="border-bottom:1px dotted #ccc;">
 					    <td style="width:2%"></td>
-					    <td style="width:10%; font-size:10px; font-weight:bold; padding:5px;"><%=trla('Token', 'Translation token')%></td>
-					    <td style="width:88%; font-size:10px; font-weight:bold; padding:5px;"><%=trla('Context Rule', 'Translation context rule')%></td>        
+					    <td class="tr8n_txtl" style="width:10%; font-size:10px; font-weight:bold; padding:5px;"><%=tra('Token', 'Translation token')%></td>
+					    <td class="tr8n_txtl" style="width:88%; font-size:10px; font-weight:bold; padding:5px;"><%=tra('Context Rule', 'Translation context rule')%></td>        
 					  </tr>
 					
 						<% @translation_key.language_rules_dependant_tokens.each_with_index do |token, index| %>
@@ -94,13 +96,13 @@
 		            end 
 		          %>
 						  <tr>
-						    <td style="padding:3px; vertical-align:middle;">
+						    <td class="tr8n_txtl" style="padding:3px; vertical-align:middle;">
 						      <%=check_box_tag("rules[#{token.name}][selected]", "true", (@rules[token.name]!=nil), :id => "check_#{index}", :style => "width:20px")%>     
 						    </td>
-						    <td style="font-size:10px; padding:3px; vertical-align:middle;">
+						    <td class="tr8n_txtl" style="font-size:10px; padding:3px; vertical-align:middle;">
 						      <%=token.name %>     
 						    </td>
-						    <td style="font-size:10px; padding:5px; vertical-align:middle;">
+						    <td class="tr8n_txtl" style="font-size:10px; padding:5px; vertical-align:middle;">
 						      <%=select_tag("rules[#{token.name}][rule_id]", options_for_select(rule_options, @rules[token].to_s), :onChange => "Tr8n.element('check_#{index}').checked = true;")%>      
 						    </td>
 						  </tr>
@@ -108,12 +110,12 @@
 					</table>
 		  </div>
 				
-			<div style="color:grey; font-size:12px; padding-top:10px;">
-			 <%=trla("Select all of the rules that apply to this translation or [link: generate all context rules for this phrase].", '', :link => lambda{|t| link_to_function(t, 'addContextRules()')})%>
+			<div class="tr8n_txtl" style="color:grey; font-size:12px; padding-top:10px;">
+			 <%=tra("Select all of the rules that apply to this translation or [link: generate all context rules for this phrase].", '', :link => lambda{|t| link_to_function(t, 'addContextRules()')})%>
 			</div>
 			
-			<div style="padding-top:10px;font-size:12px; font-weight:normal;">
-        <%=link_to_function(trl("{laquo} this translation has no context rules"), "Tr8n.element('has_rules').value='false'; Tr8n.Effects.show('rules_trigger'); Tr8n.Effects.blindUp('translation_rules');") %>
+			<div class="tr8n_txtl" style="padding-top:10px;font-size:12px; font-weight:normal;">
+        <%=link_to_function(tra("{laquo} this translation has no context rules"), "Tr8n.element('has_rules').value='false'; Tr8n.Effects.show('rules_trigger'); Tr8n.Effects.blindUp('translation_rules');") %>
 			</div>
     </div>
   <% end %>
