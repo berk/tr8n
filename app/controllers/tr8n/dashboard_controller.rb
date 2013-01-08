@@ -27,7 +27,7 @@ module Tr8n
     before_filter :validate_current_translator
   
     def index
-      
+      @user_languages = Tr8n::LanguageUser.languages_for(tr8n_current_user) unless tr8n_current_user_is_guest?
     end
     
   end

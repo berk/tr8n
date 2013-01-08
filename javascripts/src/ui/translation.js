@@ -73,11 +73,18 @@ Tr8n.Translation = {
     Tr8n.Effects.submit('tr8n_translator_form');
   },
 
+  lock: function() {
+    Tr8n.Effects.hide('tr8n_translator_translations_container');
+    Tr8n.Effects.hide('tr8n_translator_footer_container');
+    Tr8n.Effects.show('tr8n_translator_spinner');
+    Tr8n.Effects.submit('tr8n_translator_form');
+  },
+
   submitWithDependencies: function() {
     Tr8n.Effects.hide('tr8n_translator_buttons_container');
     Tr8n.Effects.hide('tr8n_translator_dependencies_container');
     Tr8n.Effects.show('tr8n_translator_spinner');
-    Tr8n.element('tr8n_translator_form').action = '/tr8n/translations/permutate';
+    Tr8n.element('tr8n_translator_form').action = '/tr8n/translations/lock';
     Tr8n.Effects.submit('tr8n_translator_form');
   },
 

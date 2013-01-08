@@ -44,6 +44,17 @@ class Tr8n::TranslationsController < Tr8n::BaseController
       return redirect_to(destination_url)
     end
 
+    pp params
+    
+    if params[:lock] == "true"
+      if tr8n_current_translator.manager?
+        translation_key.lock!
+      else
+        trfe("You are not authorized to lock translation keys")
+      end
+      return redirect_to(destination_url)
+    end
+
     translations = translation_key.translations_for(tr8n_current_language)
 
     if params[:translation_id].blank?
