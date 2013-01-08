@@ -1,9 +1,9 @@
 <% if lang.total_metric.not_translated_count == 0 and lang.total_metric.key_count > 0 %>
-  <div style="background-color:#ECFFEF; border: 1px dotted #ccc; font-size: 12px; padding:5px; margin-top:3x; margin-bottom:10px; color: #999;">
+  <div class="tr8n_txtl" style="background-color:#ECFFEF; border: 1px dotted #ccc; font-size: 12px; padding:5px; margin-top:3x; margin-bottom:10px; color: #999;">
     <%=tra("This language is fully translated.", "Dashboard section header")%>
   </div>
 <% else %>
-  <div style="background-color:#EFF8FF; border: 1px dotted #ccc; font-size: 12px; padding:5px; margin-top:3x; margin-bottom:10px; color: #999;">
+  <div class="tr8n_txtl" style="background-color:#EFF8FF; border: 1px dotted #ccc; font-size: 12px; padding:5px; margin-top:3x; margin-bottom:10px; color: #999;">
     <%=tra("This language has [link: {count||phrase}] that need to be translated.", "Dashboard section header", 
             :count => lang.total_metric.not_translated_count,
             :link => lambda{|str| link_to(str, :controller => "/tr8n/phrases", :action => :index, :locale => lang.locale, :phrase_type => :without)}
@@ -11,8 +11,8 @@
   </div>
 <% end %>
 
-<div style="font-size:14px; border-bottom:1px solid #ccc; margin-bottom:5px;">
-  <div style="float:right">
+<div class="tr8n_txtl" style="font-size:14px; border-bottom:1px solid #ccc; margin-bottom:5px;">
+  <div class="tr8n_fltr">
     <%=tr8n_translator_rank_tag(tr8n_current_translator, translator_metric.rank)%>
   </div>
 	

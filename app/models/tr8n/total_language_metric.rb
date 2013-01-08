@@ -62,19 +62,10 @@ class Tr8n::TotalLanguageMetric < Tr8n::LanguageMetric
         :joins => "join tr8n_translations on tr8n_translation_keys.id = tr8n_translations.translation_key_id") 
     save
 
-    language.update_attributes(:completeness => calculate_language_completeness)
+    language.completeness = (locked_key_count * 100 / key_count)
+    language.save
     
     self
-  end
-  
-  def calculate_language_completeness
-    keys_with_approved_translations_count = Tr8n::TranslationKey.count("distinct tr8n_translation_keys.id", 
-        :conditions => ["tr8n_translations.language_id = ? and tr8n_translations.rank >= ?", language_id, Tr8n::Config.translation_threshold], 
-        :joins => "join tr8n_translations on tr8n_translation_keys.id = tr8n_translations.translation_key_id") 
-    
-    return 0 if keys_with_approved_translations_count == 0 or key_count == 0
-    
-    (keys_with_approved_translations_count * 100 / key_count)
   end
   
   def completeness

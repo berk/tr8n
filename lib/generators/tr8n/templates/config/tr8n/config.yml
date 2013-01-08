@@ -19,21 +19,22 @@ defaults:
   enable_tr8n:                true      # enables the engine
   enable_key_source_tracking: false     # builds the site map sources - must be enabled for the API
   enable_key_caller_tracking: false     # tracks all calls to labels with their traces - for debugging only
-  
+
   enable_glossary_hints:      true      # shows glossary in the translator    
   enable_software_keyboard:   true      # shows the soft keyboard icon  
   enable_keyboard_shortcuts:  true      # adds some keyboard shortcuts like ctrl+shift+s
   enable_dictionary_lookup:   true      # shows dictionary words definitions
-  
+
   enable_fallback_languages:  true      # for example: Catalan can fallback onto Spanish
   enable_translator_language: true      # translator can translate from non-default language
 
   enable_language_flags:      true      # shows flag icons next to the languages
   enable_language_stats:      true      # shows percent completion of a language
-  
+  language_stats_realtime:    true      # calculates language stats realtime - good for small sites
+
   enable_admin_translations:  true      # registers tr8n admin keys in the system
   enable_admin_inline_mode:   true      # allows tr8n engine sections to be inline translated
-  
+
   enable_language_cases:      true      # enables support for language cases
   enable_client_sdk:          false     # allows javascript to use tr8nProxy object
   enable_browser_cache:       false     # caches translations in the browser

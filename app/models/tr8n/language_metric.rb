@@ -49,7 +49,7 @@ class Tr8n::LanguageMetric < ActiveRecord::Base
   self.table_name = :tr8n_language_metrics
   
   attr_accessible :language_id, :metric_date, :user_count, :translator_count, :translation_count, :key_count, :locked_key_count, :translated_key_count
-  attr_accessible :language
+  attr_accessible :language, :completeness
   
   belongs_to :language, :class_name => "Tr8n::Language"   
 

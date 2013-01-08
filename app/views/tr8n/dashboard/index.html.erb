@@ -20,42 +20,43 @@
 	        <td style="width:50%; padding-top:3px;">
 					  <table>
 					    <tr>
-					      <td style="vertical-align:top;padding-right:2px; width:60px;">
+					      <td class="tr8n_txtl" style="vertical-align:top; padding-right:2px; padding-left:2px; width:60px;">
 					        <%=tr8n_user_mugshot_tag(tr8n_current_translator, :linked => true)%>
 					      </td>
 					      <td style="vertical-align:top">
 									<table>
 										<tr>
-											<td style="width:150px"><%=tra("Your Overall Rank:", "Dashboard section header") %></td>
-											<td>
+											<td  class="tr8n_txtl" style="width:150px"><%=tra("Your Overall Rank:") %></td>
+											<td class="tr8n_txtl">
 									        <%=tr8n_translator_rank_tag(tr8n_current_translator)%>			
 											</td>
 										</tr>
 										<tr>
-											<td><%=tra("Registered On:", "Dashboard section header") %></td>
-											<td><%=tr8n_current_translator.created_at.trl%></td>
+											<td class="tr8n_txtl"><%=tra("Registered On:") %></td>
+											<td class="tr8n_txtl"><%=tr8n_current_translator.created_at.trl%></td>
 										</tr>
 	                  <tr>
-	                    <td><%=tra("Your Total Translations:", "Dashboard section header") %></td>
-	                    <td><%=tr8n_current_translator.total_metric.total_translations%></td>
+	                    <td class="tr8n_txtl"><%=tra("Your Total Translations:") %></td>
+	                    <td class="tr8n_txtl"><%=tr8n_current_translator.total_metric.total_translations%></td>
 	                  </tr>
 	                  <tr>
-	                    <td><%=tra("Your Total Votes:", "Dashboard section header") %></td>
-	                    <td>
+	                    <td class="tr8n_txtl"><%=tra("Your Total Votes:") %></td>
+	                    <td class="tr8n_txtl">
 	                      (<span style="color:green"><%=tr8n_current_translator.total_metric.positive_votes || 0 %></span>/<span style="color:red"><%=tr8n_current_translator.total_metric.negative_votes || 0 %></span>)
 											</td>
 	                  </tr>
 	                  <tr>
-	                    <td><%=tra("Your Forum Messages:", "Dashboard section header") %></td>
-	                    <td>
+	                    <td class="tr8n_txtl"><%=tra("Your Forum Messages:") %></td>
+	                    <td class="tr8n_txtl">
 	                       <%=tr8n_current_translator.language_forum_messages.count %> 
 	                    </td>
 	                  </tr>
 	                  <tr>
-	                    <td style="vertical-align:top;"><%=tra("Your Languages:", "Dashboard section header") %></td>
-	                    <td style="vertical-align:top;">
+	                    <td  class="tr8n_txtl" style="vertical-align:top;"><%=tra("Your Languages:") %></td>
+	                    <td class="tr8n_txtl" style="vertical-align:top;">
 			                  <% langs = [] %>
-			                  <% tr8n_current_translator.languages.each do |lang|
+			                  <% @user_languages.each do |user_lang|
+			                  		lang = user_lang.language
 			                      next if lang.default?
 			                      langs << link_to(lang.english_name, :anchor => lang.locale)  
 			                     end %>       
@@ -76,12 +77,13 @@
 	    </table>  
 	</div>
 	
-	<% tr8n_current_translator.languages.each do |lang| %>
+	<% @user_languages.each do |lang_user| %>
+		<% lang = lang_user.language %>
 		<% next if lang.default? %>
 		<% translator_metric = tr8n_current_translator.metric_for(lang) %>
 		
 		<div class="section_title">
-		  <div style="float:right; font-size:12px; font-weight:normal; padding-top:5px;">
+		  <div class="tr8n_fltr" style="font-size:12px; font-weight:normal; padding-top:5px;">
 	      <%=link_to(tra("select", "Language action link"), :locale => lang.locale)%>
 	      | <%=link_to(tra("site map", "Language action link"), "/tr8n/phrases/map?locale=#{lang.locale}")%>
 	      | <%=link_to(tra("phrases", "Language action link"), "/tr8n/phrases?locale=#{lang.locale}")%>
@@ -94,17 +96,16 @@
 	      | <%=link_to(tra("remove", "Language action link"), "/tr8n/language/remove?language_id=#{lang.id}")%>
 		  </div>
 	
-	    <%=tr8n_toggler_tag("lang_content_#{lang.id}")%>
-			
-	    <%=image_tag("tr8n/flags/#{lang.flag}.png", :title=>lang.native_name) if Tr8n::Config.enable_language_flags? %>&nbsp;
-	    <a name="<%=lang.locale%>" style="text-decoration:none;color:black;"><%=lang.english_name%></a>
-			
-			<% if tr8n_current_translator.manager? %> 
-			  <span style="color:#ccc; font-size:12px;">(<%=tra("You are managing this language") %>)</span>
-			<% end %>
+			<div class="tr8n_txtl">
+		    <%=tr8n_toggler_tag("lang_content_#{lang.id}")%>
+				
+		    <%=image_tag("tr8n/flags/#{lang.flag}.png", :title=>lang.native_name) if Tr8n::Config.enable_language_flags? %>&nbsp;
+		    <span dir="ltr"><a name="<%=lang.locale%>" style="text-decoration:none;color:black;"><%=lang.english_name%></a></span>
+
+			</div>
 		</div>
 		
-		<div id="lang_content_<%=lang.id%>" class="section grey">
+		<div id="lang_content_<%=lang.id%>" class="section grey tr8n_txtl">
 	    <%=render :partial=>"statistics", :locals => {:lang => lang, :translator_metric => translator_metric}%>
 			
 	    <%=render :partial=>"forum", :locals => {:lang => lang}%>

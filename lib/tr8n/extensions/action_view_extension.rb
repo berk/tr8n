@@ -424,6 +424,17 @@ module Tr8n
       end
     end    
 
+    def tr8n_content_for_countries_tag(opts, &block)
+      pp tr8n_request_remote_ip
+
+      countries = opts[:only]      
+      countries = opts[:except]      
+      if block_given?
+        ret = capture(&block) 
+      end
+      ret
+    end
+
     ######################################################################
     ## Language Direction Support
     ######################################################################
@@ -443,6 +454,14 @@ module Tr8n
     ######################################################################
     ## Common methods
     ######################################################################
+
+    def tr8n_request_remote_ip
+      @remote_ip ||= if request.env['HTTP_X_FORWARDED_FOR']
+        request.env['HTTP_X_FORWARDED_FOR'].split(',').first
+      else
+        request.remote_ip
+      end
+    end
 
     def tr8n_current_user
       Tr8n::Config.current_user

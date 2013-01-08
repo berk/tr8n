@@ -44,8 +44,6 @@ class Tr8n::TranslationsController < Tr8n::BaseController
       return redirect_to(destination_url)
     end
 
-    pp params
-    
     if params[:lock] == "true"
       if tr8n_current_translator.manager?
         translation_key.lock!

@@ -1,21 +1,25 @@
 <% unless lang.recently_updated_votes.empty? %>
 	<div style="padding-top:10px; font-size:14px; border-bottom:1px solid #ccc; margin-bottom:5px;">
-    <div style="float:right; font-size:12px;">
-       <%=link_to(tra("view all", "Link to view all translation votes"), :controller => "/tr8n/translations", :action => :index, :with_translations=>:with, :submitted_by=>:me, :locale => lang.locale)%>
+    <div class="tr8n_fltr" style="font-size:12px;">
+       <%=link_to(tra("view all"), :controller => "/tr8n/translations", :action => :index, :with_translations=>:with, :submitted_by=>:me, :locale => lang.locale)%>
     </div>
 
-    <%=tr8n_toggler_tag("votes_content_#{lang.id}", "", false)%>
-	  <%=tra("Recent Translation Votes", "Dashboard section header")%>
-		<span style="color:#ccc; font-size:12px;">(<%=tra("last 5", "Translations header for showing only the last 5 translation votes")%>)</span>
+    <div class="tr8n_txtl">
+      <%=tr8n_toggler_tag("votes_content_#{lang.id}", "", false)%>
+  	  <%=tra("Recent Translation Votes", "Dashboard section header")%>
+      <span style="color:#ccc; font-size:12px;">
+        <%=tra("last {count}", "Showing only the last 5 results", :count => 5)%>
+      </span>
+    </div>
 	</div>
 	
 	<div id="votes_content_<%=lang.id%>" style="display:none"  class="section">
 		<table>
 		  <tr style="border-bottom:1px solid #ccc;">
-		    <td class="topic_header" style="width:200px;"><%=tra("Voter", "Translation votes section header")%></td>
-        <td class="topic_header" style="width:25px;text-align:right;"><%=tra("Vote", "Translation votes section header")%></td>
-        <td class="topic_header" style="width:80px;text-align:right;padding-right:5px;"><%=tra("Total Rank", "Translation votes section header")%></td>
-        <td class="topic_header" style=""><%=tra("Translation", "Translation votes section header")%></td>
+		    <td class="tr8n_txtl" style="width:200px;"><%=tra("Voter")%></td>
+        <td class="tr8n_txtl" style="width:25px;"><%=tra("Vote")%></td>
+        <td class="tr8n_txtl" style="width:80px;padding-right:5px;padding-left:5px;"><%=tra("Total Rank")%></td>
+        <td class="tr8n_txtl" style=""><%=tra("Translation")%></td>
 		  </tr>  
 		
 		  <% lang.recently_updated_votes.each do |vote| %>
@@ -23,15 +27,15 @@
 		    <% style = "border-bottom:1px dotted #ccc;" unless lang.recently_updated_votes.last == vote %>
 		    <tr style="<%=style%>">
 
-						<td style="text-align:left; vertical-align:top; padding-top:3px;">
+						<td class="tr8n_txtl" style="vertical-align:top; padding-top:3px;">
 						  <table>
 						    <tr>
-						      <td style="vertical-align:top;padding-right:2px;">
+						      <td class="tr8n_txtl" style="vertical-align:top;padding-right:2px;">
 						        <%=tr8n_user_mugshot_tag(vote.translator, :linked => true)%>
 						      </td>
-						      <td style="vertical-align:top">
+						      <td class="tr8n_txtl" style="vertical-align:top">
 						        <%=tr8n_user_tag(vote.translator, :linked => true)%>
-						        <div style="color:grey;">
+						        <div class="tr8n_txtl" style="color:grey;">
 						            <%=translation.created_at.trl(:date_time) %>
 						        </div>
 						        <%=tr8n_translator_rank_tag(vote.translator)%>
@@ -40,21 +44,21 @@
 						  </table>
 						</td>
 						
-            <td style="text-align:right; vertical-align:top; padding-top:3px;">
+            <td class="tr8n_txtl" style="vertical-align:top; padding-top:3px;">
                 <%= vote.vote %> 
             </td>  
             
-            <td style="text-align:right; vertical-align:top; padding-top:3px;padding-right:5px;">
+            <td class="tr8n_txtl" style="vertical-align:top; padding-top:3px;padding-right:5px;">
                 <%= translation.rank_label %> 
             </td>
 						
-            <td style="text-align:left; vertical-align:top; padding-top:3px;">
+            <td class="tr8n_txtl" style="vertical-align:top; padding-top:3px;">
 				      <span title="<%=trla('Translation for:', 'Translation votes header') %> <%=translation.key.label%>">
 				        <%= translation.label %> 
 				      </span>
               
               <% if translation.context %>
-                <div style="font-size: 11px; color: grey; padding-top:3px;">
+                <div class="tr8n_txtl" style="font-size: 11px; color: grey; padding-top:3px;">
                   <%=tra('Context:', 'Translation context rule header')%> <%= translation.context %>  
                 </div>
               <% end %>

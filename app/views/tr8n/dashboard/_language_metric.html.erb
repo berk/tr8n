@@ -1,8 +1,8 @@
 <div class="tr8n_dashboard_chart">
-  <div style="font-size:14px; padding:3px;">
+  <div style="font-size:14px; padding:3px; text-align:center;">
     <%=tra("Language Phrases", "Dashboard section header")%>
     <span style="font-size:10px;color:#ccc;">
-      (<%= tra("{count}% Complete", "Completeness of a language", :count => (language_metric.completeness || 0)) %>)
+      <%= tra("{count}% Complete", "Completeness of a language", :count => (language_metric.completeness || 0)) %>
     </span>
   </div>
 

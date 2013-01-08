@@ -1,7 +1,7 @@
 <div style="padding:10px; padding-bottom:0px;">
   <%= render(:partial => "translator_header")%>
   
-  <div class="section">
+  <div class="section" id="tr8n_translator_translations_container">
     <div class="small_section_title">
       <div style="<%=tr8n_style_attribute_tag('float', 'right')%>;font-weight:normal;font-size:10px;color:grey;">
         <%=link_to(tra("view all"), {:controller => "/tr8n/phrases", :action => :view, :translation_key_id => @translation_key.id, :anchor => "translations"}, :target => "_top") %> | 
@@ -24,3 +24,23 @@
     </div>
   </div>
 </div>
+
+<% if tr8n_current_translator.manager? %>
+<div id="tr8n_translator_footer_container">
+  <div style="padding:10px;color:#ccc;">
+      <%=tra("Lock this phrase if you believe that it has been translated enough.") %>
+  </div>   
+
+  <%= form_for(@translation, :as => :translation, :url => {:controller => "/tr8n/translations", :action => :submit}, :html => {:id => :tr8n_translator_form, :method => :post}) do |f| %>
+        <%= hidden_field_tag(:origin, params[:origin]) %>
+        <%= hidden_field_tag(:translation_key_id, @translation_key.id, :id => :tr8n_translator_translation_key_id) %>
+        <%= hidden_field_tag(:translation_id, @translation.id, :id => :tr8n_translator_translation_id) %>
+        <%= hidden_field_tag(:lock, "true") %>
+    <div id="tr8n_translator_buttons_container" class="buttons_container">
+        <button type="submit" class="translator_btn translator_submit_btn" onClick="Tr8n.Translation.lock(); resizeFrame(); return false;">
+            <span><%=tra("Lock This Phrase")%></span>
+        </button>
+    </div>
+    </div>
+  <% end %>
+<% end %>
