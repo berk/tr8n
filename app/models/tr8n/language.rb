@@ -379,7 +379,7 @@ class Tr8n::Language < ActiveRecord::Base
   end
   
   def threshold
-    super || Tr8n::Config.translation_threshold
+    Tr8n::Config.translation_threshold
   end
 
 end
