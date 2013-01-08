@@ -270,6 +270,10 @@ class Tr8n::Config
     config[:enable_language_stats]
   end
 
+  def self.language_stats_realtime?
+    config[:language_stats_realtime]
+  end
+
   def self.open_registration_mode?
     config[:open_registration_mode]
   end

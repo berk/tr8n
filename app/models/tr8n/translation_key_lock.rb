@@ -44,6 +44,10 @@ class Tr8n::TranslationKeyLock < ActiveRecord::Base
   def lock!(translator = Tr8n::Config.current_translator)
     update_attributes(:locked => true, :translator => translator)
     translator.locked_translation_key!(translation_key, language)
+
+    if Tr8n::Config.language_stats_realtime?
+      language.total_metric.update_metrics!
+    end
   end
 
   def unlock!(translator = Tr8n::Config.current_translator)

@@ -33,13 +33,23 @@ class Tr8n::TranslationsController < Tr8n::BaseController
   # main translation method used by the translator and translation screens
   def translate
     @translation_key = Tr8n::TranslationKey.find(params[:translation_key_id])
-    @translations = @translation_key.translations_for(tr8n_current_language)
     @source_url = params[:source_url] || request.env['HTTP_REFERER']
     
     unless request.post?
       trfe("Please use a translator window for submitting translations")
       return redirect_to(@source_url)
     end
+
+    if params[:lock] == "true"
+      if tr8n_current_translator.manager?
+        @translation_key.lock!
+      else
+        trfe("You are not authorized to lock translation keys")
+      end
+      return redirect_to(@source_url)
+    end
+
+    @translations = @translation_key.translations_for(tr8n_current_language)
 
     if params[:translation_id].blank?
       @translation = Tr8n::Translation.new(:translation_key => @translation_key, :language => tr8n_current_language, :translator => tr8n_current_translator)

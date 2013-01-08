@@ -1,9 +1,9 @@
 <div style="padding-bottom:5px;">
   <table style="width:100%;border-collapse: collapse;" cellpadding="5px" cellspacing="0px;" >
       <tr style="border-bottom:1px dotted #ccc;">
-        <td style="width:20px; color:grey; font-size:10px; text-align:right; padding-bottom:3px;"><%=trla("Rank", "Translator label")%></td>
-        <td style="width:75px; color:grey; font-size:10px; text-align:center; padding-bottom:3px;"><%=trla("Your Vote", "Translator label")%></td>
-        <td style="color:grey; font-size:10px; padding-bottom:3px;"><%=trla("Translation", "Translator label")%></td>
+        <td style="width:20px; color:grey; font-size:10px; text-align:right; padding-bottom:3px;"><%=tra("Rank", "Translator label")%></td>
+        <td style="width:75px; color:grey; font-size:10px; text-align:center; padding-bottom:3px;"><%=tra("Your Vote", "Translator label")%></td>
+        <td style="color:grey; font-size:10px; padding-bottom:3px;"><%=tra("Translation", "Translator label")%></td>
       </tr>  
       <% translations[0..9].each do |trn| %>
         <% style = "border-bottom:1px dotted #ccc;" unless translations.last == trn %>

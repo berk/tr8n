@@ -1,18 +1,18 @@
 <div style="padding:10px; padding-bottom:0px;">
   <%= render(:partial => "translator_header")%>
   
-  <div class="section">
+  <div class="section" id="tr8n_translator_translations_container">
     <div class="small_section_title">
       <div style="<%=tr8n_style_attribute_tag('float', 'right')%>;font-weight:normal;font-size:10px;color:grey;">
-        <%=link_to(trla("view all"), {:controller => "/tr8n/phrases", :action => :view, :translation_key_id => @translation_key.id, :anchor => "translations"}) %>
+        <%=link_to(tra("view all"), {:controller => "/tr8n/phrases", :action => :view, :translation_key_id => @translation_key.id, :anchor => "translations"}) %>
 				|
 				<% 
            comments_size = @translation_key.comments.size
            link_title = (comments_size > 0) ? "view comments (#{comments_size})" : "add comments"
         %>
-        <%=link_to(trla(link_title), {:controller => "/tr8n/phrases", :action => :view, :translation_key_id => @translation_key.id, :anchor => "comments"}) %>
+        <%=link_to(tra(link_title), {:controller => "/tr8n/phrases", :action => :view, :translation_key_id => @translation_key.id, :anchor => "comments"}) %>
       </div>
-      <strong><%=trla("Vote on Translations")%></strong>
+      <strong><%=tra("Vote on Translations")%></strong>
     </div>
   
     <div id="tr8n_translator_votes_for_<%=@translation_key.key%>" class="votes_container">
@@ -20,8 +20,28 @@
     </div>
   
     <div style="padding-top:10px;font-size:11px">
-      <%=trla("Don't like any of these?")%> 
-			<%=link_to_function(trla('Translate it yourself.'), "tr8nTranslator.switchTranslatorMode('#{@translation_key.id}', 'submit', '#{@source_url}')") %>
+      <%=tra("Don't like any of these?")%> 
+			<%=link_to_function(tra('Translate it yourself.'), "tr8nTranslator.switchTranslatorMode('#{@translation_key.id}', 'submit', '#{@source_url}')") %>
     </div>
   </div>
 </div>
+
+<% if tr8n_current_translator.manager? %>
+<div id="tr8n_translator_footer_container">
+  <div style="padding:10px;color:#ccc;">
+    <%=tra("Lock this phrase if you believe that it has been translated enough.") %>
+  </div>   
+
+  <% form_tag({:controller => "/tr8n/translations", :action => :translate}, {:id => :tr8n_translator_form, :method => :post}) do %>
+        <%= hidden_field_tag(:source_url, @source_url, :id => :tr8n_translator_source_url) %>
+        <%= hidden_field_tag(:translation_key_id, @translation_key.id, :id => :tr8n_translator_translation_key_id) %>
+        <%= hidden_field_tag(:translation_id, @translation.id, :id => :tr8n_translator_translation_id) %>
+        <%= hidden_field_tag(:lock, "true") %>
+    <div id="tr8n_translator_buttons_container" class="buttons_container">
+        <button type="submit" class="translator_btn translator_submit_btn" onClick="tr8nTranslator.submitLock(); resizeFrame(); return false;">
+            <span><%=tra("Lock This Phrase")%></span>
+        </button>
+    </div>
+    </div>
+  <% end %>
+<% end %>

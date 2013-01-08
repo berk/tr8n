@@ -74,8 +74,9 @@
 	    </table>  
 	</div>
 	
-	<% tr8n_current_translator.languages.each do |lang| %>
-		<% next if lang.default? %>
+	<% @user_languages.each do |lang_user| %>
+		<% lang = lang_user.language %>
+		<% next if lang.nil? or lang.default? %>
 		<% translator_metric = tr8n_current_translator.metric_for(lang) %>
 		
 		<div class="section_title">

@@ -28,7 +28,7 @@ class Tr8n::DashboardController < Tr8n::BaseController
   before_filter :validate_current_translator
   
   def index
-
+    @user_languages = Tr8n::LanguageUser.languages_for(tr8n_current_user)
   end
     
 end

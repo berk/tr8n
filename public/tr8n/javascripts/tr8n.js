@@ -3090,6 +3090,13 @@ Tr8n.Translator.prototype = {
     Tr8n.Effects.submit('tr8n_translator_form');
   },
 
+  submitLock: function() {
+    Tr8n.Effects.hide('tr8n_translator_translations_container');
+    Tr8n.Effects.hide('tr8n_translator_footer_container');
+    Tr8n.Effects.show('tr8n_translator_spinner');
+    Tr8n.Effects.submit('tr8n_translator_form');
+  },
+
   submitViewingUserDependency: function() {
     Tr8n.element('tr8n_translator_translation_has_dependencies').value = "true";
     this.submitTranslation();
