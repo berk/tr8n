@@ -51,6 +51,10 @@ class Tr8n::Admin::TranslationKeyController < Tr8n::Admin::BaseController
     render :layout => false
   end
 
+  def lb_import
+    render :layout => false
+  end
+
   def update
     key = Tr8n::TranslationKey.find_by_id(params[:translation_key][:id]) unless params[:translation_key][:id].blank?
     

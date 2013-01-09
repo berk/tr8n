@@ -30,8 +30,15 @@ class Tr8n::PhrasesController < Tr8n::BaseController
   
   def index
     conditions = Tr8n::TranslationKey.search_conditions_for(params)
-   
-    unless params[:section_key].blank?
+    
+    @completeness = 50
+    if params[:section_key].blank?
+      # @key_count = Tr8n::TranslationKey.count
+      # @translated_key_count = Tr8n::TranslationKey.count("distinct tr8n_translation_keys.id", 
+      #   :conditions => ["tr8n_translations.language_id = ?", tr8n_current_language.id], 
+      #   :joins => "join tr8n_translations on tr8n_translation_keys.id = tr8n_translations.translation_key_id") 
+      # @completeness = @key_count > 0 ? (@translated_key_count * 100)/@key_count : 0
+    else
       source_names = sitemap_sources_for(@section_key)
       sources = Tr8n::TranslationSource.find(:all, :conditions => ["source in (?)", source_names])
       source_ids = sources.collect{|source| source.id}

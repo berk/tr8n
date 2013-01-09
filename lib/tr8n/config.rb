@@ -492,6 +492,13 @@ class Tr8n::Config
     "Unknown user"
   end
 
+  def self.user_email(user)
+    user.send(site_user_info[:methods][:email])
+  rescue Exception => ex
+    Tr8n::Logger.error("Failed to fetch #{user_class_name} name: #{ex.to_s}")
+    "Unknown user"
+  end
+
   def self.user_gender(user)
     user.send(site_user_info[:methods][:gender])
   rescue Exception => ex
@@ -879,7 +886,13 @@ class Tr8n::Config
     (0..16).to_a.map{|a| rand(16).to_s(16)}.join
   end
 
-  #########################################################
+  def self.country_from_ip(remote_ip)
+    location = IpToLocation.find_by_ip(remote_ip)
+    (location and location.cntry) ? location.cntry : (config["default_country"] || "USA")
+  end
+  
+  ###################################
+  ######################
   # Sync Process
   #########################################################
   def self.synchronization_batch_size

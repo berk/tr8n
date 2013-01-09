@@ -218,6 +218,28 @@ body.tr8n_grey_disabled_button span             {background-position: right -626
 .tr8n_cancel_link                               {font-size:12px;font-family:arial;}
 
 
+.tr8n_progress_bar                     {background:#fff;border:solid 1px #ccc;border-color:#ddd #f6f6f6 #f6f6f6 #ddd;padding:3px;width:100px;margin:0 0 5px 0;float:left
+                                    -webkit-border-radius: 3px;
+                                     -khtml-border-radius: 3px;
+                                       -moz-border-radius: 3px;
+                                        -ms-border-radius: 3px;
+                                         -o-border-radius: 3px;
+                                            border-radius: 3px;
+                                  }
+.tr8n_progress_indicator               {background: #83ce2a; height:8px;
+                                    -webkit-transition: all 1500ms cubic-bezier(0.250, 0.460, 0.450, 0.940); 
+                                       -moz-transition: all 1500ms cubic-bezier(0.250, 0.460, 0.450, 0.940); 
+                                        -ms-transition: all 1500ms cubic-bezier(0.250, 0.460, 0.450, 0.940); 
+                                         -o-transition: all 1500ms cubic-bezier(0.250, 0.460, 0.450, 0.940); 
+                                            transition: all 1500ms cubic-bezier(0.250, 0.460, 0.450, 0.940);
+                                      -webkit-border-radius: 1px;
+                                       -khtml-border-radius: 1px;
+                                         -moz-border-radius: 1px;
+                                          -ms-border-radius: 1px;
+                                           -o-border-radius: 1px;
+                                              border-radius: 1px;
+                                  }
+
 /****************************************/
 /*** Logger Objects
 /****************************************/

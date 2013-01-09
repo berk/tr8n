@@ -123,6 +123,10 @@ class Tr8n::Translator < ActiveRecord::Base
     Tr8n::TranslatorLog.log(self, :switched_language, language.id)
   end
 
+  def self.top_translators_for_language(lang = Tr8n::Config.current_language, limit = 5)
+    Tr8n::TranslatorMetric.find(:all, :conditions => {:language_id => lang.id}, :order => "total_translations desc, total_votes desc", :limit => limit)
+  end  
+
   def deleted_language_rule!(rule)
     Tr8n::TranslatorLog.log_manager(self, :deleted_language_rule, rule.id)
   end
@@ -224,6 +228,23 @@ class Tr8n::Translator < ActiveRecord::Base
     return "No Name" if user_name.blank?
     
     user_name
+  end
+
+  def email
+    return "Tr8n Network" if system?
+    return super if remote?
+    
+    unless Tr8n::Config.site_user_info_enabled?
+      translator_email = super
+      return translator_email unless translator_email.blank?
+      return "No Email"
+    end  
+
+    return "Deleted User" unless user
+    user_email = Tr8n::Config.user_email(user)
+    return "No Email" if user_email.blank?
+    
+    user_email
   end
 
   def gender

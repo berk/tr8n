@@ -28,4 +28,16 @@ class Tr8n::Admin::MetricsController < Tr8n::Admin::BaseController
     @languages = Tr8n::Language.enabled_languages
   end
 
+  def charts
+    
+  end
+
+  def languages
+    @metrics = Tr8n::LanguageMetric.filter(:params => params, :filter => Tr8n::LanguageMetricFilter)
+  end
+
+  def translators
+    @metrics = Tr8n::TranslatorMetric.filter(:params => params, :filter => Tr8n::TranslatorMetricFilter)
+  end
+
 end

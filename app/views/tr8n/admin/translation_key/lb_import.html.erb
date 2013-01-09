@@ -1,0 +1,16 @@
+<div class="inner">
+    <div class="hd">
+        <div style="float:right;">
+            <%=link_to_function(image_tag("/tr8n/images/close.gif"), "tr8nLightbox.hide();") %>
+        </div>
+        Import Translation Keys
+    </div>
+    <div class="bd">
+        <% form_tag({:action => :update}, {:id => 'tr8n_form', :method => :post, :class => "tr8n"}) do |form| %>
+        
+        <% end %>
+    </div>
+    <div class="ft">
+        <%= render :partial => "/tr8n/admin/common/lightbox_buttons" %>
+    </div>
+</div>

@@ -7,7 +7,7 @@
 <br>
 
 <%= will_filter_table_tag(@metrics, :columns => [
-    [:language, lambda{|metric| metric.language.english_name}],
+    [:language_id, lambda{|metric| metric.language.english_name}],
     :type, :metric_date, :user_count, :translator_count, 
     :translation_count, :key_count, :locked_key_count
   ]) 

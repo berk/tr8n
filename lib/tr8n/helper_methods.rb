@@ -353,6 +353,39 @@ module Tr8n::HelperMethods
     ), html_options)
   end
 
+  def tr8n_content_for_locales_tag(opts = {})
+    locale = Tr8n::Config.current_language.locale
+
+    if opts[:only] 
+       return unless opts[:only].include?(locale)
+    end
+
+    if opts[:except]
+      return if opts[:except].include?(locale)
+    end
+
+    if block_given?
+      ret = yield
+    end
+    ret
+  end
+
+  def tr8n_content_for_countries_tag(opts = {})
+    country = Tr8n::Config.country_from_ip(tr8n_request_remote_ip)
+    
+    if opts[:only] 
+       return unless opts[:only].include?(country)
+    end
+
+    if opts[:except]
+      return if opts[:except].include?(country)
+    end
+
+    if block_given?
+      ret = yield
+    end
+    ret
+  end
 
 private
 
