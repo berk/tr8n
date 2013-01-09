@@ -21,8 +21,10 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
+require 'ipaddr'
+
 module Tr8n
-  class IpAddress
+  class IpAddress < IPAddr
 
     def self.non_routable_networks
       @non_routable_networks ||= [

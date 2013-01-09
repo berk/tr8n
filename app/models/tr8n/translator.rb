@@ -366,9 +366,8 @@ class Tr8n::Translator < ActiveRecord::Base
     return unless Tr8n::Config.enable_country_tracking?
     return if self.last_ip == new_ip
 
-#    need to figure out what to do with it
-#    ipl = Tr8n::IpLocation.find_by_ip(new_ip)
-#    update_attributes(:last_ip => new_ip, :country_code => (ipl? ? ipl.ctry : nil))
+    ipl = Tr8n::IpLocation.find_by_ip(new_ip)
+    update_attributes(:last_ip => new_ip, :country_code => (ipl ? ipl.ctry : nil))
   end
 
   def to_s

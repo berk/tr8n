@@ -361,15 +361,6 @@ module Tr8n
       ), html_options)
     end
 
-    def tr8n_with_options_tag(opts, &block)
-      Thread.current[:tr8n_block_options] = opts
-      if block_given?
-        ret = capture(&block) 
-      end
-      Thread.current[:tr8n_block_options] = {}
-      ret
-    end
-
     def tr8n_button_tag(label, function, opts = {})
       link_to_function("<span>#{label}</span>".html_safe, function, :class => "tr8n_grey_button tr8n_pcb")    
     end
@@ -424,11 +415,43 @@ module Tr8n
       end
     end    
 
-    def tr8n_content_for_countries_tag(opts, &block)
-      pp tr8n_request_remote_ip
+    def tr8n_with_options_tag(opts, &block)
+      Thread.current[:tr8n_block_options] = opts
+      if block_given?
+        ret = capture(&block) 
+      end
+      Thread.current[:tr8n_block_options] = {}
+      ret
+    end
 
-      countries = opts[:only]      
-      countries = opts[:except]      
+    def tr8n_content_for_locales_tag(opts = {}, &block)
+      locale = Tr8n::Config.current_language.locale
+
+      if opts[:only] 
+         return unless opts[:only].include?(locale)
+      end
+
+      if opts[:except]
+        return if opts[:except].include?(locale)
+      end
+
+      if block_given?
+        ret = capture(&block) 
+      end
+      ret
+    end
+
+    def tr8n_content_for_countries_tag(opts = {}, &block)
+      country = Tr8n::Config.country_from_ip(tr8n_request_remote_ip)
+      
+      if opts[:only] 
+         return unless opts[:only].include?(country)
+      end
+
+      if opts[:except]
+        return if opts[:except].include?(country)
+      end
+
       if block_given?
         ret = capture(&block) 
       end

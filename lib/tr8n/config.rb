@@ -671,6 +671,13 @@ module Tr8n
       @default_cases[locale.to_s].values
     end
 
+    def self.country_from_ip(remote_ip)
+      default_country = config["default_country"] || "USA"
+      return default_country unless Tr8n::IpAddress.routable?(remote_ip)
+      location = Tr8n::IpLocation.find_by_ip(remote_ip)
+      (location and location.cntry) ? location.cntry : default_country
+    end
+
     #########################################################
     # localization
     #########################################################
@@ -794,7 +801,7 @@ module Tr8n
       @api_after_filters ||= api[:after_filters].collect{|filter| filter.to_sym}
     end
 
-
+  
     #########################################################
     # Sync Process
     #########################################################
