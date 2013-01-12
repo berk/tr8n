@@ -34,7 +34,7 @@ class Tr8n::Config
     Thread.current[:tr8n_current_language]   = Tr8n::Language.for(site_current_locale) || default_language
     Thread.current[:tr8n_current_user]       = site_current_user
     Thread.current[:tr8n_current_translator] = Tr8n::Translator.for(site_current_user)
-    Thread.current[:tr8n_current_source]     = site_current_source
+    Thread.current[:tr8n_current_source]     = Tr8n::TranslationSource.find_or_create(site_current_source)
     Thread.current[:tr8n_block_options]      = {}
   end
   

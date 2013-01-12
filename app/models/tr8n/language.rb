@@ -31,7 +31,7 @@ class Tr8n::Language < ActiveRecord::Base
   has_many :language_users,         :class_name => 'Tr8n::LanguageUser',        :dependent => :destroy
   has_many :translations,           :class_name => 'Tr8n::Translation',         :dependent => :destroy
   has_many :translation_key_locks,  :class_name => 'Tr8n::TranslationKeyLock',  :dependent => :destroy
-  has_many :language_metrics,       :class_name => 'Tr8n::LanguageMetric'
+  has_many :language_metrics,       :class_name => 'Tr8n::LanguageMetric',      :dependent => :destroy
   
   def self.find_or_create(lcl, english_name)
     find_by_locale(lcl) || create(:locale => lcl, :english_name => english_name) 

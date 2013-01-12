@@ -105,17 +105,13 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   # creates associations between the translation keys and sources
   # used for the site map and javascript support
   def self.track_source(translation_key, options = {})
+    # we always track the source if the translator enabled inline translations or the request comes from the api
+    translation_mode = (Tr8n::Config.current_user_is_translator? and Tr8n::Config.current_translator.enable_inline_translations?)
 
-    # key source tracking must be enabled or request must come from an API (JavaScript) to get it registered with a source
-    if Tr8n::Config.enable_key_source_tracking? or options[:api] == :translate
+    if translation_mode or options[:api] == :translate
       # source can be passed into an individual key, or as a block or fall back on the controller/action
       source = options[:source] || Tr8n::Config.block_options[:source] || Tr8n::Config.current_source
-
-      # should never be blank
-      return if source.blank?
-
-      # each page or component is identified by a translation source
-      translation_source = Tr8n::TranslationSource.find_or_create(source, options[:url])
+      translation_source = Tr8n::TranslationSource.find_or_create(source)
 
       # each key is associated with one or more sources
       translation_key_source = Tr8n::TranslationKeySource.find_or_create(translation_key, translation_source)
@@ -573,6 +569,17 @@ class Tr8n::TranslationKey < ActiveRecord::Base
                                            :translator => translator, :label => label, :rules => rules)
     translation.vote!(translator, 1)
     translation
+  end
+
+  # TODO: should be done as a delayed job
+  def update_metrics!(language = Tr8n::Config.current_language)
+    return unless Tr8n::Config.language_stats_realtime?
+    
+    Tr8n::TranslationKeySource.find(:all, :conditions => ["translation_key_id = ?", self.id]).each do |tks|
+      next unless tks.source
+      tks.source.update_metrics!(language)
+    end
+    language.total_metric.update_metrics!
   end
 
   ###############################################################

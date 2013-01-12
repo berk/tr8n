@@ -30,26 +30,43 @@ class Tr8n::PhrasesController < Tr8n::BaseController
   
   def index
     conditions = Tr8n::TranslationKey.search_conditions_for(params)
-    
-    @completeness = 50
-    if params[:section_key].blank?
-      # @key_count = Tr8n::TranslationKey.count
-      # @translated_key_count = Tr8n::TranslationKey.count("distinct tr8n_translation_keys.id", 
-      #   :conditions => ["tr8n_translations.language_id = ?", tr8n_current_language.id], 
-      #   :joins => "join tr8n_translations on tr8n_translation_keys.id = tr8n_translations.translation_key_id") 
-      # @completeness = @key_count > 0 ? (@translated_key_count * 100)/@key_count : 0
-    else
+
+    source_names = []
+
+    unless params[:section_key].blank?
       source_names = sitemap_sources_for(@section_key)
+    else  
+      source_names = params[:sources] if params[:sources]
+      source_names = [params[:source]] if params[:source]
+    end
+
+    if source_names.any?
       sources = Tr8n::TranslationSource.find(:all, :conditions => ["source in (?)", source_names])
-      source_ids = sources.collect{|source| source.id}
-      
-      if source_ids.empty?
+
+      @translated = 0
+      @locked = 0
+
+      if sources.empty?
         conditions = ["1=2"]
       else  
+        source_ids = []
+        sources.each do |source|
+          source_ids << source.id
+          @locked += (source.total_metric.completeness || 0)
+          @translated += (source.total_metric.translation_completeness || 0)
+        end
+
+        # avg of the total
+        @locked = @locked/source_ids.size
+        @translated = @translated/source_ids.size
+
         conditions[0] << " and " unless conditions[0].blank?
         conditions[0] << "(id in (select distinct(translation_key_id) from tr8n_translation_key_sources where translation_source_id in (?)))"
         conditions << source_ids.uniq
       end
+    else 
+      @translated = Tr8n::Config.current_language.total_metric.translation_completeness
+      @locked = Tr8n::Config.current_language.completeness
     end
     
     @translation_keys = Tr8n::TranslationKey.paginate(:per_page => per_page, :page => page, :conditions => conditions, :order => "created_at desc")    

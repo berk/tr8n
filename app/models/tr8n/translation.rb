@@ -50,6 +50,7 @@ class Tr8n::Translation < ActiveRecord::Base
     
     translator.voted_on_translation!(self)
     translator.update_metrics!(language)
+    translation_key.update_metrics!(language)
   end
   
   def update_rank!

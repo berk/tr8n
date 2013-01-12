@@ -1,0 +1,49 @@
+<div class="section_box" style="text-align:center; width:95%; background-color:white;">
+  <div style="font-size:14px; padding:3px;">
+    <%=tra("Component Phrases")%>
+    <span style="font-size:10px;color:#ccc;">
+      <%= tra("{count}% Complete", "Completeness of a language", :count => (translation_source_metric.completeness || 0)) %>
+    </span>
+  </div>
+
+  <%= tr8n_translation_source_completeness_chart_tag(translation_source_metric)%>
+
+  <div style="margin:5px; color:#666;">
+    <span style="white-space:nowrap;">
+      <span style="background-color:#00FF00;display:inline;white-space:nowrap;">&nbsp;&nbsp;&nbsp</span>
+      <%=tra("Approved:", "Header for approved phrases") %>
+      <%=link_to(translation_source_metric.locked_key_count || 0, 
+                :controller => "/tr8n/phrases", :action => :index, :source => translation_source.source, :locale => translation_source_metric.language.locale,
+                :phrase_type => :with, :phrase_status => :approved) %>
+    </span>           
+    &nbsp;&nbsp;    
+    
+    <span style="white-space:nowrap;">
+      <span style="background-color:#FFFF00;display:inline;white-space:nowrap;">&nbsp;&nbsp;&nbsp;</span>
+      <%=tra("Pending Approval:", "Header for phrases that are pending approval") %>
+      <%=link_to(translation_source_metric.pending_approval_count || 0, 
+                    :controller => "/tr8n/phrases", :action => :index, :source => translation_source.source, :locale => translation_source_metric.language.locale,
+                    :phrase_type => :with, :phrase_status => :pending) %>
+    </span>           
+
+    &nbsp;&nbsp;    
+    
+    <span style="white-space:nowrap;">
+      <span style="background-color:#FF0000;display:inline;white-space:nowrap;">&nbsp;&nbsp;&nbsp;</span> 
+      <%=tra("Not Translated:", "Header for phrases without translation") %>
+      <%=link_to(translation_source_metric.not_translated_count || 0, 
+                    :controller => "/tr8n/phrases", :action => :index, :source => translation_source.source, :locale => translation_source_metric.language.locale,
+                    :phrase_type => :without) %>
+    </span>           
+
+    <br><br>      
+    <%=tra("Total Phrases:", "Header for total phrase count") %>
+    <%=link_to(translation_source_metric.key_count || 0, 
+                  :controller => "/tr8n/phrases", :action => :index, :source => translation_source.source, :locale => translation_source_metric.language.locale) %>
+       
+    
+  </div>  
+  <div style="margin:10px; color:#ccc; text-align:center; width:100%;">
+      <%=tra("The statistics are calculated realtime", "Dashboard section header")%>
+  </div>
+</div>

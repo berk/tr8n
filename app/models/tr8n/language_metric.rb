@@ -88,4 +88,5 @@ class Tr8n::LanguageMetric < ActiveRecord::Base
     return translated_key_count unless locked_key_count
     translated_key_count - locked_key_count
   end
+
 end

@@ -47,4 +47,9 @@ class Tr8n::TotalLanguageMetric < Tr8n::LanguageMetric
     language.completeness
   end
   
+  def translation_completeness
+    return 0 if key_count.nil? or key_count == 0
+    (translated_key_count * 100)/key_count
+  end
+
 end

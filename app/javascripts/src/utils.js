@@ -278,9 +278,14 @@ Tr8n.Utils = {
       tr8nLightbox.show('/tr8n/help/lb_shortcuts', {width:400, height:480});
   },
 
-  displayStatistics: function() {
+  displaySourceMetrics: function() {
     if (tr8nLightbox)
-      tr8nLightbox.show('/tr8n/help/lb_stats', {width:420, height:400});
+      tr8nLightbox.show('/tr8n/help/lb_source?source=' + Tr8n.source, {width:420, height:300});
+  },
+
+  displayShortcuts: function() {
+    if (tr8nLightbox)
+      tr8nLightbox.show('/tr8n/help/lb_shortcuts', {width:400, height:480});
   }
 
 }

@@ -40,6 +40,13 @@ class Tr8n::HelpController < Tr8n::BaseController
   def lb_stats
     render :layout => false
   end
+
+  def lb_source
+    params[:source] ||= Tr8n::Config.current_source.source
+    @translation_source = Tr8n::TranslationSource.find_or_create(params[:source])
+    @translation_source_metric = @translation_source.total_metric
+    render :layout => false
+  end
   
   def credits
     

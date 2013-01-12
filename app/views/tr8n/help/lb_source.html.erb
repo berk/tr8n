@@ -1,0 +1,14 @@
+<div class="inner">
+  <div class="hd">
+    <span style="float:right;">
+      <%=link_to_function(image_tag("/tr8n/images/close.gif"), "tr8nLightbox.hide();")%>
+    </span>
+    <%=@translation_source.source %>
+  </div>
+
+  <div class="bd" style="background-color:white;">
+
+    <%=render :partial => "/tr8n/dashboard/translation_source_metric", :locals => {:translation_source => @translation_source, :translation_source_metric => @translation_source_metric} %>
+
+  </div>
+</div>
