@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010 Michael Berkovich, Geni Inc
+# Copyright (c) 2010-2013 Michael Berkovich
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -21,38 +21,15 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-class Tr8n::HelpController < Tr8n::BaseController
-  unloadable
+class Tr8n::Application < ActiveRecord::Base
+  set_table_name :tr8n_applications
 
-  set_tr8n_feature  :help
-  before_filter :validate_current_translator, :except => [:lb_shortcuts, :lb_stats, :credits, :license]
-  before_filter :validate_guest_user, :except => [:lb_shortcuts, :lb_stats, :credits, :license]
-  before_filter :validate_current_user, :except => [:lb_shortcuts, :lb_stats, :credits, :license]  
-  
-  def index
+  has_many :components, :class_name => 'Tr8n::Component', :dependent => :destroy
+  has_many :component_sources, :class_name => 'Tr8n::ComponentSource', :through => :components
+  has_many :translation_sources, :class_name => 'Tr8n::TranslationSource', :through => :component_sources
 
-  end
-    
-  def lb_shortcuts
-    render :layout => false
-  end
-
-  def lb_stats
-    render :layout => false
-  end
-
-  def lb_source
-    @translation_source = Tr8n::TranslationSource.find_or_create(params[:source])
-    @translation_source_metric = @translation_source.total_metric
-    render :layout => false
-  end
-  
-  def credits
-    
-  end
-  
-  def license
-    
+  def self.options
+    Tr8n::Application.find(:all, :order => "name asc").collect{|app| [app.name, app.id]}
   end
 
 end

@@ -1,0 +1,46 @@
+<div class="inner">
+    <div class="hd">
+        <div style="float:right;">
+            <%=link_to_function(image_tag("/tr8n/images/close.gif"), "tr8nLightbox.hide();") %>
+        </div>
+        Application Details
+    </div>
+    <div class="bd">
+        <% form_for(:app, @app, :url => {:action => :update}, :html => {:id => 'tr8n_form', :method => :post, :class => "tr8n"}) do |form| %>
+        <%= form.hidden_field :id %>
+        <%= hidden_field_tag :source_url, request.env['HTTP_REFERER'] %>
+        <table class="admin_table">
+            <tr>
+                <th>
+                    Key:
+                </th>
+                <td>
+                    <%= form.text_field :key, :style=>"width:99%;" %>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    Name:
+                </th>
+                <td>
+                    <%= form.text_field :name, :style=>"width:99%;" %>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                   Description:
+                </th>
+                <td>
+                    <%= form.text_area :description, :style=>"width:99%;" %>
+                </td>
+            </tr>
+        </table>
+        <% end %>
+        <div>
+            <em>Note: if you have multiple subsystems, use the application key in each subsystem configuration file.</em>
+        </div>
+    </div>
+    <div class="ft">
+        <%= render :partial => "/tr8n/admin/common/lightbox_buttons" %>
+    </div>
+</div>

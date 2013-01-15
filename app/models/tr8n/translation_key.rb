@@ -536,11 +536,12 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     update_attributes(:translation_count => Tr8n::Translation.count(:conditions => ["translation_key_id = ?", self.id]))
   end
 
+  # deprecated
   def source_map
     @source_map ||= begin
       map = {}
       sources.each do |source|
-        (map[source.domain.name] ||= []) << source
+        (map['localhost'] ||= []) << source
       end
       map
     end

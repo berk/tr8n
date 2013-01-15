@@ -48,11 +48,7 @@ class Tr8n::TranslationSource < ActiveRecord::Base
     return source if source.is_a?(Tr8n::TranslationSource)
     
     Tr8n::Cache.fetch(cache_key(source)) do 
-      translation_domain = Tr8n::TranslationDomain.find_or_create(url)
-      translation_source = find(:first, :conditions => ["source = ? and translation_domain_id = ?", source, translation_domain.id])
-      translation_source ||= create(:source => source, :translation_domain => translation_domain)
-      translation_source.update_attributes(:translation_domain => translation_domain) unless translation_source.translation_domain
-      translation_source
+      find(:first, :conditions => ["source = ?", source]) || create(:source => source)
     end  
   end
 
@@ -70,5 +66,14 @@ class Tr8n::TranslationSource < ActiveRecord::Base
 
   def total_metric(language = Tr8n::Config.current_language)
     Tr8n::TranslationSourceMetric.find_or_create(self, language)
+  end
+
+  def self.options
+    @sources = Tr8n::TranslationSource.find(:all, :order => "source asc").collect{|src| [src.source, src.source]}
+  end
+
+  def title
+    return source if name.blank?
+    name
   end
 end

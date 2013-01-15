@@ -69,6 +69,7 @@ class Tr8n::PhrasesController < Tr8n::BaseController
       @locked = Tr8n::Config.current_language.completeness
     end
     
+    @sources = Tr8n::TranslationSource.options
     @translation_keys = Tr8n::TranslationKey.paginate(:per_page => per_page, :page => page, :conditions => conditions, :order => "created_at desc")    
   end
   

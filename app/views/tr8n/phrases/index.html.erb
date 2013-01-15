@@ -5,6 +5,7 @@
   <div class="section_box" style="margin-bottom:10px; background-color:#EFF8FF; margin-top:0px;">
 	  <% form_tag({:action => :index}, {:method => :get, :id => "translations_search_form"}) do %>
 	      <%=hidden_field_tag(:section_key, @section_key) %>
+	      <%=hidden_field_tag(:source, params[:source]) %>
 			  <div style="<%=tr8n_style_attribute_tag('float', 'right')%>">
 	        <button type="submit" class="translator_btn translator_small_btn" onClick="Tr8n.Effects.submit('translations_search_form'); return false;">
 	            <span><%=tra("Search", "Search button label")%></span>
@@ -21,6 +22,11 @@
 	          </span>
 						<%=tra("include", "Phrases search filter option")%>
 						<%=select_tag(:phrase_lock, tr8n_options_for_select(Tr8n::TranslationKey.filter_phrase_lock_options, params[:phrase_lock]))%>
+						
+						<!-- 
+							<%=tra("from", "Phrases search filter option")%>
+							<%=select_tag(:source, options_for_select(@sources, params[:source]))%>
+						--> 
 	      </div>
 									
 	  <% end %>

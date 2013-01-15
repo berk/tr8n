@@ -273,14 +273,15 @@ Tr8n.Utils = {
     }
   },
 
-  displayShortcuts: function() {
+  displayStatistics: function() {
     if (tr8nLightbox)
-      tr8nLightbox.show('/tr8n/help/lb_shortcuts', {width:400, height:480});
+      tr8nLightbox.show('/tr8n/help/lb_stats', {width:400, height:480});
   },
 
-  displaySourceMetrics: function() {
+  displaySourceMetrics: function(source) {
+    source = source || Tr8n.source;
     if (tr8nLightbox)
-      tr8nLightbox.show('/tr8n/help/lb_source?source=' + Tr8n.source, {width:420, height:300});
+      tr8nLightbox.show('/tr8n/help/lb_source?source=' + source, {width:420, height:400});
   },
 
   displayShortcuts: function() {

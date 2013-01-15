@@ -1,7 +1,9 @@
 <%
   links = []
   current_tab ||= ""
-  [["Domains", {:action => :index}],
+  [["Applications", {:action => :index}],
+   ["Components", {:action => :components}],
+   ["Domains", {:action => :domains}],
    ["Sources", {:action => :sources}],
    ["Key Sources", {:action => :key_sources}]
   ].each do |link|
@@ -11,13 +13,13 @@
       else
         links << link_to(link.first, link.last)
       end 
-	 end   
+   end   
 %>
 
 <div class="section_title">
-	<span style="font-size:12px; float:right; padding-top:5px;">
-	  <%=links.join(" | ")%>
-	</span>
+  <span style="font-size:12px; float:right; padding-top:5px;">
+    <%=links.join(" | ")%>
+  </span>
   <%=current_tab %>
 </div>
 

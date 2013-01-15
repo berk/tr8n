@@ -1,9 +1,9 @@
 <div class="inner">
 	<div class="hd">
-		<span style="float:right;">
+		<span style="float:<%=tr8n_current_language.align(:right)%>;">
 			<%=link_to_function(image_tag("/tr8n/images/close.gif"), "tr8nLightbox.hide();")%>
 		</span>
-		<%=trl("Tr8n Translation Memory Statistics")%>
+		<%=tra("Tr8n Translation Memory Statistics")%>
 	</div>
 
 	<style>
@@ -19,42 +19,42 @@
 	<div class="bd">
 			<table class="stats" style="width:100%" celppading="0px" cellspacing="0px">
 				<tr>
-					<td style="">Total Languages</td>
+					<td style=""><%=tra("Total Languages") %></td>
 			    <td style="text-align:right;"><%=Tr8n::Language.count%></td>
 				</tr>
 				<tr>
-					<td style="">Enabled Languages</td>
+					<td style=""><%=tra("Enabled Languages") %></td>
 			    <td style="text-align:right;"><%=Tr8n::Language.enabled_languages.count%></td>
 				</tr>
 				<tr>
-					<td style="">Translators</td>
+					<td style=""><%=tra("Translators") %></td>
 			    <td style="text-align:right;"><%=Tr8n::Translator.count%></td>
 				</tr>
 				<tr>
-					<td style="">Translation Keys</td>
+					<td style=""><%=tra("Translation Keys") %></td>
 			    <td style="text-align:right;"><%=Tr8n::TranslationKey.count%></td>
 				</tr>
 				<tr>
-					<td style="">Translations</td>
+					<td style=""><%=tra("Translations") %></td>
 			    <td style="text-align:right;"><%=Tr8n::Translation.count%></td>
 				</tr>
 				<tr>
-					<td style="">Translation Votes</td>
+					<td style=""><%=tra("Translation Votes") %></td>
 			    <td style="text-align:right;"><%=Tr8n::TranslationVote.count%></td>
 				</tr>
 				<tr>
-					<td style="">Sources</td>
+					<td style=""><%=tra("Sources") %></td>
 			    <td style="text-align:right;"><%=Tr8n::TranslationSource.count%></td>
 				</tr>
 
 				<tr>
-					<td style="">Cache Enabled</td>
+					<td style=""><%=tra("Cache Enabled") %></td>
 			    <td style="text-align:right;"><%=Tr8n::Cache.enabled?%></td>
 				</tr>
 
 				<% if Tr8n::Cache.enabled? %>
 				<tr>
-					<td style="">Cache Version</td>
+					<td style=""><%=tra("Cache Version") %></td>
 			    <td style="text-align:right;"><%=Tr8n::Cache.version%></td>
 				</tr>
 				<% end %>

@@ -13,8 +13,8 @@
       <span style="background-color:#00FF00;display:inline;white-space:nowrap;">&nbsp;&nbsp;&nbsp</span>
       <%=tra("Approved:", "Header for approved phrases") %>
       <%=link_to(translation_source_metric.locked_key_count || 0, 
-                :controller => "/tr8n/phrases", :action => :index, :source => translation_source.source, :locale => translation_source_metric.language.locale,
-                :phrase_type => :with, :phrase_status => :approved) %>
+                {:controller => "/tr8n/phrases", :action => :index, :source => translation_source.source, :locale => translation_source_metric.language.locale,
+                :phrase_type => :with, :phrase_status => :approved}, {:target => "_top"}) %>
     </span>           
     &nbsp;&nbsp;    
     
@@ -22,8 +22,8 @@
       <span style="background-color:#FFFF00;display:inline;white-space:nowrap;">&nbsp;&nbsp;&nbsp;</span>
       <%=tra("Pending Approval:", "Header for phrases that are pending approval") %>
       <%=link_to(translation_source_metric.pending_approval_count || 0, 
-                    :controller => "/tr8n/phrases", :action => :index, :source => translation_source.source, :locale => translation_source_metric.language.locale,
-                    :phrase_type => :with, :phrase_status => :pending) %>
+                    {:controller => "/tr8n/phrases", :action => :index, :source => translation_source.source, :locale => translation_source_metric.language.locale,
+                    :phrase_type => :with, :phrase_status => :pending}, {:target => "_top"}) %>
     </span>           
 
     &nbsp;&nbsp;    
@@ -32,14 +32,14 @@
       <span style="background-color:#FF0000;display:inline;white-space:nowrap;">&nbsp;&nbsp;&nbsp;</span> 
       <%=tra("Not Translated:", "Header for phrases without translation") %>
       <%=link_to(translation_source_metric.not_translated_count || 0, 
-                    :controller => "/tr8n/phrases", :action => :index, :source => translation_source.source, :locale => translation_source_metric.language.locale,
-                    :phrase_type => :without) %>
+                    {:controller => "/tr8n/phrases", :action => :index, :source => translation_source.source, :locale => translation_source_metric.language.locale,
+                    :phrase_type => :without}, {:target => "_top"}) %>
     </span>           
 
     <br><br>      
     <%=tra("Total Phrases:", "Header for total phrase count") %>
     <%=link_to(translation_source_metric.key_count || 0, 
-                  :controller => "/tr8n/phrases", :action => :index, :source => translation_source.source, :locale => translation_source_metric.language.locale) %>
+                  {:controller => "/tr8n/phrases", :action => :index, :source => translation_source.source, :locale => translation_source_metric.language.locale}, {:target => "_top"}) %>
        
     
   </div>  

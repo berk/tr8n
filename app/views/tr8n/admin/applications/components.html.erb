@@ -1,0 +1,34 @@
+<%= render :partial => "/tr8n/admin/common/header" %>
+<%= render :partial => "tabs" %>
+<%= tr8n_will_filter(@comps) %>
+
+<%=link_to_function("+ Register New Component", "tr8nLightbox.show('/tr8n/admin/applications/lb_update_component', {height:350})")%>
+
+<% form_tag("", :id => "comps_form") do %>
+  <%= will_filter_table_tag(@comps, :columns => [
+    [:checkbox, 'comps'],     
+    [:application_id, lambda{|comp| comp.application ? comp.application.name : "deleted"}],
+    :name, :description, :created_at,
+    [:actions, lambda{|comp|
+      html = []
+      html << link_to_function("Update", "tr8nLightbox.show('/tr8n/admin/applications/lb_update_component?comp_id=#{comp.id}', {height:350})")
+      html << link_to("Delete", {:action => :delete_component, :comp_id => comp.id}, {:confirm => "Are you sure you want to delete this component?"})
+      html.join(' | ')
+    }, 'padding:5px;text-align:right;white-space:nowrap;']
+  ]) %>
+<% end %>
+
+<%= will_filter_actions_bar_tag(@keys, [
+  ['Delete Selected Components', 'deleteSelectedSources()']
+]) %>
+
+<%= render :partial => "/tr8n/admin/common/footer" %>
+
+<script>
+  function deleteSelectedSources() {
+    if (!confirm('Are you sure you want to delete all selected components?'))
+       return;
+    Tr8n.element('comps_form').action = "/tr8n/admin/applications/delete_component";
+    Tr8n.element('comps_form').submit();
+  }
+</script> 

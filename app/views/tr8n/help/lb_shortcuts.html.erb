@@ -1,17 +1,17 @@
 <div class="inner">
 	<div class="hd">
-		<span style="float:right;">
+		<span style="float:<%=tr8n_current_language.align(:right)%>;">
 			<%=link_to_function(image_tag("/tr8n/images/close.gif"), "tr8nLightbox.hide();")%>
 		</span>
-		<%=trl("Tr8n Translation Engine Shortcuts")%>
+		<%=tra("Tr8n Translation Engine Shortcuts")%>
 	</div>
 
 	<div class="bd" style="background-color:white;">
 		<div style="overflow:auto;max-height:450px;">
 			<table style="width:100%" celppading="0px" cellspacing="0px">
 				<tr>
-					<td style="font-size:12px; font-weight:bold; padding:5px; border-bottom:1px solid #ccc; text-align:left;"><%=trl("Key", "Shortcut key combination")%></td>
-			    <td style="font-size:12px; font-weight:bold; padding:5px; border-bottom:1px solid #ccc; text-align:left;"><%=trl("Description", "Shortcut key description")%></td>
+					<td style="font-size:12px; font-weight:bold; padding:5px; border-bottom:1px solid #ccc; text-align:left;"><%=tra("Key", "Shortcut key combination")%></td>
+			    <td style="font-size:12px; font-weight:bold; padding:5px; border-bottom:1px solid #ccc; text-align:left;"><%=tra("Description", "Shortcut key description")%></td>
 				</tr>
 
 			  <% Tr8n::Config.default_shortcuts.keys.sort.each do |key| %>

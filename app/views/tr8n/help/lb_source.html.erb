@@ -1,6 +1,6 @@
-<div class="inner">
+<div class="inner" style="font-size:12px; font-family:arial;">
   <div class="hd">
-    <span style="float:right;">
+    <span style="float:<%=tr8n_current_language.align(:right)%>;">
       <%=link_to_function(image_tag("/tr8n/images/close.gif"), "tr8nLightbox.hide();")%>
     </span>
     <%=@translation_source.source %>
@@ -10,5 +10,16 @@
 
     <%=render :partial => "/tr8n/dashboard/translation_source_metric", :locals => {:translation_source => @translation_source, :translation_source_metric => @translation_source_metric} %>
 
+    <div>
+      <div style="padding:5px;">
+        <%= tra("Not translated - phrases that don't have any translations.") %>
+      </div>
+      <div style="padding:5px;">
+        <%= tra("Pending Approval - phrases with translations that are awaiting language manager's review.") %>
+      </div>
+      <div style="padding:5px;">
+        <%= tra("Approved - phrases that have been translated, verified and locked by the language manager.") %>
+      </div>
+    </div>
   </div>
 </div>

@@ -7,7 +7,7 @@
 		[:checkbox, 'domains'],         
 		:name, :description, :created_at, :updated_at,
     [:source_count, lambda{|domain|
-      link_to(domain.translation_sources.size, "/tr8n/admin/domain/sources?wf_c0=translation_domain_id&wf_o0=is&wf_v0_0=#{domain.id}")
+      link_to(domain.translation_sources.size, "/tr8n/admin/applications/sources?wf_c0=translation_domain_id&wf_o0=is&wf_v0_0=#{domain.id}")
     }, 'text-align:right'],
     [:actions, lambda{|domain|
       html = []
@@ -27,7 +27,7 @@
   function deleteSelectedDomains() {
     if (!confirm('Are you sure you want to delete all selected domains?'))
        return;
-    Tr8n.element('domains_form').action = "/tr8n/admin/domain/delete";
+    Tr8n.element('domains_form').action = "/tr8n/admin/applications/delete";
     Tr8n.element('domains_form').submit();
   }
 </script> 

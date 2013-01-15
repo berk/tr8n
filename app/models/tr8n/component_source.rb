@@ -21,38 +21,13 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-class Tr8n::HelpController < Tr8n::BaseController
-  unloadable
+class Tr8n::ComponentSource < ActiveRecord::Base
+  set_table_name :tr8n_component_sources
 
-  set_tr8n_feature  :help
-  before_filter :validate_current_translator, :except => [:lb_shortcuts, :lb_stats, :credits, :license]
-  before_filter :validate_guest_user, :except => [:lb_shortcuts, :lb_stats, :credits, :license]
-  before_filter :validate_current_user, :except => [:lb_shortcuts, :lb_stats, :credits, :license]  
-  
-  def index
+  belongs_to :component, :class_name => 'Tr8n::ApplicationComponent'
+  belongs_to :translation_source, :class_name => 'Tr8n::TranslationSource'
 
-  end
-    
-  def lb_shortcuts
-    render :layout => false
-  end
-
-  def lb_stats
-    render :layout => false
-  end
-
-  def lb_source
-    @translation_source = Tr8n::TranslationSource.find_or_create(params[:source])
-    @translation_source_metric = @translation_source.total_metric
-    render :layout => false
-  end
-  
-  def credits
-    
-  end
-  
-  def license
-    
-  end
+  has_many :translation_key_sources, :class_name => 'Tr8n::TranslationKeySource', :through => :translation_source
+  has_many :translation_keys, :class_name => 'Tr8n::TranslationKey', :through => :translation_key_sources
 
 end
