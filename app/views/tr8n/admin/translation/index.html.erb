@@ -48,13 +48,13 @@
       end     
       html << translation.rank
       html << "</span>"
-      html.join("".html_safe
+      html.join("").html_safe
     }, 'text-align:right;'],
     [:actions, lambda{|translation|
       html = []
       html << link_to("View", :action => :view, :translation_id => translation.id)
       html << link_to("Delete", {:action => :delete, :translation_id => translation.id}, {:confirm => "Are you sure you want to delete this translation?"})
-      html.join(' | '.html_safe
+      html.join(' | ').html_safe
     }, 'text-align:right;white-space:nowrap;']
   ]) %>
 <% end %>
