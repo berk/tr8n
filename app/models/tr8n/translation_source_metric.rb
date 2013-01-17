@@ -60,10 +60,13 @@ class Tr8n::TranslationSourceMetric < ActiveRecord::Base
     ) 
 
     save
-    
-    translation_source.completeness = (locked_key_count * 100 / key_count)
-    translation_source.save
-    
+
+    # this needs to be done as an average of all languages for the source
+    unless key_count == 0
+      translation_source.completeness = 0
+      translation_source.save
+    end    
+
     self
   end
   
@@ -78,7 +81,8 @@ class Tr8n::TranslationSourceMetric < ActiveRecord::Base
   end
 
   def completeness
-    translation_source.completeness
+    return 0 if key_count.nil? or key_count == 0
+    (locked_key_count * 100)/key_count
   end
 
   def translation_completeness

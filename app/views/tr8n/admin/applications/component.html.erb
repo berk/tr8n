@@ -1,0 +1,75 @@
+<%= render :partial => "/tr8n/admin/common/header" %>
+<%= render :partial => "tabs", :locals => {:current_tab => "Component: #{@comp.name}"} %>
+
+<table class="admin_table">
+    <tr>
+        <th width="160">
+            Component Id
+        </th>
+        <td>
+            <%=@comp.id %>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Name
+        </th>
+        <td>
+            <%=@comp.name %>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Description
+        </th>
+        <td>
+            <%=@comp.description %>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Created At
+        </th>
+        <td>
+            <%=@comp.created_at %>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            
+        </th>
+        <td>
+        <%
+          html = []
+          html << link_to_function("Update", "tr8nLightbox.show('/tr8n/admin/applications/lb_update_component?comp_id=#{@comp.id}', {height:350})")
+          html << link_to_function("Add Sources", "tr8nLightbox.show('/tr8n/admin/applications/lb_add_sources_to_component?comp_id=#{@comp.id}', {height:350})")
+          html << link_to_function("Assign Translators", "tr8nLightbox.show('/tr8n/admin/applications/lb_add_sources_to_component?comp_id=#{@comp.id}', {height:350})")
+        %>
+        <%= html.join(' | ') %>
+        </td>
+    </tr>    
+</table>
+
+<%=  tr8n_sections_tag(:modes => [
+          ["Sources Table", {:mode => :sources, :partial => "component_sources"}],
+          ["Sources Charts", {:mode => :charts, :partial => "component_source_charts"}],
+          ["Translators", {:mode => :translators, :partial => "component_translators"}],
+          ["Languages", {:mode => :languages, :partial => "component_languages"}],
+        ],
+        :params => {
+            :comp_id => @comp.id
+        }, 
+        :title => lambda{ |mode|
+          html = []
+          html << "#{mode.first} "
+          if [:sources, :charts].include?(mode.last[:mode])
+            html << "(#{tr8n_current_language.english_name}) "
+            html << "<span style='font-size:12px;'>"
+            html << link_to_function("Change Language", "tr8nLightbox.show('/tr8n/language/select?lightbox=true', {height:500, width:400});") 
+            html << "</span>"
+          end
+          html.join("")
+        }
+) %>
+
+<%= render :partial => "/tr8n/admin/common/footer" %>

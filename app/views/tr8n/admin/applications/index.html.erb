@@ -6,7 +6,7 @@
 
 <% form_tag("", :id => "apps_form") do %>
   <%= will_filter_table_tag(@apps, :columns => [
-    :key, :name, :description,
+    :id, :key, :name, :description,
     [:component_count, lambda{|app|
       link_to(app.components.size, "/tr8n/admin/applications/components?wf_c0=application_id&wf_o0=is&wf_v0_0=#{app.id}")
     }, 'text-align:right'],

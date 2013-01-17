@@ -573,7 +573,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   end
 
   # TODO: should be done as a delayed job
-  def update_metrics!(language = Tr8n::Config.current_language)
+  def update_metrics!(language = Tr8n::Config.current_language, opts = {})
     return unless Tr8n::Config.language_stats_realtime?
     
     Tr8n::TranslationKeySource.find(:all, :conditions => ["translation_key_id = ?", self.id]).each do |tks|
@@ -652,7 +652,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   ###############################################################
   
   def self.title
-    "Original Phrase in {language}".translate(nil, :language => Tr8n::Config.current_language.native_name)
+    "Original Phrase in {language}".translate(nil, :language => Tr8n::Config.default_language.native_name)
   end
   
   def self.help_url

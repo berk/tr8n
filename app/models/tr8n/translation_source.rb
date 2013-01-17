@@ -76,4 +76,10 @@ class Tr8n::TranslationSource < ActiveRecord::Base
     return source if name.blank?
     name
   end
+
+  def full_title
+    return source if name.blank?
+    "#{name} (#{source})"
+  end
+
 end

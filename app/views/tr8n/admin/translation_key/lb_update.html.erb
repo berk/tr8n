@@ -31,7 +31,7 @@
                     <%=tra("Label:") %>
                 </th>
                 <td>
-                    <%= form.text_field :label, :style=>"width:99%;" %>
+                    <%= form.text_area :label, :style=>"width:99%;height:100px;" %>
                 </td>
             </tr>
             <tr>
@@ -39,12 +39,20 @@
                     <%=tra("Description:") %>
                 </th>
                 <td>
-                    <%= form.text_field :description, :style=>"width:99%;" %>
+                    <%= form.text_area :description, :style=>"width:99%;height:50px;" %>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    <%=tra("Level:") %>
+                </th>
+                <td>
+                    <%= form.text_field :level, :style=>"width:99%;" %>
                 </td>
             </tr>
         </table>
         <div>
-            <em>Note: changing translation key may invalidate the translations. Don't forget to change the code to reflect the new label and description. Otherwise the lookup will fail and a new key will be registered.</em>
+            <em>Note: make sure to change the source code to reflect the new label and description. Otherwise the lookup will fail and the old key will be re-registered.</em>
         </div>
         <% end %>
     </div>

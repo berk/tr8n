@@ -1,0 +1,27 @@
+<%= will_filter_table_tag(@locks, :columns => [
+  [:language_id, lambda{|lock|
+    if lock.language
+      link_to(lock.language.english_name, :controller => "/tr8n/admin/language", :action => :view, :lang_id => lock.language.id)
+    else
+       "Deleted Language"    
+    end  
+  }], 
+  [:translator_id, lambda{|lock|
+    if lock.translator
+      link_to(lock.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :translator_id => lock.translator.id) 
+    else
+       "Deleted Translator"    
+    end  
+  }], 
+  :locked, :updated_at,
+  [:actions, lambda{|lock|
+    html = []
+    if lock.locked?
+      html << link_to("Unlock", {:action => :update_lock, :lock_id => lock.id, :locked => "false"}, {:confirm => "Are you sure you want to lock this key in #{lock.language.english_name}?"})
+    else
+      html << link_to("Lock", {:action => :update_lock, :lock_id => lock.id, :locked => "true"}, {:confirm => "Are you sure you want to unlock this key in #{lock.language.english_name}?"})
+    end
+    html.join(' | ')
+  }, 'padding:5px;text-align:right;white-space:nowrap;']
+
+]) %>

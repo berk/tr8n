@@ -21,18 +21,10 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-class Tr8n::ComponentSource < ActiveRecord::Base
-  set_table_name :tr8n_component_sources
+class Tr8n::OfflineTask
 
-  belongs_to :component, :class_name => 'Tr8n::Component'
-  belongs_to :translation_source, :class_name => 'Tr8n::TranslationSource'
-
-  has_many :translation_key_sources, :class_name => 'Tr8n::TranslationKeySource', :through => :translation_source
-  has_many :translation_keys, :class_name => 'Tr8n::TranslationKey', :through => :translation_key_sources
-
-  def self.find_or_create(component, source)
-    cs = find(:first, :conditions => ["component_id = ? and translation_source_id = ?", component.id, source.id]) 
-    cs || create(:component => component, :translation_source => source)
+  def self.schedule(instance, method_name)
+    instance.call(method_name)
   end
 
-end
+end 

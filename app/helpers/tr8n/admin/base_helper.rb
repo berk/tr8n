@@ -81,4 +81,8 @@ module Tr8n::Admin::BaseHelper
     image_tag("http://chart.apis.google.com/chart?#{chart_params.join('&')}")     
   end
   
+  def tr8n_sections_tag(opts = {})
+    render(:partial => "/tr8n/admin/common/sections", :locals => {:mode => params[:mode], :modes => opts[:modes], :opts => opts})
+  end
+
 end

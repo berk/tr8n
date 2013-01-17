@@ -1,0 +1,15 @@
+<% @metrics.each do |metric| %>
+    <div style="width:450px;  background-color:#efefef; float:left; padding:5px; border-radius:10px; margin:5px;">
+        <div style="padding:5px;">
+            <div style="float:right">
+                <%
+                  html = []
+                  html << link_to("Recalculate", {:action => :recalculate_metric, :metric_id => metric.id}, {:confirm => "Are you sure you want to recaluclate this metric?"})
+                %>
+                <%= html.join(' | ') %>
+            </div>
+            <div style="font-weight:bold;"><%=metric.language.english_name%></div>
+        </div>
+        <%=render :partial => "/tr8n/dashboard/translation_source_metric", :locals => {:translation_source => metric.translation_source, :translation_source_metric => metric} %>
+    </div>
+<% end %>

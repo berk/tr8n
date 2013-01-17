@@ -9,6 +9,7 @@
 <% form_tag("", :id => "translators_form") do %>
   <%= will_filter_table_tag(@translators, :columns => [
     [:checkbox, :translators],
+    :id,
     [:name, lambda{|translator|
        link_to(translator.name, :action => :view, :translator_id => translator.id) 
     }],

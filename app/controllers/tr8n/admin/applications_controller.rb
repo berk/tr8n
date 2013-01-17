@@ -70,6 +70,34 @@ class Tr8n::Admin::ApplicationsController < Tr8n::Admin::BaseController
     render :layout => false
   end
 
+  def lb_add_sources_to_component
+    @comp = Tr8n::Component.find_by_id(params[:comp_id])
+    @sources = Tr8n::TranslationSource.find(:all, :order => "source asc")
+    
+    render :layout => false
+  end
+
+  def add_sources_to_component
+    comp = Tr8n::Component.find(params[:comp_id])
+    params[:source_ids].each do |src_id|
+      src = Tr8n::TranslationSource.find(src_id)
+      Tr8n::ComponentSource.find_or_create(comp, src)
+    end
+
+    redirect_to_source
+  end
+
+  def remove_sources_from_component
+    params[:component_sources] = [params[:component_source_id]] if params[:component_source_id]
+    if params[:component_sources]
+      params[:component_sources].each do |csrc_id|
+        csrc = Tr8n::ComponentSource.find_by_id(csrc_id)
+        csrc.destroy if csrc
+      end  
+    end
+    redirect_to_source
+  end
+
   def update_component
     comp = Tr8n::Component.find_by_id(params[:comp][:id]) unless params[:comp][:id].blank?
     
@@ -80,6 +108,27 @@ class Tr8n::Admin::ApplicationsController < Tr8n::Admin::BaseController
     end
     
     redirect_to_source
+  end
+
+  def component
+    @comp = Tr8n::Component.find_by_id(params[:comp_id])
+    @modes = [ 
+      ["Sources Table", {:mode => :component_sources}],
+      ["Sources Charts", {:mode => :component_source_charts}],
+      ["Translators", {:mode => :component_translators}],
+      ["Languages", {:mode => :component_languages}],
+    ]
+    @mode = params[:mode] || @modes.first.last[:mode].to_s
+    @mode = @modes.first.last[:mode].to_s unless @modes.collect{|mode| mode.last[:mode].to_s}.include?(@mode)
+
+    unless @comp
+      trfe("Invalid component id")
+      return redirect_to_source
+    end
+
+    filter = {"wf_c0" => "component_id", "wf_o0" => "is", "wf_v0_0" => @comp.id}
+    @sources = Tr8n::ComponentSource.filter(:params => params.merge(filter))
+    @sources.wf_filter.extra_params.merge!({:comp_id => @comp.id})
   end
 
   def delete_component
@@ -110,6 +159,46 @@ class Tr8n::Admin::ApplicationsController < Tr8n::Admin::BaseController
 
   def sources
     @sources = Tr8n::TranslationSource.filter(:params => params, :filter => Tr8n::TranslationSourceFilter)
+  end
+
+  def source
+    @source = Tr8n::TranslationSource.find_by_id(params[:source_id])
+
+    unless @source
+      trfe("Invalid source id")
+      return redirect_to_source
+    end
+
+    filter = {"wf_c0" => "translation_source_id", "wf_o0" => "is", "wf_v0_0" => @source.id}
+    @metrics = Tr8n::TranslationSourceMetric.filter(:params => params.merge(filter))
+    @metrics.wf_filter.extra_params.merge!({:source_id => @source.id})
+  end
+
+  def recalculate_metric
+    metric = Tr8n::TranslationSourceMetric.find_by_id(params[:metric_id])
+    unless metric
+      trfe("Invalid metric id")
+      return redirect_to_source
+    end
+
+    metric.update_metrics!
+    trfn("The metric has been updated")
+    redirect_to_source
+  end
+
+  def recalculate_source
+    source = Tr8n::TranslationSource.find_by_id(params[:source_id])
+    unless source
+      trfe("Invalid source id")
+      return redirect_to_source
+    end
+
+    source.translation_source_metrics.each do |metric|
+      metric.update_metrics!
+    end
+
+    trfn("All metrics have been updated")
+    redirect_to_source
   end
 
   def lb_update_source

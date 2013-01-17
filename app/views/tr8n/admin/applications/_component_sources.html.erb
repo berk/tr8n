@@ -1,0 +1,39 @@
+
+<% form_tag("", :id => "sources_form") do %>
+  <%= will_filter_table_tag(@sources, :columns => [
+    [:checkbox, 'component_sources'],     
+    [:source, lambda{|source| 
+      link_to(source.translation_source.full_title, :action => :source, :source_id => source.translation_source.id)
+    }],
+    [:keys, lambda{|source|
+      link_to(source.translation_source.total_metric.key_count, "/tr8n/admin/applications/key_sources?wf_c0=translation_source_id&wf_o0=is&wf_v0_0=#{source.id}")
+    }, 'text-align:right'],
+    [:translated_keys, lambda{|source| 
+      source.translation_source.total_metric.translated_key_count
+    }, 'padding:5px;text-align:right;white-space:nowrap;'],    
+    [:locked_keys, lambda{|source| 
+      source.translation_source.total_metric.locked_key_count
+    }, 'padding:5px;text-align:right;white-space:nowrap;'],    
+    [:completeness, lambda{|source| "#{source.translation_source.total_metric.completeness}%"}, 'padding:5px;text-align:right;white-space:nowrap;'],    
+    [:actions, lambda{|source|
+      html = []
+      html << link_to("Recalculate", {:action => :recalculate_metric, :metric_id => source.translation_source.total_metric.id}, {:confirm => "Are you sure you want to recaluclate this source?"})
+      html << link_to_function("Update", "tr8nLightbox.show('/tr8n/admin/applications/lb_update_source?source_id=#{source.translation_source.id}', {height:350})")
+      html << link_to("Remove", {:action => :remove_sources_from_component, :component_source_id => source.id}, {:confirm => "Are you sure you want to remove this source from the component?"})
+      html.join(' | ')
+    }, 'padding:5px;text-align:right;white-space:nowrap;']
+  ]) %>
+<% end %>
+
+<%= will_filter_actions_bar_tag(@keys, [
+  ['Remove Selected Sources', 'removeSelectedSources()']
+]) %>
+
+<script>
+  function removeSelectedSources() {
+    if (!confirm('Are you sure you want to remove all selected sources from the component?'))
+       return;
+    Tr8n.element('sources_form').action = "/tr8n/admin/applications/remove_sources_from_component";
+    Tr8n.element('sources_form').submit();
+  }
+</script>   

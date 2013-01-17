@@ -1,7 +1,3 @@
-<%= render :partial => "/tr8n/admin/common/header" %>
-<%= render :partial => "tabs" %>
-<%= tr8n_will_filter(@comments) %>
-
 <% form_tag("", :id => "comments_form") do %>
   <%= will_filter_table_tag(@comments, :columns => [
     [:checkbox, :comments],    
@@ -19,11 +15,6 @@
          "Deleted Translator"    
       end  
     }], 
-    [:translation_key_id, lambda{|comment|
-      html = link_to(comment.key.label[0..30], :action => :view, :key_id => comment.key.id)
-      html << "..." if comment.key.label.length > 30
-      html
-    }], 
     [:message, lambda{|comment|
       comment.toHTML
     }], :created_at,
@@ -36,8 +27,6 @@
 <%= will_filter_actions_bar_tag(@keys, [
   ['Delete Selected Comments', 'deleteSelectedComments()'] 
 ]) %>
-
-<%= render :partial => "/tr8n/admin/common/footer" %>
 
 <script>
   function deleteSelectedComments() {

@@ -12,10 +12,34 @@
     </tr>
     <tr>
         <th>
-            Access Key
+            Context Key
         </th>
         <td>
             <%=@key.key %>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Locale
+        </th>
+        <td>
+            <%=@key.locale %>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Level
+        </th>
+        <td>
+            <%=@key.level %>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Admin
+        </th>
+        <td>
+            <%=@key.admin? %>
         </td>
     </tr>
     <tr>
@@ -71,122 +95,29 @@
             
         </th>
         <td>
-          <%=link_to("view translations", "/tr8n/admin/translation/index?wf_c0=translation_key_id&wf_o0=is&wf_v0_0=#{@key.id}") %>
-          |          
-          <%= link_to_function("Update", "tr8nLightbox.show('/tr8n/admin/translation_key/lb_update?key_id=#{@key.id}', {height:250})") %>
-          |          
-          <%=link_to("delete", {:action => :delete, :key_id => @key.id, :source => :key}, {:confirm => "Are you sure you want to delete this key?"}) %>
+
+        <%
+          html = []
+          html << link_to("View as Translator", {:controller => "/tr8n/phrases", :action => :view, :translation_key_id => @key.id})
+          html << link_to_function("Update", "tr8nLightbox.show('/tr8n/admin/translation_key/lb_update?key_id=#{@key.id}', {height:450})")
+          html << link_to("Delete", {:action => :delete, :key_id => @key.id, :source => :key}, {:confirm => "Are you sure you want to delete this key?"})
+        %>
+        <%= html.join(' | ') %>
+
         </td>
     </tr>    
 </table>
 
-<% if @key.translation_key_sources.any? %>
-<div class="section_title">
-	<span style="font-size:12px; float:right; padding-top:5px;">
-	  <%=link_to("view all", "/tr8n/admin/translation_key/sources}") %>
-	</span>
-		
-	Sources Where This Key Appears
-</div>
+<%=  tr8n_sections_tag(:modes => [
+            ["Translations",   {:mode => :translations}],
+            ["Sources",   {:mode => :sources}],
+            ["Locks",   {:mode => :locks}],
+            ["Comments",   {:mode => :comments}],
+        ],
+        :params => {
+            :key_id => @key.id
+        }
+) %>
 
-<table class="admin_table">
-  <tr>
-    <th align="left">
-      Source 
-    </th>
-    <th align="right">
-      Location
-    </th>
-  </tr>  
-  <% @key.translation_key_sources.each_with_index do |key_source, index| %>
-    <tr>
-      <td>
-      	<%=link_to(key_source.source.source, "/tr8n/admin/translation_key/key_sources?wf_c0=translation_source_id&wf_o0=is&wf_v0_0=#{key_source.source.id}") %>
-      </td>
-      <td>
-        <% if key_source.details %>
-            <% key_source.details.each do |key, value| %>
-              <%=link_to_function(value.first, "tr8nLightbox.show('/tr8n/admin/translation_key/lb_caller?key_source_id=#{key_source.id}&caller_key=#{key}', {height:550, width:1000})") %>
-              <br>
-            <% end %>
-        <% end %>
-      </td>
-    </tr>
-  <% end %>
-</table>
-<% end %>
 
-<% if @key.translation_key_comments.any? %>
-	<div class="section_title">
-	  <span style="font-size:12px; float:right; padding-top:5px;">
-	    <%=link_to("view all", "/tr8n/admin/translation_key/comments?wf_c0=translation_key_id&wf_o0=is&wf_v0_0=#{@key.id}") %>
-	  </span>
-	    
-	  Comments (top 20)
-	</div>
-	
-	<table class="admin_table">
-	  <tr>
-	    <th>
-	      Language
-	    </th>
-	    <th style="width:10%">
-	      Author
-	    </th>
-	    <th style="width:15%">
-	      Created At
-	    </th>
-	    <th>
-	      Message
-	    </th>
-	    <th></th>
-	  </tr>  
-	  <% @key.translation_key_comments[0..20].each_with_index do |comment, index| %>
-	    <tr>
-	      <td><%=comment.language.english_name%></td>      
-	      <td><%=link_to(comment.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :translator_id => comment.translator.id) if comment.translator %></td>
-	      <td><%=comment.created_at%></td>
-	      <td><%=comment.toHTML%></td>
-	      <td style="text-align:right; width:50px">
-	        <%=link_to("Delete", {:action => :delete_comment, :comment_id => comment.id}, {:confirm => "Are you sure you want to delete this comment?"}) %>
-	      </td>
-	    </tr>
-	  <% end %>
-	</table>
-<% end %>
-
-<% if @key.translation_key_locks.any? %>
-  <div class="section_title">
-    <span style="font-size:12px; float:right; padding-top:5px;">
-      <%=link_to("view all", "/tr8n/admin/translation_key/locks?wf_c0=translation_key_id&wf_o0=is&wf_v0_0=#{@key.id}") %>
-    </span>
-      
-    Locks
-  </div>
-  
-  <table class="admin_table">
-    <tr>
-      <th>
-        Language
-      </th>
-      <th>
-        Translator
-      </th>
-      <th style="width:15%">
-        Updated At
-      </th>
-      <th>
-        Locked
-      </th>
-    </tr>  
-    <% @key.translation_key_locks.each_with_index do |lock, index| %>
-      <tr>
-        <td><%=lock.language.english_name%></td>      
-        <td><%=link_to(lock.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :translator_id => lock.translator.id) if lock.translator %></td>
-        <td><%=lock.updated_at%></td>
-        <td><%=lock.locked?%></td>
-      </tr>
-    <% end %>
-  </table>
-<% end %>
 <%= render :partial => "/tr8n/admin/common/footer" %>
