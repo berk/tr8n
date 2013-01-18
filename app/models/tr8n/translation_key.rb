@@ -106,16 +106,15 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   # used for the site map and javascript support
   def self.track_source(translation_key, options = {})
     # we always track the source if the translator enabled inline translations or the request comes from the api
-    translation_mode = (Tr8n::Config.current_user_is_translator? and Tr8n::Config.current_translator.enable_inline_translations?)
+    # translation_mode = (Tr8n::Config.current_user_is_translator? and Tr8n::Config.current_translator.enable_inline_translations?)
+    # return unless translation_mode or options[:api] != :translate
 
-    if translation_mode or options[:api] == :translate
-      # source can be passed into an individual key, or as a block or fall back on the controller/action
-      source = options[:source] || Tr8n::Config.block_options[:source] || Tr8n::Config.current_source
-      translation_source = Tr8n::TranslationSource.find_or_create(source)
+    # source can be passed into an individual key, or as a block or fall back on the controller/action
+    source = options[:source] || Tr8n::Config.block_options[:source] || Tr8n::Config.current_source
+    translation_source = Tr8n::TranslationSource.find_or_create(source)
 
-      # each key is associated with one or more sources
-      translation_key_source = Tr8n::TranslationKeySource.find_or_create(translation_key, translation_source)
-    end
+    # each key is associated with one or more sources
+    translation_key_source = Tr8n::TranslationKeySource.find_or_create(translation_key, translation_source)
       
     # for debugging purposes only - this will track the actual location of the key in the source
     if Tr8n::Config.enable_key_caller_tracking?    

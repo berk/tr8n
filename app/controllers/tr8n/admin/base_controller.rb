@@ -44,8 +44,8 @@ private
   
   def tr8n_admin_tabs
     [
-        {"title" => "Languages", "description" => "Admin tab", "controller" => "language"},
         {"title" => "Applications", "description" => "Admin tab", "controller" => "applications"},
+        {"title" => "Languages", "description" => "Admin tab", "controller" => "language"},
         {"title" => "Translation Keys", "description" => "Admin tab", "controller" => "translation_key"},
         {"title" => "Translations", "description" => "Admin tab", "controller" => "translation"},
         {"title" => "Translators", "description" => "Admin tab", "controller" => "translator"},

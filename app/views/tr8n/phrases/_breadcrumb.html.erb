@@ -20,9 +20,16 @@
       <%=link_to(tra("Site Map"), :action => :map)%> 
       &raquo;
       <%=link_to(tra("All Phrases"), :action => :index)%> 
-      <% unless params[:source].blank? %>
+      <% if @selected_sources and @selected_sources.any? %>
         &raquo;
-        <%=link_to(params[:source], params)%> 
+        <% 
+          source_links = []
+          @selected_sources.each do |source|
+            source_links << link_to(source.title, params.merge(:sources => nil, :source => source.source)) 
+          end 
+        %>
+
+        <%= source_links.join(", ") %>
       <% end %>
 <% end %>
 </div>

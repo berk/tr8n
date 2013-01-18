@@ -40,6 +40,7 @@ class Tr8n::PhrasesController < Tr8n::BaseController
       source_names = [params[:source]] if params[:source]
     end
 
+    @selected_sources = []
     if source_names.any?
       sources = Tr8n::TranslationSource.find(:all, :conditions => ["source in (?)", source_names])
 
@@ -52,6 +53,7 @@ class Tr8n::PhrasesController < Tr8n::BaseController
         source_ids = []
         sources.each do |source|
           source_ids << source.id
+          @selected_sources << source
           @locked += (source.total_metric.completeness || 0)
           @translated += (source.total_metric.translation_completeness || 0)
         end
