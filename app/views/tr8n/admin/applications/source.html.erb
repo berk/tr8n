@@ -66,8 +66,10 @@
 </table>
 
 <%=  tr8n_sections_tag(:modes => [
-            ["Metrics Table",   {:mode => :metrics, :partial => "source_metrics"}],
-            ["Metrics Charts",  {:mode => :charts, :partial => "source_charts"}],
+          ["Metrics Table",   {:mode => :metrics, :partial => "source_metrics"}],
+          ["Metrics Charts",  {:mode => :charts, :partial => "source_charts"}],
+          ["Translation Keys", {:mode => :translation_keys}],
+          ["Translations", {:mode => :translations}],
         ],
         :params => {
             :source_id => @source.id

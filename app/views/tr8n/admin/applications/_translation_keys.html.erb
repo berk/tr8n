@@ -1,0 +1,21 @@
+<%= will_filter_table_tag(@results, :columns => [
+  [:checkbox, :keys],
+  :id,
+  [:label, lambda{|key|
+    html = link_to(key.label, :action => :view, :key_id => key.id) 
+    html << '<div style="color:grey; font-size:10px;">'
+    html << key.description.to_s  
+    html << '</div>'  
+  }],
+  :locale,
+  [:admin, lambda{|key| key.admin}, 'padding:5px;text-align:right;'],
+  [:level, lambda{|key| key.level}, 'padding:5px;text-align:right;'], 
+  [:translation_count, lambda{|key| link_to(key.translation_count || 0, "/tr8n/admin/translation/index?wf_c0=translation_key_id&wf_o0=is&wf_v0_0=#{key.id}")}, 'padding:5px;text-align:right;'],
+  [:created_at, lambda{|key| key.created_at}, 'padding:5px;text-align:right;'],
+  [:actions, lambda{|key|
+    html = []
+    html << link_to_function("Update", "tr8nLightbox.show('/tr8n/admin/translation_key/lb_update?key_id=#{key.id}', {height:450})")
+    html << link_to("Delete", {:controller => "/tr8n/admin/translation_key", :action => :delete, :key_id => key.id}, {:confirm => "Are you sure you want to delete this key?"})
+    html.join(' | ')
+  }, 'padding:5px;text-align:right;white-space:nowrap;']
+]) %>

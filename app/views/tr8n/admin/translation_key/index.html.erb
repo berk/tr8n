@@ -26,7 +26,7 @@
 	  [:verified_at, lambda{|key| key.verified_at}, 'padding:5px;text-align:right;'],
 	  [:actions, lambda{|key|
 	    html = []
-	    html << link_to_function("Update", "tr8nLightbox.show('/tr8n/admin/translation_key/lb_update?key_id=#{key.id}', {height:280})")
+	    html << link_to_function("Update", "tr8nLightbox.show('/tr8n/admin/translation_key/lb_update?key_id=#{key.id}', {height:450})")
 	    html << link_to("Delete", {:action => :delete, :key_id => key.id}, {:confirm => "Are you sure you want to delete this key?"})
 	    html.join(' | ')
 	  }, 'padding:5px;text-align:right;white-space:nowrap;']

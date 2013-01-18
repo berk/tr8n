@@ -28,6 +28,14 @@
     </tr>
     <tr>
         <th>
+            State
+        </th>
+        <td>
+            <%=@comp.state %>
+        </td>
+    </tr>
+    <tr>
+        <th>
             Created At
         </th>
         <td>
@@ -42,8 +50,9 @@
         <%
           html = []
           html << link_to_function("Update", "tr8nLightbox.show('/tr8n/admin/applications/lb_update_component?comp_id=#{@comp.id}', {height:350})")
-          html << link_to_function("Add Sources", "tr8nLightbox.show('/tr8n/admin/applications/lb_add_sources_to_component?comp_id=#{@comp.id}', {height:350})")
-          html << link_to_function("Assign Translators", "tr8nLightbox.show('/tr8n/admin/applications/lb_add_sources_to_component?comp_id=#{@comp.id}', {height:350})")
+          html << link_to_function("Add Sources", "tr8nLightbox.show('/tr8n/admin/applications/lb_add_objects_to_component?type=source&comp_id=#{@comp.id}', {height:350})")
+          html << link_to_function("Add Languages", "tr8nLightbox.show('/tr8n/admin/applications/lb_add_objects_to_component?type=language&comp_id=#{@comp.id}', {height:350})")
+          html << link_to_function("Assign Translators", "tr8nLightbox.show('/tr8n/admin/applications/lb_add_objects_to_component?type=translator&comp_id=#{@comp.id}', {height:350})")
         %>
         <%= html.join(' | ') %>
         </td>
@@ -53,11 +62,13 @@
 <%=  tr8n_sections_tag(:modes => [
           ["Sources Table", {:mode => :sources, :partial => "component_sources"}],
           ["Sources Charts", {:mode => :charts, :partial => "component_source_charts"}],
-          ["Translators", {:mode => :translators, :partial => "component_translators"}],
           ["Languages", {:mode => :languages, :partial => "component_languages"}],
+          ["Translation Keys", {:mode => :translation_keys}],
+          ["Translations", {:mode => :translations}],
+          ["Translators", {:mode => :translators, :partial => "component_translators"}],
         ],
         :params => {
-            :comp_id => @comp.id
+          :comp_id => @comp.id
         }, 
         :title => lambda{ |mode|
           html = []

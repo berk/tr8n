@@ -70,28 +70,50 @@ class Tr8n::Admin::ApplicationsController < Tr8n::Admin::BaseController
     render :layout => false
   end
 
-  def lb_add_sources_to_component
+  def lb_add_objects_to_component
+    @type = params[:type] || component_link_types.first
+    @type = component_link_types.first unless component_link_types.include?(@type)
+
     @comp = Tr8n::Component.find_by_id(params[:comp_id])
-    @sources = Tr8n::TranslationSource.find(:all, :order => "source asc")
+    if @type == "language"
+      @languages = Tr8n::Language.enabled_languages
+    elsif @type == "source"   
+      @sources = Tr8n::TranslationSource.find(:all, :order => "source asc")
+    elsif @type == "translator"   
+    end
     
-    render :layout => false
+    render :partial => "lb_add_#{@type.pluralize}_to_component"
   end
 
-  def add_sources_to_component
+  def add_objects_to_component
+    unless component_link_types.include?(params[:type])
+      trfe("Invalid object type")
+      return redirect_to_source
+    end
+    type = params[:type].capitalize
+    model_class_name = (type == "Source" ? "TranslationSource" : type)
+
     comp = Tr8n::Component.find(params[:comp_id])
-    params[:source_ids].each do |src_id|
-      src = Tr8n::TranslationSource.find(src_id)
-      Tr8n::ComponentSource.find_or_create(comp, src)
+    params[:ids].each do |id|
+      next if id.blank?
+      lang = "Tr8n::#{model_class_name}".constantize.find_by_id(id)
+      "Tr8n::Component#{type}".constantize.find_or_create(comp, lang) if lang
     end
 
     redirect_to_source
   end
 
-  def remove_sources_from_component
-    params[:component_sources] = [params[:component_source_id]] if params[:component_source_id]
-    if params[:component_sources]
-      params[:component_sources].each do |csrc_id|
-        csrc = Tr8n::ComponentSource.find_by_id(csrc_id)
+  def remove_objects_from_component
+    unless component_link_types.include?(params[:type])
+      trfe("Invalid object type")
+      return redirect_to_source
+    end
+    type = params[:type].capitalize
+
+    params[:component_objects] = [params[:component_object_id]] if params[:component_object_id]
+    if params[:component_objects]
+      params[:component_objects].each do |id|
+        csrc = "Tr8n::Component#{type}".constantize.find_by_id(id)
         csrc.destroy if csrc
       end  
     end
@@ -118,23 +140,40 @@ class Tr8n::Admin::ApplicationsController < Tr8n::Admin::BaseController
       return redirect_to_source
     end
 
-    filter = {"wf_c0" => "component_id", "wf_o0" => "is", "wf_v0_0" => @comp.id}
-    @sources = Tr8n::ComponentSource.filter(:params => params.merge(filter))
-    @sources.wf_filter.extra_params.merge!({:comp_id => @comp.id})
+    if params[:mode] == "translation_keys"
+      @results = Tr8n::TranslationKey.find(:all, 
+          :select => "distinct tr8n_translation_keys.id, tr8n_translation_keys.created_at, label, description, locale, admin, level, translation_count",
+          :order => "tr8n_translation_keys.created_at desc",
+          :conditions => ["cs.component_id = ?", @comp.id],
+          :joins => [
+            "join tr8n_translation_key_sources as tks on tr8n_translation_keys.id = tks.translation_key_id",
+            "join tr8n_component_sources as cs on tks.translation_source_id = cs.translation_source_id"
+          ]
+      ).paginate(:page => page, :per_page => per_page)
+    elsif params[:mode] == "translations"
+      @results = Tr8n::Translation.find(:all, 
+          :order => "tr8n_translations.created_at desc",
+          :conditions => ["cs.component_id = ?", @comp.id],
+          :joins => [
+            "join tr8n_translation_keys as tk on tr8n_translations.translation_key_id = tk.id",
+            "join tr8n_translation_key_sources as tks on tk.id = tks.translation_key_id",
+            "join tr8n_component_sources as cs on tks.translation_source_id = cs.translation_source_id"
+          ]
+      ).uniq.paginate(:page => page, :per_page => per_page)
+    else
+      klass = {
+        :sources => Tr8n::ComponentSource,
+        :charts => Tr8n::ComponentSource,
+        :translators => Tr8n::ComponentTranslator,
+        :languages => Tr8n::ComponentLanguage,
+      }[params[:mode].to_sym] if params[:mode]
+      klass ||= Tr8n::ComponentSource
 
-    # klass = {
-    #   :sources => Tr8n::TranslationKeySource,
-    #   :locks => Tr8n::TranslationKeyLock,
-    #   :comments => Tr8n::TranslationKeyComment,
-    #   :translations => Tr8n::Translation,
-    # }[params[:mode].to_sym] if params[:mode]
-    # klass ||= Tr8n::Translation
-
-    # filter = {"wf_c0" => "translation_key_id", "wf_o0" => "is", "wf_v0_0" => @key.id}
-    # extra_params = {:key_id => @key.id, :mode => params[:mode]}
-    # @results = klass.filter(:params => params.merge(filter))
-    # @results.wf_filter.extra_params.merge!(extra_params)
-
+      filter = {"wf_c0" => "component_id", "wf_o0" => "is", "wf_v0_0" => @comp.id}
+      extra_params = {:comp_id => @comp.id, :mode => params[:mode]}
+      @results = klass.filter(:params => params.merge(filter))
+      @results.wf_filter.extra_params.merge!(extra_params)      
+    end
   end
 
   def delete_component
@@ -175,9 +214,29 @@ class Tr8n::Admin::ApplicationsController < Tr8n::Admin::BaseController
       return redirect_to_source
     end
 
-    filter = {"wf_c0" => "translation_source_id", "wf_o0" => "is", "wf_v0_0" => @source.id}
-    @metrics = Tr8n::TranslationSourceMetric.filter(:params => params.merge(filter))
-    @metrics.wf_filter.extra_params.merge!({:source_id => @source.id})
+    if params[:mode] == "translation_keys"
+      @results = Tr8n::TranslationKey.find(:all, 
+          :select => "distinct tr8n_translation_keys.id, tr8n_translation_keys.created_at, label, description, locale, admin, level, translation_count",
+          :order => "tr8n_translation_keys.created_at desc",
+          :conditions => ["tks.translation_source_id = ?", @source.id],
+          :joins => [
+            "join tr8n_translation_key_sources as tks on tr8n_translation_keys.id = tks.translation_key_id",
+          ]
+      ).paginate(:page => page, :per_page => per_page)
+    elsif params[:mode] == "translations"
+      @results = Tr8n::Translation.find(:all, 
+          :order => "tr8n_translations.created_at desc",
+          :conditions => ["tks.translation_source_id = ?", @source.id],
+          :joins => [
+            "join tr8n_translation_keys as tk on tr8n_translations.translation_key_id = tk.id",
+            "join tr8n_translation_key_sources as tks on tk.id = tks.translation_key_id",
+          ]
+      ).uniq.paginate(:page => page, :per_page => per_page)
+    else
+      filter = {"wf_c0" => "translation_source_id", "wf_o0" => "is", "wf_v0_0" => @source.id}
+      @metrics = Tr8n::TranslationSourceMetric.filter(:params => params.merge(filter))
+      @metrics.wf_filter.extra_params.merge!({:source_id => @source.id})
+    end
   end
 
   def recalculate_metric
@@ -257,4 +316,11 @@ class Tr8n::Admin::ApplicationsController < Tr8n::Admin::BaseController
     @caller = @key_source.details[params[:caller_key]]
     render :layout => false
   end  
+
+  private
+
+  def component_link_types
+    ["language", "source", "translator"]
+  end
+
 end

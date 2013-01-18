@@ -1,13 +1,40 @@
 <%= render :partial => "/tr8n/admin/common/header" %>
 
-<h1>
-  <span style="font-size:12px; float:right; padding-top:10px;">
+<div class="section_title">
+  <span style="font-size:12px; float:right; padding-top:5px;">
     <%=link_to("View Translations", {:action => :index})%> 
     | <%=link_to("View Translation Votes", {:action => :votes})%> 
   </span> 
 	Translation Details
-</h1>
+</div>
+
 <table class="admin_table">
+   <tr>
+        <th>
+            Language
+        </th>
+        <td>
+            <%=link_to(@translation.language.english_name, "/tr8n/admin/language/view?key_id=#{@translation.language.id}") %>
+        </td>
+    </tr>
+ 
+     <tr>
+        <th>
+            Translated Label
+        </th>
+        <td>
+            <%=@translation.label %>
+        </td>
+    </tr>    
+    <tr>
+        <th>
+            Context
+        </th>
+        <td>
+            <%=@translation.context %>
+        </td>
+    </tr>   
+
     <tr>
         <th width="160">
             Translation Id
@@ -32,30 +59,7 @@
             <%=@translation.translation_key.description %>
         </td>
     </tr>
-    <tr>
-        <th>
-            Translated Label
-        </th>
-        <td>
-            <%=@translation.label %>
-        </td>
-    </tr>    
-    <tr>
-        <th>
-            Context
-        </th>
-        <td>
-            <%=@translation.context %>
-        </td>
-    </tr>    
-    <tr>
-        <th>
-            Language
-        </th>
-        <td>
-            <%=link_to(@translation.language.english_name, "/tr8n/admin/language/view?key_id=#{@translation.language.id}") %>
-        </td>
-    </tr>
+ 
     <tr>
         <th>
             Rank

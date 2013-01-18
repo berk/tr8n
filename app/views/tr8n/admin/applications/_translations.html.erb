@@ -1,9 +1,5 @@
-<%= render :partial => "/tr8n/admin/common/header" %>
-<%= render :partial => "tabs" %>
-<%= tr8n_will_filter(@translations) %>
-
 <% form_tag("", :id => "translations_form") do %>
-  <%= will_filter_table_tag(@translations, :columns => [
+  <%= will_filter_table_tag(@results, :columns => [
     [:checkbox, :translations],
     :id,
     [:language_id, lambda{|translation|
@@ -19,7 +15,7 @@
       if translation.context
         html << "<div style='font-size:10px;color:grey'>"
         html << "Context: #{translation.context}"
-				html << "</div>"
+        html << "</div>"
       end
       html.join("") 
     }],
@@ -30,7 +26,7 @@
        html << translation.translation_key.description
        html << "</div>"
        html.join("") 
-    }],
+    }],    
     [:translator_id, lambda{|translation|
       if translation.translator
         link_to(translation.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :translator_id => translation.translator.id)
@@ -63,8 +59,6 @@
 <%= will_filter_actions_bar_tag(@translations, [
 ['Delete Selected Translations', 'deleteSelectedTranslations()'] 
 ]) %>
-
-<%= render :partial => "/tr8n/admin/common/footer" %>
 
 <script>
   function deleteSelectedTranslations() {

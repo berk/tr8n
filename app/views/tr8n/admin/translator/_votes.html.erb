@@ -1,5 +1,5 @@
 <% form_tag("", :id => "votes_form") do %>
-  <%= will_filter_table_tag(@votes, :columns => [
+  <%= will_filter_table_tag(@results, :columns => [
     [:checkbox, :votes],
     [:translation_key, lambda{|vote|
       if vote.translation

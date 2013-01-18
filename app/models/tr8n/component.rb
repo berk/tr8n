@@ -31,4 +31,6 @@ class Tr8n::Component < ActiveRecord::Base
   has_many :translation_key_sources, :class_name => 'Tr8n::TranslationKeySource', :through => :translation_sources
   has_many :translation_keys, :class_name => 'Tr8n::TranslationKey', :through => :translation_key_sources
 
+  
+
 end

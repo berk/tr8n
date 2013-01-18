@@ -1,4 +1,4 @@
-<%= will_filter_table_tag(@languages, :columns => [
+<%= will_filter_table_tag(@results, :columns => [
     [:flag, lambda{|ulang| ulang.language ? image_tag("/tr8n/images/flags/#{ulang.language.flag}.png") : ''}],
     [:locale, lambda{|ulang|
       lang = ulang.language

@@ -1,5 +1,5 @@
 <% form_tag("", :id => "topics_form") do %>
-  <%= will_filter_table_tag(@messages, :columns => [
+  <%= will_filter_table_tag(@results, :columns => [
     :id,
     [:language_id, lambda{|message|
       if message.language

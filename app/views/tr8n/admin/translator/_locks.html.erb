@@ -1,5 +1,5 @@
 <% form_tag("", :id => "locks_form") do %>
-  <%= will_filter_table_tag(@locks, :columns => [
+  <%= will_filter_table_tag(@results, :columns => [
     [:checkbox, :locks],    
     [:language_id, lambda{|lock|
       if lock.language

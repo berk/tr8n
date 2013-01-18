@@ -318,6 +318,10 @@ class Tr8n::Config
     config[:enable_translator_tabs]
   end
   
+  def self.skip_key_registration_in_default_language?
+    config[:skip_key_registration_in_default_language]
+  end
+
   #########################################################
   # Config Sections
   #########################################################
