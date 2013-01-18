@@ -31,6 +31,40 @@ class Tr8n::Admin::TranslatorController < Tr8n::Admin::BaseController
   def view
     @translator = Tr8n::Translator.find(params[:translator_id])
     redirect_to(:action => :index) unless @translator
+
+    filter = {"wf_c0" => "translator_id", "wf_o0" => "is", "wf_v0_0" => @translator.id}
+    extra_params = {:translator_id => @translator.id, :mode => params[:mode]}
+
+    if params[:mode] == "metrics"
+      @metrics = Tr8n::TranslatorMetric.filter(:params => params.merge(filter))
+      @metrics.wf_filter.extra_params.merge!(extra_params)
+    elsif params[:mode] == "languages"
+      filter = {"wf_c0" => "user_id", "wf_o0" => "is", "wf_v0_0" => @translator.user_id}
+      extra_params = {:user_id => @translator.user_id, :mode => params[:mode]}
+      @languages = Tr8n::LanguageUser.filter(:params => params.merge(filter))
+      @languages.wf_filter.extra_params.merge!(extra_params)
+    elsif params[:mode] == "translations"
+      @translations = Tr8n::Translation.filter(:params => params.merge(filter))
+      @translations.wf_filter.extra_params.merge!(extra_params)
+    elsif params[:mode] == "votes"
+      @votes = Tr8n::TranslationVote.filter(:params => params.merge(filter))
+      @votes.wf_filter.extra_params.merge!(extra_params)
+    elsif params[:mode] == "locks"
+      @locks = Tr8n::TranslationKeyLock.filter(:params => params.merge(filter))
+      @locks.wf_filter.extra_params.merge!(extra_params)
+    elsif params[:mode] == "following"
+      @following = Tr8n::TranslatorFollowing.filter(:params => params.merge(filter))
+      @following.wf_filter.extra_params.merge!(extra_params)
+    elsif params[:mode] == "messages"
+      @messages = Tr8n::LanguageForumMessage.filter(:params => params.merge(filter))
+      @messages.wf_filter.extra_params.merge!(extra_params)
+    elsif params[:mode] == "reports"
+      @reports = Tr8n::TranslatorReport.filter(:params => params.merge(filter))
+      @reports.wf_filter.extra_params.merge!(extra_params)
+    else  
+      @logs = Tr8n::TranslatorLog.filter(:params => params.merge(filter))
+      @logs.wf_filter.extra_params.merge!(extra_params)
+    end    
   end
 
   def delete

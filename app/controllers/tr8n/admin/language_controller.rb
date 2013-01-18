@@ -30,6 +30,20 @@ class Tr8n::Admin::LanguageController < Tr8n::Admin::BaseController
 
   def view
     @lang = Tr8n::Language.find(params[:lang_id])
+
+    klass = {
+      :metrics => Tr8n::LanguageMetric,
+      :context_rules => Tr8n::LanguageRule,
+      :cases => Tr8n::LanguageCase,
+      :case_rules => Tr8n::LanguageCaseRule,
+      :case_exceptions => Tr8n::LanguageCaseValueMap,
+    }[params[:mode].to_sym] if params[:mode]
+    klass ||= Tr8n::LanguageMetric
+
+    filter = {"wf_c0" => "language_id", "wf_o0" => "is", "wf_v0_0" => @lang.id}
+    extra_params = {:lang_id => @lang.id, :mode => params[:mode]}
+    @results = klass.filter(:params => params.merge(filter))
+    @results.wf_filter.extra_params.merge!(extra_params)
   end
 
   def enable

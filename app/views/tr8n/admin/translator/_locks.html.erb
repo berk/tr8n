@@ -1,0 +1,36 @@
+<% form_tag("", :id => "locks_form") do %>
+  <%= will_filter_table_tag(@locks, :columns => [
+    [:checkbox, :locks],    
+    [:language_id, lambda{|lock|
+      if lock.language
+        link_to(lock.language.english_name, :controller => "/tr8n/admin/language", :action => :view, :lang_id => lock.language.id)
+      else
+         "Deleted Language"    
+      end  
+    }], 
+    [:translation_key_id, lambda{|lock|
+      if lock.translation_key
+        html = link_to(lock.translation_key.label, :action => :view, :key_id => lock.translation_key.id) 
+        html << '<div style="color:grey; font-size:10px;">'
+        html << lock.translation_key.description.to_s  
+        html << '</div>'
+      else
+        "Deleted Translation Key"
+      end  
+    }], 
+    :locked, :updated_at
+  ]) %>
+<% end %>
+
+<%= will_filter_actions_bar_tag(@keys, [
+  ['Delete Selected Locks', 'deleteSelectedLocks()'] 
+]) %>
+
+<script>
+  function deleteSelectedLocks() {
+    if (!confirm('Are you sure you want to run this opperation?'))
+       return;
+    Tr8n.element('locks_form').action = "/tr8n/admin/translation_key/delete_lock";
+    Tr8n.element('locks_form').submit();
+  }
+</script>

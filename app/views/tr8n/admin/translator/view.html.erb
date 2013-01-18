@@ -124,16 +124,6 @@
             <%=@translator.updated_at %>
         </td>
     </tr>
-		<tr>
-        <th>
-            Selected Languages
-        </th>
-        <td>
-					<%= @translator.language_users.collect{|lu|
-                  link_to(lu.language.english_name, :controller => "/tr8n/admin/language", :action => :view, :lang_id => lu.language.id) 
-              }.join(", ") -%>
-        </td>
-		</tr>	    
     <tr>
         <th>
             
@@ -147,10 +137,6 @@
 
           | <%=link_to("Delete", {:action => :delete, :translator_id => @translator.id}, :confirm => "Are you sure you want to do that?")%>
 					
-          | <%=link_to("View Translations", "/tr8n/admin/translation?wf_c0=translator_id&wf_o0=is&wf_v0_0=#{@translator.id}") %>
-          | <%=link_to("View Metrics", "/tr8n/admin/translator/metrics?wf_c0=translator_id&wf_o0=is&wf_v0_0=#{@translator.id}") %>
-          | <%=link_to("View Reported Translations", "/tr8n/admin/translation?wf_c0=translator_id&wf_o0=is&wf_v0_0=#{@translator.id}&wf_c1=rank&wf_o1=is_less_than&wf_v1_0=-100") %>
-          | <%=link_to("View Reported Forum Messages", "/tr8n/admin/forum/reports?wf_c0=author_id&wf_o0=is&wf_v0_0=#{@translator.id}") %>
         </td>
     </tr>    
 </table>
@@ -162,61 +148,23 @@
   }  
 </script>
 
-<h1>
-  <div style="font-size:12px; float:right;padding-top:10px;">
-    <%=link_to("view all", "/tr8n/admin/translator/metrics")%>
-  </div>
 
-	Metrics
-</h1>
-<table class="admin_table">
-<thead>
-  <tr>
-    <th style="">Language</th>
-    <th style="">Translations Count</th>
-    <th style="">Votes Count</th>
-  </tr>
-</thead>
-<tbody>
-  <% @translator.translator_metrics.each do |metric| -%>
-    <% next unless metric.language %>
-    <tr>
-      <td><%= link_to(metric.language.english_name, :controller => "/tr8n/admin/language", :action => :view, :lang_id => metric.language.id) %></td>
-      <td><%= metric.total_translations %></td>
-      <td>
-          <%=metric.total_votes || 0 %>
-          (<span style="color:green"><%=metric.positive_votes || 0 %></span>/<span style="color:red"><%=metric.negative_votes || 0 %></span>)
-      </td>
-    </tr>
-  <% end -%>
-</tbody>
-</table>
-<br>
+<%=  tr8n_sections_tag(:modes => [
+            ["Activity",   {:mode => :activity}],
+            ["Metrics",   {:mode => :metrics}],
+            ["Languages",   {:mode => :languages}],
+            ["Translations",   {:mode => :translations}],
+            ["Votes",   {:mode => :votes}],
+            ["Locks",   {:mode => :locks}],
+            ["Following",   {:mode => :following}],
+            ["Forum Messages",   {:mode => :messages}],
+            ["Reports",   {:mode => :reports}],
+        ],
+        :params => {
+            :translator_id => @translator.id
+        }
+) %>
 
-<h1>
-  <div style="font-size:12px; float:right;padding-top:10px;">
-    <%=link_to("view all", "/tr8n/admin/translator/log?wf_c0=translator_id&wf_o0=is&wf_v0_0=#{@translator.id}")%>
-  </div>
-	Recent Activity <span style="color:grey; font-size:12px;">(last 20 actions)</span>
-</h1>
-<table class="admin_table">
-<thead>
-  <tr>
-    <th style="width:150px">Created At</th>
-    <th style="width:150px">Actor</th>
-    <th style="">Action</th>
-  </tr>
-</thead>
-<tbody>
-  <% @translator.last_logs.each do |log| -%>
-    <tr>
-      <td><%= log.created_at.strftime("%m/%d/%Y %H:%M:%S") %></td>
-      <td><%= link_to(log.translator.name, "/admin/users/user?profile=#{log.translator.user.id}") if log.translator.user %>
-      <td style="<%=log.decoration%>"><%= log.describe %></td>
-    </tr>
-  <% end -%>
-</tbody>
-</table>
 <%= render :partial => "/tr8n/admin/common/footer" %>
 
 <script>

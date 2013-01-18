@@ -106,37 +106,12 @@
     </tr>    
 </table>
 
-<h1>
-  Recent Votes
-</h1>
-
-<table class="admin_table">
-  <tr>
-    <th>
-      Voter
-    </th> 
-    <th class="numeric">
-      Vote
-    </th>
-    <th></th>
-  </tr>  
-  <% @votes.each_with_index do |vote, index| %>
-    <tr>
-      <td>
-        <% if vote.translator %>
-          <%=link_to(vote.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :translator_id => vote.translator.id)%>
-        <% else %>
-          Unknown  
-        <% end %>  
-      </td>  
-      <td class="numeric">
-        <%= vote.vote %>
-      </td> 
-      <td style="text-align:right">
-        <%=link_to("Delete", {:action => :delete_vote, :vote_id => vote.id}, {:confirm => "Are you sure you want to delete this vote?"}) %>
-      </td>
-    </tr>
-  <% end %>
-</table>
+<%=  tr8n_sections_tag(:modes => [
+            ["Votes",   {:mode => :votes}],
+        ],
+        :params => {
+            :translation_id => @translation.id
+        }
+) %>
 
 <%= render :partial => "/tr8n/admin/common/footer" %>

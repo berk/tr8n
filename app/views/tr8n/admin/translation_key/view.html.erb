@@ -2,6 +2,25 @@
 <%= render :partial => "tabs", :locals => {:current_tab => "Translation Key Details"} %>
 
 <table class="admin_table">
+
+    <tr>
+        <th>
+            Label
+        </th>
+        <td>
+            <%=@key.label %>
+        </td>
+    </tr>    
+
+    <tr>
+        <th>
+            Description
+        </th>
+        <td>
+            <%=@key.description %>
+        </td>
+    </tr>
+    
     <tr>
         <th width="160">
             Translation Key Id
@@ -40,22 +59,6 @@
         </th>
         <td>
             <%=@key.admin? %>
-        </td>
-    </tr>
-    <tr>
-        <th>
-            Label
-        </th>
-        <td>
-            <%=@key.label %>
-        </td>
-    </tr>    
-    <tr>
-        <th>
-            Description
-        </th>
-        <td>
-            <%=@key.description %>
         </td>
     </tr>
     <tr>

@@ -1,4 +1,4 @@
-  <%= will_filter_table_tag(@sources, :columns => [
+  <%= will_filter_table_tag(@results, :columns => [
     :id,
     [:source, lambda{|source| 
       link_to(source.translation_source.source, :controller => "/tr8n/admin/applications", :action => :source, :source_id => source.translation_source.id)

@@ -35,21 +35,18 @@ class Tr8n::Admin::TranslationKeyController < Tr8n::Admin::BaseController
       return redirect_to(:action => :index) 
     end
 
+    klass = {
+      :sources => Tr8n::TranslationKeySource,
+      :locks => Tr8n::TranslationKeyLock,
+      :comments => Tr8n::TranslationKeyComment,
+      :translations => Tr8n::Translation,
+    }[params[:mode].to_sym] if params[:mode]
+    klass ||= Tr8n::Translation
+
     filter = {"wf_c0" => "translation_key_id", "wf_o0" => "is", "wf_v0_0" => @key.id}
     extra_params = {:key_id => @key.id, :mode => params[:mode]}
-    if params[:mode] == "sources"
-      @sources = Tr8n::TranslationKeySource.filter(:params => params.merge(filter))
-      @sources.wf_filter.extra_params.merge!(extra_params)
-    elsif params[:mode] == "locks"
-      @locks = Tr8n::TranslationKeyLock.filter(:params => params.merge(filter))
-      @locks.wf_filter.extra_params.merge!(extra_params)
-    elsif params[:mode] == "comments"
-      @comments = Tr8n::TranslationKeyComment.filter(:params => params.merge(filter))
-      @comments.wf_filter.extra_params.merge!(extra_params)
-    else
-      @translations = Tr8n::Translation.filter(:params => params.merge(filter))
-      @translations.wf_filter.extra_params.merge!(extra_params)
-    end
+    @results = klass.filter(:params => params.merge(filter))
+    @results.wf_filter.extra_params.merge!(extra_params)
   end
   
   def delete

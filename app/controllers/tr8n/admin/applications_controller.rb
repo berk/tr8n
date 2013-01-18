@@ -112,14 +112,6 @@ class Tr8n::Admin::ApplicationsController < Tr8n::Admin::BaseController
 
   def component
     @comp = Tr8n::Component.find_by_id(params[:comp_id])
-    @modes = [ 
-      ["Sources Table", {:mode => :component_sources}],
-      ["Sources Charts", {:mode => :component_source_charts}],
-      ["Translators", {:mode => :component_translators}],
-      ["Languages", {:mode => :component_languages}],
-    ]
-    @mode = params[:mode] || @modes.first.last[:mode].to_s
-    @mode = @modes.first.last[:mode].to_s unless @modes.collect{|mode| mode.last[:mode].to_s}.include?(@mode)
 
     unless @comp
       trfe("Invalid component id")
@@ -129,6 +121,20 @@ class Tr8n::Admin::ApplicationsController < Tr8n::Admin::BaseController
     filter = {"wf_c0" => "component_id", "wf_o0" => "is", "wf_v0_0" => @comp.id}
     @sources = Tr8n::ComponentSource.filter(:params => params.merge(filter))
     @sources.wf_filter.extra_params.merge!({:comp_id => @comp.id})
+
+    # klass = {
+    #   :sources => Tr8n::TranslationKeySource,
+    #   :locks => Tr8n::TranslationKeyLock,
+    #   :comments => Tr8n::TranslationKeyComment,
+    #   :translations => Tr8n::Translation,
+    # }[params[:mode].to_sym] if params[:mode]
+    # klass ||= Tr8n::Translation
+
+    # filter = {"wf_c0" => "translation_key_id", "wf_o0" => "is", "wf_v0_0" => @key.id}
+    # extra_params = {:key_id => @key.id, :mode => params[:mode]}
+    # @results = klass.filter(:params => params.merge(filter))
+    # @results.wf_filter.extra_params.merge!(extra_params)
+
   end
 
   def delete_component
