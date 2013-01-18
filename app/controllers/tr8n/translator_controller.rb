@@ -89,4 +89,8 @@ class Tr8n::TranslatorController < Tr8n::BaseController
     redirect_to_source
   end
   
+  def assignments
+    
+  end
+
 end
