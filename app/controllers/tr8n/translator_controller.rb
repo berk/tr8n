@@ -90,7 +90,12 @@ class Tr8n::TranslatorController < Tr8n::BaseController
   end
   
   def assignments
-    
+    @components = Tr8n::Component.find(:all, 
+          :conditions => ["ct.translator_id = ?", Tr8n::Config.current_translator.id],
+          :joins => [
+            "join tr8n_component_translators as ct on tr8n_components.id = ct.component_id",
+          ]
+    )
   end
 
 end

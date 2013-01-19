@@ -1,0 +1,44 @@
+<% Tr8n::Config.with_options(:default_locale => 'en-US', :admin => true) do %>
+
+  <%= render :partial => "/tr8n/common/header" %>
+  
+  <div class="section_title">
+      <div style="<%=tr8n_style_attribute_tag('float', 'right')%>; font-size:12px; padding-top:5px;">
+        <%
+          links = []
+          links << link_to(tra("dashboard"), :controller => "/tr8n/dashboard", :action => :index)
+          if Tr8n::Config.enable_translator_language?
+            links << link_to(tra("edit preferences"), :controller => "/tr8n/translator", :action => :index)
+          end
+        %>
+        <%= links.join(" | ") %>
+      </div>
+    
+    <%=tra("{user}'s Assignments", "Dashboard section title", :user => [tr8n_current_translator, :name]) %>
+  </div>
+
+  <div class="section_box" style="background-color:#FDFFF0;">
+    <%= tr("You currently have {count||assignment}.", nil, :count => @components.size) %>
+  </div>
+
+  <% @components.each do |comp| %>
+    <div class="section_title">
+      <div style="<%=tr8n_style_attribute_tag('float', 'right')%>; font-size:12px; font-weight:normal; padding-top:5px;">
+        <%=link_to(tra("view phrases", "Language action link"), :component_id => comp.id)%>
+      </div>
+  
+      <%=tr8n_toggler_tag("comp_content_#{comp.id}")%>
+      
+      <span dir="ltr">
+        <a name="<%=comp.name%>" style="text-decoration:none;color:black;"><%=comp.name%></a>
+      </span>
+    </div>
+    
+    <div id="comp_content_<%=comp.id%>" class="section_box colored">
+      
+    </div>    
+  <% end %>
+
+  <%= render :partial => "/tr8n/common/footer" %>
+
+<% end %>
