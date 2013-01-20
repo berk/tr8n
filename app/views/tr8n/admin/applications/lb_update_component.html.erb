@@ -34,6 +34,14 @@
                     <%= form.text_area :description, :style=>"width:99%;" %>
                 </td>
             </tr>
+            <tr>
+                <th>
+                    State:
+                </th>
+                <td>
+                    <%= select_tag("comp[state]", options_for_select(Tr8n::Component.state_options, @comp.state), :style=>"width:99%;") %>
+                </td>
+            </tr>
         </table>
         <% end %>
     </div>

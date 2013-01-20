@@ -30,6 +30,8 @@ class Tr8n::TranslationSource < ActiveRecord::Base
   has_many    :translation_keys,              :class_name => "Tr8n::TranslationKey",            :through => :translation_key_sources
   has_many    :translation_source_languages,  :class_name => "Tr8n::TranslationSourceLanguage", :dependent => :destroy
   has_many    :translation_source_metrics,    :class_name => 'Tr8n::TranslationSourceMetric',   :dependent => :destroy
+  has_many    :component_sources,             :class_name => "Tr8n::ComponentSource",           :dependent => :destroy
+  has_many    :components,                    :class_name => "Tr8n::Component",                 :through => :component_sources
   
   alias :domain   :translation_domain
   alias :sources  :translation_key_sources
@@ -80,6 +82,13 @@ class Tr8n::TranslationSource < ActiveRecord::Base
   def full_title
     return source if name.blank?
     "#{name} (#{source})"
+  end
+
+  def translator_authorized?(translator = Tr8n::Config.current_translator)
+    components.each do |comp|
+      return false unless comp.translator_authorized?(translator)
+    end
+    true
   end
 
 end

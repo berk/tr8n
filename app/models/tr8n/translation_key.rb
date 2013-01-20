@@ -494,6 +494,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     return translated_label if options[:skip_decorations]
     return translated_label if Tr8n::Config.current_user_is_guest?
     return translated_label unless Tr8n::Config.current_user_is_translator?
+    return translated_label if Tr8n::Config.current_translator.blocked?
     return translated_label unless Tr8n::Config.current_translator.enable_inline_translations?
     return translated_label unless can_be_translated?
     return translated_label if locked?(language)
@@ -678,6 +679,18 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   ## Search Related Stuff
   ###############################################################
   
+  def self.all_restricted_ids
+    Tr8n::TranslationKey.find(:all, 
+        :select => "distinct tr8n_translation_keys.id",
+        :conditions => ["c.state = ?", 'restricted'],
+        :joins => [
+          "join tr8n_translation_key_sources as tks on tr8n_translation_keys.id = tks.translation_key_id",
+          "join tr8n_component_sources as cs on tks.translation_source_id = cs.translation_source_id",
+          "join tr8n_components as c on cs.component_id = c.id"
+        ]
+    ).collect{|key| key.id}
+  end
+
   def self.filter_phrase_type_options
     [["all", "any"], 
      ["without translations", "without"], 

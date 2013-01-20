@@ -31,6 +31,29 @@ class Tr8n::Component < ActiveRecord::Base
   has_many :translation_key_sources, :class_name => 'Tr8n::TranslationKeySource', :through => :translation_sources
   has_many :translation_keys, :class_name => 'Tr8n::TranslationKey', :through => :translation_key_sources
 
-  
+  has_many :component_languages, :class_name => 'Tr8n::ComponentLanguage', :dependent => :destroy
+  has_many :languages, :class_name => 'Tr8n::Language', :through => :component_languages
+
+  has_many :component_translators, :class_name => 'Tr8n::ComponentTranslator', :dependent => :destroy
+  has_many :translators, :class_name => 'Tr8n::Translator', :through => :component_translators
+
+  alias :sources :translation_sources
+
+  def self.state_options
+    ["restricted", "live"]
+  end
+
+  def live?
+    state == "live"
+  end
+
+  def restricted?
+    state == "restricted"
+  end
+
+  def translator_authorized?(translator = Tr8n::Config.current_translator)
+    return true unless restricted?
+    translators.include?(translator)
+  end
 
 end

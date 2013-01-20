@@ -1,6 +1,10 @@
 <%= will_filter_table_tag(@results, :columns => [
-    [:flag, lambda{|ulang| ulang.language ? image_tag("/tr8n/images/flags/#{ulang.language.flag}.png") : ''}],
+    [:flag, lambda{|ulang| 
+      return "deleted" unless ulang.language
+      image_tag("/tr8n/images/flags/#{ulang.language.flag}.png")
+    }],
     [:locale, lambda{|ulang|
+      return "deleted" unless ulang.language
       lang = ulang.language
       html = []
       if lang.enabled?
@@ -12,9 +16,16 @@
       html << '</span>'
       html.join(' ')
     }],
-    [:english_name, lambda{|ulang| link_to(ulang.language.english_name, :action => :view, :lang_id => ulang.language.id)}],
-    [:native_name, lambda{|ulang| ulang.language.native_name}],
+    [:english_name, lambda{|ulang| 
+      return "deleted" unless ulang.language
+      link_to(ulang.language.english_name, :action => :view, :lang_id => ulang.language.id)
+    }],
+    [:native_name, lambda{|ulang| 
+      return "deleted" unless ulang.language
+      ulang.language.native_name
+    }],
     [:right_to_left, lambda{|ulang|
+      return "deleted" unless ulang.language
       lang = ulang.language
       html = []
       if lang.right_to_left?

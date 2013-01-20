@@ -20,7 +20,10 @@
       <%=link_to(tra("Site Map"), :action => :map)%> 
       &raquo;
       <%=link_to(tra("All Phrases"), :action => :index)%> 
-      <% if @selected_sources and @selected_sources.any? %>
+      <% if @component %>
+        &raquo;
+        <%= link_to(@component.name, params) %>
+      <% elsif @selected_sources and @selected_sources.any? %>
         &raquo;
         <% 
           source_links = []

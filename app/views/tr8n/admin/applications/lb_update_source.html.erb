@@ -12,10 +12,18 @@
         <table class="admin_table">
             <tr>
                 <th>
-                    Source Path:
+                    Key:
                 </th>
                 <td>
                     <%= @source.source %>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    Url:
+                </th>
+                <td>
+                    <%= form.text_field :url, :style=>"width:99%;" %>
                 </td>
             </tr>
             <tr>

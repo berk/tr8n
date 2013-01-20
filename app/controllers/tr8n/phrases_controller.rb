@@ -31,48 +31,26 @@ class Tr8n::PhrasesController < Tr8n::BaseController
   def index
     conditions = Tr8n::TranslationKey.search_conditions_for(params)
 
-    source_names = []
+    sources = sources_from_params
+    @sources = Tr8n::TranslationSource.options
 
-    unless params[:section_key].blank?
-      source_names = sitemap_sources_for(@section_key)
-    else  
-      source_names = params[:sources] if params[:sources]
-      source_names = [params[:source]] if params[:source]
-    end
+    if sources.any?
+      @translation_keys = translation_keys_for_sources(sources, conditions)
+    else
+      # get a list of all restricted keys
+      restricted_keys = Tr8n::TranslationKey.all_restricted_ids
 
-    @selected_sources = []
-    if source_names.any?
-      sources = Tr8n::TranslationSource.find(:all, :conditions => ["source in (?)", source_names])
-
-      @translated = 0
-      @locked = 0
-
-      if sources.empty?
-        conditions = ["1=2"]
-      else  
-        source_ids = []
-        sources.each do |source|
-          source_ids << source.id
-          @selected_sources << source
-          @locked += (source.total_metric.completeness || 0)
-          @translated += (source.total_metric.translation_completeness || 0)
-        end
-
-        # avg of the total
-        @locked = @locked/source_ids.size
-        @translated = @translated/source_ids.size
-
+      # exclude all restricted keys
+      if restricted_keys.size > 0
         conditions[0] << " and " unless conditions[0].blank?
-        conditions[0] << "(id in (select distinct(translation_key_id) from tr8n_translation_key_sources where translation_source_id in (?)))"
-        conditions << source_ids.uniq
+        conditions[0] << "(id not in (?))"
+        conditions << restricted_keys
       end
-    else 
+
       @translated = Tr8n::Config.current_language.total_metric.translation_completeness
       @locked = Tr8n::Config.current_language.completeness
+      @translation_keys = Tr8n::TranslationKey.paginate(:per_page => per_page, :page => page, :conditions => conditions, :order => "created_at desc")    
     end
-    
-    @sources = Tr8n::TranslationSource.options
-    @translation_keys = Tr8n::TranslationKey.paginate(:per_page => per_page, :page => page, :conditions => conditions, :order => "created_at desc")    
   end
   
   def view
@@ -286,6 +264,57 @@ class Tr8n::PhrasesController < Tr8n::BaseController
   end
     
 private
+
+  def sources_from_params
+    unless params[:section_key].blank?
+      return sitemap_sources_for(@section_key) 
+    end
+    unless params[:component_id].blank?
+      @component = Tr8n::Component.find_by_id(params[:component_id])
+      return [] unless @component
+      return @component.sources.collect{|src| src.source}
+    end
+    sources = []
+    sources = params[:sources] if params[:sources]
+    sources = [params[:source]] if params[:source]
+    sources
+  end
+
+  def translation_keys_for_sources(sources, conditions)
+    @selected_sources = []
+    @translated = 0
+    @locked = 0
+
+    sources = Tr8n::TranslationSource.find(:all, :conditions => ["source in (?)", sources])
+    if sources.empty?
+      conditions = ["1=2"]
+      return Tr8n::TranslationKey.paginate(:per_page => per_page, :page => page, :conditions => conditions, :order => "created_at desc")    
+    end
+
+    source_ids = []
+    sources.each do |source|
+      next unless source.translator_authorized?
+      source_ids << source.id
+      @selected_sources << source
+      @locked += (source.total_metric.completeness || 0)
+      @translated += (source.total_metric.translation_completeness || 0)
+    end
+
+    # avg of the total
+    if source_ids.any?
+      @locked = @locked/source_ids.size
+      @translated = @translated/source_ids.size
+      conditions[0] << " and " unless conditions[0].blank?
+      conditions[0] << "(id in (select distinct(translation_key_id) from tr8n_translation_key_sources where translation_source_id in (?)))"
+      conditions << source_ids.uniq
+    else
+      @translated = 0
+      @locked = 0
+      conditions = ["1=2"]
+    end
+
+    Tr8n::TranslationKey.paginate(:per_page => per_page, :page => page, :conditions => conditions, :order => "created_at desc")    
+  end
 
   def init_sitemap_section
     return if params[:section_key].blank?
