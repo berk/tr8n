@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010 Michael Berkovich, Geni Inc
+# Copyright (c) 2010-2013 Michael Berkovich
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -30,18 +30,23 @@ class Tr8n::Config
   
   # initializes language, user and translator
   # the variables are kept in a thread safe form throughout the request
-  def self.init(site_current_locale, site_current_user = nil, site_current_source = nil)
+  def self.init(site_current_locale, site_current_user = nil, source = nil, component = nil)
     Thread.current[:tr8n_current_language]   = Tr8n::Language.for(site_current_locale) || default_language
     Thread.current[:tr8n_current_user]       = site_current_user
     Thread.current[:tr8n_current_translator] = Tr8n::Translator.for(site_current_user)
-    Thread.current[:tr8n_current_source]     = Tr8n::TranslationSource.find_or_create(site_current_source || "nil")
-    Thread.current[:tr8n_block_options]      = {}
+    Thread.current[:tr8n_current_source]     = Tr8n::TranslationSource.find_or_create(source || "nil")
+
+    # register source with component
+    unless component.nil?
+      Thread.current[:tr8n_current_component]  = Tr8n::Component.find_or_create(component) 
+      Tr8n::ComponentSource.find_or_create(current_component, current_source)
+    else
+      Thread.current[:tr8n_current_component]  = nil
+    end
+
+    Thread.current[:tr8n_block_options]      = []
   end
   
-  def self.set_source(site_source)
-    Thread.current[:tr8n_current_source]     = Tr8n::TranslationSource.find_or_create(site_source)
-  end
-
   def self.current_user
     Thread.current[:tr8n_current_user]
   end
@@ -49,6 +54,18 @@ class Tr8n::Config
   def self.current_source
     Thread.current[:tr8n_current_source]
   end  
+
+  def self.set_source(source)
+    Thread.current[:tr8n_current_source]     = Tr8n::TranslationSource.find_or_create(source)
+  end
+
+  def self.current_component
+    Thread.current[:tr8n_current_component]
+  end  
+
+  def self.set_component(component)
+    Thread.current[:tr8n_current_component]  = Tr8n::Component.find_or_create(component)
+  end
   
   def self.current_language
     Thread.current[:tr8n_current_language] ||= default_language
@@ -58,15 +75,23 @@ class Tr8n::Config
     Thread.current[:tr8n_current_translator] != nil
   end
   
-  def self.block_options
-    Thread.current[:tr8n_block_options] ||= {}
+  def self.current_translator_is_authorized_to_view_component?(component = current_component)
+    return true if component.nil?
+    return true unless component.restricted?
+    return false unless Tr8n::Config.current_user_is_translator?
+    return false unless component.translator_authorized?
+    true
   end
-  
+
   # when this method is called, we create the translator record right away
   # and from this point on, will track the user
   # this can happen any time user tries to translate something or enables inline translations
   def self.current_translator
     Thread.current[:tr8n_current_translator] ||= Tr8n::Translator.register
+  end
+
+  def self.set_translator(translator)
+    Thread.current[:tr8n_current_translator]  = translator
   end
   
   def self.default_language
@@ -81,6 +106,7 @@ class Tr8n::Config
     Thread.current[:tr8n_current_translator] = nil
     Thread.current[:tr8n_block_options]  = nil
     Thread.current[:tr8n_current_source] = nil
+    Thread.current[:tr8n_current_component] = nil
   end
 
   def self.models
@@ -812,17 +838,52 @@ class Tr8n::Config
   end
 
   #########################################################
-  ### OPTIONS
+  ### BLOCK OPTIONS
   #########################################################
-  def self.with_options(opts = {})
-    Thread.current[:tr8n_block_options] = opts
-    if block_given?
-      ret = yield
+  def self.current_source_from_block_options
+    arr = Thread.current[:tr8n_block_options] || []
+    arr.reverse.each do |opts|
+      return Tr8n::TranslationSource.find_or_create(opts[:source]) unless opts[:source].blank?
     end
-    Thread.current[:tr8n_block_options] = {}
+    nil
+  end
+
+  def self.current_component_from_block_options
+    arr = Thread.current[:tr8n_block_options] || []
+    arr.reverse.each do |opts|
+      return Tr8n::Component.find_or_create(opts[:component]) unless opts[:component].blank?
+    end
+    Tr8n::Config.current_component
+  end
+
+  def self.with_options(opts = {})
+    Thread.current[:tr8n_block_options] ||= []   
+    Thread.current[:tr8n_block_options].push(opts)
+
+    component = Tr8n::Config.current_component_from_block_options
+    if component
+      source = Tr8n::Config.current_source_from_block_options
+      unless source.nil?
+        Tr8n::ComponentSource.find_or_create(component, source)
+      end
+    end
+
+    if Tr8n::Config.current_translator_is_authorized_to_view_component?(component)
+      if block_given?
+        ret = yield
+      end
+    else
+      ret = ""
+    end
+
+    Thread.current[:tr8n_block_options].pop
     ret
   end
   
+  def self.block_options
+    (Thread.current[:tr8n_block_options] || []).last || {}
+  end
+
   #########################################################
   ### RELATIONSHIP AND CONFIGURATION KEYS
   #########################################################

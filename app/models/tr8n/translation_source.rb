@@ -39,7 +39,7 @@ class Tr8n::TranslationSource < ActiveRecord::Base
   alias :metrics  :translation_source_metrics
   
   def self.cache_key(source)
-    "translation_source_#{source}"
+    "translation_source_#{source.to_s}"
   end
 
   def cache_key
@@ -48,6 +48,7 @@ class Tr8n::TranslationSource < ActiveRecord::Base
 
   def self.find_or_create(source, url = nil)
     return source if source.is_a?(Tr8n::TranslationSource)
+    source = source.to_s
     
     Tr8n::Cache.fetch(cache_key(source)) do 
       find(:first, :conditions => ["source = ?", source]) || create(:source => source)

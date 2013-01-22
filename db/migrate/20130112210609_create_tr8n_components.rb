@@ -7,7 +7,7 @@ class CreateTr8nComponents < ActiveRecord::Migration
       t.timestamps
     end
 
-    add_index :tr8n_components, [:application_id]
+    add_index :tr8n_components, [:application_id], :name => "tr8n_comp_app_id"
   end
 
   def self.down

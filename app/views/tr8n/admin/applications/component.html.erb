@@ -12,6 +12,14 @@
     </tr>
     <tr>
         <th>
+            Key
+        </th>
+        <td>
+            <%=@comp.key %>
+        </td>
+    </tr>
+    <tr>
+        <th>
             Name
         </th>
         <td>
@@ -49,7 +57,7 @@
         <td>
         <%
           html = []
-          html << link_to_function("Update", "tr8nLightbox.show('/tr8n/admin/applications/lb_update_component?comp_id=#{@comp.id}', {height:350})")
+          html << link_to_function("Update", "tr8nLightbox.show('/tr8n/admin/applications/lb_update_component?comp_id=#{@comp.id}', {height:400})")
           html << link_to_function("Add Sources", "tr8nLightbox.show('/tr8n/admin/applications/lb_add_objects_to_component?type=source&comp_id=#{@comp.id}', {height:350})")
           html << link_to_function("Add Languages", "tr8nLightbox.show('/tr8n/admin/applications/lb_add_objects_to_component?type=language&comp_id=#{@comp.id}', {height:350})")
           html << link_to_function("Assign Translators", "tr8nLightbox.show('/tr8n/admin/applications/lb_add_objects_to_component?type=translator&comp_id=#{@comp.id}', {height:350})")

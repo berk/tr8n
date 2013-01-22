@@ -5,8 +5,8 @@ class CreateTr8nComponentLanguages < ActiveRecord::Migration
       t.integer :language_id
       t.timestamps
     end
-    add_index :tr8n_component_languages, [:component_id]
-    add_index :tr8n_component_languages, [:language_id]
+    add_index :tr8n_component_languages, [:component_id], :name => "tr8n_comp_lang_comp_id"
+    add_index :tr8n_component_languages, [:language_id], :name => "tr8n_comp_lang_lang_id"
   end
 
   def self.down

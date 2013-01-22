@@ -91,6 +91,11 @@ class Tr8n::Translator < ActiveRecord::Base
   def rank
     total_metric.rank
   end
+
+  def generate_access_key!(actor = self.user, reason = "No reason given")
+    self.update_attributes(:access_key => Tr8n::Config.guid)
+    Tr8n::TranslatorLog.log_admin(self, :generated_access_key, actor, reason)
+  end
     
   def block!(actor, reason = "No reason given")
     update_attributes(:blocked => true, :inline_mode => false)

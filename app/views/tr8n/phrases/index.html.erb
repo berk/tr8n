@@ -22,11 +22,6 @@
 	          </span>
 						<%=tra("include", "Phrases search filter option")%>
 						<%=select_tag(:phrase_lock, tr8n_options_for_select(Tr8n::TranslationKey.filter_phrase_lock_options, params[:phrase_lock]))%>
-						
-						<!-- 
-							<%=tra("from", "Phrases search filter option")%>
-							<%=select_tag(:source, options_for_select(@sources, params[:source]))%>
-						--> 
 	      </div>
 									
 	  <% end %>

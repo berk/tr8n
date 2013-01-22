@@ -32,7 +32,6 @@ class Tr8n::PhrasesController < Tr8n::BaseController
     conditions = Tr8n::TranslationKey.search_conditions_for(params)
 
     sources = sources_from_params
-    @sources = Tr8n::TranslationSource.options
 
     if sources.any?
       @translation_keys = translation_keys_for_sources(sources, conditions)
@@ -41,7 +40,7 @@ class Tr8n::PhrasesController < Tr8n::BaseController
       restricted_keys = Tr8n::TranslationKey.all_restricted_ids
 
       # exclude all restricted keys
-      if restricted_keys.size > 0
+      if restricted_keys.any?
         conditions[0] << " and " unless conditions[0].blank?
         conditions[0] << "(id not in (?))"
         conditions << restricted_keys
@@ -274,10 +273,10 @@ private
       return [] unless @component
       return @component.sources.collect{|src| src.source}
     end
-    sources = []
-    sources = params[:sources] if params[:sources]
-    sources = [params[:source]] if params[:source]
-    sources
+
+    return params[:sources] unless params[:sources].blank? 
+    return [params[:source]] unless params[:source].blank?
+    []
   end
 
   def translation_keys_for_sources(sources, conditions)

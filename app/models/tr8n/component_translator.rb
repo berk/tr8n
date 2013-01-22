@@ -26,6 +26,7 @@ class Tr8n::ComponentTranslator < ActiveRecord::Base
 
   belongs_to :component, :class_name => 'Tr8n::Component'
   belongs_to :translator, :class_name => 'Tr8n::Translator'
+  belongs_to :language, :class_name => 'Tr8n::Language'
 
   def self.find_or_create(component, translator)
     cs = find(:first, :conditions => ["component_id = ? and translator_id = ?", component.id, translator.id]) 

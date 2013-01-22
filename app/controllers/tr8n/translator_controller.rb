@@ -36,6 +36,12 @@ class Tr8n::TranslatorController < Tr8n::BaseController
     @fallback_language = (tr8n_current_translator.fallback_language || tr8n_default_language)
   end
 
+  def generate_access_key
+    Tr8n::Config.current_translator.generate_access_key!
+    trfn("New access key has be generated")
+    redirect_to_source
+  end
+
   def update_translator_section
     @fallback_language = (tr8n_current_translator.fallback_language || tr8n_default_language)
     unless request.post?

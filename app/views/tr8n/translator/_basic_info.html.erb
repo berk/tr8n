@@ -6,7 +6,7 @@
       <div style="<%=tr8n_style_attribute_tag('float', 'right')%>; padding:5px;">
           <%=tr8n_help_icon_tag %>
       </div>
-      <div ondblclick="switchSectionMode('basic_info', 'edit')">
+      <div>
         <table>
           <tr>
             <th style="width:120px;padding:3px;vertical-align:middle;font-weight:bold;"><%=tra("Name:")%></th>
@@ -20,19 +20,30 @@
           </tr>
 
           <tr>
-            <th style="width:120px;padding:3px;vertical-align:middle;font-weight:bold;"><%=tra("Gender:")%></th>
+            <th style="width:120px;padding:3px;vertical-align:middle;font-weight:bold;"><%=tra("Access Key:")%></th>
             <td style="padding:3px;">
-              <% if Tr8n::Config.site_user_info_disabled? and mode == :edit %>
-                <%=f.radio_button(:gender, "male")%> <%=tr('Male', 'Gender') %>
-                &nbsp; <%=f.radio_button(:gender, "female")%> <%=tra('Female', 'Gender') %>
-                &nbsp; <%=f.radio_button(:gender, "unknown")%> <%=tra('Unknown', 'Gender') %>
-              <% else %>
-                <%=tr8n_current_translator.gender%>
-              <% end %>
+                <%=tr8n_current_translator.access_key || "not generated" %>
+
+                (<%= link_to(tra('generate'), {:action => :generate_access_key}) %>)
+                <span style="color: #888"><%=tra("Allows you to access restricted sections when you are not logged in.") %></span>
+
             </td>
           </tr>
-					
+
 					<% if Tr8n::Config.site_user_info_disabled? %>
+            <tr>
+              <th style="width:120px;padding:3px;vertical-align:middle;font-weight:bold;"><%=tra("Gender:")%></th>
+              <td style="padding:3px;">
+                <% if Tr8n::Config.site_user_info_disabled? and mode == :edit %>
+                  <%=f.radio_button(:gender, "male")%> <%=tr('Male', 'Gender') %>
+                  &nbsp; <%=f.radio_button(:gender, "female")%> <%=tra('Female', 'Gender') %>
+                  &nbsp; <%=f.radio_button(:gender, "unknown")%> <%=tra('Unknown', 'Gender') %>
+                <% else %>
+                  <%=tr8n_current_translator.gender%>
+                <% end %>
+              </td>
+            </tr>
+
 	          <tr>
 	            <th style="width:120px;padding:3px;vertical-align:middle;font-weight:bold;"><%=tra("Email:")%></th>
 	            <td style="padding:3px;">
@@ -74,7 +85,7 @@
 	            </td>
 	          </tr>
           <% end %>
-										
+
 					<% if Tr8n::Config.enable_translator_language? %>
 	          <tr>
 	            <th style="padding:3px;vertical-align:middle;font-weight:bold;"><%=tra("Fallback Language:", "Language to fall back onto if the language phrase is not translated")%></th>

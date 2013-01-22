@@ -110,7 +110,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     # return unless translation_mode or options[:api] != :translate
 
     # source can be passed into an individual key, or as a block or fall back on the controller/action
-    source = options[:source] || Tr8n::Config.block_options[:source] || Tr8n::Config.current_source
+    source = options[:source] || Tr8n::Config.current_source_from_block_options || Tr8n::Config.current_source
     translation_source = Tr8n::TranslationSource.find_or_create(source)
 
     # each key is associated with one or more sources

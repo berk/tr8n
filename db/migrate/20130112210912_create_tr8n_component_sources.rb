@@ -6,8 +6,8 @@ class CreateTr8nComponentSources < ActiveRecord::Migration
       t.timestamps
     end
 
-    add_index :tr8n_component_sources, [:component_id]
-    add_index :tr8n_component_sources, [:translation_source_id]
+    add_index :tr8n_component_sources, [:component_id], :name => "tr8n_comp_comp_id"
+    add_index :tr8n_component_sources, [:translation_source_id], :name => "tr8n_comp_src_id"
   end
 
   def self.down

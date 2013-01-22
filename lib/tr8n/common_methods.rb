@@ -65,10 +65,14 @@ module Tr8n::CommonMethods
     end
   end
   
-  def tr8n_site_current_source
+  def tr8n_source
     "#{self.class.name.underscore.gsub("_controller", "")}/#{self.action_name}"
   rescue
     self.class.name
+  end  
+
+  def tr8n_component
+    nil
   end  
   
   def init_tr8n
@@ -99,14 +103,27 @@ module Tr8n::CommonMethods
     end
     
     # initialize request thread variables
-    Tr8n::Config.init(tr8n_current_locale, tr8n_current_user, tr8n_site_current_source)
-  
+    Tr8n::Config.init(tr8n_current_locale, tr8n_current_user, tr8n_source, tr8n_component)
+
+    # for logged out users, fallback onto tr8n_access_key
+    if Tr8n::Config.current_user_is_guest?  
+      unless params[:tr8n_access_key].blank?
+        Tr8n::Config.set_translator(Tr8n::Translator.find_by_access_key(params[:tr8n_access_key]))
+      end
+    end
+
     # invalidate source for the current page
     Tr8n::Cache.invalidate_source(Tr8n::Config.current_source)
     
     # track user's last ip address  
     if Tr8n::Config.enable_country_tracking? and Tr8n::Config.current_user_is_translator?
       Tr8n::Config.current_translator.update_last_ip(tr8n_request_remote_ip)
+    end
+
+    # register component and verify that the current translator is authorized to view it
+    unless Tr8n::Config.current_translator_is_authorized_to_view_component?
+      trfe("You are not authorized to view this component")
+      redirect_to(Tr8n::Config.default_url)
     end
   end
 

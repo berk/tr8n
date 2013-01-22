@@ -7,9 +7,7 @@
 		  	<%
 		  		links = []
 					links << link_to(tra("my assignments"), :controller => "/tr8n/translator", :action => :assignments)
-					if Tr8n::Config.enable_translator_language?
-						links << link_to(tra("edit preferences"), :controller => "/tr8n/translator", :action => :index)
-					end
+  				links << link_to(tra("edit preferences"), :controller => "/tr8n/translator", :action => :index)
 				%>
 				<%= links.join(" | ") %>
 		  </div>

@@ -4,10 +4,13 @@
   <%= will_filter_table_tag(@results, :columns => [
     [:checkbox, 'component_objects'],     
     [:source, lambda{|source| 
+      source.translation_source.id
+    }],
+    [:source, lambda{|source| 
       link_to(source.translation_source.full_title, :action => :source, :source_id => source.translation_source.id)
     }],
     [:keys, lambda{|source|
-      link_to(source.translation_source.total_metric.key_count, "/tr8n/admin/applications/key_sources?wf_c0=translation_source_id&wf_o0=is&wf_v0_0=#{source.id}")
+      link_to(source.translation_source.total_metric.key_count, "/tr8n/admin/applications/source?mode=translation_keys&source_id=#{source.translation_source.id}")
     }, 'text-align:right'],
     [:translated_keys, lambda{|source| 
       source.translation_source.total_metric.translated_key_count

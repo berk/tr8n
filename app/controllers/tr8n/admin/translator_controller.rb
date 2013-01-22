@@ -141,4 +141,10 @@ class Tr8n::Admin::TranslatorController < Tr8n::Admin::BaseController
     @ip_locations = Tr8n::IpLocation.filter(:params => params, :filter => Tr8n::IpLocationFilter)
   end
      
+  def generate_access_key
+    @translator = Tr8n::Translator.find(params[:translator_id])
+    redirect_to(:action => :index) unless @translator
+    @translator.generate_access_key!(tr8n_current_user)
+    redirect_to_source
+  end   
 end

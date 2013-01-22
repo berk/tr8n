@@ -25,6 +25,16 @@
     </tr>
     <tr>
         <th>
+            Access Code
+        </th>
+        <td>
+            <%= @translator.access_key %>
+            (<%= link_to('generate', {:action => :generate_access_key, :translator_id => @translator.id}, {:confirm => "Are you sure you want to generate translator access key?"}) %>)
+            <span style="color: #888">Used to access restricted components when user is logged out.</span>
+        </td>
+    </tr> 
+    <tr>
+        <th>
             Site Administrator
         </th>
         <td>
@@ -37,7 +47,7 @@
         </th>
         <td>
             <span id="translator_level_container"> 
-              <span id='translator_title'><%= @translator.title %></span>
+              <span id='translator_title'><%= @translator.title %> (<%= @translator.level %>)</span>
               &nbsp;&nbsp;
               <%= link_to_function('change', "Tr8n.Effects.hide('translator_level_container'); Tr8n.Effects.show('translator_level_options_container');") unless @translator.admin? %>
             </span>

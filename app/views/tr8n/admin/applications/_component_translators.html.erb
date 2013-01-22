@@ -17,7 +17,7 @@
     [:level, lambda{|ctran|
       if ctran.translator.admin?
         "<span style='color:red'>#{ctran.translator.title}</span>"
-      elsif translator.manager?
+      elsif ctran.translator.manager?
         "<span style='color:brown'>#{ctran.translator.title}</span>"
       else
         ctran.translator.title

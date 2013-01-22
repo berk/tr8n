@@ -22,7 +22,7 @@
       <%=link_to(tra("All Phrases"), :action => :index)%> 
       <% if @component %>
         &raquo;
-        <%= link_to(@component.name, params) %>
+        <%= link_to(@component.title, params) %>
       <% elsif @selected_sources and @selected_sources.any? %>
         &raquo;
         <% 

@@ -5,8 +5,8 @@ class CreateTr8nComponentTranslators < ActiveRecord::Migration
       t.integer :translator_id
       t.timestamps
     end
-    add_index :tr8n_component_translators, [:component_id]
-    add_index :tr8n_component_translators, [:translator_id]
+    add_index :tr8n_component_translators, [:component_id], :name => "tr8n_comp_trn_comp_id"
+    add_index :tr8n_component_translators, [:translator_id], :name => "tr8n_comp_trn_trn_id"
   end
 
   def self.down

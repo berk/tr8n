@@ -21,9 +21,13 @@
     </span>
   </div>
 
+  <% if @components.any? %>
   <div class="section_box" style="background-color:#EFF8FF;">
-    <%= tr("You have [bold: {count||assignment}]: {assignments}.", nil, :count => @components.size, :assignments => [@components.collect{|comp| link_to(comp.name, :anchor => "component_#{comp.id}")}]) %>
+    <%= tr("You have [bold: {count||assignment}]: {assignments}.", nil, :count => @components.size, :assignments => [@components.collect{|comp| link_to(comp.title, :anchor => "comp-#{comp.id}")}]) %>
   </div>
+  <% else %>
+    <%= tr("You currently don't have any assignments.") %>
+  <% end %>
 
   <% @components.each do |comp| %>
     <div class="section_title">
@@ -34,7 +38,7 @@
       <%=tr8n_toggler_tag("comp_content_#{comp.id}")%>
       
       <span dir="ltr">
-        <a name="<%="component_#{comp.id}"%>" style="text-decoration:none;color:black;"><%=comp.name%></a>
+        <a name="<%="comp-#{comp.id}"%>" style="text-decoration:none;color:black;"><%=comp.title%></a>
       </span>
     </div>
     
@@ -58,8 +62,8 @@
         <div style="width:450px;display:inline-block; padding:7px; padding-bottom:0px; font-size:13px; background:<%=background%>; margin-bottom:10px; border-radius:10px;margin-right:3px;">
           <div>
             <div style="<%=tr8n_style_attribute_tag('float', 'right')%>; font-size:12px; font-weight:normal;">
-              <% if source.url %>
-                <%= link_to("view inline", source.url)%>
+              <% unless source.url.blank? %>
+                <%= link_to("view page", source.url, :target => "_new")%>
               <% end %>  
             </div>
             <strong><%=source.title%></strong>
