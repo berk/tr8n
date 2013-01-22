@@ -11,10 +11,12 @@
 	<%= will_filter_table_tag(@keys, :columns => [
 	  [:checkbox, :keys],
 	  [:label, lambda{|key|
-	    html = link_to(key.label, :action => :view, :key_id => key.id) 
-	    html << '<div style="color:grey; font-size:10px;">'
-	    html << key.description.to_s  
-	    html << '</div>'  
+        html = []
+        html << link_to(key.label, :action => :view, :key_id => key.id)
+        html << '<div style="color:grey; font-size:10px;">'
+        html << key.description.to_s
+        html << '</div>'
+        html.join('').html_safe
 	  }],
     :locale,
     [:admin, lambda{|key| key.admin}, 'padding:5px;text-align:right;'],
