@@ -4,7 +4,8 @@
 
 <% form_tag("", :id => "metrics_form") do %>
   <%= will_filter_table_tag(@metrics, :columns => [
-    [:source_id, lambda{|metric| 
+    :id,
+    [:translation_source_id, lambda{|metric| 
        metric.translation_source.source
     }],    
     [:language_id, lambda{|metric| 
