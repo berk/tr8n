@@ -6,54 +6,85 @@
 
 <div class="documentation_section">
   <p>
-  Use Inline translations to translate phrases while you are using and browsing the site. Use the Enable inline translations link in the language selector to enable inline translations. The link changes to "Disable inline translations" so you can turn it inline translations off when you are done.
-	</p>
-	<p>
-		<%= image_tag("/tr8n/images/help/color_coding.png") %>
-	</p>
-	
+    <%= tr("Use Inline translations to translate phrases while you are using and browsing the site.") %> 
+    <%= tr("Use the Enable inline translations link in the language selector to enable inline translations.") %> 
+    <%= tr("The link changes to {ldquo}Disable inline translations{rdquo} so you can turn it inline translations off when you are done.") %>
+  </p>
+  <p>
+    <%= image_tag("/tr8n/images/help/color_coding.png") %>
+  </p>
+  
   <p>
   <ul>
-    <li>Red - The phrase has not yet been translated for this language</li>
-    <li>Yellow - The phrase has been translated in a fallback language</li>
-    <li>Green - The phrase has been translated into this language</li>
+    <li><%= tr("Red - The phrase has not yet been translated for this language") %> </li>
+    <li><%= tr("Yellow - The phrase has been translated in a fallback language") %> </li>
+    <li><%= tr("Green - The phrase has been translated into this language") %> </li>
   </ul>
   </p>
 
   <p>
-  	Right-click (or Control-click on a Mac) on any underlined word to add a translation or to view and vote on existing translations. 
-  </p>	
-	
-	<h2>Phrases Without Translations</h2>
-	<p>Phrases that have not been translated are underlined in red. Right-click on a phrase to add a translation. </p>
-	<p>
-		<%= image_tag("/tr8n/images/help/translator.png") %>
-	</p>
-	
-	<h3>Original Phrase</h3>
-	<p>Displays the phrase you are translating in English along with a short description. </p>
-	
-	<h3>Enter Translation</h3>
-	<p>Enter your translation for this phrase. Click the keyboard icon to enter your translation in other character sets such as Hebrew or Cyrillic. Click the Translate button after you enter your translation to save it. </p>
-	
-	<h3>Generate Context Rules</h3>
-	<p>Translations for some phrases can depend on the gender of the user viewing the translation and the gender or numerical value of tokens in the phrase. For example, in some languages "Invite Family & Friends to View Your Tree" has two different translations, one if the viewer is male and one if they are female. Tokens are parts of the phrase that are not translated, such as a profile name or a number. The translation for "{actor} tagged {target} in {count} photos" can depend on the gender of the actor and target as well as the number of photos. Tokens themselves are not translated. Geni will automatically replace them with the actual value. </p>
-	<p>If the translation of the phrase depends on any of these factors, click the generate context rules for this phrase link. Select the gender or number for each token that the translation depends on and click the "Continue... " button. This will show you a list of all possible contexts so you can provide an appropriate translation for each. </p>
+    <%= tr("Right-click (or Control-click on a Mac) on any underlined word to add a translation or to view and vote on existing translations.") %>  
+  </p>  
+  
+  <h2><%= tr("Phrases Without Translations") %> </h2>
+  <p><%= tr("Phrases that have not been translated are underlined in red. Right-click on a phrase to add a translation.") %>  </p>
+  <p>
+    <%= image_tag("/tr8n/images/help/translator.png") %>
+  </p>
+  
+  <h3><%= tr("Original Phrase") %> </h3>
+  <p><%= tr("Displays the phrase you are translating in English along with a short description.") %>  </p>
+  
+  <h3><%= tr("Enter Translation") %> </h3>
+  <p>
+    <%= tr("Enter your translation for this phrase. Click the keyboard icon to enter your translation in other character sets such as Hebrew or Cyrillic.") %>  
+    <%= tr("Click the Translate button after you enter your translation to save it.") %>  
+  </p>
+  
+  <h3><%= tr("Generate Context Rules") %> </h3>
+  <p>
+    <%= tr("Translations for some phrases can depend on the gender of the user viewing the translation and the gender or numerical value of tokens in the phrase.") %> 
+    <%= tr("For example, in some languages {ldquo}{example}{rdquo} has two different translations, one if the viewer is male and one if they are female.", nil, :example => "Invite Friends to Join the Site") %> 
+    <%= tr("Tokens are parts of the phrase that are not translated, such as a profile name or a number.") %> 
+    <%=tr("The translation for {ldquo}{example}{rdquo} can depend on the gender of the actor and target as well as the number of photos.", nil, :example => "{actor} tagged {target} in {count} photos")%> 
+    <%=tr("Tokens themselves are not translated. Translation engine will automatically replace them with the actual value.")%>
+  </p>
+  <p>
+    <%= tr("If the translation of the phrase depends on any of these factors, click the generate context rules for this phrase link.")%> 
+    <%=tr("Select the gender or number for each token that the translation depends on and click the {ldquo}Continue...{rdquo} button.")%> 
+    <%= tr("This will show you a list of all possible contexts so you can provide an appropriate translation for each.")%>  
+  </p>
 
-  <h3>Translation Tokens</h3>
-	<p>Tokens are parts of the phrase that are not translated, such as a profile name. Click on a token to add it to your translation. When a user is viewing the phrase, the tokens will automatically be replaced by the translation egnine. </p>
-	
-	<h3>Suggested Translations</h3>
-	<p>Displays the translation suggested by Google when you are translating a language they support. Click on their suggestion if you like it to insert it into the translation window. You can then save the translation or further edit it. </p>
-	
-	<h2>Phrases With Translations</h2>
-	<p>Phrases that have been translated are underlined in blue. Right click on one to vote on existing translations or add a new one.</p>
-	<p>The top ten translations for each phrase are listed. The rank indicates how many users have voted for the translation (+1 for up votes, -1 for down votes). Use the thumbs to vote a translation up or down. Report a translation to remove it from the list of translations and put the translator on a watch list. This should only be used when the translation is intentionally incorrect or offensive. </p>
-  <p>If you don't like any of the translations listed, use the view all link to find another translation to vote up or use the translate it yourself link to add a better translation.</p>
-	
-		
-	
-		
+  <h3><%= tr("Translation Tokens")%> </h3>
+  <p>
+    <%= tr("Tokens are parts of the phrase that are not translated, such as a profile name.")%>  
+    <%= tr("Click on a token to add it to your translation.")%>  
+    <%= tr("When a user is viewing the phrase, the tokens will automatically be replaced by the translation egnine.")%>  
+  </p>
+  
+  <h3><%= tr("Suggested Translations")%> </h3>
+  <p>
+    <%= tr("Displays the translation suggested by Google when you are translating a language they support.")%>  
+    <%= tr("Click on their suggestion if you like it to insert it into the translation window.")%>  
+    <%= tr("You can then save the translation or further edit it.")%>  
+  </p>
+  
+  <h2><%= tr("Phrases With Translations")%> </h2>
+  <p>
+    <%= tr("Phrases that have been translated are underlined in blue.")%>  
+    <%= tr("Right click on one to vote on existing translations or add a new one.")%> 
+  </p>
+  <p>
+    <%= tr("The top ten translations for each phrase are listed.")%>  
+    <%= tr("The rank indicates how many users have voted for the translation (+1 for up votes, -1 for down votes).")%>  
+    <%= tr("Use the thumbs to vote a translation up or down.")%>  
+    <%= tr("Report a translation to remove it from the list of translations and put the translator on a watch list.")%>  
+    <%= tr("This should only be used when the translation is intentionally incorrect or offensive.")%>  
+  </p>
+  <p>
+    <%= tr("If you don't like any of the translations listed, use the view all link to find another translation to vote up or use the translate it yourself link to add a better translation.")%> 
+  </p>
+    
 </div>
 
 <%= render :partial => "footer" %>

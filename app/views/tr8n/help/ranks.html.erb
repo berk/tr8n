@@ -5,23 +5,31 @@
 </div>
 
 <div class="documentation_section">
-	<p>
-    There are two kinds of ranks in Tr8n Translation System: user ranks and translation ranks. 
-  </p>
-	
-	<h2>User Ranks</h2>
-	<p>
-		Each translator has a rank of 1 to 5 stars. Their rank is based on the percentage of the translations they've submitted that have been accepted. 
-	</p>
-	
-  <h2>Translation Ranks</h2>
   <p>
-    When you add a translation we automatically give it an up vote from you, so it will start with a rank of +1. If you decide later that it is not a good translation, you can change your vote on your own translation to a down vote. The first section focuses on you and your overall activity. Your overall rank is based on the percentage of your translations in all languages that have received positive votes. There are three states for each translation you've provided: accepted, pending, and rejected. Accepted means that its rank has meet the necessary threshold to be accepted. Pending means that the translation has not been accepted or rejected. Rejected translations have been voted down by users or reported.  
+    <%= tr("There are two kinds of ranks in Tr8n Translation System: user ranks and translation ranks.") %> 
   </p>
-	<p>
-		Note that only the translation with the highest overall rank for that phrase will be used. This means that you can have a translation accepted but not used on the site.
-	</p>
-	
+  
+  <h2><%= tr("User Ranks") %></h2>
+  <p>
+    <%= tr("Each translator has a rank of 1 to 5 stars. Their rank is based on the percentage of the translations they've submitted that have been accepted.") %> 
+  </p>
+  
+  <h2><%= tr("Translation Ranks") %></h2>
+  <p>
+    <%= tr("When you add a translation we automatically give it an up vote from you, so it will start with a rank of +1.") %> 
+    <%= tr("If you decide later that it is not a good translation, you can change your vote on your own translation to a down vote.") %> 
+    <%= tr("The first section focuses on you and your overall activity.") %> 
+    <%= tr("Your overall rank is based on the percentage of your translations in all languages that have received positive votes.") %> 
+    <%= tr("There are three states for each translation you've provided: accepted, pending, and rejected.") %> 
+    <%= tr("Accepted means that its rank has meet the necessary threshold to be accepted.") %> 
+    <%= tr("Pending means that the translation has not been accepted or rejected.") %> 
+    <%= tr("Rejected translations have been voted down by users or reported.") %>  
+  </p>
+  <p>
+    <%= tr("Note that only the translation with the highest overall rank for that phrase will be used.") %> 
+    <%= tr("This means that you can have a translation accepted but not used on the site.") %>
+  </p>
+  
 </div>
 
 <%= render :partial => "footer" %>

@@ -5,36 +5,82 @@
 </div>
 
 <div class="documentation_section">
-	<p>
-    Your dashboard provides an overview of all of your languages and your translation activity.   
+  <p>
+    <%=tr("Your dashboard provides an overview of all of your languages and your translation activity.")%>   
   </p>
-	
-	<h2>Your Dashboard</h2>
-	<p>Your dashboard focuses on your rankings, translations, and other activity. Your overall rank is based on the percentage of your translations in all languages that have received positive votes. There are three states for each translation you've provided: accepted, pending, and rejected. Accepted means that its rank has meet the necessary threshold to be accepted. Pending means that the translation has not been accepted or rejected. Rejected translations have been voted down by users or reported. </p>
-  <p>Note that only the translation with the highest overall rank for that phrase will be used. This means that you can have a translation accepted but not used on the site.</p>	
-	
-	<h2>Language Dashboard</h2>
-	<p>After your dashboard, you'll have a dashboard for each of the languages you are translating. Most users will only have one language other than English, and so will only have one language module. </p>
-	<p>On the same line as the language name you'll see a set of links. Select will switch you to that language. Remove will remove the language from your languages list and your dashboard. The rest of the links take you to the various translation and management tools for that language. </p>
-	<p>Next you'll see how many phrases have not been translated yet for that language. Click the link to view a list of these phrases and translate them. </p>
-	
-	<h3>Language Phrases</h3>
-	<p>Shows the status of each translatable phrase for that language. A phrase is accepted if it has at least one accepted translation. Pending means that there are translations for the phrase, but none have been accepted. Not translated means that the phrase is translatable, but no translations have been submitted. </p>
-	<p>Note: If a phrase has been locked, it is not considered translatable. Rejected translations are not counted as translations. This means that if a phrase has only one translation, and that translation has been rejected, the phrase will be considered not translated. </p>
-	
-	<h3>Your Translations</h3>
-	<p>Your translations shows you the status of each translation you've provided for this language. There are three states for each translation you've provided: accepted, pending, and rejected. Accepted means that its rank has meet the necessary threshold to be accepted. Pending means that the translation has not been accepted or rejected. Rejected translations have been voted down by users or reported. </p>
-	<p>Note that only the translation with the highest overall rank for that phrase will be used. This means that you can have a translation accepted but not used on the site. </p>
+  
+  <h2><%=tr("Your Dashboard")%></h2>
+  <p>
+    <%=tr("Your dashboard focuses on your rankings, translations, and other activity.")%> 
+    <%=tr("Your overall rank is based on the percentage of your translations in all languages that have received positive votes.")%> 
+    <%=tr("There are three states for each translation you've provided: accepted, pending, and rejected.")%> 
+    <%=tr("Accepted means that its rank has meet the necessary threshold to be accepted. Pending means that the translation has not been accepted or rejected.")%> 
+    <%=tr("Rejected translations have been voted down by users or reported.")%> 
+  </p>
+  <p>
+    <%=tr("Note that only the translation with the highest overall rank for that phrase will be used.")%> 
+    <%=tr("This means that you can have a translation accepted but not used on the site.")%>
+  </p>  
+  
+  <h2><%=tr("Language Dashboard")%></h2>
+  <p>
+    <%=tr("After your dashboard, you'll have a dashboard for each of the languages you are translating.")%> 
+    <%=tr("Most users will only have one language other than English, and so will only have one language module.")%> 
+  </p>
+  <p>
+    <%=tr("On the same line as the language name you'll see a set of links.")%> 
+    <%=tr("Select will switch you to that language. Remove will remove the language from your languages list and your dashboard.")%> 
+    <%=tr("The rest of the links take you to the various translation and management tools for that language.")%> 
+  </p>
+  <p>
+    <%=tr("Next you'll see how many phrases have not been translated yet for that language.")%> 
+    <%=tr("Click the link to view a list of these phrases and translate them.")%> 
+  </p>
+  
+  <h3><%=tr("Language Phrases")%></h3>
+  <p>
+    <%=tr("Shows the status of each translatable phrase for that language.")%> 
+    <%=tr("A phrase is accepted if it has at least one accepted translation.")%> 
+    <%=tr("Pending means that there are translations for the phrase, but none have been accepted.")%> 
+    <%=tr("Not translated means that the phrase is translatable, but no translations have been submitted.")%> 
+  </p>
+  <p>
+    <%=tr("Note: If a phrase has been locked, it is not considered translatable.")%> 
+    <%=tr("Rejected translations are not counted as translations.")%> 
+    <%=tr("This means that if a phrase has only one translation, and that translation has been rejected, the phrase will be considered not translated.")%> 
+  </p>
+  
+  <h3><%=tr("Your Translations")%></h3>
+  <p>
+    <%=tr("Your translations shows you the status of each translation you've provided for this language.")%> 
+    <%=tr("There are three states for each translation you've provided: accepted, pending, and rejected.")%> 
+    <%=tr("Accepted means that its rank has meet the necessary threshold to be accepted.")%> 
+    <%=tr("Pending means that the translation has not been accepted or rejected.")%>
+    <%=tr("Rejected translations have been voted down by users or reported.")%> 
+  </p>
+  <p>
+    <%=tr("Note that only the translation with the highest overall rank for that phrase will be used.")%>  
+    <%=tr("This means that you can have a translation accepted but not used on the site.")%>  
+  </p>
 
-  <h3>Recent Discussions</h3>
-	<p>Lists the last five posts to the discussion forum for the language. Click view to see the whole thread and reply to the discussion. </p>
-	
-  <h3>Recent Translations</h3>
-	<p>Recent translations lists the five most recently added translations for the language. You can vote on the translations or view all for a longer list of recent translations.</p>
-	
-  <h3>Recent Translation Votes</h3>
-	<p>Recent translation votes lists the five translations that were voted on most recently for the language. You can add your own vote or view all for a longer list of translations with recent votes. </p>
-	
+  <h3><%=tr("Recent Discussions")%> </h3>
+  <p>
+    <%=tr("Lists the last five posts to the discussion forum for the language.")%>  
+    <%=tr("Click view to see the whole thread and reply to the discussion.")%>  
+  </p>
+  
+  <h3><%=tr("Recent Translations")%> </h3>
+  <p>
+    <%=tr("Recent translations lists the five most recently added translations for the language.")%>  
+    <%=tr("You can vote on the translations or view all for a longer list of recent translations.")%> 
+  </p>
+  
+  <h3><%=tr("Recent Translation Votes")%> </h3>
+  <p>
+    <%=tr("Recent translation votes lists the five translations that were voted on most recently for the language.")%>  
+    <%=tr("You can add your own vote or view all for a longer list of translations with recent votes.")%>  
+  </p>
+  
 </div>
 
 <%= render :partial => "footer" %>

@@ -5,48 +5,69 @@
 </div>
 
 <div class="documentation_section">
-	<p>
-    The language selector is your primary interface for the translation engine. You can change your current language, enable inline translations, and access additional tools for translators and language managers. Click on you current language at the top right corner of any page to access the language selector window.  
+  <p>
+    <%= tr("The language selector is your primary interface for the translation engine.") %> 
+    <%= tr("You can change your current language, enable inline translations, and access additional tools for translators and language managers.") %> 
+    <%= tr("Click on you current language at the top right corner of any page to access the language selector window.") %>  
   </p>
 
   <p style="text-align:center">
-  <%= image_tag("/tr8n/images/help/language_selector_v2.png") %>
+   <%= image_tag("/tr8n/images/help/language_selector_v2.png") %>
   </p>
-	
-	<h2>Your Languages</h2>
-	<p>
-		Your languages gives you quick access to the languages you've previously selected. When you first open the language selector, you will notice that English (US) has been added to Your Languages by default. Select a language from the Other Languages list to add it to your languages. 
-	</p>
-	
-  <h2>Other Languages</h2>
-	<p>Click Other Languages to view a list of all of the languages available on Geni. Select a language to switch to that language and add it to Your Languages list. The percentage next to each language indicates how much of the site has been translated into that language.</p>
-
-  <h2>Actions</h2>
-	<h3>Enable/Disable Inline Translations</h3>
+  
+  <h2><%= tr("Your Languages") %></h2>
   <p>
-    When viewing a language other than English, click the enable inline translations link to begin translating the site into that language. Use the same link to disable inline translations.   
+    <%= tr("Your languages gives you quick access to the languages you've previously selected.") %> 
+    <%= tr("When you first open the language selector, you will notice that English (US) has been added to Your Languages by default.") %> 
+    <%= tr("Select a language from the Other Languages list to add it to your languages.") %> 
+  </p>
+  
+  <h2><%= tr("Other Languages") %></h2>
+  <p>
+    <%= tr("Click Other Languages to view a list of all available languages.") %> 
+    <%= tr("Select a language to switch to that language and add it to Your Languages list.") %> 
+    <%= tr("The percentage next to each language indicates how much of the site has been translated into that language.") %>
   </p>
 
-  <p>When you enable inline translations you'll notice that all translatable phrases are underlined in various colors: </p>
+  <h2><%= tr("Actions") %></h2>
+  <h3><%= tr("Enable/Disable Inline Translations") %></h3>
+  <p>
+    <%= tr("When viewing a language other than English, click the enable inline translations link to begin translating the site into that language.") %> 
+    <%= tr("Use the same link to disable inline translations.") %>   
+  </p>
+
+  <p>
+    <%= tr("When you enable inline translations you'll notice that all translatable phrases are underlined in various colors:") %> 
+  </p>
   
   <p>
   <ul>
-    <li>Red - The phrase has not yet been translated for this language</li>
-    <li>Yellow - The phrase has been translated in a fallback language</li>
-    <li>Green - The phrase has been translated into this language</li>
+    <li><%= tr("Red - The phrase has not yet been translated for this language") %></li>
+    <li><%= tr("Yellow - The phrase has been translated in a fallback language") %></li>
+    <li><%= tr("Green - The phrase has been translated into this language") %></li>
   </ul>
   </p>
   
-  <p>Right-click (or Control-click on a Mac) on a phrase to translate it. See Translating Inline for more details.</p>	
+  <p>
+    <%= tr("Right-click (or Control-click on a Mac) on a phrase to translate it. See Translating Inline for more details.") %>
+  </p>  
 
-  <h3>Translation Translations</h3>
-	<p>Click Translation Tools to access the complete suite of advanced translation tools, including bulk translation tools, awards, and discussions. </p>
-	
-	<h3>Manage Language</h3>
-	<p>This feature is only available for language managers. Click Manage Language to access language management tools, such as the language's native name and grammar rules.</p>
+  <h3><%= tr("Translation Translations") %></h3>
+  <p>
+    <%= tr("Click Translation Tools to access the complete suite of advanced translation tools, including bulk translation tools, awards, and discussions.") %> 
+  </p>
+  
+  <h3><%= tr("Manage Language") %></h3>
+  <p>
+    <%= tr("This feature is only available for language managers. ") %>
+    <%= tr("Click Manage Language to access language management tools, such as the language's native name and grammar rules.") %>
+  </p>
 
-  <h3>Configure tr8n</h3>
-  <p>This feature is only available for tr8n administrators. Click Configure tr8n to access advanced configuration options.</p>
+  <h3><%= tr("Configure tr8n") %></h3>
+  <p>
+    <%= tr("This feature is only available for tr8n administrators.") %> 
+    <%= tr("Click Configure tr8n to access advanced configuration options.") %>
+  </p>
 
 </div>
 

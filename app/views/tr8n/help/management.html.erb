@@ -6,37 +6,61 @@
 
 <div class="documentation_section">
 	<p>
-		Language management features can only be accessed by the language managers. If you would like to become a language manager, please contact the site adminstrator and request management rights for your languages.
+		<%= tr("Language management features can only be accessed by the language managers.") %> 
+		<%= tr("If you would like to become a language manager, please contact the site adminstrator and request management rights for your languages.") %>
 	</p>
 	<p>	
-    Click Manage Language in the language selector to access language management tools, such as the language's native name and grammar rules. 
+    <%= tr("Click Manage Language in the language selector to access language management tools, such as the language's native name and grammar rules.") %> 
 	</p>
 	
-	<h2>Basic Information</h2>
-	<p>Provide the basic information for your language.</p>
+	<h2><%= tr("Basic Information") %></h2>
+	<p><%= tr("Provide the basic information for your language.") %></p>
 	
-	<h3>Native Name</h3>
-	<p>Enter the name of the language in the native language. This will appear after the English name for the language in the Language Selector. </p>
+	<h3><%= tr("Native Name") %></h3>
+	<p>
+		<%= tr("Enter the name of the language in the native language.") %> 
+		<%= tr("This will appear after the English name for the language in the Language Selector.") %> 
+	</p>
 	
-	<h3>Direction</h3>
-	<p>Determines whether the language is displayed left to right or right to left. </p>
+	<h3><%= tr("Direction") %></h3>
+	<p>
+		<%= tr("Determines whether the language is displayed left to right or right to left.") %> 
+	</p>
 	
-	<h3>Fallback Language</h3>
-	<p>Use this to specify which language will be used for phrases that have not been translated into this language. For example, the fallback language for French (Canadian) could be French. When a user viewing the French (Canadian) translation views a phrase that has not been translated into French (Canadian), they will see the French translation for that phrase. Languages that don't have a fallback specified will fallback to English, so if there isn't a French (Canadian) or French translation, the user would see the original English version. </p>
+	<h3><%= tr("Fallback Language") %></h3>
+	<p>
+		<%= tr("Use this to specify which language will be used for phrases that have not been translated into this language.") %> 
+		<%= tr("For example, the fallback language for French (Canadian) could be French.") %> 
+		<%= tr("When a user viewing the French (Canadian) translation views a phrase that has not been translated into French (Canadian), they will see the French translation for that phrase.") %> 
+		<%= tr("Languages that don't have a fallback specified will fallback to English, so if there isn't a French (Canadian) or French translation, the user would see the original English version.") %> 
+	</p>
 	
-	<h2>Prohibited Words</h2>
-	<p>Add any prohibited/curse words that should not be allowed in translations for this language. Separate words with commas. </p>
+	<h2><%= tr("Prohibited Words") %></h2>
+	<p>
+		<%= tr("Add any prohibited/curse words that should not be allowed in translations for this language.") %> 
+		<%= tr("Separate words with commas.") %> 
+	</p>
 	
-	<h2>Language Context Rules</h2>
-	<p>Tokens are parts of a phrase that are not translated, such as a profile name or a number. Translations in some languages can depend on the gender or numerical value of the tokens in the phrase. For example, the translation for "{actor} tagged {target} in {count} photos" can depend on the gender of the actor and target as well as the number of photos. If translations in your language depend on any of these rules, you can add them here. Make sure you add all of the context rules for your language. When a user translates a phrase, they will have the option to create a translation for each possible context. </p>
+	<h2><%= tr("Language Context Rules") %></h2>
+	<p>
+		<%= tr("Tokens are parts of a phrase that are not translated, such as a profile name or a number.") %> 
+		<%= tr("Translations in some languages can depend on the gender or numerical value of the tokens in the phrase.") %> 
+		<%= tr("For example, the translation for {ldquo}{example}{rdquo} can depend on the gender of the actor and target as well as the number of photos.", nil, :example => "{actor} tagged {target} in {count} photos") %> 
+		<%= tr("If translations in your language depend on any of these rules, you can add them here.") %> 
+		<%= tr("Make sure you add all of the context rules for your language.") %> 
+		<%= tr("When a user translates a phrase, they will have the option to create a translation for each possible context.") %> 
+	</p>
 	
-	<h2>Language Case Rules</h2>
-	<p>A language case is an inflection or use of a noun (or pronoun) to show its relation to other words in the sentence. In some languages, like Russian, the form of a token {actor} will changed based on where and how the token is used in a sentence. For instance, in '{target} received a gift from {actor}', {actor} token will be in the genitive form of the language. </p>
-	<p>This section allows you to define the various cases of your language so that translators can provide the correct form for each dynamic value of any token. </p>
-	
-	<h2>Relationships</h2>
-	<p>Relationships are connections between persons by blood or marriage. This section allows to specify the reduction rules for chained relationships. </p>
-	
+	<h2><%= tr("Language Case Rules") %></h2>
+	<p>
+		<%= tr("A language case is an inflection or use of a noun (or pronoun) to show its relation to other words in the sentence.") %> 
+		<%= tr("In some languages, like Russian, the form of a token {actor} will changed based on where and how the token is used in a sentence.", nil, :actor => "{actor}") %> 
+		<%= tr("For instance, in {ldquo}{example}{rdquo}, {actor} token will be in the genitive form of the language.", nil, :example => '{target} received a gift from {actor}', :actor => "{actor}") %> 
+	</p>
+	<p>
+		<%= tr("This section allows you to define the various cases of your language so that translators can provide the correct form for each dynamic value of any token.") %> 
+	</p>
+
 </div>
 
 <%= render :partial => "footer" %>
