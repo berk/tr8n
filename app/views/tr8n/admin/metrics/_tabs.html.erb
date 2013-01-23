@@ -2,9 +2,10 @@
   links = []
   current_tab ||= ""
   [ 
+    ["Sources", {:action => :index}],
     ["Languages", {:action => :languages}],
     ["Translators", {:action => :translators}],
-		["Top Translators", {:action => :index}],
+		["Top Translators", {:action => :top_translators}],
     ["Charts", {:action => :charts}],
 	].each do |link|
       if controller.action_name == link.last[:action].to_s

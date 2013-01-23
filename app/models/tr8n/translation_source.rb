@@ -56,7 +56,10 @@ class Tr8n::TranslationSource < ActiveRecord::Base
   end
 
   def update_metrics!(language = Tr8n::Config.current_language)
-    Tr8n::TranslationSourceMetric.find_or_create(self, language).update_metrics!
+    metric = total_metric(language)
+    Tr8n::OfflineTask.schedule(metric.class.name, :update_metrics_offline, {
+                               :translation_source_metric_id => metric.id, 
+    })
   end
 
   def after_destroy

@@ -73,21 +73,33 @@ class Tr8n::Translator < ActiveRecord::Base
   end
 
   def update_metrics!(language = Tr8n::Config.current_language)
-    # calculate total metrics
-    total_metric.update_metrics!
-    
-    # calculate language specific metrics
-    metric_for(language).update_metrics!
+    Tr8n::OfflineTask.schedule(self.class.name, :update_metrics_offline, {
+                               :translator_id => self.id, 
+                               :language_id => language.id
+    })
   end
-  
+
+  def self.update_metrics_offline(opts)
+    translator = Tr8n::Translator.find_by_id(opts[:translator_id])
+    language = Tr8n::Language.find_by_id(opts[:language_id])
+    translator.total_metric.update_metrics!
+    translator.metric_for(language).update_metrics!
+  end
+
   def update_rank!(language = Tr8n::Config.current_language)
-    # calculate total rank
-    total_metric.update_rank!
-    
-    # calculate language specific rank
-    metric_for(language).update_rank!
+    Tr8n::OfflineTask.schedule(self.class.name, :update_rank_offline, {
+                               :translator_id => self.id, 
+                               :language_id => language.id
+    })
   end
     
+  def self.update_rank_offline(opts)
+    translator = Tr8n::Translator.find_by_id(opts[:translator_id])
+    language = Tr8n::Language.find_by_id(opts[:language_id])
+    translator.total_metric.update_rank!
+    translator.metric_for(language).update_rank!
+  end
+
   def rank
     total_metric.rank
   end

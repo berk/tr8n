@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2012 Michael Berkovich, Geni Inc
+# Copyright (c) 2010 Michael Berkovich, Geni Inc
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -21,27 +21,10 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-class Tr8n::Admin::MetricsController < Tr8n::Admin::BaseController
-  unloadable
+class Tr8n::TranslationSourceMetricFilter < Tr8n::BaseFilter
 
-  def index
-    @metrics = Tr8n::TranslationSourceMetric.filter(:params => params, :filter => Tr8n::TranslationSourceMetricFilter)
-  end
-
-  def charts
-    
-  end
-
-  def languages
-    @metrics = Tr8n::LanguageMetric.filter(:params => params, :filter => Tr8n::LanguageMetricFilter)
-  end
-
-  def translators
-    @metrics = Tr8n::TranslatorMetric.filter(:params => params, :filter => Tr8n::TranslatorMetricFilter)
-  end
-
-  def top_translators
-    @languages = Tr8n::Language.enabled_languages
+  def inner_joins
+    [["Tr8n::Language", :language_id], ["Tr8n::TranslationSource", :translation_source_id]]
   end
 
 end

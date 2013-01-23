@@ -42,7 +42,7 @@ class Tr8n::TotalLanguageMetric < Tr8n::LanguageMetric
     
     self
   end
-  
+
   def completeness
     language.completeness
   end
@@ -50,6 +50,19 @@ class Tr8n::TotalLanguageMetric < Tr8n::LanguageMetric
   def translation_completeness
     return 0 if key_count.nil? or key_count == 0
     (translated_key_count * 100)/key_count
+  end
+
+  ###############################################################
+  ## Offline Tasks
+  ###############################################################
+  def after_create
+    Tr8n::OfflineTask.schedule(self.class.name, :update_metrics_offline, {
+                               :language_metric_id => self.id
+    })
+  end
+
+  def self.update_metrics_offline(opts)
+    Tr8n::LanguageMetric.find_by_id(opts[:language_metric_id]).update_metrics!
   end
 
 end

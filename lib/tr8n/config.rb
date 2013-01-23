@@ -44,6 +44,9 @@ class Tr8n::Config
       Thread.current[:tr8n_current_component]  = nil
     end
 
+    # register the total metric for the current source and language
+    current_source.total_metric 
+
     Thread.current[:tr8n_block_options]      = []
   end
   
@@ -76,11 +79,20 @@ class Tr8n::Config
   end
   
   def self.current_translator_is_authorized_to_view_component?(component = current_component)
-    return true if component.nil?
+    return true if component.nil? # no component present, so be it
+
+    component = Tr8n::Component.find_by_key(component.to_S) if component.is_a?(Symbol)
     return true unless component.restricted?
+    
     return false unless Tr8n::Config.current_user_is_translator?
-    return false unless component.translator_authorized?
-    true
+    return true if component.translator_authorized?
+
+    if Tr8n::Config.current_user_is_admin?
+      Tr8n::ComponentTranslator.find_or_create(component, Tr8n::Config.current_translator)
+      return true
+    end
+    
+    false
   end
 
   # when this method is called, we create the translator record right away

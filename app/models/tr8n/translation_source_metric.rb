@@ -29,7 +29,9 @@ class Tr8n::TranslationSourceMetric < ActiveRecord::Base
   
   def self.find_or_create(translation_source, language = Tr8n::Config.current_language)
     translation_source_metric = find(:first, :conditions => ["translation_source_id = ? and language_id = ?", translation_source.id, language.id])
-    translation_source_metric ||= create(:translation_source => translation_source, :language => language)
+    translation_source_metric ||= begin
+      create(:translation_source => translation_source, :language => language)
+    end
   end
 
   def update_metrics!
@@ -88,6 +90,19 @@ class Tr8n::TranslationSourceMetric < ActiveRecord::Base
   def translation_completeness
     return 0 if key_count.nil? or key_count == 0
     (translated_key_count * 100)/key_count
+  end
+
+  ###############################################################
+  ## Offline Tasks
+  ###############################################################
+  def after_create
+    Tr8n::OfflineTask.schedule(self.class.name, :update_metrics_offline, {
+                               :translation_source_metric_id => self.id
+    })
+  end
+
+  def self.update_metrics_offline(opts)
+    Tr8n::TranslationSourceMetric.find_by_id(opts[:translation_source_metric_id]).update_metrics!
   end
 
 end

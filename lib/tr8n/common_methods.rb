@@ -107,8 +107,9 @@ module Tr8n::CommonMethods
 
     # for logged out users, fallback onto tr8n_access_key
     if Tr8n::Config.current_user_is_guest?  
-      unless params[:tr8n_access_key].blank?
-        Tr8n::Config.set_translator(Tr8n::Translator.find_by_access_key(params[:tr8n_access_key]))
+      tr8n_access_key = params[:tr8n_access_key] || session[:tr8n_access_key]
+      unless tr8n_access_key.blank?
+        Tr8n::Config.set_translator(Tr8n::Translator.find_by_access_key(tr8n_access_key))
       end
     end
 

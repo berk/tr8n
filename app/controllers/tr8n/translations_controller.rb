@@ -131,6 +131,16 @@ class Tr8n::TranslationsController < Tr8n::BaseController
   # list of translations    
   def index
     conditions = Tr8n::Translation.search_conditions_for(params.merge(:only_phrases => true))
+
+    restricted_keys = Tr8n::TranslationKey.all_restricted_ids
+
+    # exclude all restricted always
+    if restricted_keys.any?
+      conditions[0] << " and " unless conditions[0].blank?
+      conditions[0] << "(translation_key_id not in (?))"
+      conditions << restricted_keys
+    end
+
     @translations = Tr8n::Translation.paginate(:per_page => per_page, :page => page, :conditions => conditions, :order => "created_at desc, rank desc")    
   end
 

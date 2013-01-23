@@ -13,7 +13,7 @@
     }], 
     :name, :description,
     [:keys, lambda{|source|
-      link_to(source.total_metric.key_count, "/tr8n/admin/applications/key_sources?wf_c0=translation_source_id&wf_o0=is&wf_v0_0=#{source.id}")
+      link_to(source.total_metric.key_count, "/tr8n/admin/applications/source?mode=translation_keys&source_id=#{source.id}")
     }, 'text-align:right'],
     [:actions, lambda{|source|
       html = []

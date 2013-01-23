@@ -572,11 +572,21 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     translation
   end
 
-  # TODO: should be done as a delayed job
+  ###############################################################
+  ## Offline Tasks
+  ###############################################################
   def update_metrics!(language = Tr8n::Config.current_language, opts = {})
-    return unless Tr8n::Config.language_stats_realtime?
-    
-    Tr8n::TranslationKeySource.find(:all, :conditions => ["translation_key_id = ?", self.id]).each do |tks|
+    # Tr8n::Config.language_stats_realtime?
+    Tr8n::OfflineTask.schedule(self.class.name, :update_metrics_offline, {
+                               :translation_key_id => self.id, 
+                               :language_id => language.id
+    })
+  end
+
+  def self.update_metrics_offline(opts)
+    tkey = Tr8n::TranslationKey.find(opts[:translation_key_id])
+    language = Tr8n::Language.find(opts[:language_id])
+    Tr8n::TranslationKeySource.find(:all, :conditions => ["translation_key_id = ?", tkey.id]).each do |tks|
       next unless tks.source
       tks.source.update_metrics!(language)
     end
