@@ -76,6 +76,8 @@ module Tr8n::CommonMethods
   end  
   
   def init_tr8n
+    return unless Tr8n::Config.enabled?
+    
     tr8n_current_locale = nil
     
     begin
