@@ -9316,7 +9316,7 @@ updated_at}</string>
 			</dict>
 		</array>
 		<key>Frame</key>
-		<string>{{1, 40}, {1440, 838}}</string>
+		<string>{{1121, 580}, {1440, 838}}</string>
 		<key>ListView</key>
 		<true/>
 		<key>OutlineWidth</key>
