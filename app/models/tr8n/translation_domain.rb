@@ -38,6 +38,8 @@
 #
 #++
 
+require "socket"
+
 class Tr8n::TranslationDomain < ActiveRecord::Base
   self.table_name = :tr8n_translation_domains
 
@@ -63,12 +65,13 @@ class Tr8n::TranslationDomain < ActiveRecord::Base
   end
 
   def self.find_or_create(source)
-    begin
-      domain_name = URI.parse(source || 'localhost').host || 'localhost'
-    rescue Exception => ex
-      domain_name = source # for custom urls  
-    end
+    # begin
+    #   domain_name = URI.parse(source || 'localhost').host || 'localhost'
+    # rescue Exception => ex
+    #   domain_name = source
+    # end
 
+    domain_name = Socket::gethostname
     Tr8n::Cache.fetch(cache_key(domain_name)) do 
       find_by_name(domain_name) || create(:name => domain_name)
     end  
