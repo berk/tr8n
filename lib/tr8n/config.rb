@@ -870,6 +870,11 @@ class Tr8n::Config
   end
 
   def self.with_options(opts = {})
+    if disabled?
+      return yield if block_given?
+      return ""
+    end
+
     Thread.current[:tr8n_block_options] ||= []   
     Thread.current[:tr8n_block_options].push(opts)
 
