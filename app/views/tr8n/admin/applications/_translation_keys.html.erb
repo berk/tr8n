@@ -1,16 +1,18 @@
 <%= will_filter_table_tag(@results, :columns => [
   [:checkbox, :keys],
-  :id,
+  [:id, lambda{|key|
+    link_to(key.id, :controller => "/tr8n/admin/translation_key", :action => :view, :key_id => key.id) 
+  }],
   [:label, lambda{|key|
-    html = link_to(key.label, :action => :view, :key_id => key.id) 
-    html << '<div style="color:grey; font-size:10px;">'
+    html = key.label
+    html << '<div style="color:grey; font-size:10px; padding-top:3px;">'
     html << key.description.to_s  
     html << '</div>'  
   }],
   :locale,
   [:admin, lambda{|key| key.admin}, 'padding:5px;text-align:right;'],
   [:level, lambda{|key| key.level}, 'padding:5px;text-align:right;'], 
-  [:translation_count, lambda{|key| link_to(key.translation_count || 0, "/tr8n/admin/translation/index?wf_c0=translation_key_id&wf_o0=is&wf_v0_0=#{key.id}")}, 'padding:5px;text-align:right;'],
+  [:translation_count, lambda{|key| link_to(key.translation_count || 0, :controller => "/tr8n/admin/translation_key", :action => :view, :key_id => key.id, :mode => :translations)}, 'padding:5px;text-align:right;'],
   [:created_at, lambda{|key| key.created_at}, 'padding:5px;text-align:right;'],
   [:actions, lambda{|key|
     html = []
@@ -19,3 +21,16 @@
     html.join(' | ')
   }, 'padding:5px;text-align:right;white-space:nowrap;']
 ]) %>
+
+<%= will_filter_actions_bar_tag(@results, [
+  ['Delete Selected Translation Keys', 'deleteSelectedKeys()'] 
+]) %>
+
+<script>
+  function deleteSelectedKeys() {
+    if (!confirm('Are you sure you want to delete all selected keys?'))
+       return;
+    Tr8n.element('keys_form').action = "/tr8n/admin/translation_key/delete";
+    Tr8n.element('keys_form').submit();
+  }
+</script>

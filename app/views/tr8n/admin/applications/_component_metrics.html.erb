@@ -1,0 +1,114 @@
+<style>
+.source_metrics th {
+  font-weight:bold;
+  border:0px;
+  padding:3px;
+  border-bottom: 1px solid #ccc;
+  text-align:right;
+}
+.source_metrics td {
+  border:0px;
+  padding:3px;
+  border-bottom: 1px dotted #ccc;
+  text-align:right;
+}
+</style>
+
+<% languages = @comp.languages.sort{|lang1, lang2| lang1.english_name <=> lang2.english_name} %>
+<% sources = @comp.sources.sort{|src1, src2| src1.source <=> src2.source} %>
+
+<% if languages.empty? or sources.empty? %>
+  <div style="padding:10px 0px;">
+    In order to track translation progress of this component, you must 
+    <%= link_to_function("assign at least one language", "tr8nLightbox.show('/tr8n/admin/applications/lb_add_objects_to_component?type=language&comp_id=#{@comp.id}', {height:350})") %>
+    
+    and 
+    <%= link_to_function("add at least one source", "tr8nLightbox.show('/tr8n/admin/applications/lb_add_objects_to_component?type=source&comp_id=#{@comp.id}', {height:350})") %>
+
+    to this component. 
+  </div>
+<% else %>
+  <div style="padding-top:10px;padding-bottom:10px;">
+    Jump to: <%= languages.collect{|lang| link_to(lang.english_name, params.merge(:anchor => "language-#{lang.id}"))}.join(", ") %>
+  </div>
+
+  <% languages.each do |language| %>
+  <div class="section_title">
+    <% if sources.any? %>
+      <div style="float:right;font-size:12px;padding-top:3px;font-weight:bold;">
+        <% 
+          metrics = sources.collect{|s| s.total_metric(language)} 
+        %>
+        Translated: <%= metrics.collect{|m| m.translation_completeness}.sum/metrics.count %>%
+        &nbsp;&nbsp;
+        Locked: <%= metrics.collect{|m| m.completeness}.sum/metrics.count %>%
+      </div>
+    <% end %>
+
+    <%=tr8n_toggler_tag("lang_content_#{language.id}")%>
+    
+    <span dir="ltr">
+      <a name="<%="language-#{language.id}"%>" style="text-decoration:none;color:black;"><%= tr8n_language_flag_tag(language) %> <%= language.english_name %></a>
+    </span>
+  </div>
+
+  <div id="lang_content_<%=language.id%>" class="section_box" style="border: 1px dotted #eee">
+    <% if params[:charts] %>
+      <% sources.each_with_index do |source, index| %>
+        <div style="width:380px;  background-color:#efefef; float:left; padding:5px; border-radius:10px; margin:5px; font-size:10px;">
+            <div style="padding:5px;">
+                <div style="float:right">
+                    <%
+                      html = []
+                      html << link_to(image_tag("/tr8n/images/arrow_rotate_clockwise.png"), {:action => :recalculate_source, :source_id => source.id}, {:confirm => "Are you sure you want to recaluclate this source?"})
+                    %>
+                    <%= html.join(' | ') %>
+                </div>
+                <div style="font-weight:bold;font-size:12px;"><%= tr8n_language_flag_tag(language) %> <%=link_to(source.title, :action => :source, :source_id => source.id)%></div>
+            </div>
+            <%=render :partial => "/tr8n/dashboard/translation_source_metric", :locals => {:translation_source => source, :translation_source_metric => metrics[index]} %>
+        </div>
+      <% end %>
+      <div style="clear:both;"></div>
+    <% else %>
+      <table class="source_metrics">   
+        <tr>
+          <th style="text-align:left">Source</th>
+          <th>Total Keys</th>
+          <th>Translated Keys</th>
+          <th>Locked Keys</th>
+          <th>% Translated</th>
+          <th>% Locked</th>
+          <th></th>
+        </tr>
+        <% sources.each_with_index do |source, index| %>
+          <tr>
+            <td style="text-align:left">
+              <%= link_to(source.full_title, :action => :source, :source_id => source.id) %>
+            </td>
+            <td>
+              <%= link_to(metrics[index].key_count, "/tr8n/admin/applications/source?mode=translation_keys&source_id=#{source.id}") %>
+            </td>
+            <td>
+              <%=metrics[index].translated_key_count %>
+            </td>
+            <td>
+              <%=metrics[index].locked_key_count %>
+            </td>
+            <td>
+              <%=metrics[index].translation_completeness %>%
+            </td>
+            <td>
+              <%=metrics[index].completeness %>%
+            </td>
+            <td>
+              <%=link_to(image_tag("/tr8n/images/arrow_rotate_clockwise.png"), {:action => :recalculate_source, :source_id => source.id}, {:confirm => "Are you sure you want to recaluclate this source?"}) %>
+            </td>
+          </tr>
+        <% end %>
+      </table>
+    <% end %>
+  </div>
+  <% end %>
+
+<% end %>

@@ -58,6 +58,56 @@ class Tr8n::Admin::ApplicationsController < Tr8n::Admin::BaseController
     redirect_to_source
   end  
 
+
+  def application
+    @app = Tr8n::Application.find_by_id(params[:app_id])
+
+    unless @app
+      trfe("Invalid application id")
+      return redirect_to_source
+    end
+
+    params[:mode] ||= "metrics"
+
+    if params[:mode] == "metrics"
+      @results = @app.components
+    elsif params[:mode] == "translation_keys"
+      @results = Tr8n::TranslationKey.find(:all, 
+          :select => "distinct tr8n_translation_keys.id, tr8n_translation_keys.created_at, tr8n_translation_keys.label, tr8n_translation_keys.description, tr8n_translation_keys.locale, tr8n_translation_keys.admin, tr8n_translation_keys.level, tr8n_translation_keys.translation_count",
+          :order => "tr8n_translation_keys.created_at desc",
+          :conditions => ["c.application_id = ?", @app.id],
+          :joins => [
+            "join tr8n_translation_key_sources as tks on tr8n_translation_keys.id = tks.translation_key_id",
+            "join tr8n_component_sources as cs on tks.translation_source_id = cs.translation_source_id",
+            "join tr8n_components as c on cs.component_id = c.id"
+          ]
+      ).paginate(:page => page, :per_page => per_page)
+    elsif params[:mode] == "translations"
+      @results = Tr8n::Translation.find(:all, 
+          :order => "tr8n_translations.created_at desc",
+          :conditions => ["c.application_id = ?", @app.id],
+          :joins => [
+            "join tr8n_translation_keys as tk on tr8n_translations.translation_key_id = tk.id",
+            "join tr8n_translation_key_sources as tks on tk.id = tks.translation_key_id",
+            "join tr8n_component_sources as cs on tks.translation_source_id = cs.translation_source_id",
+            "join tr8n_components as c on cs.component_id = c.id"
+          ]
+      ).uniq.paginate(:page => page, :per_page => per_page)
+    else
+      klass = {
+        :components => Tr8n::Component
+      }[params[:mode].to_sym] if params[:mode]
+      klass ||= Tr8n::Component
+
+      filter = {"wf_c0" => "application_id", "wf_o0" => "is", "wf_v0_0" => @app.id}
+      extra_params = {:app_id => @app.id, :mode => params[:mode]}
+      @results = klass.filter(:params => params.merge(filter))
+      @results.wf_filter.extra_params.merge!(extra_params)      
+    end
+  end
+
+
+
   def components
     @comps = Tr8n::Component.filter(:params => params, :filter => Tr8n::ComponentFilter)
   end
@@ -162,6 +212,7 @@ class Tr8n::Admin::ApplicationsController < Tr8n::Admin::BaseController
       ).uniq.paginate(:page => page, :per_page => per_page)
     else
       klass = {
+        :metrics => Tr8n::ComponentSource,
         :sources => Tr8n::ComponentSource,
         :charts => Tr8n::ComponentSource,
         :translators => Tr8n::ComponentTranslator,

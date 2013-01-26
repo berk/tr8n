@@ -1,7 +1,7 @@
 <% form_tag("", :id => "lang_form") do %>
 <%= hidden_field_tag(:type, "language") %>
 <%= will_filter_table_tag(@results, :columns => [
-    [:checkbox, 'component_languages'],     
+    [:checkbox, 'component_objects'],     
     [:flag, lambda{|ulang| ulang.language ? image_tag("/tr8n/images/flags/#{ulang.language.flag}.png") : ''}],
     [:locale, lambda{|ulang|
       lang = ulang.language

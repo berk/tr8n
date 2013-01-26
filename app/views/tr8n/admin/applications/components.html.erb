@@ -7,8 +7,9 @@
 <% form_tag("", :id => "comps_form") do %>
   <%= will_filter_table_tag(@comps, :columns => [
     [:checkbox, 'comps'],     
-    :id, :key,
-    [:name, lambda{|comp| link_to(comp.name, {:action => :component, :comp_id => comp.id}) unless comp.name.blank?}], 
+    [:id, lambda{|comp| link_to(comp.id, {:action => :component, :comp_id => comp.id})}], 
+    :key,
+    :name,
     :state,
     [:sources, lambda{ |comp| 
       link_to(comp.sources.size, {:action => :component, :comp_id => comp.id, :mode => :sources})

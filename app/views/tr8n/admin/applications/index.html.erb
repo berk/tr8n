@@ -6,12 +6,16 @@
 
 <% form_tag("", :id => "apps_form") do %>
   <%= will_filter_table_tag(@apps, :columns => [
-    :id, :key, :name, :description,
+    [:id, lambda{|app|
+      link_to(app.id, {:action => :application, :app_id => app.id})
+    }],
+    :key, :name, :description,
     [:component_count, lambda{|app|
       link_to(app.components.size, "/tr8n/admin/applications/components?wf_c0=application_id&wf_o0=is&wf_v0_0=#{app.id}")
     }, 'text-align:right'],
     [:actions, lambda{|app|
       html = []
+      html << link_to("View", {:action => :application, :app_id => app.id})
       html << link_to_function("Update", "tr8nLightbox.show('/tr8n/admin/applications/lb_update?app_id=#{app.id}', {height:350})")
       html << link_to("Delete", {:action => :delete, :app_id => app.id}, {:confirm => "Are you sure you want to delete this application?"})
       html.join(' | ')

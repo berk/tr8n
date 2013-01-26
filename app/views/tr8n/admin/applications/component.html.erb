@@ -10,6 +10,16 @@
             <%=@comp.id %>
         </td>
     </tr>
+
+    <tr>
+        <th width="160">
+            Application
+        </th>
+        <td>
+            <%= @comp.application ? link_to(@comp.application.name, :action => :application, :app_id => @comp.application_id) : "unassigned" %>
+        </td>
+    </tr>
+
     <tr>
         <th>
             Key
@@ -60,7 +70,7 @@
           html << link_to_function("Update", "tr8nLightbox.show('/tr8n/admin/applications/lb_update_component?comp_id=#{@comp.id}', {height:400})")
           html << link_to_function("Add Sources", "tr8nLightbox.show('/tr8n/admin/applications/lb_add_objects_to_component?type=source&comp_id=#{@comp.id}', {height:350})")
           html << link_to_function("Add Languages", "tr8nLightbox.show('/tr8n/admin/applications/lb_add_objects_to_component?type=language&comp_id=#{@comp.id}', {height:350})")
-          html << link_to_function("Assign Translators", "tr8nLightbox.show('/tr8n/admin/applications/lb_add_objects_to_component?type=translator&comp_id=#{@comp.id}', {height:350})")
+          html << link_to_function("Add Translators", "tr8nLightbox.show('/tr8n/admin/applications/lb_add_objects_to_component?type=translator&comp_id=#{@comp.id}', {height:350})")
         %>
         <%= html.join(' | ') %>
         </td>
@@ -68,12 +78,12 @@
 </table>
 
 <%=  tr8n_sections_tag(:modes => [
-          ["Sources Table", {:mode => :sources, :partial => "component_sources"}],
-          ["Sources Charts", {:mode => :charts, :partial => "component_source_charts"}],
+          ["Component Metrics", {:mode => :metrics, :partial => "component_metrics"}],
+          ["Sources", {:mode => :sources, :partial => "component_sources"}],
           ["Languages", {:mode => :languages, :partial => "component_languages"}],
+          ["Translators", {:mode => :translators, :partial => "component_translators"}],
           ["Translation Keys", {:mode => :translation_keys}],
           ["Translations", {:mode => :translations}],
-          ["Translators", {:mode => :translators, :partial => "component_translators"}],
         ],
         :params => {
           :comp_id => @comp.id
@@ -81,11 +91,16 @@
         :title => lambda{ |mode|
           html = []
           html << "#{mode.first} "
-          if [:sources, :charts].include?(mode.last[:mode])
-            html << "(#{tr8n_current_language.english_name}) "
-            html << "<span style='font-size:12px;'>"
-            html << link_to_function("Change Language", "tr8nLightbox.show('/tr8n/language/select?lightbox=true', {height:500, width:400});") 
-            html << "</span>"
+          if mode.last[:mode] == :metrics
+            if params[:charts]
+              html << "<span style='font-size:12px;'>"
+              html << link_to("view as table", params.merge(:charts => false)) 
+              html << "</span>"
+            else
+              html << "<span style='font-size:12px;'>"
+              html << link_to("view as charts", params.merge(:charts => true)) 
+              html << "</span>"
+            end
           end
           html.join("")
         }

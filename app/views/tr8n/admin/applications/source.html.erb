@@ -58,7 +58,6 @@
         <%
           html = []
           html << link_to_function("Update", "tr8nLightbox.show('/tr8n/admin/applications/lb_update_source?source_id=#{@source.id}', {height:350})")
-          html << link_to("Recalculate All Metrics", {:action => :recalculate_source, :source_id => @source.id}, {:confirm => "Are you sure you want to recaluclate all metrics for this source?"})
         %>
         <%= html.join(' | ') %>
         </td>
@@ -66,13 +65,28 @@
 </table>
 
 <%=  tr8n_sections_tag(:modes => [
-          ["Metrics Table",   {:mode => :metrics, :partial => "source_metrics"}],
-          ["Metrics Charts",  {:mode => :charts, :partial => "source_charts"}],
+          ["Source Metrics",   {:mode => :metrics, :partial => "source_metrics"}],
           ["Translation Keys", {:mode => :translation_keys}],
           ["Translations", {:mode => :translations}],
         ],
         :params => {
             :source_id => @source.id
+        },
+        :title => lambda{ |mode|
+          html = []
+          html << "#{mode.first} "
+          if mode.last[:mode] == :metrics
+            if params[:charts]
+              html << "<span style='font-size:12px;'>"
+              html << link_to("view as table", params.merge(:charts => false)) 
+              html << "</span>"
+            else
+              html << "<span style='font-size:12px;'>"
+              html << link_to("view as charts", params.merge(:charts => true)) 
+              html << "</span>"
+            end
+          end
+          html.join("")
         }
 ) %>
 

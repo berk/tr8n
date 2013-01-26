@@ -3,25 +3,23 @@
   <%= hidden_field_tag(:type, "source") %>
   <%= will_filter_table_tag(@results, :columns => [
     [:checkbox, 'component_objects'],     
-    [:source, lambda{|source| 
-      source.translation_source.id
+    [:id, lambda{|source| 
+      link_to(source.translation_source.id, :action => :source, :source_id => source.translation_source.id)
     }],
     [:source, lambda{|source| 
-      link_to(source.translation_source.full_title, :action => :source, :source_id => source.translation_source.id)
+      link_to(source.translation_source.source, :action => :source, :source_id => source.translation_source.id)
+    }],
+    [:name, lambda{|source| 
+        source.translation_source.name
+    }],
+    [:description, lambda{|source| 
+        source.translation_source.description
     }],
     [:keys, lambda{|source|
       link_to(source.translation_source.total_metric.key_count, "/tr8n/admin/applications/source?mode=translation_keys&source_id=#{source.translation_source.id}")
     }, 'text-align:right'],
-    [:translated_keys, lambda{|source| 
-      source.translation_source.total_metric.translated_key_count
-    }, 'padding:5px;text-align:right;white-space:nowrap;'],    
-    [:locked_keys, lambda{|source| 
-      source.translation_source.total_metric.locked_key_count
-    }, 'padding:5px;text-align:right;white-space:nowrap;'],    
-    [:completeness, lambda{|source| "#{source.translation_source.total_metric.completeness}%"}, 'padding:5px;text-align:right;white-space:nowrap;'],    
     [:actions, lambda{|source|
       html = []
-      html << link_to("Recalculate", {:action => :recalculate_metric, :metric_id => source.translation_source.total_metric.id}, {:confirm => "Are you sure you want to recaluclate this source?"})
       html << link_to_function("Update", "tr8nLightbox.show('/tr8n/admin/applications/lb_update_source?source_id=#{source.translation_source.id}', {height:350})")
       html << link_to("Remove", {:action => :remove_objects_from_component, :component_object_id => source.id, :type => :source}, {:confirm => "Are you sure you want to remove this source from the component?"})
       html.join(' | ')

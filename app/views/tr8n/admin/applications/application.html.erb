@@ -1,0 +1,70 @@
+<%= render :partial => "/tr8n/admin/common/header" %>
+<%= render :partial => "tabs", :locals => {:current_tab => "Application: #{@app.name}"} %>
+
+<table class="admin_table">
+    <tr>
+        <th width="160">
+            Application Id
+        </th>
+        <td>
+            <%=@app.id %>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Key
+        </th>
+        <td>
+            <%=@app.key %>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Name
+        </th>
+        <td>
+            <%=@app.name %>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Description
+        </th>
+        <td>
+            <%=@app.description %>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Created At
+        </th>
+        <td>
+            <%=@app.created_at %>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            
+        </th>
+        <td>
+          <%
+            html = []
+            html << link_to_function("Update", "tr8nLightbox.show('/tr8n/admin/applications/lb_update?app_id=#{@app.id}', {height:350})")
+          %>
+          <%= html.join(' | ') %>
+        </td>
+    </tr>    
+</table>
+
+<%=  tr8n_sections_tag(:modes => [
+          ["Application Metrics", {:mode => :metrics, :partial => "application_metrics"}],
+          ["Components", {:mode => :components, :partial => "application_components"}],
+          ["Translation Keys", {:mode => :translation_keys, :partial => "translation_keys"}],
+          ["Translations", {:mode => :translations, :partial => "translations"}],
+        ],
+        :params => {
+          :app_id => @app.id
+        }
+) %>
+
+<%= render :partial => "/tr8n/admin/common/footer" %>
