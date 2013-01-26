@@ -47,6 +47,7 @@
       html << "</span>"
       html.join("")
     }, 'text-align:right;'],
+    :created_at,
     [:actions, lambda{|translation|
       html = []
       html << link_to("View", :action => :view, :translation_id => translation.id)

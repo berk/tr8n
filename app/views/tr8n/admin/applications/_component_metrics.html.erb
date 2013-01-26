@@ -33,26 +33,34 @@
   </div>
 
   <% languages.each do |language| %>
-  <div class="section_title">
-    <% if sources.any? %>
-      <div style="float:right;font-size:12px;padding-top:3px;font-weight:bold;">
-        <% 
-          metrics = sources.collect{|s| s.total_metric(language)} 
-        %>
-        Translated: <%= metrics.collect{|m| m.translation_completeness}.sum/metrics.count %>%
-        &nbsp;&nbsp;
-        Locked: <%= metrics.collect{|m| m.completeness}.sum/metrics.count %>%
-      </div>
-    <% end %>
-
-    <%=tr8n_toggler_tag("lang_content_#{language.id}")%>
-    
-    <span dir="ltr">
-      <a name="<%="language-#{language.id}"%>" style="text-decoration:none;color:black;"><%= tr8n_language_flag_tag(language) %> <%= language.english_name %></a>
-    </span>
+  <% 
+    metrics = sources.collect{|s| s.total_metric(language)} 
+  %>
+  <div class="section_box" style="background-color:#FDFFF0; margin-bottom:10px; margin-top:0px;">
+    <table>
+      <tr>
+        <td style="width:20%;text-align:left; padding:10px 0px; font-size:20px;">
+          <%=tr8n_toggler_tag("lang_content_#{language.id}", "", false)%> 
+          <span dir="ltr">
+            <a name="<%="language-#{language.id}"%>" style="text-decoration:none;color:black;"><%= tr8n_language_flag_tag(language) %> <%= language.english_name %></a>
+          </span>
+        </td>
+        <td style="text-align:center;width:40%;">
+          <div style="font-size:30px;font-weight:bold;">
+            <%= metrics.collect{|m| m.translation_completeness}.sum/metrics.count %>%
+          </div>
+          Translated
+        </td>
+        <td style="text-align:center;width:40%;">
+          <div style="font-size:30px;font-weight:bold;">
+            <%= metrics.collect{|m| m.completeness}.sum/metrics.count %>%
+          </div>
+          Locked
+        </td>
+      </tr>
+    </table>
   </div>
-
-  <div id="lang_content_<%=language.id%>" class="section_box" style="border: 1px dotted #eee">
+  <div id="lang_content_<%=language.id%>" class="section_box" style="display:none; border: 1px dotted #eee">
     <% if params[:charts] %>
       <% sources.each_with_index do |source, index| %>
         <div style="width:380px;  background-color:#efefef; float:left; padding:5px; border-radius:10px; margin:5px; font-size:10px;">
