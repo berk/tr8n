@@ -22,16 +22,16 @@
   <div class="section_box" style="background-color:#FDFFF0; margin-bottom:10px; margin-top:0px;">
     <table>
       <tr>
-        <td style="width:150px;text-align:left; padding:10px; font-size:20px;">
+        <td style="width:20%;text-align:left; padding:10px 0px; font-size:20px;">
           <%= tr8n_language_flag_tag(language) %> <%= language.english_name %>
         </td>
-        <td style="text-align:center">
+        <td style="text-align:center;width:40%;">
           <div style="font-size:30px;font-weight:bold;">
             <%= metrics.collect{|m| m.translation_completeness}.sum/metrics.count %>%
           </div>
           Translated
         </td>
-        <td style="text-align:center">
+        <td style="text-align:center;width:40%;">
           <div style="font-size:30px;font-weight:bold;">
             <%= metrics.collect{|m| m.completeness}.sum/metrics.count %>%
           </div>
