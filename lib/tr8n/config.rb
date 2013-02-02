@@ -73,17 +73,21 @@ class Tr8n::Config
   def self.current_language
     Thread.current[:tr8n_current_language] ||= default_language
   end
-  
+
+  def self.set_language(language)
+    Thread.current[:tr8n_current_language] = language
+  end
+
   def self.current_user_is_translator?
     Thread.current[:tr8n_current_translator] != nil
   end
   
-  def self.current_translator_is_authorized_to_view_component?(component = current_component)
+  def self.current_user_is_authorized_to_view_component?(component = current_component)
     return true if component.nil? # no component present, so be it
 
-    component = Tr8n::Component.find_by_key(component.to_S) if component.is_a?(Symbol)
+    component = Tr8n::Component.find_by_key(component.to_s) if component.is_a?(Symbol)
+
     return true unless component.restricted?
-    
     return false unless Tr8n::Config.current_user_is_translator?
     return true if component.translator_authorized?
 
@@ -94,6 +98,23 @@ class Tr8n::Config
     
     false
   end
+
+  def self.current_user_is_authorized_to_view_language?(component = current_component, language = current_language)
+    return true if component.nil? # no component present, so be it
+
+    component = Tr8n::Component.find_by_key(component.to_s) if component.is_a?(Symbol)
+
+    if Tr8n::Config.current_user_is_translator? 
+      return true if component.translators.include?(Tr8n::Config.current_translator)
+    end
+
+    component.component_languages.each do |cl|
+      return cl.live? if cl.language_id == language.id 
+    end
+    
+    true
+  end
+
 
   # when this method is called, we create the translator record right away
   # and from this point on, will track the user
@@ -886,10 +907,18 @@ class Tr8n::Config
       end
     end
 
-    if Tr8n::Config.current_translator_is_authorized_to_view_component?(component)
+    if Tr8n::Config.current_user_is_authorized_to_view_component?(component)
+      selected_language = Tr8n::Config.current_language
+      
+      unless Tr8n::Config.current_user_is_authorized_to_view_language?(component, selected_language)
+        Tr8n::Config.set_language(Tr8n::Config.default_language)
+      end
+
       if block_given?
         ret = yield
       end
+
+      Tr8n::Config.set_language(selected_language)
     else
       ret = ""
     end

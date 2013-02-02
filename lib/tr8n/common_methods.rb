@@ -123,10 +123,14 @@ module Tr8n::CommonMethods
       Tr8n::Config.current_translator.update_last_ip(tr8n_request_remote_ip)
     end
 
-    # register component and verify that the current translator is authorized to view it
-    unless Tr8n::Config.current_translator_is_authorized_to_view_component?
+    # register component and verify that the current user is authorized to view it
+    unless Tr8n::Config.current_user_is_authorized_to_view_component?
       trfe("You are not authorized to view this component")
-      redirect_to(Tr8n::Config.default_url)
+      return redirect_to(Tr8n::Config.default_url)
+    end
+
+    unless Tr8n::Config.current_user_is_authorized_to_view_language?
+      Tr8n::Config.set_language(Tr8n::Config.default_language)
     end
   end
 

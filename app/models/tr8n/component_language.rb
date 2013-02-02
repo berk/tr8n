@@ -32,4 +32,12 @@ class Tr8n::ComponentLanguage < ActiveRecord::Base
     cs || create(:component => component, :language => language)
   end
 
+  def restricted?
+    not live?
+  end
+
+  def live?
+    state == "live"
+  end
+
 end

@@ -106,7 +106,12 @@ class Tr8n::Admin::ApplicationsController < Tr8n::Admin::BaseController
     end
   end
 
-
+  def change_component_language_state
+    component_language = Tr8n::ComponentLanguage.find_by_id(params[:component_language_id])
+    component_language.state = params[:state]
+    component_language.save
+    redirect_to_source
+  end
 
   def components
     @comps = Tr8n::Component.filter(:params => params, :filter => Tr8n::ComponentFilter)

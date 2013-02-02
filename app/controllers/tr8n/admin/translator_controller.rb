@@ -33,6 +33,7 @@ class Tr8n::Admin::TranslatorController < Tr8n::Admin::BaseController
     redirect_to(:action => :index) unless @translator
 
     klass = {
+      :assignments => Tr8n::ComponentTranslator,
       :metrics => Tr8n::TranslatorMetric,
       :languages => Tr8n::LanguageUser,
       :translations => Tr8n::Translation,

@@ -9,7 +9,7 @@
     [:checkbox, 'comps'],     
     [:id, lambda{|comp| link_to(comp.id, {:action => :component, :comp_id => comp.id})}], 
     :key,
-    :name,
+    [:name, lambda{|comp| link_to_unless(comp.name.blank?, comp.name, {:action => :component, :comp_id => comp.id})}], 
     :state,
     [:sources, lambda{ |comp| 
       link_to(comp.sources.size, {:action => :component, :comp_id => comp.id, :mode => :sources})
@@ -20,7 +20,6 @@
     [:application_id, lambda{|comp| comp.application ? comp.application.name : ""}],
     [:actions, lambda{|comp|
       html = []
-      html << link_to("View", {:action => :component, :comp_id => comp.id})
       html << link_to_function("Update", "tr8nLightbox.show('/tr8n/admin/applications/lb_update_component?comp_id=#{comp.id}', {height:400})")
       html << link_to("Delete", {:action => :delete_component, :comp_id => comp.id}, {:confirm => "Are you sure you want to delete this component?"})
       html.join(' | ')

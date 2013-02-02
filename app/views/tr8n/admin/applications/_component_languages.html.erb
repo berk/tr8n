@@ -16,21 +16,14 @@
       html.join(' ')
     }],
     [:english_name, lambda{|ulang| link_to(ulang.language.english_name, :action => :view, :lang_id => ulang.language.id)}],
-    [:native_name, lambda{|ulang| ulang.language.native_name}],
-    [:right_to_left, lambda{|ulang|
-      lang = ulang.language
-      html = []
-      if lang.right_to_left?
-        html << '<span style="color:red">'
-      else  
-        html << '<span style="color:green">'
-      end
-      html << lang.right_to_left?
-      html << '</span>'
-      html.join(' ')
-    }],
+    :state,
     [:actions, lambda{|ulang|
       html = []
+      if ulang.restricted?
+        html << link_to("Release Live", {:action => :change_component_language_state, :component_language_id => ulang.id, :state => :live}, {:confirm => "Are you sure you want to release this language?"})
+      else
+        html << link_to("Restrict", {:action => :change_component_language_state, :component_language_id => ulang.id, :state => :restricted}, {:confirm => "Are you sure you want to restrict this language?"})
+      end
       html << link_to("Remove", {:action => :remove_objects_from_component, :component_object_id => ulang.id, :type => :language}, {:confirm => "Are you sure you want to remove this language from the component?"})
       html.join(' | ')
     }, 'padding:5px;text-align:right;white-space:nowrap;']        
