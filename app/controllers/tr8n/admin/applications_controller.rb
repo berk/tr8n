@@ -322,6 +322,31 @@ class Tr8n::Admin::ApplicationsController < Tr8n::Admin::BaseController
     redirect_to_source
   end
 
+  def remove_keys_from_source
+    source = Tr8n::TranslationSource.find_by_id(params[:source_id])
+    unless source
+      trfe("Invalid source id")
+      return redirect_to_source
+    end
+
+    params[:keys] = [params[:key_id]] if params[:key_id]
+    if params[:keys]
+      params[:keys].each do |key_id|
+        tks = Tr8n::TranslationKeySource.find(:first, 
+          :conditions => ["translation_key_id = ? and translation_source_id = ?", key_id, source.id])
+        tks.destroy if tks
+      end  
+    end
+
+    trfn("Keys have been removed")
+
+    source.translation_source_metrics.each do |metric|
+      metric.update_metrics!
+    end
+    
+    redirect_to_source
+  end
+
   def lb_update_source
     @source = Tr8n::TranslationSource.find_by_id(params[:source_id]) unless params[:source_id].blank?
     @source = Tr8n::TranslationSource.new unless @source

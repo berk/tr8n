@@ -1,5 +1,4 @@
 <%= will_filter_table_tag(@results, :columns => [
-  [:checkbox, :keys],
   [:id, lambda{|key|
     link_to(key.id, :controller => "/tr8n/admin/translation_key", :action => :view, :key_id => key.id) 
   }],
@@ -21,16 +20,3 @@
     html.join(' | ')
   }, 'padding:5px;text-align:right;white-space:nowrap;']
 ]) %>
-
-<%= will_filter_actions_bar_tag(@results, [
-  ['Delete Selected Translation Keys', 'deleteSelectedKeys()'] 
-]) %>
-
-<script>
-  function deleteSelectedKeys() {
-    if (!confirm('Are you sure you want to delete all selected keys?'))
-       return;
-    Tr8n.element('keys_form').action = "/tr8n/admin/translation_key/delete";
-    Tr8n.element('keys_form').submit();
-  }
-</script>
