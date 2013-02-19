@@ -3,17 +3,7 @@
   <%= render :partial => "/tr8n/common/header" %>
   
   <div class="section_title">
-      <div style="<%=tr8n_style_attribute_tag('float', 'right')%>; font-size:12px; padding-top:5px;">
-        <%
-          links = []
-          links << link_to(tra("dashboard"), :controller => "/tr8n/dashboard", :action => :index)
-          if Tr8n::Config.enable_translator_language?
-            links << link_to(tra("edit preferences"), :controller => "/tr8n/translator", :action => :index)
-          end
-        %>
-        <%= links.join(" | ") %>
-      </div>
-    
+    <%= render :partial => "/tr8n/translator/sections" %>
     <%=tra("{user}'s Assignments", "Dashboard section title", :user => [tr8n_current_translator, :name]) %>
     <span dir="ltr">(<%= tr8n_current_language.english_name %>)</span>
     <span style='font-size:12px;'>
@@ -69,7 +59,7 @@
             <strong><%=source.title%></strong>
           </div>
           <div id="comp_source_<%=source.id%>" style="width:450px;">
-            <%=render :partial => "/tr8n/dashboard/translation_source_metric", :locals => {:translation_source => source, :translation_source_metric => source.total_metric} %>
+            <%=render :partial => "/tr8n/translator/translation_source_metric", :locals => {:translation_source => source, :translation_source_metric => source.total_metric} %>
           </div>
         </div>
       <% end %>

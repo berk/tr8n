@@ -1,0 +1,23 @@
+<% Tr8n::Config.with_options(:default_locale => 'en-US', :admin => true) do %>
+
+  <%= render :partial => "/tr8n/common/header" %>
+  
+  <div class="section_title">
+    <%= render :partial => "/tr8n/translator/sections" %>
+    <%=tra("{user}'s Notifications", nil, :user => [tr8n_current_translator, :name]) %>
+  </div>
+
+  <div class="section_box colored">
+    <% @notifications.each do |n| %>
+      <% next unless n.valid? %>
+      <%= render :partial => "/tr8n/translator/notifications/#{n.key}", :locals => {:notification => n} %>
+    <% end %>
+
+    <% if @notifications.empty? %>
+      <%=tr("You don't have any notifications yet.") %>
+    <% end %>
+  </div>
+
+  <%= render :partial => "/tr8n/common/footer" %>
+
+<% end %>  

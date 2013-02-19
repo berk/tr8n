@@ -1,0 +1,10 @@
+<div style="<%=tr8n_style_attribute_tag('float', 'right')%>; font-size:12px; padding-top:5px;">
+  <%
+    links = []
+    links << link_to(tra("dashboard"), :controller => "/tr8n/translator", :action => :dashboard)
+    links << link_to(tra("assignments"), :controller => "/tr8n/translator", :action => :assignments)
+    links << link_to(tra("notifications"), :controller => "/tr8n/translator", :action => :notifications)
+    links << link_to(tra("preferences"), :controller => "/tr8n/translator", :action => :index)
+  %>
+  <%= links.join(" | ") %>
+</div>

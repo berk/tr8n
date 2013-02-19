@@ -34,4 +34,9 @@ class Tr8n::TranslationKeyComment < ActiveRecord::Base
     return "" unless message
     message.gsub("\n", "<br>")
   end
+
+  def after_create
+    Tr8n::Notification.distribute(self)    
+  end
+  
 end

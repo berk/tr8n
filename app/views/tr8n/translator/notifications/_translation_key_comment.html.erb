@@ -1,0 +1,38 @@
+<div style="margin:5px;padding:5px;background:white; border-bottom:2px solid #eee">
+  <div style="float:<%=tr8n_current_language.align(:right)%>">
+    <%=link_to_function(image_tag("/tr8n/images/close.gif", :style => "border:0px; padding:5px;", :alt=>trla("Close")), "tr8nLightbox.hide()") %>
+  </div>
+
+  <table style="width:95%">
+    <tr>
+      <td style="padding-right:5px; width:60px;">
+        <div style="padding:3px;border:1px solid #eee;display:inline-block;">
+          <%=tr8n_user_mugshot_tag(notification.actor, :linked => true)%>
+        </div>
+      </td>
+      <td>
+        <div style="font-weight:bold; background:white; padding:3px;">
+          <%= notification.title %>
+        </div>
+
+        <div style="margin-top:10px; padding:5px;font-size:12px; max-height:50px; overflow:auto;">
+          <%=image_tag("/tr8n/images/left_quote.png", :style=>"text-align:bottom;padding-bottom:5px;") %>
+          <%=notification.object.toHTML %>
+          <%=image_tag("/tr8n/images/right_quote.png", :style=>"text-align:bottom;padding-top:5px;") %>
+        </div>
+
+        <div>
+          <%= render(:partial => "/tr8n/translator/notifications/phrase", :locals => {
+                                  :translation_key => notification.object.translation_key, 
+                                  :language => notification.object.language
+                                }) %>
+        </div>
+
+        <div style="padding-top:5px;color:#ccc;font-size:10px;">
+          <%= tr8n_language_flag_tag(notification.object.language) %> &nbsp;
+          <%= tr8n_when_string_tag(notification.created_at) %>
+        </div>
+      </td>
+    </tr>
+  </table>  
+</div>

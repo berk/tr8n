@@ -9,7 +9,7 @@ class Tr8n::LoginController < ApplicationController
       
       if translator
         login!(translator)
-        return redirect_to("/tr8n/dashboard")
+        return redirect_to("/tr8n/translator/dashboard")
       end
       
       trfe('Incorrect email or password')
@@ -25,7 +25,7 @@ class Tr8n::LoginController < ApplicationController
         login!(translator)
         
         trfn('Thank you for registering.')
-        return redirect_to("/tr8n/dashboard")
+        return redirect_to("/tr8n/translator/dashboard")
       end
     end
   end

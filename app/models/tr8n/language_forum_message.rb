@@ -43,4 +43,9 @@ class Tr8n::LanguageForumMessage < ActiveRecord::Base
     return "" unless message
     ERB::Util.html_escape(message).gsub("\n", "<br>")
   end
+
+  def after_create
+    Tr8n::Notification.distribute(self)    
+  end
+  
 end

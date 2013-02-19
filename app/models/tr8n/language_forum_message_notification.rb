@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010 Michael Berkovich, Geni Inc
+# Copyright (c) 2010-2013 Michael Berkovich, Geni Inc
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -21,14 +21,31 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-class Tr8n::DashboardController < Tr8n::BaseController
-  unloadable
+class Tr8n::LanguageForumMessageNotification < Tr8n::Notification
 
-  set_tr8n_feature  :dashboard
-  before_filter :validate_current_translator
-  
-  def index
-    @user_languages = Tr8n::LanguageUser.languages_for(tr8n_current_user)
+  def self.distribute(message)
+    # find translators for all other translations of the key in this language
+    messages = Tr8n::LanguageForumMessage.find(:all, :conditions => ["language_forum_topic_id = ?", 
+                                                 message.language_forum_topic.id])
+
+    translators = []
+    messages.each do |m|
+      translators << m.translator
+    end
+
+    # remove the current translator
+    translators = translators.uniq - [message.translator]
+
+    translators.each do |t|
+      create(:translator => t, :object => message, :actor => message.translator, :action => "replied_to_forum_topic")
+    end
   end
-    
+
+  def title
+    tr("[link: {user}] replied to a forum topic you are following.", nil, 
+      :user => actor, :link => [actor.link]
+    )
+  end
+
+
 end

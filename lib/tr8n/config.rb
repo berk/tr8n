@@ -154,7 +154,8 @@ class Tr8n::Config
        Tr8n::TranslatorFollowing, Tr8n::TranslatorReport, 
        Tr8n::LanguageForumTopic, Tr8n::LanguageForumMessage, Tr8n::LanguageForumAbuseReport,
        Tr8n::Glossary, Tr8n::IpLocation, Tr8n::SyncLog, Tr8n::Application, 
-       Tr8n::Component, Tr8n::ComponentSource, Tr8n::ComponentTranslator, Tr8n::ComponentLanguage       
+       Tr8n::Component, Tr8n::ComponentSource, Tr8n::ComponentTranslator, Tr8n::ComponentLanguage,
+       Tr8n::Notification
     ]    
   end
 

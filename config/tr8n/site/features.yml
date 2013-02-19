@@ -11,7 +11,7 @@ defaults: &defaults
   dashboard:
     tab_position:     1
     title:            Dashboard
-    link:             /tr8n/dashboard
+    link:             /tr8n/translator/dashboard
     controller:       dashboard
     actions:          [index]
     default_language: true

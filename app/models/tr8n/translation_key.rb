@@ -222,6 +222,15 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     Tr8n::TranslatorFollowing.following_for(translator, self)
   end
 
+  def commented?(language, translator = nil)
+    translator ||= (Tr8n::Config.current_user_is_translator? ? Tr8n::Config.current_translator : nil)
+    return false unless translator
+    Tr8n::TranslationKeyComment.find(:first, 
+        :conditions => ["translator_id = ? and translation_key_id = ? and language_id = ?", 
+                         translator.id, self.id, language.id]
+    )
+  end
+
   # returns all translations for the key, language and minimal rank
   def translations_for(language, rank = nil)
     conditions = ["translation_key_id = ?", self.id]

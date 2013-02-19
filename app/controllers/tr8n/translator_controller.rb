@@ -104,4 +104,19 @@ class Tr8n::TranslatorController < Tr8n::BaseController
     )
   end
 
+  def notifications
+    @notifications = Tr8n::Notification.paginate(:conditions => ["translator_id = ?", Tr8n::Config.current_translator.id],
+                                                 :page => page, :per_page => per_page, :order => "created_at desc")
+  end
+
+  def lb_notifications
+    @notifications = Tr8n::Notification.paginate(:conditions => ["translator_id = ?", Tr8n::Config.current_translator.id],
+                                                 :page => page, :per_page => per_page, :order => "created_at desc")
+    render :layout => false
+  end
+
+  def dashboard
+    @user_languages = Tr8n::LanguageUser.languages_for(tr8n_current_user)
+  end
+
 end

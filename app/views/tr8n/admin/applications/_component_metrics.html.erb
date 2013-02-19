@@ -105,7 +105,7 @@
                 </div>
                 <div style="font-weight:bold;font-size:12px;"><%= tr8n_language_flag_tag(language) %> <%=link_to(source.title, :action => :source, :source_id => source.id)%></div>
             </div>
-            <%=render :partial => "/tr8n/dashboard/translation_source_metric", :locals => {:translation_source => source, :translation_source_metric => metrics[index]} %>
+            <%=render :partial => "/tr8n/translator/translation_source_metric", :locals => {:translation_source => source, :translation_source_metric => metrics[index]} %>
         </div>
       <% end %>
       <div style="clear:both;"></div>

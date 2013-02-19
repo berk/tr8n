@@ -41,8 +41,10 @@ class Tr8n::Translation < ActiveRecord::Base
     score = score.to_i
     vote = Tr8n::TranslationVote.find_or_create(self, translator)
     vote.update_attributes(:vote => score.to_i)
+
+    Tr8n::Notification.distribute(vote)
+
     update_rank!
-    
     self.translator.update_rank!(language) if self.translator
     
     # add the translator to the watch list
@@ -210,6 +212,10 @@ class Tr8n::Translation < ActiveRecord::Base
     translation_key.translations_changed!(language) if translation_key
   end
   
+  def after_create
+    Tr8n::Notification.distribute(self)    
+  end
+
   def after_save
     clear_cache
   end

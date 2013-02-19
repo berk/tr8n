@@ -1,0 +1,22 @@
+<div class="inner">
+  <div class="hd" style="">
+      <div style="float:<%=tr8n_current_language.align(:right)%>">
+        <%=link_to_function(image_tag("/tr8n/images/close.gif", :style => "border:0px; padding:5px;", :alt=>trla("Close")), "tr8nLightbox.hide()") %>
+      </div>
+
+      <%=tra("Tr8n Notifications") %>
+  </div>
+
+  <div class="bd" <%=tr8n_dir_attribute_tag%> style="max-height:450px;overflow:auto;padding:3px;">
+    <% @notifications.each do |n| %>
+      <% next unless n.valid? %>
+      <%= render :partial => "/tr8n/translator/notifications/#{n.key}", :locals => {:notification => n} %>
+    <% end %>
+    <% if @notifications.empty? %>
+      <div style="text-align:center; padding:30px;">
+        <%=tr("You don't have any notifications yet.") %>
+      </div>
+    <% end %>
+  </div>
+
+</div>

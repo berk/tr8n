@@ -11,7 +11,7 @@
               </div>
               <div style="font-weight:bold;"><%=metric.language.english_name%></div>
           </div>
-          <%=render :partial => "/tr8n/dashboard/translation_source_metric", :locals => {:translation_source => metric.translation_source, :translation_source_metric => metric} %>
+          <%=render :partial => "/tr8n/translator/translation_source_metric", :locals => {:translation_source => metric.translation_source, :translation_source_metric => metric} %>
       </div>
   <% end %>
 

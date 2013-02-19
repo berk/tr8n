@@ -3,15 +3,7 @@
 	<%= render :partial => "/tr8n/common/header" %>
 	
 	<div class="section_title">
-		  <div style="<%=tr8n_style_attribute_tag('float', 'right')%>; font-size:12px; padding-top:5px;">
-		  	<%
-		  		links = []
-					links << link_to(tra("my assignments"), :controller => "/tr8n/translator", :action => :assignments)
-  				links << link_to(tra("edit preferences"), :controller => "/tr8n/translator", :action => :index)
-				%>
-				<%= links.join(" | ") %>
-		  </div>
-		
+		<%= render :partial => "/tr8n/translator/sections" %>
 	  <%=tra("{user}'s Dashboard", "Dashboard section title", :user => [tr8n_current_translator, :name]) %>
 	</div>
 	
@@ -108,11 +100,6 @@
 		<div id="lang_content_<%=lang.id%>" class="section_box colored">
 	    <%=render :partial=>"statistics", :locals => {:lang => lang, :translator_metric => translator_metric}%>
 			
-	    <%=render :partial=>"forum", :locals => {:lang => lang}%>
-	
-	    <%=render :partial=>"translations", :locals => {:lang => lang}%>
-	
-	    <%=render :partial=>"votes", :locals => {:lang => lang}%>
 		</div>
 	<% end %>
 <% end %>

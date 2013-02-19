@@ -2871,7 +2871,7 @@ Tr8n.LanguageSelector.prototype = {
   },
 
   showDashboard: function() {
-    window.location = "/tr8n/dashboard";
+    window.location = "/tr8n/translator/dashboard";
   },
 
   manageLanguage: function() {

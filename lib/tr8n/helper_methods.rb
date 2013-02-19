@@ -412,6 +412,33 @@ module Tr8n::HelperMethods
     image_tag(chart_url)
   end  
 
+  def tr8n_when_string_tag(time, opts = {})
+    elapsed_seconds = Time.now - time
+    if elapsed_seconds < 0
+      tr('In the future, Marty!', 'Time reference')
+    elsif elapsed_seconds < 2.minutes
+      tr('a moment ago', 'Time reference')
+    elsif elapsed_seconds < 55.minutes
+      elapsed_minutes = (elapsed_seconds / 1.minute).to_i
+      tr("{minutes||minute} ago", 'Time reference', :minutes => elapsed_minutes)
+    elsif elapsed_seconds < 1.75.hours
+      tr("about an hour ago", 'Time reference')
+    elsif elapsed_seconds < 12.hours
+      elapsed_hours = (elapsed_seconds / 1.hour).to_i
+      tr("{hours||hour} ago", 'Time reference', :hours => elapsed_hours)
+    elsif time.today_in_time_zone?
+      display_time(time, :time_am_pm)
+    elsif time.yesterday_in_time_zone?
+      tr("Yesterday at {time}", 'Time reference', :time => time.tr(:time_am_pm).gsub('/ ', '/').sub(/^[0:]*/,""))
+    elsif elapsed_seconds < 5.days
+      time.tr(:day_time).gsub('/ ', '/').sub(/^[0:]*/,"")
+    elsif time.same_year_in_time_zone?
+      time.tr(:monthname_abbr_time).gsub('/ ', '/').sub(/^[0:]*/,"")
+    else
+      time.tr(:monthname_abbr_year_time).gsub('/ ', '/').sub(/^[0:]*/,"")
+    end
+  end
+
 private
 
   def generate_sitemap(sections, options = {})
