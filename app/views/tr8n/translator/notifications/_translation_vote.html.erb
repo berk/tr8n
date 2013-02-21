@@ -1,13 +1,10 @@
-<div style="margin:5px;padding:5px;background:white; border-bottom:2px solid #eee">
-  <div style="float:<%=tr8n_current_language.align(:right)%>">
-    <%=link_to_function(image_tag("/tr8n/images/close.gif", :style => "border:0px; padding:5px;", :alt=>trla("Close")), "tr8nLightbox.hide()") %>
-  </div>
+<%= render :partial => "/tr8n/translator/notifications/header" %>
 
   <table style="width:95%">
     <tr>
       <td style="padding-right:5px; width:60px;">
         <div style="padding:3px;border:1px solid #eee;display:inline-block;">
-          <%=tr8n_user_mugshot_tag(notification.actor, :linked => true)%>
+          <%=tr8n_translator_mugshot_tag(notification.actor, :linked => true)%>
         </div>
       </td>
       <td>
@@ -35,4 +32,5 @@
       </td>
     </tr>
   </table>  
-</div>
+
+<%= render :partial => "/tr8n/translator/notifications/footer" %>

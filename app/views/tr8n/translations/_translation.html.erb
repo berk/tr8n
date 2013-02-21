@@ -2,12 +2,12 @@
   <table>
     <tr>
       <td style="vertical-align:top;padding-right:2px;">
-        <%=tr8n_user_mugshot_tag(translation.translator, :linked => true)%>
+        <%=tr8n_translator_mugshot_tag(translation.translator, :linked => true)%>
       </td>
       <td style="vertical-align:top">
-        <%=tr8n_user_tag(translation.translator, :linked => true)%>
+        <%=tr8n_translator_tag(translation.translator, :linked => true)%>
         <div style="color:grey;">
-            <%=translation.created_at.trl(:date_time) %>
+          <%= tr8n_when_string_tag(translation.created_at) %>
         </div>
 				<%=tr8n_translator_rank_tag(translation.translator)%>
       </td>

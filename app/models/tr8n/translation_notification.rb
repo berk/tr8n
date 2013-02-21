@@ -37,6 +37,7 @@ class Tr8n::TranslationNotification < Tr8n::Notification
 
     # find all translators who follow the key
     translators += followers(tkey)
+    translators += followers(translation.translator)
 
     # remove the current translator
     translators = translators.uniq - [translation.translator]
@@ -49,12 +50,12 @@ class Tr8n::TranslationNotification < Tr8n::Notification
   def title
     if object.translation_key.followed?
       return tr("[link: {user}] added a translation to a phrase you are following.", nil, 
-          :user => actor, :link => [actor.link]
+          :user => actor, :link => [actor.url]
           )
     end
 
     tr("[link: {user}] added another translation to a phrase you've translated.", nil, 
-        :user => actor, :link => [actor.link]
+        :user => actor, :link => [actor.url]
     )
   end
 end

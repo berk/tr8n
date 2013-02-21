@@ -4,7 +4,7 @@
   
   <div class="section_title">
     <%= render :partial => "/tr8n/translator/sections" %>
-    <%=tra("{user}'s Assignments", "Dashboard section title", :user => [tr8n_current_translator, :name]) %>
+    <%=tra("Your Assignments") %>
     <span dir="ltr">(<%= tr8n_current_language.english_name %>)</span>
     <span style='font-size:12px;'>
       <%= link_to_function("Change Language", "tr8nLightbox.show('/tr8n/language/select?lightbox=true', {height:500, width:400});") %>

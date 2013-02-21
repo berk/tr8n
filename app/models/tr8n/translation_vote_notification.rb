@@ -47,6 +47,7 @@ class Tr8n::TranslationVoteNotification < Tr8n::Notification
 
     # find all translators who follow the key
     translators += followers(tkey)
+    translators += followers(vote.translator)
 
     # remove the current translator
     translators = translators.uniq - [vote.translator]
@@ -64,18 +65,18 @@ class Tr8n::TranslationVoteNotification < Tr8n::Notification
   def title
     if object.translation.translation_key.followed?
       return tr("[link: {user}] #{verb(object)} a translation to a phrase you are following.", nil, 
-          :user => actor, :link => [actor.link]
+          :user => actor, :link => [actor.url]
       )
     end
 
     if object.translation.translator == Tr8n::Config.current_translator
       return tr("[link: {user}] #{verb(object)} your translation.", nil, 
-        :user => actor, :link => [actor.link]
+        :user => actor, :link => [actor.url]
       )
     end
 
     tr("[link: {user}] #{verb(object)} an alternative translation to a phrase you've translated.", nil, 
-      :user => actor, :link => [actor.link]
+      :user => actor, :link => [actor.url]
     )
   end
 end

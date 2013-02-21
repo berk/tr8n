@@ -318,6 +318,32 @@ module Tr8n::HelperMethods
     end
   end  
   
+  def tr8n_translator_tag(translator, options = {})
+    return "Deleted Translator" unless translator
+    
+    if options[:linked]
+      link_to(translator.name, translator.url)
+    else
+      translator.name
+    end
+  end
+
+  def tr8n_translator_mugshot_tag(translator, options = {})
+    if translator and !translator.mugshot.blank?
+      img_url = translator.mugshot
+    else
+      img_url = Tr8n::Config.silhouette_image
+    end
+    
+    img_tag = "<img src='#{img_url}' style='width:48px'>"
+    
+    if translator and options[:linked]
+      link_to(img_tag, translator.url)
+    else  
+      img_tag
+    end
+  end 
+
   def tr8n_will_paginate(collection = nil, options = {})
     will_paginate(collection, options.merge(:previous_label => tr("{laquo} Previous", "Previous entries in a list", {}, options), 
                                             :next_label => tr("Next {raquo}", "Next entries in a list", {}, options)))
@@ -395,8 +421,8 @@ module Tr8n::HelperMethods
     image_tag(chart_url)
   end
   
-  def tr8n_translator_rank_chart_tag(language = nil)
-    metric = language ? tr8n_current_translator.metric_for(language) : tr8n_current_translator.total_metric
+  def tr8n_translator_rank_chart_tag(translator, language = nil)
+    metric = language ? translator.metric_for(language) : translator.total_metric
     values = [metric.rejected_translations, metric.accepted_translations, metric.pending_vote_translations]
     names = [trl("Rejected"), trl("Accepted"), trl("Pending Votes")]
     colors = ['FF0000', '00FF00', 'FFFF00']

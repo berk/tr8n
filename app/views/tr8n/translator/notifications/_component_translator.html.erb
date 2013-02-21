@@ -1,0 +1,31 @@
+<%= render :partial => "/tr8n/translator/notifications/header" %>
+  <table style="width:95%">
+    <tr>
+      <td style="padding-right:5px; width:60px;">
+        <div style="padding:3px;border:1px solid #eee;display:inline-block;">
+          <%=tr8n_translator_mugshot_tag(notification.target, :linked => true)%>
+        </div>
+      </td>
+      <td>
+        <div style="font-weight:bold; background:white; padding:3px;">
+          <%= notification.title %>
+        </div>
+        <div style="padding:5px;">
+          <table>
+            <tr>
+              <td><%=tr("Component:") %></td>
+              <td><%= link_to(notification.object.component.title, "/tr8n/translator/assignments#comp-#{notification.object.component.id}") %></td>
+            </tr>
+            <tr>
+              <td><%=tr("Sections:") %></td>
+              <td><%= notification.object.component.sources.count %></td>
+            </tr>
+          </table>
+        </div>
+        <div style="padding-top:5px;color:#ccc;font-size:10px;">
+          <%= tr8n_when_string_tag(notification.created_at) %>
+        </div>
+      </td>
+    </tr>
+  </table>  
+<%= render :partial => "/tr8n/translator/notifications/footer" %>

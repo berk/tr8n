@@ -14,7 +14,7 @@
 
 <div style="font-size:14px; border-bottom:1px solid #ccc; margin-bottom:5px;">
   <div style="<%=tr8n_style_attribute_tag('float', 'right')%>">
-    <%=tr8n_translator_rank_tag(tr8n_current_translator, translator_metric.rank)%>
+    <%=tr8n_translator_rank_tag(@translator, translator_metric.rank)%>
   </div>
 	
   <%=tr8n_toggler_tag("stats_content_#{lang.id}", "", true)%>
@@ -25,10 +25,10 @@
 	<table style="width:100%">
 	  <tr>
       <td style="width:50%; padding-top:3px; padding-right:3px; padding-bottom:10px;">
-          <%=render :partial => "language_metric", :locals => {:language_metric => lang.total_metric, :lang => lang} %>
+          <%=render :partial => "translator_metric", :locals => {:translator_metric => translator_metric, :lang => lang} %>
       </td>      	  	
 	    <td style="width:50%;padding-top:3px; padding-bottom:10px;">
-          <%=render :partial => "translator_metric", :locals => {:translator_metric => translator_metric, :lang => lang} %>
+          <%=render :partial => "language_metric", :locals => {:language_metric => lang.total_metric, :lang => lang} %>
 	    </td>        
 	  </tr>
 	</table>  

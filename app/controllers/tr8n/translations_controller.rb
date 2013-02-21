@@ -141,6 +141,18 @@ class Tr8n::TranslationsController < Tr8n::BaseController
       conditions << restricted_keys
     end
 
+    @followed_translators = tr8n_current_translator.followed_objects("Tr8n::Translator")
+    unless [nil, "", "anyone", "me"].include?(params[:submitted_by])
+      translator = Tr8n::Translator.find_by_id(params[:submitted_by])  
+      if translator
+        if translator == tr8n_current_translator
+          params[:submitted_by] = :me
+        elsif not @followed_translators.include?(translator)
+          @followed_translators << translator
+        end
+      end
+    end
+
     @translations = Tr8n::Translation.paginate(:per_page => per_page, :page => page, :conditions => conditions, :order => "created_at desc, rank desc")    
   end
 

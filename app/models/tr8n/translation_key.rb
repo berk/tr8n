@@ -232,7 +232,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   end
 
   # returns all translations for the key, language and minimal rank
-  def translations_for(language, rank = nil)
+  def translations_for(language = nil, rank = nil)
     conditions = ["translation_key_id = ?", self.id]
     
     if language
@@ -585,7 +585,6 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   ## Offline Tasks
   ###############################################################
   def update_metrics!(language = Tr8n::Config.current_language, opts = {})
-    # Tr8n::Config.language_stats_realtime?
     Tr8n::OfflineTask.schedule(self.class.name, :update_metrics_offline, {
                                :translation_key_id => self.id, 
                                :language_id => language.id

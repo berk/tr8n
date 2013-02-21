@@ -24,6 +24,12 @@
 class Tr8n::TranslatorController < Tr8n::BaseController
   unloadable
   
+  def index
+    @translator = Tr8n::Translator.find_by_id(params[:id]) if params[:id]
+    @translator ||= Tr8n::Config.current_translator
+    @languages = Tr8n::LanguageUser.languages_for(@translator.user)
+  end
+
   def registration
     if params[:agree] == "yes"
       Tr8n::Config.current_translator # this will register a translator
@@ -32,8 +38,16 @@ class Tr8n::TranslatorController < Tr8n::BaseController
     end
   end
 
-  def index
+  def settings
     @fallback_language = (tr8n_current_translator.fallback_language || tr8n_default_language)
+
+    if request.post?
+      tr8n_current_translator.update_attributes(params[:translator])
+      tr8n_current_translator.reload
+
+      trfn("Your information has been updated")
+      @fallback_language = (tr8n_current_translator.fallback_language || tr8n_default_language)
+    end
   end
 
   def generate_access_key
@@ -41,33 +55,30 @@ class Tr8n::TranslatorController < Tr8n::BaseController
     trfn("New access key has be generated")
     redirect_to_source
   end
-
-  def update_translator_section
-    @fallback_language = (tr8n_current_translator.fallback_language || tr8n_default_language)
-    unless request.post?
-      return render(:partial => params[:section], :locals => {:mode => params[:mode].to_sym})
-    end
-    
-    tr8n_current_translator.update_attributes(params[:translator])
-    
-    tr8n_current_translator.reload
-    @fallback_language = (tr8n_current_translator.fallback_language || tr8n_default_language)
-    render(:partial => params[:section], :locals => {:mode => :view})
-  end
   
   def follow
     if params[:translation_key_id]
       object = Tr8n::TranslationKey.find_by_id(params[:translation_key_id])
       trfn("You are now following this translation key") if object
+    elsif params[:translator_id]
+      object = Tr8n::Translator.find_by_id(params[:translator_id])
+      trfn("You are now following {translator}", nil, :translator => object ) if object      
     end
-    tr8n_current_translator.follow(object) if object
+
+    if object
+      tr8n_current_translator.follow(object) 
+    end
+
     redirect_to_source
   end
 
   def unfollow
     if params[:translation_key_id]
       object = Tr8n::TranslationKey.find_by_id(params[:translation_key_id])
+    elsif params[:translator_id]
+      object = Tr8n::Translator.find_by_id(params[:translator_id])
     end
+
     tr8n_current_translator.unfollow(object) if object
     redirect_to_source
   end
@@ -115,8 +126,11 @@ class Tr8n::TranslatorController < Tr8n::BaseController
     render :layout => false
   end
 
-  def dashboard
-    @user_languages = Tr8n::LanguageUser.languages_for(tr8n_current_user)
+  def following
+    @translators = Tr8n::TranslatorFollowing.find(:all, 
+                   :conditions => ["translator_id = ? and object_type = ?", tr8n_current_translator.id, "Tr8n::Translator"]).collect{|f| f.object}
+    @translation_keys = Tr8n::TranslatorFollowing.find(:all, 
+                   :conditions => ["translator_id = ? and object_type = ?", tr8n_current_translator.id, "Tr8n::TranslationKey"]).collect{|f| f.object}
   end
 
 end

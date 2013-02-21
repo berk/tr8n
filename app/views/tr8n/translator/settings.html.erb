@@ -1,0 +1,101 @@
+<% Tr8n::Config.with_options(:default_locale => 'en-US', :admin => true) do %>
+
+	<%= render :partial => "/tr8n/common/header" %>
+
+	<div id="basic_info_container">
+	  <div class="section_title">
+	    <%= render :partial => "/tr8n/translator/sections" %>
+		  <%=tra("Your Preferences") %>
+	  </div>
+	  
+	  <% form_for(:translator, tr8n_current_translator, :url => {:action => :index}, :html => {:id => 'basic_info_form', :method => :post}) do |f| %>
+	    <div class="section_box colored">
+	      <div>
+	        <table>
+	          <tr>
+	            <th style="width:120px;padding:3px;vertical-align:middle;font-weight:bold;"><%=tra("Name:")%></th>
+	            <td style="padding:3px;">
+	              <% if Tr8n::Config.site_user_info_disabled? %>
+	                <%=f.text_field(:name)%>
+	              <% else %>
+	                <%=tr8n_current_translator.name%>
+	              <% end %>
+	            </td>
+	          </tr>
+
+	          <tr>
+	            <th style="width:120px;padding:3px;vertical-align:middle;font-weight:bold;"><%=tra("Access Key:")%></th>
+	            <td style="padding:3px;">
+	                <%=tr8n_current_translator.access_key || "not generated" %>
+
+	                (<%= link_to(tra('generate'), {:action => :generate_access_key}) %>)
+	                <span style="color: #888"><%=tra("Allows you to access restricted sections when you are not logged in.") %></span>
+
+	            </td>
+	          </tr>
+
+						<% if Tr8n::Config.site_user_info_disabled? %>
+	            <tr>
+	              <th style="width:120px;padding:3px;vertical-align:middle;font-weight:bold;"><%=tra("Gender:")%></th>
+	              <td style="padding:3px;">
+	                  <%=f.radio_button(:gender, "male")%> <%=tr('Male', 'Gender') %>
+	                  &nbsp; <%=f.radio_button(:gender, "female")%> <%=tra('Female', 'Gender') %>
+	                  &nbsp; <%=f.radio_button(:gender, "unknown")%> <%=tra('Unknown', 'Gender') %>
+	              </td>
+	            </tr>
+
+		          <tr>
+		            <th style="width:120px;padding:3px;vertical-align:middle;font-weight:bold;"><%=tra("Email:")%></th>
+		            <td style="padding:3px;">
+		                <%=f.text_field(:email)%>
+		            </td>
+		          </tr>
+		          <tr>
+		            <th style="width:120px;padding:3px;vertical-align:middle;font-weight:bold;"><%=tra("Password:")%></th>
+		            <td style="padding:3px;">
+		                <%=f.password_field(:password)%>
+		            </td>
+		          </tr>
+		          <tr>
+		            <th style="width:120px;padding:3px;vertical-align:middle;font-weight:bold;"><%=tra("Photo Url:")%></th>
+		            <td style="padding:3px;">
+		                <%=f.text_field(:mugshot)%>
+		            </td>
+		          </tr>
+		          <tr>
+		            <th style="width:120px;padding:3px;vertical-align:middle;font-weight:bold;"><%=tra("Link Url")%></th>
+		            <td style="padding:3px;">
+		                <%=f.text_field(:link)%>
+		            </td>
+		          </tr>
+	          <% end %>
+
+						<% if Tr8n::Config.enable_translator_language? %>
+		          <tr>
+		            <th style="padding:3px;vertical-align:middle;font-weight:bold;"><%=tra("Fallback Language:", "Language to fall back onto if the language phrase is not translated")%></th>
+		            <td style="padding:3px;">
+		               <%=select_tag("translator[fallback_language_id]", options_for_select(Tr8n::Language.options, @fallback_language.id.to_s))%>
+		            </td>
+		          </tr>
+	          <% end %>
+
+	          <% if Tr8n::Config.enable_translator_language? or Tr8n::Config.site_user_info_disabled? %>
+	            <tr>
+	              <th style="padding:3px;vertical-align:middle;font-weight:bold;"></th>
+	              <td style="padding-top:15px;padding-bottom:15px;">
+	                 <button type="submit" class="translator_btn translator_submit_btn" onClick="Tr8n.submit('basic_info_form'); return false;">
+	                    <span><%=tra("Save")%></span>
+	                  </button>
+	              </td>
+	            </tr>
+	          <% end %>
+						
+	        </table>
+	      </div>
+	    </div>
+	  <% end %>
+	</div>
+	
+	<%= render :partial => "/tr8n/common/footer" %>
+
+<% end %>	

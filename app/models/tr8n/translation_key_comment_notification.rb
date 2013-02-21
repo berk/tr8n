@@ -37,6 +37,7 @@ class Tr8n::TranslationKeyCommentNotification < Tr8n::Notification
 
     translators += commenters(tkey, comment.language)
     translators += followers(tkey)
+    translators += followers(comment.translator)
 
     # remove the current translator
     translators = translators.uniq - [comment.translator]
@@ -49,18 +50,18 @@ class Tr8n::TranslationKeyCommentNotification < Tr8n::Notification
   def title
     if object.translation_key.followed?
       return tr("[link: {user}] commented on a translation to a phrase you are following.", nil, 
-          :user => actor, :link => [actor.link]
+          :user => actor, :link => [actor.url]
       )
     end
 
     if object.translation_key.commented?(object.language)
       return tr("[link: {user}] replied to your comment.", nil, 
-          :user => actor, :link => [actor.link]
+          :user => actor, :link => [actor.url]
       )
     end
 
     tr("[link: {user}] commented on a phrase you've translated.", nil, 
-      :user => actor, :link => [actor.link]
+      :user => actor, :link => [actor.url]
     )
   end
 

@@ -21,33 +21,25 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-class Tr8n::LanguageForumMessageNotification < Tr8n::Notification
+class Tr8n::TranslatorFollowingNotification < Tr8n::Notification
 
-  def self.distribute(message)
-    # find translators for all other translations of the key in this language
-    messages = Tr8n::LanguageForumMessage.find(:all, :conditions => ["language_forum_topic_id = ?", 
-                                                 message.language_forum_topic.id])
-
-    translators = []
-    messages.each do |m|
-      translators << m.translator
-    end
-
-    translators += followers(message.translator)
-
-    # remove the current translator
-    translators = translators.uniq - [message.translator]
-
-    translators.each do |t|
-      create(:translator => t, :object => message, :actor => message.translator, :action => "replied_to_forum_topic")
+  def self.distribute(tf)
+    return unless tf.object
+    if tf.object.is_a?(Tr8n::Translator)
+      create(:translator => tf.object, :object => tf, :actor => tf.translator, :target => tf.object, :action => "got_followed")
+      create(:translator => tf.translator, :object => tf, :actor => tf.translator, :target => tf.object, :action => "followed_translator")
     end
   end
 
   def title
-    tr("[link: {user}] replied to a forum topic you are following.", nil, 
-      :user => actor, :link => [actor.url]
+    if action == "got_followed"
+      return tr("[link: {user}] is now following your translation activity.", nil, 
+          :user => actor, :link => [actor.url]
+      )
+    end
+
+    tr("You are now following [link: {user}]'s translation activity.", nil, 
+      :user => target, :link => [target.url]
     )
   end
-
-
 end

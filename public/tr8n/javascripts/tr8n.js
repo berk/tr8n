@@ -2595,7 +2595,7 @@ Tr8n.Utils = {
 
   displayShortcuts: function() {
     if (tr8nLightbox)
-      tr8nLightbox.show('/tr8n/help/lb_shortcuts', {width:400, height:480});
+      tr8nLightbox.show('/tr8n/help/lb_shortcuts', {width:400, height:520});
   }
 
 }
@@ -2871,7 +2871,7 @@ Tr8n.LanguageSelector.prototype = {
   },
 
   showDashboard: function() {
-    window.location = "/tr8n/translator/dashboard";
+    window.location = "/tr8n/translator";
   },
 
   manageLanguage: function() {

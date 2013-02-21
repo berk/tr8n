@@ -1,6 +1,14 @@
+<%
+  flag ||= false
+%>
 <div style="padding-bottom:5px;">
   <table style="width:100%;border-collapse: collapse;" cellpadding="5px" cellspacing="0px;" >
       <tr style="border-bottom:1px dotted #ccc;">
+        <% if flag %>
+        <td style="width:100px;">
+          <%=tra("Language")%>
+        </td>    
+        <% end %>    
         <td style="width:20px; color:grey; font-size:10px; text-align:right; padding-bottom:3px;"><%=tra("Rank", "Translator label")%></td>
         <td style="width:75px; color:grey; font-size:10px; text-align:center; padding-bottom:3px;"><%=tra("Your Vote", "Translator label")%></td>
         <td style="color:grey; font-size:10px; padding-bottom:3px;"><%=tra("Translation", "Translator label")%></td>
@@ -8,6 +16,12 @@
       <% translations[0..9].each do |trn| %>
         <% style = "border-bottom:1px dotted #ccc;" unless translations.last == trn %>
         <tr style="<%=style%>">
+          <% if flag %>
+          <td>
+            <%= image_tag("/tr8n/images/flags/#{trn.language.flag}.png", :style => "vertical-align:middle;", :title => trn.language.native_name) %> 
+            <%=trn.language.native_name%>
+          </td>
+          <% end %>
           <td style="text-align:right;vertical-align:top; padding-top:3px;">
 					  <%=tr8n_spinner_tag("tr8n_spinner_for_#{trn.id}", "", "")%>
 					 

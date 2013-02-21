@@ -8,6 +8,16 @@ class Tr8n::Notification < ActiveRecord::Base
   belongs_to :object, :polymorphic => true
 
   def self.distribute(object)
+    Tr8n::OfflineTask.schedule(self.name, :distribute_offline, {
+                               :object_type => object.class.name,
+                               :object_id => object.id
+    })
+  end
+
+  def self.distribute_offline(opts)
+    object = opts[:object_type].constantize.find_by_id(opts[:object_id])
+    return unless object
+
     "#{object.class.name}Notification".constantize.distribute(object)
   end
 
@@ -38,7 +48,7 @@ class Tr8n::Notification < ActiveRecord::Base
     true
   end
 
-  def tr(label, description, tokens = {}, options = {})
+  def tr(label, description = nil, tokens = {}, options = {})
     label.translate(description, tokens, options.merge(:source => "tr8n/notifications/#{key}"))
   end
 

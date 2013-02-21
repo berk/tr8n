@@ -4,10 +4,14 @@
   
   <div class="section_title">
     <%= render :partial => "/tr8n/translator/sections" %>
-    <%=tra("{user}'s Notifications", nil, :user => [tr8n_current_translator, :name]) %>
+    <%=tra("Your Notifications") %>
   </div>
 
-  <div class="section_box colored">
+  <div class="section_box colored" style="margin-top:10px; margin-bottom:10px; padding:10px;">
+    <% if @notifications.any? %>
+      <%= render :partial => "/tr8n/common/paginator", :locals => {:objects => @notifications, :subject => 'notification'} %>
+    <% end %>
+
     <% @notifications.each do |n| %>
       <% next unless n.valid? %>
       <%= render :partial => "/tr8n/translator/notifications/#{n.key}", :locals => {:notification => n} %>

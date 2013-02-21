@@ -35,4 +35,8 @@ class Tr8n::TranslatorFollowing < ActiveRecord::Base
     find(:first, :conditions => ["translator_id = ? and object_type = ? and object_id = ?", translator.id, object.class.name, object.id])
   end
   
+  def after_create
+    Tr8n::Notification.distribute(self)    
+  end
+
 end

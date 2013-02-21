@@ -20,7 +20,7 @@
               <%=tra("Show")%>
               <%=select_tag(:with_status, options_for_select(Tr8n::Translation.filter_status_options, params[:with_status]), :onChange => "Tr8n.Effects.submit('translations_search_form')")%>
               <%=tra("submitted by")%>
-              <%=select_tag(:submitted_by, options_for_select(Tr8n::Translation.filter_submitter_options, params[:submitted_by]), :onChange => "Tr8n.Effects.submit('translations_search_form')")%>
+              <%=select_tag(:submitted_by, options_for_select(Tr8n::Translation.filter_submitter_options(@followed_translators), params[:submitted_by]), :onChange => "Tr8n.Effects.submit('translations_search_form')")%>
               <%=tra("created on")%>
               <%=select_tag(:submitted_on, options_for_select(Tr8n::Translation.filter_date_options, params[:submitted_on]), :onChange => "Tr8n.Effects.submit('translations_search_form')")%>
               <%=tra("grouped by")%>

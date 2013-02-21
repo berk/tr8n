@@ -283,9 +283,12 @@ class Tr8n::Translation < ActiveRecord::Base
      ["rejected translations", "rejected"]].collect{|option| [option.first.trl("Translation filter status option"), option.last]}    
   end
   
-  def self.filter_submitter_options
-    [["anyone", "anyone"], 
-     ["me", "me"]].collect{|option| [option.first.trl("Translation filter submitter option"), option.last]}
+  def self.filter_submitter_options(translators = [])
+    values = [["anyone", "anyone"], ["me", "me"]].collect{|option| [option.first.trl("Translation filter submitter option"), option.last]}
+    translators.each do |t|
+      values << [t.name, t.id.to_s]
+    end
+    values
   end
   
   def self.filter_date_options
@@ -340,17 +343,21 @@ class Tr8n::Translation < ActiveRecord::Base
       conditions[0] << " rank < 0 "
     end
     
-    if params[:submitted_by] == "me" 
-      if Tr8n::Config.current_user_is_translator?
+    unless params[:submitted_by].blank?
+      if params[:submitted_by] == "anyone" 
+        translator_id = nil
+      elsif params[:submitted_by] == "me" 
+        translator_id = Tr8n::Config.current_translator.id
+      else
+        translator_id = params[:submitted_by]
+      end
+      if translator_id
         conditions[0] << " and " unless conditions[0].blank?
         conditions[0] << " translator_id = ? "
-        conditions << Tr8n::Config.current_translator.id
-      else
-        conditions[0] << " and " unless conditions[0].blank?
-        conditions[0] << " translator_id = 0 "
+        conditions << translator_id
       end
     end
-    
+
     if params[:submitted_on] == "today"
       date = Date.today
       conditions[0] << " and " unless conditions[0].blank?

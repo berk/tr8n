@@ -296,6 +296,10 @@ class Tr8n::Translator < ActiveRecord::Base
     Tr8n::Config.user_link(user)
   end
 
+  def url
+    "/tr8n/translator/index/#{id}"
+  end
+
   def admin?
     # stand alone translators are always admins
     return true unless Tr8n::Config.site_user_info_enabled?
@@ -331,6 +335,16 @@ class Tr8n::Translator < ActiveRecord::Base
   def unfollow(object)
     tf = Tr8n::TranslatorFollowing.find(:first, :conditions => ["object_type = ? and object_id = ?", object.class.name, object.id])
     tf.destroy if tf
+  end
+
+  def followed_objects(type=nil)
+    if type
+      following = Tr8n::TranslatorFollowing.find(:all, :conditions => ["translator_id = ? and object_type = ?", self.id, type])    
+    else
+      following = Tr8n::TranslatorFollowing.find(:all, :conditions => ["translator_id = ?", self.id])
+    end 
+
+    following.collect{|f| f.object}
   end
 
   def self.level_options

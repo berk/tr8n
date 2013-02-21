@@ -32,7 +32,7 @@ Ctrl+Shift+T:
 
 Alt+Shift+D: 
   description:  Opens dashboard
-  script:       "window.location = '/tr8n/translator/dashboard';"
+  script:       "window.location = '/tr8n/translator';"
 
 Alt+Shift+M: 
   description:  Opens sitemap 

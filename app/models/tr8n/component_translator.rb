@@ -33,4 +33,8 @@ class Tr8n::ComponentTranslator < ActiveRecord::Base
     cs || create(:component => component, :translator => translator)
   end
 
+  def after_create
+    Tr8n::Notification.distribute(self)    
+  end
+
 end

@@ -7,7 +7,7 @@
       <%=tra("Tr8n Notifications") %>
   </div>
 
-  <div class="bd" <%=tr8n_dir_attribute_tag%> style="max-height:450px;overflow:auto;padding:3px;">
+  <div class="bd" <%=tr8n_dir_attribute_tag%> style="max-height:550px;overflow:auto;padding:3px;">
     <% @notifications.each do |n| %>
       <% next unless n.valid? %>
       <%= render :partial => "/tr8n/translator/notifications/#{n.key}", :locals => {:notification => n} %>

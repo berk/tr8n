@@ -21,33 +21,14 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-class Tr8n::LanguageForumMessageNotification < Tr8n::Notification
+class Tr8n::ComponentTranslatorNotification < Tr8n::Notification
 
-  def self.distribute(message)
-    # find translators for all other translations of the key in this language
-    messages = Tr8n::LanguageForumMessage.find(:all, :conditions => ["language_forum_topic_id = ?", 
-                                                 message.language_forum_topic.id])
-
-    translators = []
-    messages.each do |m|
-      translators << m.translator
-    end
-
-    translators += followers(message.translator)
-
-    # remove the current translator
-    translators = translators.uniq - [message.translator]
-
-    translators.each do |t|
-      create(:translator => t, :object => message, :actor => message.translator, :action => "replied_to_forum_topic")
-    end
+  def self.distribute(ct)
+    create(:translator => ct.translator, :object => ct, :target => ct.translator, :action => "got_assigned_to_component")
   end
 
   def title
-    tr("[link: {user}] replied to a forum topic you are following.", nil, 
-      :user => actor, :link => [actor.url]
-    )
+    tr("You were assigned to translate a component.")
   end
-
 
 end
