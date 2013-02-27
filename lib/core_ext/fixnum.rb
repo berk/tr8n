@@ -32,8 +32,4 @@ class Fixnum
     to_s.trl(desc, tokens, options, language)
   end
 
-  def truncate(limit=99, more='+')
-    self > limit ? "#{limit}#{more}" : self;
-  end
- 
 end
