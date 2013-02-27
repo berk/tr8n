@@ -31,5 +31,4 @@ class Fixnum
   def trl(desc = "", tokens = {}, options = {}, language = Tr8n::Config.current_language)
     to_s.trl(desc, tokens, options, language)
   end
-
 end
