@@ -32,9 +32,8 @@
     Jump to: <%= languages.collect{|lang| link_to(lang.english_name, params.merge(:show_language=>lang.id, :anchor => "language-#{lang.id}"))}.join(", ") %>
   </div>
 
-  <% languages.each do |language| %>
-  <% 
-    metrics = sources.collect{|s| s.total_metric(language)} 
+  <% languages.each do |language| 
+       metrics = sources.collect{|s| s.total_metric(language)} 
   %>
   <div class="section_box" style="background-color:#FDFFF0; margin-bottom:10px; margin-top:0px;">
     <table>
@@ -89,65 +88,67 @@
         </td>
       </tr>
     </table>
-  </div>
-  <% display = (params[:show_language] == language.id.to_s ? "block" : "none") %>
-  <div id="lang_content_<%=language.id%>" class="section_box" style="display:<%=display%>; border: 1px dotted #eee">
-    <% if params[:charts] %>
-      <% sources.each_with_index do |source, index| %>
-        <div style="width:380px;  background-color:#efefef; float:left; padding:5px; border-radius:10px; margin:5px; font-size:10px;">
-            <div style="padding:5px;">
-                <div style="float:right">
-                    <%
-                      html = []
-                      html << link_to(image_tag("/tr8n/images/arrow_rotate_clockwise.png"), {:action => :recalculate_source, :source_id => source.id}, {:confirm => "Are you sure you want to recaluclate this source?"})
-                    %>
-                    <%= html.join(' | ') %>
-                </div>
-                <div style="font-weight:bold;font-size:12px;"><%= tr8n_language_flag_tag(language) %> <%=link_to(source.title, :action => :source, :source_id => source.id)%></div>
-            </div>
-            <%=render :partial => "/tr8n/translator/translation_source_metric", :locals => {:translation_source => source, :translation_source_metric => metrics[index]} %>
-        </div>
-      <% end %>
-      <div style="clear:both;"></div>
-    <% else %>
-      <table class="source_metrics">   
-        <tr>
-          <th style="text-align:left">Source</th>
-          <th>Total Keys</th>
-          <th>Translated Keys</th>
-          <th>Locked Keys</th>
-          <th>% Translated</th>
-          <th>% Locked</th>
-          <th></th>
-        </tr>
+
+    <% display = (params[:show_language] == language.id.to_s ? "block" : "none") %>
+    <div id="lang_content_<%=language.id%>" class="section_box" style="background:white; display:<%=display%>; border: 1px solid #ccc; margin-top:20px;">
+      <% if params[:charts] %>
         <% sources.each_with_index do |source, index| %>
-          <tr>
-            <td style="text-align:left">
-              <%= link_to(source.full_title, :action => :source, :source_id => source.id) %>
-            </td>
-            <td>
-              <%= link_to(metrics[index].key_count, "/tr8n/admin/applications/source?mode=translation_keys&source_id=#{source.id}") %>
-            </td>
-            <td>
-              <%=metrics[index].translated_key_count %>
-            </td>
-            <td>
-              <%=metrics[index].locked_key_count %>
-            </td>
-            <td>
-              <%=metrics[index].translation_completeness %>%
-            </td>
-            <td>
-              <%=metrics[index].completeness %>%
-            </td>
-            <td>
-              <%=link_to(image_tag("/tr8n/images/arrow_rotate_clockwise.png"), {:action => :recalculate_source, :source_id => source.id}, {:confirm => "Are you sure you want to recaluclate this source?"}) %>
-            </td>
-          </tr>
+          <div style="width:380px;  background-color:#efefef; float:left; padding:5px; border-radius:10px; margin:5px; font-size:10px;">
+              <div style="padding:5px;">
+                  <div style="float:right">
+                      <%
+                        html = []
+                        html << link_to(image_tag("/tr8n/images/arrow_rotate_clockwise.png"), {:action => :recalculate_source, :source_id => source.id}, {:confirm => "Are you sure you want to recaluclate this source?"})
+                      %>
+                      <%= html.join(' | ') %>
+                  </div>
+                  <div style="font-weight:bold;font-size:12px;"><%= tr8n_language_flag_tag(language) %> <%=link_to(source.title, :action => :source, :source_id => source.id)%></div>
+              </div>
+              <%=render :partial => "/tr8n/translator/translation_source_metric", :locals => {:translation_source => source, :translation_source_metric => metrics[index]} %>
+          </div>
         <% end %>
-      </table>
-    <% end %>
+        <div style="clear:both;"></div>
+      <% else %>
+        <table class="source_metrics">   
+          <tr>
+            <th style="text-align:left">Source</th>
+            <th>Total Keys</th>
+            <th>Translated Keys</th>
+            <th>Locked Keys</th>
+            <th>% Translated</th>
+            <th>% Locked</th>
+            <th></th>
+          </tr>
+          <% sources.each_with_index do |source, index| %>
+            <tr>
+              <td style="text-align:left">
+                <%= link_to(source.full_title, :action => :source, :source_id => source.id) %>
+              </td>
+              <td>
+                <%= link_to(metrics[index].key_count, "/tr8n/admin/applications/source?mode=translation_keys&source_id=#{source.id}") %>
+              </td>
+              <td>
+                <%=metrics[index].translated_key_count %>
+              </td>
+              <td>
+                <%=metrics[index].locked_key_count %>
+              </td>
+              <td>
+                <%=metrics[index].translation_completeness %>%
+              </td>
+              <td>
+                <%=metrics[index].completeness %>%
+              </td>
+              <td>
+                <%=link_to(image_tag("/tr8n/images/arrow_rotate_clockwise.png"), {:action => :recalculate_source, :source_id => source.id}, {:confirm => "Are you sure you want to recaluclate this source?"}) %>
+              </td>
+            </tr>
+          <% end %>
+        </table>
+      <% end %>
+    </div>    
   </div>
+
   <% end %>
 
 <% end %>

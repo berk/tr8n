@@ -330,14 +330,19 @@ class Tr8n::Admin::ApplicationsController < Tr8n::Admin::BaseController
     end
 
     params[:keys] = [params[:key_id]] if params[:key_id]
-    if params[:keys]
+
+    if params[:all] == "true"
+      source.translation_key_sources.each do |tks|
+        tks.destroy
+      end
+    elsif params[:keys]
       params[:keys].each do |key_id|
         tks = Tr8n::TranslationKeySource.find(:first, 
           :conditions => ["translation_key_id = ? and translation_source_id = ?", key_id, source.id])
         tks.destroy if tks
       end  
     end
-
+    
     trfn("Keys have been removed")
 
     source.translation_source_metrics.each do |metric|
@@ -346,6 +351,7 @@ class Tr8n::Admin::ApplicationsController < Tr8n::Admin::BaseController
     
     redirect_to_source
   end
+
 
   def lb_update_source
     @source = Tr8n::TranslationSource.find_by_id(params[:source_id]) unless params[:source_id].blank?

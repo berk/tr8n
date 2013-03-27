@@ -22,7 +22,9 @@
 <% end %>
 
 <%= will_filter_actions_bar_tag(@results, [
-  ['Remove From Source', 'deleteSelectedKeys()'] 
+  ['Remove From Source', 'deleteSelectedKeys()'],
+  ['Merge Selected Keys', 'mergeSelectedKeys()'],
+  ['Delete Selected Keys', 'deleteSelectedKeys()']
 ]) %>
 
 <script>
@@ -32,4 +34,28 @@
     Tr8n.element('keys_form').action = "/tr8n/admin/applications/remove_keys_from_source?source_id=<%=@source.id%>";
     Tr8n.element('keys_form').submit();
   }
+
+  function mergeSelectedKeys() {
+    var i=0;
+    var checkbox = Tr8n.element('wf_check_' + i);
+    var keys = [];
+    while (checkbox) {
+      if (checkbox.checked) {
+        keys.push(checkbox.value);
+      }
+      checkbox = Tr8n.element('wf_check_' + (++i));
+    }
+    if (keys.length < 2) {
+      alert('At least two keys must be selected.');
+      return;
+    }
+    tr8nLightbox.show('/tr8n/admin/translation_key/lb_merge?keys=' + keys, {height:350});
+  }
+
+  function deleteSelectedKeys() {
+    if (!confirm('Are you sure you want to delete all selected keys?'))
+       return;
+    Tr8n.element('keys_form').action = "/tr8n/admin/translation_key/delete";
+    Tr8n.element('keys_form').submit();
+  }  
 </script>

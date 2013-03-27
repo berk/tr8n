@@ -15,12 +15,15 @@
 	<div style="background-color:#f1f4fa; padding:5px; max-height:120px; overflow:auto; margin-bottom: 10px; border: 1px solid #ccc;">
 		<table style="width:100%">
 			<% @keys.each_with_index do |key, index| %> 
-			<tr style="border-bottom:1px solid #eee;">
-				<td style="cursor:pointer;" onClick="Tr8n.element('master_key_label').value=Tr8n.element('key_label_<%=index%>').innerHTML;Tr8n.element('master_key_description').value=Tr8n.element('key_description_<%=index%>').innerHTML;">
+			<tr style="<%= "border-bottom:1px solid #ccc;" unless index == @keys.count-1 %>">
+        <td style="padding:5px;width:20px;">
+          <%= index+1 %>)
+        </td>
+				<td style="cursor:pointer; padding:5px;" onClick="Tr8n.element('master_key_label').value=Tr8n.element('key_label_<%=index%>').innerHTML;Tr8n.element('master_key_description').value=Tr8n.element('key_description_<%=index%>').innerHTML;">
 					<div id="key_label_<%=index%>"><%=key.label%></div>
 					<div id="key_description_<%=index%>" style="color:#888; font-size:9px;"><%=key.description%></div>
 				</td>
-				<td style="text-align:right"><%=key.translations.count%></td>
+				<td style="text-align:right;padding:5px;"><%=key.translations.count%></td>
 			</tr>
 			<% end %>
 		</table>
