@@ -35,9 +35,12 @@ class Tr8n::TranslationSourceMetric < ActiveRecord::Base
   end
 
   def update_metrics!
-    self.key_count = Tr8n::TranslationKeySource.count("distinct tr8n_translation_key_sources.translation_key_id", 
-        :conditions => ["translation_source_id = ?", translation_source.id]
-    )
+    self.key_count = Tr8n::TranslationKey.count("distinct tr8n_translation_keys.id",
+        :conditions => ["tks.translation_source_id = ?", translation_source_id],
+        :joins => [
+          "join tr8n_translation_key_sources as tks on tr8n_translation_keys.id = tks.translation_key_id"
+        ]
+    ) 
 
     self.translation_count = Tr8n::Translation.count("distinct tr8n_translations.id", 
         # :conditions => ["tr8n_translations.language_id = ? and tr8n_translations.translation_key_id in (select tr8n_translation_key_sources.translation_key_id from tr8n_translation_key_sources where tr8n_translation_key_sources.translation_source_id = ?)", language_id, translation_source_id],
