@@ -2,6 +2,8 @@
 <%= render :partial => "tabs" %>
 <%= tr8n_will_filter(@sources) %>
 
+<%=link_to_function("+ Register New Source", "tr8nLightbox.show('/tr8n/admin/applications/lb_update_source', {height:400})")%>
+
 <% form_tag("", :id => "sources_form") do %>
   <%= will_filter_table_tag(@sources, :columns => [
     [:checkbox, 'sources'],     
@@ -26,16 +28,40 @@
 <% end %>
 
 <%= will_filter_actions_bar_tag(@keys, [
-  ['Delete Selected Sources', 'deleteSelectedSources()']
+  ['Delete Selected Sources', 'deleteSelectedSources()'],
+  ['Add To Component', 'addSelectedSourcesToComponent()'],
 ]) %>
 
 <%= render :partial => "/tr8n/admin/common/footer" %>
 
 <script>
+  function getSelectedSources() {
+    var i=0;
+    var checkbox = Tr8n.element('wf_check_' + i);
+    var sources = [];
+    while (checkbox) {
+      if (checkbox.checked) {
+        sources.push(checkbox.value);
+      }
+      checkbox = Tr8n.element('wf_check_' + (++i));
+    }
+    return sources; 
+  }
+
   function deleteSelectedSources() {
     if (!confirm('Are you sure you want to delete all selected sources?'))
        return;
     Tr8n.element('sources_form').action = "/tr8n/admin/applications/delete_source";
     Tr8n.element('sources_form').submit();
   }
+
+  function addSelectedSourcesToComponent() {
+    var sources = getSelectedSources();
+    if (sources.length == 0) {
+      alert('At least one key must be selected.');
+      return;
+    }
+    tr8nLightbox.show('/tr8n/admin/applications/lb_add_to_component?sources=' + sources, {height:400});
+  }
+
 </script>	

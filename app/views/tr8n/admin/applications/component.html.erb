@@ -68,9 +68,9 @@
         <%
           html = []
           html << link_to_function("Update", "tr8nLightbox.show('/tr8n/admin/applications/lb_update_component?comp_id=#{@comp.id}', {height:400})")
-          html << link_to_function("Add Sources", "tr8nLightbox.show('/tr8n/admin/applications/lb_add_objects_to_component?type=source&comp_id=#{@comp.id}', {height:350})")
-          html << link_to_function("Add Languages", "tr8nLightbox.show('/tr8n/admin/applications/lb_add_objects_to_component?type=language&comp_id=#{@comp.id}', {height:350})")
-          html << link_to_function("Add Translators", "tr8nLightbox.show('/tr8n/admin/applications/lb_add_objects_to_component?type=translator&comp_id=#{@comp.id}', {height:350})")
+          html << link_to_function("Add Sources", "tr8nLightbox.show('/tr8n/admin/applications/lb_add_objects_to_component?type=source&comp_id=#{@comp.id}', {height:450})")
+          html << link_to_function("Add Languages", "tr8nLightbox.show('/tr8n/admin/applications/lb_add_objects_to_component?type=language&comp_id=#{@comp.id}', {height:450})")
+          html << link_to_function("Add Translators", "tr8nLightbox.show('/tr8n/admin/applications/lb_add_objects_to_component?type=translator&comp_id=#{@comp.id}', {height:450})")
         %>
         <%= html.join(' | ') %>
         </td>

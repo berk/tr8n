@@ -78,6 +78,11 @@ class Tr8n::Component < ActiveRecord::Base
     name
   end
 
+  def name_and_key
+    return key if name.blank?
+    "#{name} (#{key})"
+  end
+
   def after_destroy
     Tr8n::Cache.delete(cache_key)
   end

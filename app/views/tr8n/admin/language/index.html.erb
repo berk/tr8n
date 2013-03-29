@@ -70,8 +70,10 @@
 <% end %>
 
 <%= will_filter_actions_bar_tag(@languages, [
-['Enable Selected Languages', 'enableSelectedLanguages()'], 
-['Disable Selected Languages', 'disableSelectedLanguages()']]) %>
+	['Enable Selected Languages', 'enableSelectedLanguages()'], 
+	['Disable Selected Languages', 'disableSelectedLanguages()'],
+	['Add To Component', 'addSelectedLanguagesToComponent()'],
+]) %>
 
 <script>
 	function calculateCompleteness() {
@@ -94,6 +96,28 @@
     Tr8n.element('languages_form').action = "/tr8n/admin/language/enable";
     Tr8n.element('languages_form').submit();
   }
+
+  function getSelectedLanguages() {
+    var i=0;
+    var checkbox = Tr8n.element('wf_check_' + i);
+    var languages = [];
+    while (checkbox) {
+      if (checkbox.checked) {
+        languages.push(checkbox.value);
+      }
+      checkbox = Tr8n.element('wf_check_' + (++i));
+    }
+    return languages; 
+  }
+
+  function addSelectedLanguagesToComponent() {
+    var languages = getSelectedLanguages();
+    if (languages.length == 0) {
+      alert('At least one translator must be selected.');
+      return;
+    }
+    tr8nLightbox.show('/tr8n/admin/applications/lb_add_to_component?languages=' + languages, {height:400});
+  }    
 </script>
 
 <%= render :partial => "/tr8n/admin/common/footer" %>

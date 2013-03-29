@@ -63,7 +63,8 @@
 <% end %>
 
 <%= will_filter_actions_bar_tag(@translators, [
-['Delete Selected Translators', 'deleteSelectedTranslators()'] 
+  ['Delete Selected Translators', 'deleteSelectedTranslators()'],
+  ['Add To Component', 'addSelectedTranslatorsToComponent()'],
 ]) %>
 
 <%= render :partial => "/tr8n/admin/common/footer" %>
@@ -75,4 +76,26 @@
     Tr8n.element('translators_form').action = "/tr8n/admin/translator/delete";
     Tr8n.element('translators_form').submit();
   }
+
+  function getSelectedTranslators() {
+    var i=0;
+    var checkbox = Tr8n.element('wf_check_' + i);
+    var translators = [];
+    while (checkbox) {
+      if (checkbox.checked) {
+        translators.push(checkbox.value);
+      }
+      checkbox = Tr8n.element('wf_check_' + (++i));
+    }
+    return translators; 
+  }
+
+  function addSelectedTranslatorsToComponent() {
+    var translators = getSelectedTranslators();
+    if (translators.length == 0) {
+      alert('At least one translator must be selected.');
+      return;
+    }
+    tr8nLightbox.show('/tr8n/admin/applications/lb_add_to_component?translators=' + translators, {height:400});
+  }  
 </script>

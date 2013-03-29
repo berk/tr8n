@@ -352,7 +352,6 @@ class Tr8n::Admin::ApplicationsController < Tr8n::Admin::BaseController
     redirect_to_source
   end
 
-
   def lb_update_source
     @source = Tr8n::TranslationSource.find_by_id(params[:source_id]) unless params[:source_id].blank?
     @source = Tr8n::TranslationSource.new unless @source
@@ -403,6 +402,46 @@ class Tr8n::Admin::ApplicationsController < Tr8n::Admin::BaseController
     @caller = @key_source.details[params[:caller_key]]
     render :layout => false
   end  
+
+  def lb_add_to_component
+    if request.post?
+      if params[:comp][:key].strip.blank?
+        component = Tr8n::Component.find_by_id(params[:comp_id]) 
+      else
+        component = Tr8n::Component.create(params[:comp])
+      end
+
+      sources = (params[:sources] || '').split(',')
+      if sources.any?
+        sources = Tr8n::TranslationSource.find(:all, :conditions => ["id in (?)", sources])
+        sources.each do |source|
+          Tr8n::ComponentSource.find_or_create(component, source) 
+        end
+      end
+
+      translators = (params[:translators] || '').split(',')
+      if translators.any?
+        translators = Tr8n::Translator.find(:all, :conditions => ["id in (?)", translators]) 
+        translators.each do |translator|
+          Tr8n::ComponentTranslator.find_or_create(component, translator) 
+        end
+      end
+
+      languages = (params[:languages] || '').split(',')
+      if languages.any?
+        languages = Tr8n::Language.find(:all, :conditions => ["id in (?)", languages]) 
+        languages.each do |language|
+          Tr8n::ComponentLanguage.find_or_create(component, language) 
+        end
+      end
+
+      return redirect_to_source
+    end
+
+    @apps = Tr8n::Application.options
+    @components = Tr8n::Component.find(:all, :order => "name asc, key asc").collect{|c| [c.name_and_key, c.id]}
+    render :layout => false
+  end
 
   private
 

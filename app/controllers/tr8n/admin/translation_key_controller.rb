@@ -71,6 +71,28 @@ class Tr8n::Admin::TranslationKeyController < Tr8n::Admin::BaseController
     render :layout => false
   end
 
+  def lb_add_to_source
+    if request.post?
+      if params[:source][:source].strip.blank?
+        source = Tr8n::TranslationSource.find_by_id(params[:source_id]) 
+      else
+        source = Tr8n::TranslationSource.create(params[:source])
+      end
+
+      keys = params[:keys] || ''
+      keys = keys.split(',')
+      keys = Tr8n::TranslationKey.find(:all, :conditions => ["id in (?)", keys])
+      keys.each do |key|
+        Tr8n::TranslationKeySource.find_or_create(key, source) 
+      end
+
+      return redirect_to_source
+    end
+
+    @sources = Tr8n::TranslationSource.find(:all, :order => "name asc, source asc").collect{|s| [s.name_and_source, s.id]}
+    render :layout => false
+  end
+
   def update
     key = Tr8n::TranslationKey.find_by_id(params[:translation_key][:id]) unless params[:translation_key][:id].blank?
     
