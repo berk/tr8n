@@ -481,9 +481,14 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   end
   
   def can_be_translated?(translator = nil)
-    return false if locked?
     translator ||= (Tr8n::Config.current_user_is_translator? ? Tr8n::Config.current_translator : nil)
-    translator_level = translator ? translator.level : 0
+    if translator 
+      return false if locked? and not translator.manager? 
+      translator_level = translator.level
+    else   
+      return false if locked?
+      translator_level = 0
+    end
     translator_level >= level
   end
 
@@ -506,12 +511,14 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     return translated_label if Tr8n::Config.current_translator.blocked?
     return translated_label unless Tr8n::Config.current_translator.enable_inline_translations?
     return translated_label unless can_be_translated?
-    return translated_label if locked?(language)
     return translated_label if self.language == language
+    return translated_label if locked?(language) and not Tr8n::Config.current_translator.manager?
 
     classes = ['tr8n_translatable']
     
-    if language.default?
+    if locked?(language)
+      classes << 'tr8n_locked'
+    elsif language.default?
       classes << 'tr8n_not_translated'
     elsif options[:fallback] 
       classes << 'tr8n_fallback'
