@@ -1,4 +1,26 @@
-<% form_tag("", :id => "translations_form") do %>
+<% form_tag("", :id => "translations_form", :method => :get) do %>
+  <%=hidden_field_tag(:comp_id, params[:comp_id]) %>
+  <%=hidden_field_tag(:source_id, params[:source_id]) %>
+  <%=hidden_field_tag(:app_id, params[:app_id]) %>
+  <%=hidden_field_tag(:mode, params[:mode]) %>
+  
+  <div style="border:1px solid #ccc;padding:10px;background:#eee;margin-top:10px;margin-bottom:10px;">
+    <%= text_field_tag(:q, params[:q], :style => "width:88%", :placeholder => "Search for specific translations") %>
+    <%= link_to_function("<span>#{tra("Search")}</span>", "Tr8n.Effects.submit('translations_form');", :class => "tr8n_grey_button tr8n_pcb") %>
+    <%= link_to_function("<span>#{tra("Clear")}</span>", "Tr8n.element('q').value = '';Tr8n.Effects.submit('translations_form');", :class => "tr8n_grey_button tr8n_pcb") %>
+    <% if @language_options or @translator_options %>
+      <div style="padding-top:10px;">
+        <% if @language_options %>
+          Language: <%=select_tag(:language, options_for_select(@language_options, params[:language])) %>
+          &nbsp;
+        <% end %>
+        <% if @translator_options %>
+          Translator: <%=select_tag(:translator, options_for_select(@translator_options, params[:translator])) %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
   <%= will_filter_table_tag(@results, :columns => [
     [:checkbox, :translations],
     :id,
@@ -46,7 +68,7 @@
       html << translation.rank
       html << "</span>"
       html.join("")
-    }, 'text-align:right;'],
+    }, 'text-align:right;width:50px;'],
     :created_at,
     [:actions, lambda{|translation|
       html = []

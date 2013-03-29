@@ -2,8 +2,10 @@
 <%= render :partial => "tabs" %>
 <%= tr8n_will_filter(@keys) %>
 
+<!-- 
 <%=link_to_function("Import Translation Keys", "tr8nLightbox.show('/tr8n/admin/translation_key/lb_import', {height:280})") %>
  | 
+--> 
 <%=link_to_function("Reset Verification Flags", "resetVerificationFlags()")%>
  | 
 <%=link_to_function("Update Translation Counts", 'updateTranslationCounts()')%>

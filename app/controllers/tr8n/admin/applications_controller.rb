@@ -72,10 +72,18 @@ class Tr8n::Admin::ApplicationsController < Tr8n::Admin::BaseController
     if params[:mode] == "metrics"
       @results = @app.components
     elsif params[:mode] == "translation_keys"
+      conditions = ["c.application_id = ?", @app.id]
+
+      unless params[:q].blank?
+        conditions[0] << " and (tr8n_translation_keys.label like ? or tr8n_translation_keys.description like ?)"
+        conditions << "%#{params[:q]}%"
+        conditions << "%#{params[:q]}%"
+      end
+
       @results = Tr8n::TranslationKey.find(:all, 
           :select => "distinct tr8n_translation_keys.id, tr8n_translation_keys.created_at, tr8n_translation_keys.label, tr8n_translation_keys.description, tr8n_translation_keys.locale, tr8n_translation_keys.admin, tr8n_translation_keys.level, tr8n_translation_keys.translation_count",
           :order => "tr8n_translation_keys.created_at desc",
-          :conditions => ["c.application_id = ?", @app.id],
+          :conditions => conditions,
           :joins => [
             "join tr8n_translation_key_sources as tks on tr8n_translation_keys.id = tks.translation_key_id",
             "join tr8n_component_sources as cs on tks.translation_source_id = cs.translation_source_id",
@@ -83,9 +91,16 @@ class Tr8n::Admin::ApplicationsController < Tr8n::Admin::BaseController
           ]
       ).paginate(:page => page, :per_page => per_page)
     elsif params[:mode] == "translations"
+      conditions = ["c.application_id = ?", @app.id]
+
+      unless params[:q].blank?
+        conditions[0] << " and (tr8n_translations.label like ?)"
+        conditions << "%#{params[:q]}%"
+      end
+      
       @results = Tr8n::Translation.find(:all, 
           :order => "tr8n_translations.created_at desc",
-          :conditions => ["c.application_id = ?", @app.id],
+          :conditions => conditions,
           :joins => [
             "join tr8n_translation_keys as tk on tr8n_translations.translation_key_id = tk.id",
             "join tr8n_translation_key_sources as tks on tk.id = tks.translation_key_id",
@@ -189,6 +204,8 @@ class Tr8n::Admin::ApplicationsController < Tr8n::Admin::BaseController
 
   def component
     @comp = Tr8n::Component.find_by_id(params[:comp_id])
+    @languages = Tr8n::ComponentLanguage.find(:all, :conditions=>["component_id = ?", @comp.id]).collect{|cl| cl.language}.compact
+    @translators = Tr8n::ComponentTranslator.find(:all, :conditions=>["component_id = ?", @comp.id]).collect{|ct| ct.translator}.compact
 
     unless @comp
       trfe("Invalid component id")
@@ -196,19 +213,55 @@ class Tr8n::Admin::ApplicationsController < Tr8n::Admin::BaseController
     end
 
     if params[:mode] == "translation_keys"
+      conditions = ["cs.component_id = ?", @comp.id]
+
+      unless params[:q].blank?
+        conditions[0] << " and (tr8n_translation_keys.label like ? or tr8n_translation_keys.description like ?)"
+        conditions << "%#{params[:q]}%"
+        conditions << "%#{params[:q]}%"
+      end
+
       @results = Tr8n::TranslationKey.find(:all, 
           :select => "distinct tr8n_translation_keys.id, tr8n_translation_keys.created_at, label, description, locale, admin, level, translation_count",
           :order => "tr8n_translation_keys.created_at desc",
-          :conditions => ["cs.component_id = ?", @comp.id],
+          :conditions => conditions,
           :joins => [
             "join tr8n_translation_key_sources as tks on tr8n_translation_keys.id = tks.translation_key_id",
             "join tr8n_component_sources as cs on tks.translation_source_id = cs.translation_source_id"
           ]
       ).paginate(:page => page, :per_page => per_page)
     elsif params[:mode] == "translations"
+      conditions = ["cs.component_id = ?", @comp.id]
+
+      @language_options = @languages.collect{|l| [l.english_name, l.id.to_s]}
+      @language_options.unshift(['All', 'all'])
+
+      if @languages.any?
+        conditions[0] << " and tr8n_translations.language_id in (?)"
+        if params[:language] and params[:language] != 'all'
+          conditions << [params[:language]]
+        else
+          conditions << @languages.collect{|l| l.id}
+        end
+      else
+        conditions[0] << " and 1 = 2"
+      end
+
+      @translator_options = @translators.collect{|t| [t.name, t.id.to_s]}
+      @translator_options.unshift(['Any', 'any'])
+      if params[:translator] and params[:translator] != 'any'
+        conditions[0] << " and tr8n_translations.translator_id in (?)"
+        conditions << [params[:translator]]
+      end
+
+      unless params[:q].blank?
+        conditions[0] << " and (tr8n_translations.label like ?)"
+        conditions << "%#{params[:q]}%"
+      end
+
       @results = Tr8n::Translation.find(:all, 
           :order => "tr8n_translations.created_at desc",
-          :conditions => ["cs.component_id = ?", @comp.id],
+          :conditions => conditions,
           :joins => [
             "join tr8n_translation_keys as tk on tr8n_translations.translation_key_id = tk.id",
             "join tr8n_translation_key_sources as tks on tk.id = tks.translation_key_id",
@@ -271,18 +324,33 @@ class Tr8n::Admin::ApplicationsController < Tr8n::Admin::BaseController
     end
 
     if params[:mode] == "translation_keys"
+      conditions = ["tks.translation_source_id = ?", @source.id]
+
+      unless params[:q].blank?
+        conditions[0] << " and (tr8n_translation_keys.label like ? or tr8n_translation_keys.description like ?)"
+        conditions << "%#{params[:q]}%"
+        conditions << "%#{params[:q]}%"
+      end
+
       @results = Tr8n::TranslationKey.find(:all, 
           :select => "distinct tr8n_translation_keys.id, tr8n_translation_keys.created_at, label, description, locale, admin, level, translation_count",
           :order => "tr8n_translation_keys.created_at desc",
-          :conditions => ["tks.translation_source_id = ?", @source.id],
+          :conditions => conditions,
           :joins => [
             "join tr8n_translation_key_sources as tks on tr8n_translation_keys.id = tks.translation_key_id",
           ]
       ).paginate(:page => page, :per_page => per_page)
     elsif params[:mode] == "translations"
+      conditions = ["tks.translation_source_id = ?", @source.id]
+
+      unless params[:q].blank?
+        conditions[0] << " and (tr8n_translations.label like ?)"
+        conditions << "%#{params[:q]}%"
+      end
+
       @results = Tr8n::Translation.find(:all, 
           :order => "tr8n_translations.created_at desc",
-          :conditions => ["tks.translation_source_id = ?", @source.id],
+          :conditions => conditions,
           :joins => [
             "join tr8n_translation_keys as tk on tr8n_translations.translation_key_id = tk.id",
             "join tr8n_translation_key_sources as tks on tk.id = tks.translation_key_id",

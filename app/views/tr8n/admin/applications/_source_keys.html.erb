@@ -1,4 +1,12 @@
-<% form_tag("", :id => "keys_form") do %>
+<% form_tag("", :id => "keys_form", :method => :get) do %>
+  <%=hidden_field_tag(:source_id, @source.id) %>
+  <%=hidden_field_tag(:mode, params[:mode]) %>
+  <div style="border:1px solid #ccc;padding:10px;background:#eee;margin-top:10px;margin-bottom:10px;">
+    <%= text_field_tag(:q, params[:q], :style => "width:88%", :placeholder => "Search for specific keys within this source") %>
+    <%= link_to_function("<span>#{tra("Search")}</span>", "Tr8n.Effects.submit('keys_form');", :class => "tr8n_grey_button tr8n_pcb") %>
+    <%= link_to_function("<span>#{tra("Clear")}</span>", "Tr8n.element('q').value = '';Tr8n.Effects.submit('keys_form');", :class => "tr8n_grey_button tr8n_pcb") %>
+  </div>
+
   <%= will_filter_table_tag(@results, :columns => [
     [:checkbox, :keys],
     [:id, lambda{|key|
@@ -22,20 +30,14 @@
 <% end %>
 
 <%= will_filter_actions_bar_tag(@results, [
-  ['Remove From Source', 'deleteSelectedKeys()'],
+  ['Remove From Source', 'removeSelectedKeysFromSource()'],
   ['Merge Selected Keys', 'mergeSelectedKeys()'],
-  ['Delete Selected Keys', 'deleteSelectedKeys()']
+  ['Delete Selected Keys', 'deleteSelectedKeys()'],
+  ['Add To Another Source', 'addSelectedKeysToSource()'],
 ]) %>
 
 <script>
-  function deleteSelectedKeys() {
-    if (!confirm('Make sure the keys are removed from the actual source code. Otherwise they will reappear here again. Are you sure you want to remove selected keys from this source?'))
-       return;
-    Tr8n.element('keys_form').action = "/tr8n/admin/applications/remove_keys_from_source?source_id=<%=@source.id%>";
-    Tr8n.element('keys_form').submit();
-  }
-
-  function mergeSelectedKeys() {
+  function getSelectedKeyIds() {
     var i=0;
     var checkbox = Tr8n.element('wf_check_' + i);
     var keys = [];
@@ -45,6 +47,18 @@
       }
       checkbox = Tr8n.element('wf_check_' + (++i));
     }
+    return keys; 
+  }
+
+  function removeSelectedKeysFromSource() {
+    if (!confirm('Make sure the keys are removed from the actual source code. Otherwise they will reappear here again. \nAre you sure you want to remove selected keys from this source?'))
+       return;
+    Tr8n.element('keys_form').action = "/tr8n/admin/applications/remove_keys_from_source";
+    Tr8n.element('keys_form').submit();
+  }
+
+  function mergeSelectedKeys() {
+    var keys = getSelectedKeyIds();
     if (keys.length < 2) {
       alert('At least two keys must be selected.');
       return;
@@ -58,4 +72,14 @@
     Tr8n.element('keys_form').action = "/tr8n/admin/translation_key/delete";
     Tr8n.element('keys_form').submit();
   }  
+
+  function addSelectedKeysToSource() {
+    var keys = getSelectedKeyIds();
+    if (keys.length == 0) {
+      alert('At least one key must be selected.');
+      return;
+    }
+    tr8nLightbox.show('/tr8n/admin/translation_key/lb_add_to_source?keys=' + keys, {height:350});
+  }
+
 </script>

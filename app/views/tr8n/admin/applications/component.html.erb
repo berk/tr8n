@@ -1,5 +1,5 @@
 <%= render :partial => "/tr8n/admin/common/header" %>
-<%= render :partial => "tabs", :locals => {:current_tab => "Component: #{@comp.name}"} %>
+<%= render :partial => "tabs", :locals => {:current_tab => "Component: #{@comp.name} <span style='font-size:12px; color:#888'>is being translated by #{@translators.count} translators into #{@languages.count} languages</span>"} %>
 
 <table class="admin_table">
     <tr>

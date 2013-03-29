@@ -2,7 +2,8 @@
 <%= hidden_field_tag(:type, "language") %>
 <%= will_filter_table_tag(@results, :columns => [
     [:checkbox, 'component_objects'],     
-    [:flag, lambda{|ulang| ulang.language ? image_tag("/tr8n/images/flags/#{ulang.language.flag}.png") : ''}],
+    [:id, lambda{|ulang| ulang.language ?  ulang.language.id : ''}, 'width:60px;'],
+    [:flag, lambda{|ulang| ulang.language ? image_tag("/tr8n/images/flags/#{ulang.language.flag}.png") : ''}, 'width:30px;'],
     [:locale, lambda{|ulang|
       lang = ulang.language
       html = []
@@ -14,9 +15,9 @@
       html << lang.locale
       html << '</span>'
       html.join(' ')
-    }],
+    }, 'width:30px;'],
     [:english_name, lambda{|ulang| link_to(ulang.language.english_name, :action => :view, :lang_id => ulang.language.id)}],
-    :state,
+    [:state, lambda{|ulang| ulang.state}, 'width:100px;'],
     [:actions, lambda{|ulang|
       html = []
       if ulang.restricted?
@@ -26,17 +27,17 @@
       end
       html << link_to("Remove", {:action => :remove_objects_from_component, :component_object_id => ulang.id, :type => :language}, {:confirm => "Are you sure you want to remove this language from the component?"})
       html.join(' | ')
-    }, 'padding:5px;text-align:right;white-space:nowrap;']        
+    }, 'padding:5px;text-align:right;white-space:nowrap;width:200px;']        
   ]) %>
 <% end %>
 
 <%= will_filter_actions_bar_tag(@keys, [
-  ['Remove Selected Languages', 'removeAllSelected()']
+  ['Remove From Component', 'removeFromComponent()']
 ]) %>
 
 <script>
-  function removeAllSelected() {
-    if (!confirm('Are you sure you want to remove all selected languages from this component?'))
+  function removeFromComponent() {
+    if (!confirm('Are you sure you want to remove selected languages from this component?'))
        return;
     Tr8n.element('lang_form').action = "/tr8n/admin/applications/remove_objects_from_component";
     Tr8n.element('lang_form').submit();

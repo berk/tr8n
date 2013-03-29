@@ -9,7 +9,7 @@
                   %>
                   <%= html.join(' | ') %>
               </div>
-              <div style="font-weight:bold;"><%=metric.language.english_name%></div>
+              <div style="font-weight:bold;"><%=image_tag("/tr8n/images/flags/#{metric.language.flag}.png")%> &nbsp; <%=metric.language.english_name%></div>
           </div>
           <%=render :partial => "/tr8n/translator/translation_source_metric", :locals => {:translation_source => metric.translation_source, :translation_source_metric => metric} %>
       </div>
@@ -17,6 +17,7 @@
 
 <% else %>
   <%= will_filter_table_tag(@metrics, :columns => [
+      [:flag, lambda{|metric| metric.language ? image_tag("/tr8n/images/flags/#{metric.language.flag}.png") : ''}, 'width:30px;'],
       [:language_id, lambda{|metric| 
          metric.language.english_name
       }],    

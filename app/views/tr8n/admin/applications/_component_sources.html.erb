@@ -5,7 +5,7 @@
     [:checkbox, 'component_objects'],     
     [:id, lambda{|source| 
       link_to(source.translation_source.id, :action => :source, :source_id => source.translation_source.id)
-    }],
+    }, 'width:100px;'],
     [:source, lambda{|source| 
       link_to(source.translation_source.source, :action => :source, :source_id => source.translation_source.id)
     }],
@@ -17,13 +17,13 @@
     }],
     [:keys, lambda{|source|
       link_to(source.translation_source.total_metric.key_count, "/tr8n/admin/applications/source?mode=translation_keys&source_id=#{source.translation_source.id}")
-    }, 'text-align:right'],
+    }, 'text-align:right;width:100px;'],
     [:actions, lambda{|source|
       html = []
       html << link_to_function("Update", "tr8nLightbox.show('/tr8n/admin/applications/lb_update_source?source_id=#{source.translation_source.id}', {height:350})")
       html << link_to("Remove", {:action => :remove_objects_from_component, :component_object_id => source.id, :type => :source}, {:confirm => "Are you sure you want to remove this source from the component?"})
       html.join(' | ')
-    }, 'padding:5px;text-align:right;white-space:nowrap;']
+    }, 'padding:5px;text-align:right;white-space:nowrap;width:200px;']
   ]) %>
 <% end %>
 

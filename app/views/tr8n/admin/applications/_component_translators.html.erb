@@ -39,7 +39,7 @@
     }, 'text-align:right'], 
     [:translation_count, lambda{|ctran|
       link_to(ctran.translator.total_metric.total_translations || 0, "/tr8n/admin/translation?wf_c0=translator_id&wf_o0=is&wf_v0_0=#{ctran.translator.id}")
-    }, 'text-align:right'],
+    }, 'text-align:right;width:150px;'],
     [:vote_count, lambda{|ctran|
       html = []
       html << (ctran.translator.total_metric.total_votes || 0)
@@ -49,7 +49,7 @@
       html << (ctran.translator.total_metric.negative_votes || 0)
       html << "</span>)"
       html.join("")     
-    }, 'text-align:right'],
+    }, 'text-align:right;width:100px;'],
     [:actions, lambda{|ctran|
       html = []
       html << link_to("Remove", {:action => :remove_objects_from_component, :component_object_id => ctran.id, :type => :translator}, :confirm => "Are you sure you want to do that?")
@@ -60,11 +60,11 @@
 <% end %>
 
 <%= will_filter_actions_bar_tag(@results, [
-  ['Remove Selected Translators', 'removeAllSelected()']
+  ['Remove From Component', 'removeFromComponent()']
 ]) %>
 
 <script>
-  function removeAllSelected() {
+  function removeFromComponent() {
     if (!confirm('Are you sure you want to remove all selected translators from this component?'))
        return;
     Tr8n.element('translators_form').action = "/tr8n/admin/applications/remove_objects_from_component";
