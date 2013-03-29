@@ -8,9 +8,8 @@
 		  <%=tra("Your Preferences") %>
 	  </div>
 	  
-	  <% form_for(:translator, tr8n_current_translator, :url => {:action => :index}, :html => {:id => 'basic_info_form', :method => :post}) do |f| %>
+	  <% form_for(:translator, tr8n_current_translator, :url => {:action => :settings}, :html => {:id => 'basic_info_form', :method => :post}) do |f| %>
 	    <div class="section_box colored">
-	      <div>
 	        <table>
 	          <tr>
 	            <th style="width:120px;padding:3px;vertical-align:middle;font-weight:bold;"><%=tra("Name:")%></th>
@@ -91,10 +90,37 @@
 	          <% end %>
 						
 	        </table>
-	      </div>
 	    </div>
 	  <% end %>
 	</div>
+
+	<% if tr8n_current_translator.manager? %>
+	<div id="basic_info_container">
+	  <div class="section_title">
+		  <%=tra("Language Manager Settings") %>
+	  </div>
+	  <% form_for(:translator, tr8n_current_translator, :url => {:action => :settings}, :html => {:id => 'manager_info_form', :method => :post}) do |f| %>
+	  <div class="section_box colored">
+      <table>
+        <tr>
+          <th style="width:120px;padding:3px;vertical-align:middle;font-weight:bold;"><%=tra("Show locked keys:")%></th>
+          <td style="padding:3px;">
+              <%=check_box_tag(:show_locked_keys)%>
+          </td>
+        </tr>
+        <tr>
+          <th style="padding:3px;vertical-align:middle;font-weight:bold;"></th>
+          <td style="padding-top:15px;padding-bottom:15px;">
+             <button type="submit" class="translator_btn translator_submit_btn" onClick="Tr8n.submit('manager_info_form'); return false;">
+                <span><%=tra("Save")%></span>
+              </button>
+          </td>
+        </tr>
+      </table>
+	  </div>
+	  <% end %>
+	</div>	
+	<% end %>
 	
 	<%= render :partial => "/tr8n/common/footer" %>
 
