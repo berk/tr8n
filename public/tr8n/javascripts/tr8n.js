@@ -2968,6 +2968,14 @@ Tr8n.Translator = function(options) {
     if (e.preventDefault) e.preventDefault();
     if (e.stopPropagation) e.stopPropagation();
 
+    if (e.altKey) {
+      var key_id = translatable_node.getAttribute('translation_key_id');
+      if (key_id) {
+        window.location = "/tr8n/admin/translation_key/view?key_id=" + key_id;
+      }
+      return false;
+    }
+
     self.show(translatable_node);
     return false;
   });
