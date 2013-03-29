@@ -456,10 +456,10 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   end
   
   def default_decoration(language = Tr8n::Config.current_language, options = {})
-    return label if Tr8n::Config.current_user_is_guest?
-    return label unless Tr8n::Config.current_user_is_translator?
-    return label unless can_be_translated?
-    return label if locked?(language)
+    return sanitized_label if Tr8n::Config.current_user_is_guest?
+    return sanitized_label unless Tr8n::Config.current_user_is_translator?
+    return sanitized_label unless can_be_translated?
+    return sanitized_label if locked?(language)
 
     classes = ['tr8n_translatable']
 
@@ -470,7 +470,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     end
 
     html = "<tr8n class='#{classes.join(' ')}' translation_key_id='#{id}'>"
-    html << label
+    html << sanitized_label
     html << "</tr8n>"
     html    
   end
