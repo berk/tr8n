@@ -25,7 +25,7 @@ class Tr8n::TranslationNotification < Tr8n::Notification
 
   def self.distribute(translation)
     tkey = translation.translation_key
-    translators = language_translators(translation)
+    translators = translators_for_translation(translation)
 
     # find all translators who follow the key
     translators += followers(tkey)
@@ -39,19 +39,6 @@ class Tr8n::TranslationNotification < Tr8n::Notification
     end    
   end
 
-  def self.language_translators(translation)
-    tkey = translation.translation_key
-
-    # find translators for all other translations of the key in this language
-    tanslations = Tr8n::Translation.find(:all, :conditions => ["translation_key_id = ? and language_id = ?", 
-                                                 tkey.id, translation.language.id])
-    translators = []
-    tanslations.each do |t|
-      translators << t.translator
-    end
-    translators
-  end
-
   def title
     if object.translation_key.followed?
       return tr("[link: {user}] added a translation to a phrase you are following.", nil, 
@@ -59,7 +46,7 @@ class Tr8n::TranslationNotification < Tr8n::Notification
           )
     end
 
-    if self.class.language_translators(object).include?(translator)
+    if self.class.translators_for_translation(object).include?(translator)
       return tr("[link: {user}] added another translation to a phrase you've translated.", nil, 
           :user => actor, :link => [actor.url]
       )

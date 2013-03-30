@@ -39,6 +39,19 @@ class Tr8n::Notification < ActiveRecord::Base
     ).collect{|f| f.translator}
   end
 
+  def self.translators_for_translation(translation)
+    tkey = translation.translation_key
+
+    # find translators for all other translations of the key in this language
+    tanslations = Tr8n::Translation.find(:all, :conditions => ["translation_key_id = ? and language_id = ?", 
+                                                 tkey.id, translation.language.id])
+    translators = []
+    tanslations.each do |t|
+      translators << t.translator
+    end
+    translators
+  end
+
   def key
     self.class.key(object)
   end

@@ -35,15 +35,7 @@ class Tr8n::TranslationVoteNotification < Tr8n::Notification
     return if last_notification and last_notification.updated_at > Time.now - 5.minutes
 
     tkey = vote.translation.translation_key
-
-    # find translators for all other translations of the key in this language
-    tanslations = Tr8n::Translation.find(:all, :conditions => ["translation_key_id = ? and language_id = ?", 
-                                                 tkey.id, vote.translation.language.id])
-
-    translators = []
-    tanslations.each do |t|
-      translators << t.translator
-    end
+    translators = translators_for_translation(vote.translation)
 
     # find all translators who follow the key
     translators += followers(tkey)
@@ -75,7 +67,13 @@ class Tr8n::TranslationVoteNotification < Tr8n::Notification
       )
     end
 
-    tr("[link: {user}] #{verb(object)} an alternative translation to a phrase you've translated.", nil, 
+    if self.class.translators_for_translation(object.translation).include?(translator)
+      return tr("[link: {user}] #{verb(object)} an alternative translation to a phrase you've translated.", nil, 
+        :user => actor, :link => [actor.url]
+      )
+    end
+
+    tr("[link: {user}] #{verb(object)} a translation.", nil, 
       :user => actor, :link => [actor.url]
     )
   end
