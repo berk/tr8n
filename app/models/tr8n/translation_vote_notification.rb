@@ -24,9 +24,7 @@
 class Tr8n::TranslationVoteNotification < Tr8n::Notification
 
   def self.distribute(vote)
-    if vote.translation.translator == vote.translator
-      return if vote.created_at < vote.translation.created_at + 5.minutes
-    end
+    return if vote.translation.translator == vote.translator
 
     last_notification = Tr8n::TranslationVoteNotification.find(:first, 
         :conditions => ["object_type = ? and object_id = ?", vote.class.name, vote.id],
