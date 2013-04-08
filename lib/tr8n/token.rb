@@ -277,6 +277,7 @@ class Tr8n::Token
   #                           :to_sentence => true, 
   #                           :limit => 4, 
   #                           :separator => ',',
+  #                           :andor => 'and',  
   #                           :translate_items => false,
   #                           :minimizable => true
   #                         }
@@ -286,6 +287,7 @@ class Tr8n::Token
   # acceptable params:  expandable, 
   #                     to_sentence, 
   #                     limit, 
+  #                     andor,
   #                     separator, 
   #                     translate_items,
   #                     minimizable
@@ -308,6 +310,7 @@ class Tr8n::Token
       :minimizable => true,
       :to_sentence => true,
       :limit => 4,
+      :andor => 'and',
       :separator => ", "
     }
     
@@ -325,7 +328,7 @@ class Tr8n::Token
     return objects.join(list_options[:separator]) unless list_options[:to_sentence]
 
     if objects.size <= list_options[:limit]
-      return "#{objects[0..-2].join(list_options[:separator])} #{"and".translate("List elements joiner", {}, options)} #{objects.last}"
+      return "#{objects[0..-2].join(list_options[:separator])} #{list_options[:andor].translate("List elements joiner", {}, options)} #{objects.last}"
     end
 
     display_ary = objects[0..(list_options[:limit]-1)]
@@ -333,19 +336,19 @@ class Tr8n::Token
     result = "#{display_ary.join(list_options[:separator])}"
     
     unless list_options[:expandable]
-      result << " " << "and".translate("List elements joiner", {}, options) << " "
+      result << " " <<  list_options[:andor].translate("List elements joiner", {}, options) << " "
       result << "{num} {_others}".translate("List elements joiner", 
                 {:num => remaining_ary.size, :_others => "other".pluralize_for(remaining_ary.size)}, options)
       return result
     end             
              
     uniq_id = Tr8n::Config.guid        
-    result << "<span id=\"tr8n_other_link_#{uniq_id}\">" << " " << "and".translate("List elements joiner", {}, options) << " "
+    result << "<span id=\"tr8n_other_link_#{uniq_id}\">" << " " << list_options[:andor].translate("List elements joiner", {}, options) << " "
     result << "<a href='#' onClick=\"Tr8n.Effects.hide('tr8n_other_link_#{uniq_id}'); Tr8n.Effects.show('tr8n_other_elements_#{uniq_id}'); return false;\">"
     result << "{num|| other}".translate("List elements joiner", {:num => remaining_ary.size}, options)
     result << "</a></span>"
     result << "<span id=\"tr8n_other_elements_#{uniq_id}\" style='display:none'>" << list_options[:separator]
-    result << "#{remaining_ary[0..-2].join(list_options[:separator])} #{"and".translate("List elements joiner", {}, options)} #{remaining_ary.last}"
+    result << "#{remaining_ary[0..-2].join(list_options[:separator])} #{list_options[:andor].translate("List elements joiner", {}, options)} #{remaining_ary.last}"
 
     if list_options[:minimizable]
       result << "<a href='#' style='font-size:smaller;white-space:nowrap' onClick=\"Tr8n.Effects.show('tr8n_other_link_#{uniq_id}'); Tr8n.Effects.hide('tr8n_other_elements_#{uniq_id}'); return false;\"> "
