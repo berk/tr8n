@@ -20,6 +20,26 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
+#
+#-- Tr8n::ComponentTranslator Schema Information
+#
+# Table name: tr8n_component_translators
+#
+#  id               INTEGER         not null, primary key
+#  component_id     integer         
+#  translator_id    integer         
+#  language_id      integer         
+#  state            varchar(255)    
+#  created_at       datetime        not null
+#  updated_at       datetime        not null
+#
+# Indexes
+#
+#  tr8n_comp_trn_lang_id    (language_id) 
+#  tr8n_comp_trn_trn_id     (translator_id) 
+#  tr8n_comp_trn_comp_id    (component_id) 
+#
+#++
 
 class Tr8n::ComponentTranslator < ActiveRecord::Base
   self.table_name = :tr8n_component_translators

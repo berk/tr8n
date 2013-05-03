@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2012 Michael Berkovich, tr8n.net
+# Copyright (c) 2010-2013 Michael Berkovich, tr8nhub.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -26,12 +26,13 @@
 # Table name: tr8n_translators
 #
 #  id                      INTEGER         not null, primary key
-#  user_id                 integer         not null
+#  user_id                 integer         
 #  inline_mode             boolean         
 #  blocked                 boolean         
 #  reported                boolean         
-#  fallback_language_id    integer         
+#  voting_power            integer         default = 1
 #  rank                    integer         default = 0
+#  fallback_language_id    integer         
 #  name                    varchar(255)    
 #  gender                  varchar(255)    
 #  email                   varchar(255)    
@@ -40,19 +41,20 @@
 #  link                    varchar(255)    
 #  locale                  varchar(255)    
 #  level                   integer         default = 0
-#  manager                 integer         
+#  manager                 boolean         
 #  last_ip                 varchar(255)    
 #  country_code            varchar(255)    
-#  created_at              datetime        
-#  updated_at              datetime        
 #  remote_id               integer         
+#  access_key              varchar(255)    
+#  created_at              datetime        not null
+#  updated_at              datetime        not null
 #
 # Indexes
 #
-#  index_tr8n_translators_on_email_and_password    (email, password) 
-#  index_tr8n_translators_on_email                 (email) 
-#  index_tr8n_translators_on_created_at            (created_at) 
-#  index_tr8n_translators_on_user_id               (user_id) 
+#  tr8n_t_ep    (email, password) 
+#  tr8n_t_e     (email) 
+#  tr8n_t_c     (created_at) 
+#  tr8n_t_u     (user_id) 
 #
 #++
 

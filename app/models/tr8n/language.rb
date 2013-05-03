@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2012 Michael Berkovich, tr8n.net
+# Copyright (c) 2010-2013 Michael Berkovich, tr8nhub.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -29,6 +29,7 @@
 #  locale                  varchar(255)    not null
 #  english_name            varchar(255)    not null
 #  native_name             varchar(255)    
+#  threshold               integer         default = 1
 #  enabled                 boolean         
 #  right_to_left           boolean         
 #  completeness            integer         
@@ -37,12 +38,13 @@
 #  featured_index          integer         default = 0
 #  google_key              varchar(255)    
 #  facebook_key            varchar(255)    
-#  created_at              datetime        
-#  updated_at              datetime        
+#  myheritage_key          varchar(255)    
+#  created_at              datetime        not null
+#  updated_at              datetime        not null
 #
 # Indexes
 #
-#  index_tr8n_languages_on_locale    (locale) 
+#  tr8n_ll    (locale) 
 #
 #++
 

@@ -20,6 +20,26 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
+#
+#-- Tr8n::TranslationSourceMetric Schema Information
+#
+# Table name: tr8n_translation_source_metrics
+#
+#  id                       INTEGER     not null, primary key
+#  translation_source_id    integer     not null
+#  language_id              integer     not null
+#  key_count                integer     default = 0
+#  locked_key_count         integer     default = 0
+#  translation_count        integer     default = 0
+#  translated_key_count     integer     default = 0
+#  created_at               datetime    not null
+#  updated_at               datetime    not null
+#
+# Indexes
+#
+#  tr8n_trans_source_metrs_tsili    (translation_source_id, language_id) 
+#
+#++
 
 class Tr8n::TranslationSourceMetric < ActiveRecord::Base
   self.table_name = :tr8n_translation_source_metrics

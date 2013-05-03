@@ -26,14 +26,21 @@
 # Table name: tr8n_translation_sources
 #
 #  id                       INTEGER         not null, primary key
+#  parent_id                integer         
 #  source                   varchar(255)    
 #  translation_domain_id    integer         
-#  created_at               datetime        
-#  updated_at               datetime        
+#  completeness             integer         
+#  name                     varchar(255)    
+#  description              varchar(255)    
+#  url                      varchar(255)    
+#  key_count                integer         
+#  created_at               datetime        not null
+#  updated_at               datetime        not null
 #
 # Indexes
 #
-#  tr8n_sources_source    (source) 
+#  tr8n_ts_pid    (parent_id) 
+#  tr8n_ts_s      (source) 
 #
 #++
 

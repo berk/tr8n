@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2012 Michael Berkovich, tr8n.net
+# Copyright (c) 2010-2013 Michael Berkovich, tr8nhub.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -30,16 +30,16 @@
 #  user_id          integer     not null
 #  translator_id    integer     
 #  manager          boolean     
-#  created_at       datetime    
-#  updated_at       datetime    
+#  created_at       datetime    not null
+#  updated_at       datetime    not null
 #
 # Indexes
 #
-#  index_tr8n_language_users_on_updated_at                       (updated_at) 
-#  index_tr8n_language_users_on_created_at                       (created_at) 
-#  index_tr8n_language_users_on_language_id_and_translator_id    (language_id, translator_id) 
-#  index_tr8n_language_users_on_language_id_and_user_id          (language_id, user_id) 
-#  index_tr8n_language_users_on_user_id                          (user_id) 
+#  tr8n_lu_ua    (updated_at) 
+#  tr8n_lu_ca    (created_at) 
+#  tr8n_lu_lt    (language_id, translator_id) 
+#  tr8n_lu_lu    (language_id, user_id) 
+#  tr8n_lu_u     (user_id) 
 #
 #++
 

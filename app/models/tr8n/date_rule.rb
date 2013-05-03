@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2012 Michael Berkovich, tr8n.net
+# Copyright (c) 2010-2013 Michael Berkovich, tr8nhub.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -30,13 +30,13 @@
 #  translator_id    integer         
 #  type             varchar(255)    
 #  definition       text            
-#  created_at       datetime        
-#  updated_at       datetime        
+#  created_at       datetime        not null
+#  updated_at       datetime        not null
 #
 # Indexes
 #
-#  index_tr8n_language_rules_on_language_id_and_translator_id    (language_id, translator_id) 
-#  index_tr8n_language_rules_on_language_id                      (language_id) 
+#  tr8n_lr_lt    (language_id, translator_id) 
+#  tr8n_lr_l     (language_id) 
 #
 #++
 

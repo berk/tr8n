@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010 Michael Berkovich, Geni Inc
+# Copyright (c) 2010-2013 Michael Berkovich, tr8nhub.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -19,6 +19,30 @@
 # LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+#++
+#
+#-- Tr8n::RelationshipKey Schema Information
+#
+# Table name: tr8n_translation_keys
+#
+#  id                   INTEGER         not null, primary key
+#  type                 varchar(255)    
+#  key                  varchar(255)    not null
+#  label                text            not null
+#  description          text            
+#  verified_at          datetime        
+#  translation_count    integer         
+#  admin                boolean         
+#  locale               varchar(255)    
+#  level                integer         default = 0
+#  synced_at            datetime        
+#  created_at           datetime        not null
+#  updated_at           datetime        not null
+#
+# Indexes
+#
+#  tr8n_tk_k    (key) UNIQUE
+#
 #++
 
 class Tr8n::RelationshipKey < Tr8n::TranslationKey

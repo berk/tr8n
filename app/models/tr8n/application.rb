@@ -20,6 +20,23 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
+#
+#-- Tr8n::Application Schema Information
+#
+# Table name: tr8n_applications
+#
+#  id             INTEGER         not null, primary key
+#  key            varchar(255)    
+#  name           varchar(255)    
+#  description    varchar(255)    
+#  created_at     datetime        not null
+#  updated_at     datetime        not null
+#
+# Indexes
+#
+#  tr8n_apps    (key) 
+#
+#++
 
 class Tr8n::Application < ActiveRecord::Base
   self.table_name = :tr8n_applications

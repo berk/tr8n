@@ -35,13 +35,13 @@
 #  key_count               integer         default = 0
 #  locked_key_count        integer         default = 0
 #  translated_key_count    integer         default = 0
-#  created_at              datetime        
-#  updated_at              datetime        
+#  created_at              datetime        not null
+#  updated_at              datetime        not null
 #
 # Indexes
 #
-#  index_tr8n_language_metrics_on_created_at     (created_at) 
-#  index_tr8n_language_metrics_on_language_id    (language_id) 
+#  tr8n_lm_c    (created_at) 
+#  tr8n_lm_l    (language_id) 
 #
 #++
 

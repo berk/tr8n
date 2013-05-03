@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2012 Michael Berkovich, tr8n.net
+# Copyright (c) 2010-2013 Michael Berkovich, tr8nhub.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -30,14 +30,14 @@
 #  translation_key_id    integer     not null
 #  translator_id         integer     not null
 #  message               text        not null
-#  created_at            datetime    
-#  updated_at            datetime    
+#  created_at            datetime    not null
+#  updated_at            datetime    not null
 #
 # Indexes
 #
-#  tr8n_tkey_msgs_lang_id_tkey_id    (language_id, translation_key_id) 
-#  tr8n_tkey_msgs_translator_id      (translator_id) 
-#  tr8n_tkey_msgs_lang_id            (language_id) 
+#  tr8n_tkc_lt    (language_id, translation_key_id) 
+#  tr8n_tkc_t     (translator_id) 
+#  tr8n_tkc_l     (language_id) 
 #
 #++
 

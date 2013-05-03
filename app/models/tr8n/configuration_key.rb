@@ -20,6 +20,30 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
+#
+#-- Tr8n::ConfigurationKey Schema Information
+#
+# Table name: tr8n_translation_keys
+#
+#  id                   INTEGER         not null, primary key
+#  type                 varchar(255)    
+#  key                  varchar(255)    not null
+#  label                text            not null
+#  description          text            
+#  verified_at          datetime        
+#  translation_count    integer         
+#  admin                boolean         
+#  locale               varchar(255)    
+#  level                integer         default = 0
+#  synced_at            datetime        
+#  created_at           datetime        not null
+#  updated_at           datetime        not null
+#
+# Indexes
+#
+#  tr8n_tk_k    (key) UNIQUE
+#
+#++
 
 class Tr8n::ConfigurationKey < Tr8n::TranslationKey
 

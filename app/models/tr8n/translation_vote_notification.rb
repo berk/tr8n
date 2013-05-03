@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2013 Michael Berkovich, Geni Inc
+# Copyright (c) 2010-2013 Michael Berkovich, tr8nhub.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -19,6 +19,29 @@
 # LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+#++
+#
+#-- Tr8n::TranslationVoteNotification Schema Information
+#
+# Table name: tr8n_notifications
+#
+#  id               INTEGER         not null, primary key
+#  type             varchar(255)    
+#  translator_id    integer         
+#  actor_id         integer         
+#  target_id        integer         
+#  action           varchar(255)    
+#  object_type      varchar(255)    
+#  object_id        integer         
+#  viewed_at        datetime        
+#  created_at       datetime        not null
+#  updated_at       datetime        not null
+#
+# Indexes
+#
+#  tr8n_notifs_obj       (object_type, object_id) 
+#  tr8n_notifs_trn_id    (translator_id) 
+#
 #++
 
 class Tr8n::TranslationVoteNotification < Tr8n::Notification

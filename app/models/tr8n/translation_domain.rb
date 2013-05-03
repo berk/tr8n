@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2012 Michael Berkovich, tr8n.net
+# Copyright (c) 2010-2013 Michael Berkovich, tr8nhub.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -29,12 +29,12 @@
 #  name            varchar(255)    
 #  description     varchar(255)    
 #  source_count    integer         default = 0
-#  created_at      datetime        
-#  updated_at      datetime        
+#  created_at      datetime        not null
+#  updated_at      datetime        not null
 #
 # Indexes
 #
-#  index_tr8n_translation_domains_on_name    (name) UNIQUE
+#  tr8n_td_n    (name) UNIQUE
 #
 #++
 

@@ -31,8 +31,8 @@
 #  data                text            
 #  user_id             integer         
 #  model_class_name    varchar(255)    
-#  created_at          datetime        
-#  updated_at          datetime        
+#  created_at          datetime        not null
+#  updated_at          datetime        not null
 #
 # Indexes
 #

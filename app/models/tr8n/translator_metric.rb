@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2012 Michael Berkovich, tr8n.net
+# Copyright (c) 2010-2013 Michael Berkovich, tr8nhub.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -34,14 +34,14 @@
 #  negative_votes           integer     default = 0
 #  accepted_translations    integer     default = 0
 #  rejected_translations    integer     default = 0
-#  created_at               datetime    
-#  updated_at               datetime    
+#  created_at               datetime    not null
+#  updated_at               datetime    not null
 #
 # Indexes
 #
-#  index_tr8n_translator_metrics_on_created_at                       (created_at) 
-#  index_tr8n_translator_metrics_on_translator_id_and_language_id    (translator_id, language_id) 
-#  index_tr8n_translator_metrics_on_translator_id                    (translator_id) 
+#  tr8n_tm_c     (created_at) 
+#  tr8n_tm_tl    (translator_id, language_id) 
+#  tr8n_tm_t     (translator_id) 
 #
 #++
 

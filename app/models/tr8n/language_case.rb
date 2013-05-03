@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2012 Michael Berkovich, tr8n.net
+# Copyright (c) 2010-2013 Michael Berkovich, tr8nhub.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -33,14 +33,14 @@
 #  native_name      varchar(255)    
 #  description      text            
 #  application      varchar(255)    
-#  created_at       datetime        
-#  updated_at       datetime        
+#  created_at       datetime        not null
+#  updated_at       datetime        not null
 #
 # Indexes
 #
-#  index_tr8n_language_cases_on_language_id_and_keyword          (language_id, keyword) 
-#  index_tr8n_language_cases_on_language_id_and_translator_id    (language_id, translator_id) 
-#  index_tr8n_language_cases_on_language_id                      (language_id) 
+#  tr8n_lc_lk    (language_id, keyword) 
+#  tr8n_lc_lt    (language_id, translator_id) 
+#  tr8n_lc_l     (language_id) 
 #
 #++
 

@@ -20,6 +20,29 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
+#
+#-- Tr8n::ComponentTranslatorNotification Schema Information
+#
+# Table name: tr8n_notifications
+#
+#  id               INTEGER         not null, primary key
+#  type             varchar(255)    
+#  translator_id    integer         
+#  actor_id         integer         
+#  target_id        integer         
+#  action           varchar(255)    
+#  object_type      varchar(255)    
+#  object_id        integer         
+#  viewed_at        datetime        
+#  created_at       datetime        not null
+#  updated_at       datetime        not null
+#
+# Indexes
+#
+#  tr8n_notifs_obj       (object_type, object_id) 
+#  tr8n_notifs_trn_id    (translator_id) 
+#
+#++
 
 class Tr8n::ComponentTranslatorNotification < Tr8n::Notification
 
