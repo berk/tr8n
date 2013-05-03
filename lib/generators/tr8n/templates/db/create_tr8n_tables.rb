@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2012 Michael Berkovich, tr8n.net
+# Copyright (c) 2010-2013 Michael Berkovich, tr8nhub.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -36,6 +36,7 @@ class CreateTr8nTables < ActiveRecord::Migration
       t.integer :featured_index, :default => 0
       t.string  :google_key
       t.string  :facebook_key
+      t.string  :myheritage_key
       t.timestamps
     end
     add_index :tr8n_languages, [:locale], :name => :tr8n_ll
@@ -120,10 +121,11 @@ class CreateTr8nTables < ActiveRecord::Migration
       t.string  :link
       t.string  :locale
       t.integer :level,       :default => 0
-      t.integer :manager
+      t.boolean :manager
       t.string  :last_ip
       t.string  :country_code
       t.integer :remote_id
+      t.string  :access_key
       t.timestamps
     end
     add_index :tr8n_translators, [:user_id], :name => :tr8n_t_u
@@ -175,11 +177,18 @@ class CreateTr8nTables < ActiveRecord::Migration
     add_index :tr8n_translation_keys, [:key], :unique => true, :name => :tr8n_tk_k
 
     create_table :tr8n_translation_sources do |t|
-      t.string  :source
-      t.integer :translation_domain_id
+      t.integer   :parent_id
+      t.string    :source
+      t.integer   :translation_domain_id
+      t.integer   :completeness
+      t.string    :name
+      t.string    :description
+      t.string    :url
+      t.integer   :key_count
       t.timestamps
     end
     add_index :tr8n_translation_sources, [:source], :name => :tr8n_ts_s
+    add_index :tr8n_translation_sources, [:parent_id], :name => :tr8n_ts_pid
 
     create_table :tr8n_translation_key_sources do |t|
       t.integer :translation_key_id, :null => false
@@ -329,6 +338,77 @@ class CreateTr8nTables < ActiveRecord::Migration
       t.integer   :translations_received
       t.timestamps
     end
+
+    create_table :tr8n_applications do |t|
+      t.string :key
+      t.string :name
+      t.string :description
+      t.timestamps
+    end
+    add_index :tr8n_applications, [:key], :name => :tr8n_apps
+
+    create_table :tr8n_components do |t|
+      t.integer :application_id
+      t.string :key
+      t.string :state
+      t.string :name
+      t.string :description
+      t.timestamps
+    end
+    add_index :tr8n_components, [:application_id], :name => "tr8n_comp_app_id"
+
+    create_table :tr8n_component_languages do |t|
+      t.integer :component_id
+      t.integer :language_id
+      t.string :state
+      t.timestamps
+    end
+    add_index :tr8n_component_languages, [:component_id], :name => "tr8n_comp_lang_comp_id"
+    add_index :tr8n_component_languages, [:language_id], :name => "tr8n_comp_lang_lang_id"
+
+    create_table :tr8n_component_translators do |t|
+      t.integer :component_id
+      t.integer :translator_id
+      t.integer :language_id
+      t.string :state
+      t.timestamps
+    end
+    add_index :tr8n_component_translators, [:component_id], :name => "tr8n_comp_trn_comp_id"
+    add_index :tr8n_component_translators, [:translator_id], :name => "tr8n_comp_trn_trn_id"
+    add_index :tr8n_component_translators, [:language_id], :name => "tr8n_comp_trn_lang_id"
+
+    create_table :tr8n_component_sources do |t|
+      t.integer :component_id
+      t.integer :translation_source_id
+      t.timestamps
+    end
+    add_index :tr8n_component_sources, [:component_id], :name => "tr8n_comp_comp_id"
+    add_index :tr8n_component_sources, [:translation_source_id], :name => "tr8n_comp_src_id"    
+
+    create_table :tr8n_notifications do |t|
+      t.string      :type
+      t.integer     :translator_id
+      t.integer     :actor_id
+      t.integer     :target_id
+      t.string      :action
+      t.string      :object_type
+      t.integer     :object_id
+      t.timestamp   :viewed_at
+      t.timestamps
+    end
+    add_index :tr8n_notifications, [:translator_id], :name => "tr8n_notifs_trn_id"
+    add_index :tr8n_notifications, [:object_type, :object_id], :name => "tr8n_notifs_obj"  
+
+    create_table :tr8n_translation_source_metrics do |t|
+      t.integer :translation_source_id, :null => false
+      t.integer :language_id,           :null => false
+      t.integer :key_count,             :default => 0
+      t.integer :locked_key_count,      :default => 0
+      t.integer :translation_count,     :default => 0      
+      t.integer :translated_key_count,  :default => 0
+      t.timestamps
+    end
+    add_index :tr8n_translation_source_metrics, [:translation_source_id, :language_id], :name => "tr8n_trans_source_metrs_tsili"     
   end
 
   def self.down
@@ -358,5 +438,12 @@ class CreateTr8nTables < ActiveRecord::Migration
     drop_table :tr8n_ip_locations
     drop_table :tr8n_translation_source_languages
     drop_table :tr8n_sync_logs
+    drop_table :tr8n_applications
+    drop_table :tr8n_components
+    drop_table :tr8n_component_languages
+    drop_table :tr8n_component_translators
+    drop_table :tr8n_component_sources
+    drop_table :tr8n_notifications
+    drop_table :tr8n_translation_source_metrics
   end
 end

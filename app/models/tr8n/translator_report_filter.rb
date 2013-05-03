@@ -46,8 +46,8 @@ class Tr8n::TranslatorReportFilter < Tr8n::BaseFilter
     Tr8n::TranslatorReport
   end
 
-  def inner_joins
-    [:translator]
-  end
+  # def inner_joins
+  #   [:translator]
+  # end
 
 end

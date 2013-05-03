@@ -1,15 +1,12 @@
-<%= render :partial => "/tr8n/common/lightbox_header" %>
-<%= form_for(@language, :as => :language, :url => {:action => :update}, :html => {:id => 'tr8n_form', :method => :post, :class => "tr8n"}) do |form| %>
-<%= form.hidden_field(:id)%>
-<%= hidden_field_tag(:origin, params[:origin]) %>
+<%= tr8n_lightbox_header_tag %>
 <div class="inner">
     <div class="hd">
-        <div style="float:right;">
-            <%=link_to_function(image_tag("tr8n/close.gif"), "hideLightbox();") %>
-        </div>
-        Language Details
+        <%= tr8n_lightbox_title_tag(tra("Language Details")) %>
     </div>
-    <div class="bd" style="height:330px">
+    <div class="bd" style="padding-bottom:60px;">
+        <%= form_for(@language, :as => :language, :url => {:action => :update}, :html => {:id => 'tr8n_form', :method => :post, :class => "tr8n"}) do |form| %>
+        <%= form.hidden_field :id %>
+        <%= hidden_field_tag(:origin, params[:origin]) %>
         <table class="admin_table">
             <tr>
                 <th>
@@ -53,14 +50,6 @@
             </tr>
             <tr>
                 <th>
-                    Threshold:
-                </th>
-                <td>
-                    <%= form.text_field :threshold %>
-                </td>
-            </tr>
-            <tr>
-                <th>
                     Featured Index:
                 </th>
                 <td>
@@ -83,14 +72,23 @@
                     <%= form.text_field :facebook_key %>
                 </td>
             </tr>
+            <tr>
+                <th>
+                    MyHeritage Key:
+                </th>
+                <td>
+                    <%= form.text_field :myheritage_key %>
+                </td>
+            </tr>
         </table>
         <div>
             <em>Note: providing google key/locale will enable google suggestions for that language.</em>
         </div>
+        <% end %>
     </div>
     <div class="ft">
-        <%= render :partial => "/tr8n/common/lightbox_buttons" %>
+        <%= tr8n_lightbox_buttons_tag %>
     </div>
 </div>
-<% end %>
-<%= render :partial => "/tr8n/common/lightbox_footer" %>
+
+<%= tr8n_lightbox_footer_tag %>

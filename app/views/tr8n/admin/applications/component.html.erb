@@ -1,0 +1,108 @@
+<%= render :partial => "/tr8n/admin/common/header" %>
+<%= render :partial => "tabs", :locals => {:current_tab => "Component: #{@comp.name} <span style='font-size:12px; color:#888'>is being translated by #{@translators.count} translators into #{@languages.count} languages</span>".html_safe} %>
+
+<table class="admin_table">
+    <tr>
+        <th width="160">
+            Component Id
+        </th>
+        <td>
+            <%=@comp.id %>
+        </td>
+    </tr>
+
+    <tr>
+        <th width="160">
+            Application
+        </th>
+        <td>
+            <%= @comp.application ? link_to(@comp.application.name, :action => :application, :app_id => @comp.application_id) : "unassigned" %>
+        </td>
+    </tr>
+
+    <tr>
+        <th>
+            Key
+        </th>
+        <td>
+            <%=@comp.key %>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Name
+        </th>
+        <td>
+            <%=@comp.name %>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Description
+        </th>
+        <td>
+            <%=@comp.description %>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            State
+        </th>
+        <td>
+            <%=@comp.state %>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Created At
+        </th>
+        <td>
+            <%=@comp.created_at %>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            
+        </th>
+        <td>
+        <%= tr8n_actions_tag([
+            link_to_function("Update", "tr8nLightbox.show('/tr8n/admin/applications/lb_update_component?comp_id=#{@comp.id}', {height:400})"),
+            link_to_function("Add Sources", "tr8nLightbox.show('/tr8n/admin/applications/lb_add_objects_to_component?type=source&comp_id=#{@comp.id}', {height:450})"),
+            link_to_function("Add Languages", "tr8nLightbox.show('/tr8n/admin/applications/lb_add_objects_to_component?type=language&comp_id=#{@comp.id}', {height:450})"),
+            link_to_function("Add Translators", "tr8nLightbox.show('/tr8n/admin/applications/lb_add_objects_to_component?type=translator&comp_id=#{@comp.id}', {height:450})"),
+          ])
+        %>
+        </td>
+    </tr>    
+</table>
+
+<%=  tr8n_sections_tag(:modes => [
+          ["Component Metrics", {:mode => :metrics, :partial => "component_metrics"}],
+          ["Sources", {:mode => :sources, :partial => "component_sources"}],
+          ["Languages", {:mode => :languages, :partial => "component_languages"}],
+          ["Translators", {:mode => :translators, :partial => "component_translators"}],
+          ["Translation Keys", {:mode => :translation_keys}],
+          ["Translations", {:mode => :translations}],
+        ],
+        :params => {
+          :comp_id => @comp.id
+        }, 
+        :title => lambda{ |mode|
+          html = []
+          html << "#{mode.first} "
+          if mode.last[:mode] == :metrics
+            if params[:charts]
+              html << "<span style='font-size:12px;'>"
+              html << link_to("view as table", params.merge(:charts => false)) 
+              html << "</span>"
+            else
+              html << "<span style='font-size:12px;'>"
+              html << link_to("view as charts", params.merge(:charts => true)) 
+              html << "</span>"
+            end
+          end
+          html.join("").html_safe
+        }
+) %>
+
+<%= render :partial => "/tr8n/admin/common/footer" %>

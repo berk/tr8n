@@ -63,14 +63,18 @@ module Tr8n
         end
       end
       
-      def tr8n_init_current_source
-        "#{controller_name}/#{action_name}"
+      def tr8n_source
+        "#{self.class.name.underscore.gsub("_controller", "")}/#{self.action_name}"
       rescue
         self.class.name
       end
 
+      def tr8n_component
+        nil
+      end  
+
       def tr8n_init_current_locale
-        eval(Tr8n::Config.current_locale_method)
+        self.send(Tr8n::Config.current_locale_method)
       rescue
         # fallback to the default session based locale implementation
         # choose the first language from the accepted languages header
@@ -80,16 +84,36 @@ module Tr8n
       end
 
       def tr8n_init_current_user
-        eval(Tr8n::Config.current_user_method)
+        self.send(Tr8n::Config.current_user_method)
       end
 
       def init_tr8n
+        return unless Tr8n::Config.enabled?
+
         # initialize request thread variables
-        Tr8n::Config.init(tr8n_init_current_locale, tr8n_init_current_user, tr8n_init_current_source)
+        Tr8n::Config.init(tr8n_init_current_locale, tr8n_init_current_user, tr8n_source, tr8n_component)
         
+        # for logged out users, fallback onto tr8n_access_key
+        if Tr8n::Config.current_user_is_guest?  
+          tr8n_access_key = params[:tr8n_access_key] || session[:tr8n_access_key]
+          unless tr8n_access_key.blank?
+            Tr8n::Config.set_translator(Tr8n::Translator.find_by_access_key(tr8n_access_key))
+          end
+        end
+
         # track user's last ip address  
         if Tr8n::Config.enable_country_tracking? and Tr8n::Config.current_user_is_translator?
           Tr8n::Config.current_translator.update_last_ip(tr8n_request_remote_ip)
+        end
+
+        # register component and verify that the current user is authorized to view it
+        unless Tr8n::Config.current_user_is_authorized_to_view_component?
+          trfe("You are not authorized to view this component")
+          return redirect_to(Tr8n::Config.default_url)
+        end
+
+        unless Tr8n::Config.current_user_is_authorized_to_view_language?
+          Tr8n::Config.set_language(Tr8n::Config.default_language)
         end
       end
 

@@ -46,8 +46,4 @@ class Tr8n::TranslationSourceFilter < Tr8n::BaseFilter
     Tr8n::TranslationSource
   end
 
-  def inner_joins
-    [:translation_domain]
-  end
-
 end

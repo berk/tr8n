@@ -36,6 +36,31 @@
     </tr>
     <tr>
         <th>
+            Google Key
+        </th>
+        <td>
+            <%=@lang.google_key %>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Facebook Key
+        </th>
+        <td>
+            <%=@lang.facebook_key %>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            MyHeritage Key
+        </th>
+        <td>
+            <%=@lang.myheritage_key %>
+        </td>
+    </tr>    
+
+    <tr>
+        <th>
             Enabled
         </th>
         <td>
@@ -58,6 +83,7 @@
             <%=@lang.completeness || 0 %>%
         </td>
     </tr>
+        
     <tr>
         <th>
             Created At
@@ -79,28 +105,22 @@
             
         </th>
         <td>
-        	<%=link_to_function("Update", "Tr8n.UI.Lightbox.show('/tr8n/admin/language/lb_update?lang_id=#{@lang.id}', {height:300})") %>
-          |
-          <%=link_to("View Users", "/tr8n/admin/language/users?wf_c0=language_id&wf_o0=is&wf_v0_0=#{@lang.id}") %>
-					|
-          <%=link_to("View Translations", "/tr8n/admin/translation/index?wf_c0=language_id&wf_o0=is&wf_v0_0=#{@lang.id}") %>
-          |
-          <%=link_to("View Metrics", "/tr8n/admin/language/metrics?wf_c0=language_id&wf_o0=is&wf_v0_0=#{@lang.id}") %>
-          |
-          <%=link_to("View Forum Topics", "/tr8n/admin/forum/index?wf_c0=language_id&wf_o0=is&wf_v0_0=#{@lang.id}") %>
+        	<%=link_to_function("Update", "tr8nLightbox.show('/tr8n/admin/language/lb_update?lang_id=#{@lang.id}', {height:450})") %>
         </td>
     </tr>    
 </table>
 
 
-<h1>
-  <span style="font-size:12px; float:right; padding-top:10px;">
-    <%=link_to("view all", "/tr8n/admin/language/rules") %>
-  </span> 
-	
-	Language Rules
-</h1>
-<%= render :partial => "rules", :locals => {:rules => @lang.rules}%>
-
+<%=  tr8n_sections_tag(:modes => [
+            ["Metrics",   {:mode => :metrics}],
+            ["Language Rules",   {:mode => :context_rules}],
+            ["Language Cases",   {:mode => :cases}],
+            ["Language Case Rules",   {:mode => :case_rules}],
+            ["Language Case Exceptions",   {:mode => :case_exceptions}],
+        ],
+        :params => {
+            :lang_id => @lang.id
+        }
+) %>
 
 <%= render :partial => "/tr8n/admin/common/footer" %>

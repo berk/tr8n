@@ -40,8 +40,7 @@
 #++
 
 class Tr8n::TranslationKeySource < ActiveRecord::Base
-  self.table_name =  :tr8n_translation_key_sources
-  
+  self.table_name =  :tr8n_translation_key_sources  
   attr_accessible :translation_key_id, :translation_source_id, :details
   attr_accessible :translation_source, :translation_key
 
@@ -55,16 +54,16 @@ class Tr8n::TranslationKeySource < ActiveRecord::Base
 
   serialize :details
 
-  def self.cache_key(translation_key_id, translation_source_id)
-    "translation_key_source_#{translation_key_id}_#{translation_source_id}"
+  def self.cache_key(tkey, source)
+    "key_source_[#{tkey}]_[#{source}]"
   end
 
   def cache_key
-    self.class.cache_key(translation_key_id, translation_source_id)
+    self.class.cache_key(translation_key.key, translation_source.source)
   end
 
   def self.find_or_create(translation_key, translation_source)
-    Tr8n::Cache.fetch(cache_key(translation_key.id, translation_source.id)) do 
+    Tr8n::Cache.fetch(cache_key(translation_key.key, translation_source.source)) do 
       tks = where("translation_key_id = ? and translation_source_id = ?", translation_key.id, translation_source.id).first
       tks ||= begin
         translation_source.touch

@@ -46,8 +46,8 @@ class Tr8n::TranslationKeyLockFilter < Tr8n::BaseFilter
     Tr8n::TranslationKeyLock
   end
 
-  def inner_joins
-    [:language, :translation_key, :translator]
-  end
+  # def inner_joins
+  #   [:language, :translation_key, :translator]
+  # end
 
 end

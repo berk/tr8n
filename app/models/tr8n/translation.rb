@@ -47,10 +47,10 @@
 
 class Tr8n::Translation < ActiveRecord::Base
   self.table_name = :tr8n_translations
-
   attr_accessible :translation_key_id, :language_id, :translator_id, :label, :rank, :approved_by_id, :rules, :synced_at
   attr_accessible :language, :translator, :translation_key
 
+  after_create    :distribute_notification
   after_save      :update_cache
   after_destroy   :update_cache
 
@@ -71,8 +71,10 @@ class Tr8n::Translation < ActiveRecord::Base
   def vote!(translator, score)
     score = score.to_i
     vote = Tr8n::TranslationVote.find_or_create(self, translator)
-    vote.update_attributes(:vote => score)
+    vote.update_attributes(:vote => score.to_i)
     
+    Tr8n::Notification.distribute(vote)
+
     update_rank!
     
     # update the translation key timestamp
@@ -85,6 +87,7 @@ class Tr8n::Translation < ActiveRecord::Base
     
     translator.voted_on_translation!(self)
     translator.update_metrics!(language)
+    translation_key.update_metrics!(language)
   end
   
   def update_rank!
@@ -198,8 +201,9 @@ class Tr8n::Translation < ActiveRecord::Base
 
   def self.default_translation(translation_key, language, translator)
     trans = where("translation_key_id = ? and language_id = ? and translator_id = ? and rules is null", translation_key.id, language.id, translator.id).order("rank desc").first
-    trans ||= new(:translation_key => translation_key, :language => language, :translator => translator, :label => translation_key.sanitized_label)
-    trans  
+    return trans if trans
+    label = translation_key.default_translation if translation_key.is_a?(Tr8n::RelationshipKey)
+    new(:translation_key => translation_key, :language => language, :translator => translator, :label => label || translation_key.sanitized_label)
   end
 
   def blank?
@@ -246,10 +250,15 @@ class Tr8n::Translation < ActiveRecord::Base
     
     destroy
   end
-  
+
+  def distribute_notification
+    Tr8n::Notification.distribute(self)
+  end
+
   def update_cache
-    language.translations_changed!
-    translation_key.translations_changed!(language)
+    # Tr8n::Cache.delete("translations_#{language.locale}_#{translation_key.key}") if language and translation_key
+    language.translations_changed! if language
+    translation_key.translations_changed!(language) if translation_key
   end
   
   ###############################################################

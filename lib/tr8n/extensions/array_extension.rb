@@ -71,4 +71,8 @@ class Array
     @tr8n_translated
   end
 
+  def page(page)
+    Kaminari.paginate_array(self).page(page)
+  end
+
 end

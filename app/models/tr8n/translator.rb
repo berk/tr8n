@@ -58,7 +58,6 @@
 
 class Tr8n::Translator < ActiveRecord::Base
   self.table_name = :tr8n_translators
-
   attr_accessible :user_id, :inline_mode, :blocked, :reported, :fallback_language_id, :rank, :name, :gender, :email, :password, :mugshot, :link, :locale, :level, :manager, :last_ip, :country_code, :remote_id, :voting_power
   attr_accessible :user
 
@@ -81,7 +80,7 @@ class Tr8n::Translator < ActiveRecord::Base
   belongs_to :fallback_language,            :class_name => 'Tr8n::Language',                  :foreign_key => :fallback_language_id
     
   def self.cache_key(user_id)
-    "translator_#{user_id}"
+    "translator_[#{user_id}]"
   end
 
   def cache_key
@@ -105,8 +104,11 @@ class Tr8n::Translator < ActiveRecord::Base
   end
 
   def self.register(user = Tr8n::Config.current_user)
+    return nil unless user and user.id 
+    return nil if Tr8n::Config.guest_user?(user)
+
     translator = Tr8n::Translator.find_or_create(user)
-    return unless translator
+    return nil unless translator
 
     # update all language user entries to add a translator id
     Tr8n::LanguageUser.where(:user_id => user.id).each do |lu|
@@ -128,22 +130,31 @@ class Tr8n::Translator < ActiveRecord::Base
   end
 
   def update_metrics!(language = Tr8n::Config.current_language)
-    # calculate total metrics
-    total_metric.update_metrics!
-    
-    # calculate language specific metrics
-    metric_for(language).update_metrics!
+    Tr8n::OfflineTask.schedule(self.class.name, :update_metrics_offline, {
+                               :translator_id => self.id, 
+                               :language_id => language.id
+    })
   end
   
-  def update_rank!(language = Tr8n::Config.current_language)
-    # calculate total rank
-    total_metric.update_rank!
-    
-    # calculate language specific rank
-    metric_for(language).update_rank!
+  def self.update_metrics_offline(opts)
+    translator = Tr8n::Translator.find_by_id(opts[:translator_id])
+    language = Tr8n::Language.find_by_id(opts[:language_id])
+    translator.total_metric.update_metrics!
+    translator.metric_for(language).update_metrics!
+  end
 
-    # for admin tool searches
-    update_attributes(:rank => rank)
+  def update_rank!(language = Tr8n::Config.current_language)
+    Tr8n::OfflineTask.schedule(self.class.name, :update_rank_offline, {
+                               :translator_id => self.id, 
+                               :language_id => language.id
+    })
+  end
+
+  def self.update_rank_offline(opts)
+    translator = Tr8n::Translator.find_by_id(opts[:translator_id])
+    language = Tr8n::Language.find_by_id(opts[:language_id])
+    translator.total_metric.update_rank!
+    translator.metric_for(language).update_rank!
   end
 
   def rank
@@ -151,17 +162,28 @@ class Tr8n::Translator < ActiveRecord::Base
   end
 
   def update_voting_power!(actor, new_voting_power, reason = "No reason given")
-    update_attributes(:voting_power => new_voting_power)
+    translator.update_attributes(:voting_power => new_voting_power)
+    Tr8n::TranslatorLog.log_admin(translator, :got_new_voting_power, actor, reason, new_voting_power.to_s)
 
-    translation_votes.each do |tv|
-      tv.translation.vote!(self, tv.vote)
-    end
-
-    Tr8n::TranslatorLog.log_admin(self, :got_new_voting_power, actor, reason, new_voting_power.to_s)
+    Tr8n::OfflineTask.schedule(self.class.name, :update_translations_with_new_voting_power_offline, {
+                               :translator_id => self.id
+    })
   end
+
+  def self.update_translations_with_new_voting_power_offline(opts)
+    translator = Tr8n::Translator.find_by_id(opts[:translator_id])
+    translator.translation_votes.each do |tv|
+      tv.translation.vote!(translator, tv.vote)
+    end
+  end  
       
   def voting_power
     super || 1
+  end
+
+  def generate_access_key!(actor = self.user, reason = "No reason given")
+    self.update_attributes(:access_key => Tr8n::Config.guid)
+    Tr8n::TranslatorLog.log_admin(self, :generated_access_key, actor, reason)
   end
 
   def block!(actor, reason = "No reason given")
@@ -295,6 +317,17 @@ class Tr8n::Translator < ActiveRecord::Base
     user_name
   end
 
+  def email
+    return "Tr8n Network" if system?
+    return super if remote?
+    
+    return "Deleted User" unless user
+    user_email = Tr8n::Config.user_email(user)
+    return "No Email" if user_email.blank?
+    
+    user_email
+  end  
+
   def gender
     return "unknown" if system?
     return super if remote?
@@ -317,6 +350,10 @@ class Tr8n::Translator < ActiveRecord::Base
     # return super if remote? 
     return Tr8n::Config.default_url unless user
     Tr8n::Config.user_link(user)
+  end
+
+  def url
+    "/tr8n/translator/index/#{id}"
   end
 
   def admin?
@@ -350,6 +387,16 @@ class Tr8n::Translator < ActiveRecord::Base
   def unfollow(object)
     tf = Tr8n::TranslatorFollowing.where("object_type = ? and object_id = ?", object.class.name, object.id).first
     tf.destroy if tf
+  end
+
+  def followed_objects(type=nil)
+    if type
+      following = Tr8n::TranslatorFollowing.find(:all, :conditions => ["translator_id = ? and object_type = ?", self.id, type])    
+    else
+      following = Tr8n::TranslatorFollowing.find(:all, :conditions => ["translator_id = ?", self.id])
+    end 
+
+    following.collect{|f| f.object}
   end
 
   def self.level_options

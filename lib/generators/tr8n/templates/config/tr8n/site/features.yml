@@ -9,15 +9,15 @@
 
 defaults:
   enabled_features: [dashboard, sitemap, phrases, translations, awards, forum, glossary, help]
-  
+
   dashboard:
     title:            Dashboard
-    link:             /tr8n/dashboard
-    controller:       dashboard
+    link:             /tr8n/translator/index
+    controller:       translator
     actions:          [index]
     default_language: true
     manager_only:     false
-  
+
   phrases:
     title:            Phrases
     link:             /tr8n/phrases
@@ -25,7 +25,7 @@ defaults:
     actions:          [index, view]
     default_language: false
     manager_only:     false
-  
+
   sitemap:
     title:            Site Map
     link:             /tr8n/phrases/map
@@ -33,7 +33,7 @@ defaults:
     actions:          [map, index, view]
     default_language: false
     manager_only:     false
-  
+
   translations:
     title:            Translations
     link:             /tr8n/translations
@@ -41,7 +41,7 @@ defaults:
     actions:          [index, view]
     default_language: false
     manager_only:     false
-    
+
   awards:
     title:            Awards
     link:             /tr8n/awards
@@ -49,7 +49,7 @@ defaults:
     actions:          [index]
     default_language: true
     manager_only:     false
-  
+
   forum:
     title:            Discussions
     link:             /tr8n/forum
@@ -57,7 +57,7 @@ defaults:
     actions:          [index, topic, message]
     default_language: true
     manager_only:     false
-  
+
   glossary:
     title:            Glossary
     link:             /tr8n/glossary
@@ -65,7 +65,7 @@ defaults:
     actions:          [index]
     default_language: true
     manager_only:     false
-  
+
   rules:
     title:            Manage Language
     link:             /tr8n/language
@@ -73,7 +73,7 @@ defaults:
     actions:          [index]
     default_language: true
     manager_only:     true
-  
+
   help:
     title:            Help
     link:             /tr8n/help
@@ -89,8 +89,8 @@ defaults:
     actions:          [index]
     default_language: true
     manager_only:     false
-    
-    
+
+
 #############################################################################
 # Environment Settings
 # You can overload any feature defined in the defaults for any environment
@@ -98,7 +98,7 @@ defaults:
 development:
 
 test:
-      
+
 qa:
 
 stage:

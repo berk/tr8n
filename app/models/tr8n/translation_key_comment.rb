@@ -43,7 +43,6 @@
 
 class Tr8n::TranslationKeyComment < ActiveRecord::Base
   self.table_name = :tr8n_translation_key_comments
-  
   attr_accessible :language_id, :translation_key_id, :translator_id, :message
   attr_accessible :language, :translator, :translation_key
   
@@ -51,10 +50,17 @@ class Tr8n::TranslationKeyComment < ActiveRecord::Base
   belongs_to :translator,             :class_name => "Tr8n::Translator"  
   belongs_to :translation_key,        :class_name => "Tr8n::TranslationKey"
   
+  after_create :distribute_notification
+
   alias :key :translation_key
 
   def toHTML
     return "" unless message
     message.gsub("\n", "<br>")
   end
+
+  def distribute_notification
+    Tr8n::Notification.distribute(self)    
+  end
+
 end

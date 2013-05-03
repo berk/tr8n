@@ -46,8 +46,8 @@ class Tr8n::TranslationKeySourceFilter < Tr8n::BaseFilter
     Tr8n::TranslationKeySource
   end
 
-  def inner_joins
-    [:translation_key, :translation_source]
-  end
+  # def inner_joins
+  #   [:translation_key, :translation_source]
+  # end
 
 end

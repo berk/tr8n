@@ -41,7 +41,6 @@
 
 class Tr8n::TranslationKeyLock < ActiveRecord::Base
   self.table_name = :tr8n_translation_key_locks
-  
   attr_accessible :translation_key_id, :language_id, :translator_id, :locked
   attr_accessible :language, :translator, :translation_key
 
@@ -54,13 +53,21 @@ class Tr8n::TranslationKeyLock < ActiveRecord::Base
 
   alias :key :translation_key
   
+  def self.cache_key(locale, key)
+    "key_lock_[#{locale}]_[#{key}]"
+  end
+
+  def cache_key
+    self.class.cache_key(language.locale, translation_key.key)
+  end
+
   def self.find_or_create(translation_key, language)
     lock = where("translation_key_id = ? and language_id = ?", translation_key.id, language.id).first
     lock || create(:translation_key => translation_key, :language => language)
   end
 
   def self.for(translation_key, language)
-    Tr8n::Cache.fetch("translation_key_lock_#{language.locale}_#{translation_key.key}") do 
+    Tr8n::Cache.fetch(cache_key(language.locale, translation_key.key)) do 
       find_or_create(translation_key, language)
     end
   end
@@ -68,10 +75,7 @@ class Tr8n::TranslationKeyLock < ActiveRecord::Base
   def lock!(translator = Tr8n::Config.current_translator)
     update_attributes(:locked => true, :translator => translator)
     translator.locked_translation_key!(translation_key, language)
-
-    if Tr8n::Config.language_stats_realtime?
-      language.total_metric.update_metrics!
-    end
+    language.total_metric.update_metrics!
   end
 
   def unlock!(translator = Tr8n::Config.current_translator)
@@ -80,6 +84,6 @@ class Tr8n::TranslationKeyLock < ActiveRecord::Base
   end
   
   def clear_cache
-    Tr8n::Cache.delete("translation_key_lock_#{language.locale}_#{translation_key.key}")
+    Tr8n::Cache.delete(cache_key)
   end
 end

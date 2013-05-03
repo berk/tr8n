@@ -1,0 +1,11 @@
+<%= will_filter_scripts_tag %>
+<%= will_filter_table_tag(@results, :columns => [
+  :id, :type, :description, 
+  [:translator_id, lambda{|rule|
+    if rule.translator
+      link_to(rule.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :translator_id => rule.translator.id)
+    else
+      "System Generated" 
+    end  
+  }], :created_at
+ ]) %>

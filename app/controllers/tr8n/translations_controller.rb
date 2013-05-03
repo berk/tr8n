@@ -46,7 +46,11 @@ class Tr8n::TranslationsController < Tr8n::BaseController
 
     if params[:lock] == "true"
       if tr8n_current_translator.manager?
-        translation_key.lock!
+        if translation_key.locked?
+          translation_key.unlock!
+        else
+          translation_key.lock!
+        end
       else
         trfe("You are not authorized to lock translation keys")
       end

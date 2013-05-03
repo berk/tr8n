@@ -6,17 +6,19 @@
   <%= will_filter_table_tag(@case_rules, :columns => [
     [:language_id, lambda{|lcase|
       if lcase.language
-        link_to(lcase.language.english_name, {:controller => "/tr8n/admin/language", :action => :view, :lang_id => lcase.language.id}, {:title => "Language Id: #{lcase.language_id}"})
+        link_to(lcase.language.english_name, :controller => "/tr8n/admin/language", :action => :view, :lang_id => lcase.language.id)
       else
          "Deleted Language"    
       end  
-    }, :filterable => true],
+    }], :description, 
     [:translator_id, lambda{|lcase|
       if lcase.translator
-        link_to(lcase.translator.name, {:controller => "/tr8n/admin/translator", :action => :view, :translator_id => lcase.translator.id}, {:title => "Translator Id: #{lcase.translator_id}"})
+        link_to(lcase.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :translator_id => lcase.translator.id)
       else
         "System Generated" 
       end  
-    }, :filterable => true], :definition, :created_at
+    }], :created_at
    ]) %>
 <% end %>
+
+<%= render :partial => "/tr8n/admin/common/footer" %>

@@ -47,7 +47,6 @@
 
 class Tr8n::LanguageMetric < ActiveRecord::Base
   self.table_name = :tr8n_language_metrics
-  
   attr_accessible :language_id, :metric_date, :user_count, :translator_count, :translation_count, :key_count, :locked_key_count, :translated_key_count
   attr_accessible :language, :completeness
   
@@ -74,7 +73,7 @@ class Tr8n::LanguageMetric < ActiveRecord::Base
   
   def self.calculate_language_metrics
     last_daily_metric = Tr8n::DailyLanguageMetric.where("metric_date is not null").order("metric_date desc").first
-    metric_date = last_daily_metric.nil? ? Date.new(2011, 10, 1) : last_daily_metric.metric_date
+    metric_date = last_daily_metric.nil? ? (Date.today - 30.days) : last_daily_metric.metric_date
 
     Tr8n::Language.enabled_languages.each do |lang|
       Tr8n::Logger.debug("Processing #{lang.english_name} language...")

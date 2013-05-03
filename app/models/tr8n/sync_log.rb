@@ -42,7 +42,6 @@
 
 class Tr8n::SyncLog < ActiveRecord::Base
   self.table_name = :tr8n_sync_logs
-
   attr_accessible :started_at, :finished_at, :keys_sent, :translations_sent, :keys_received, :translations_received
 
   def self.sync(opts = {})

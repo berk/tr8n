@@ -50,8 +50,8 @@ class Tr8n::TranslationVoteFilter < Tr8n::BaseFilter
     "created_today"
   end
 
-  def inner_joins
-    [:translation, :translator]
-  end
+  # def inner_joins
+  #   [:translation, :translator]
+  # end
 
 end

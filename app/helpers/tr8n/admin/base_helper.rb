@@ -27,14 +27,6 @@ module Tr8n::Admin::BaseHelper
     will_filter_tag(results)
   end
 
-  def tr8n_will_paginate(collection = nil, options = {})
-    super(collection, options.merge(:skip_decorations => true))
-  end
-
-  def tr8n_page_entries_info(collection, options = {})
-    super(collection, options.merge(:skip_decorations => true))
-  end
-
   def tr8n_pretty_print_hash(hash)
     return "" unless hash
     html = ""
@@ -81,4 +73,12 @@ module Tr8n::Admin::BaseHelper
     image_tag("http://chart.apis.google.com/chart?#{chart_params.join('&')}")     
   end
   
+  def tr8n_sections_tag(opts = {})
+    render(:partial => "/tr8n/admin/common/sections", :locals => {:mode => params[:mode], :modes => opts[:modes], :opts => opts})
+  end
+
+  def tr8n_lightbox_buttons_tag(opts = {})
+    render(:partial => "/tr8n/admin/common/lightbox_buttons")
+  end
+
 end

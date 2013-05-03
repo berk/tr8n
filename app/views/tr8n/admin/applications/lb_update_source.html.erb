@@ -1,0 +1,50 @@
+<%= tr8n_lightbox_header_tag %>
+<div class="inner">
+    <div class="hd">
+        <%= tr8n_lightbox_title_tag(tra("Source Details")) %>
+    </div>
+    <div class="bd" style="padding-bottom:60px;">
+        <%= form_for(@source, :as => :source, :url => {:action => :update_source}, :html => {:id => 'tr8n_form', :method => :post, :class => "tr8n"}) do |form| %>
+            <%= form.hidden_field :id %>
+            <%= hidden_field_tag(:origin, params[:origin]) %>
+            <table class="admin_table">
+                <tr>
+                    <th>
+                        Key:
+                    </th>
+                    <td>
+                        <%= form.text_field :source, :style=>"width:99%;" %>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        Url:
+                    </th>
+                    <td>
+                        <%= form.text_field :url, :style=>"width:99%;" %>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        Name:
+                    </th>
+                    <td>
+                        <%= form.text_field :name, :style=>"width:99%;" %>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                       Description:
+                    </th>
+                    <td>
+                        <%= form.text_area :description, :style=>"width:99%;height:80px;" %>
+                    </td>
+                </tr>
+            </table>
+        <% end %>
+    </div>
+    <div class="ft">
+        <%= render :partial => "/tr8n/admin/common/lightbox_buttons" %>
+    </div>
+</div>
+<%= tr8n_lightbox_footer_tag %>

@@ -1,12 +1,12 @@
 <div class="section_title">
-  <div style="float:right;">
+  <div style="<%=tr8n_style_attribute_tag('float', 'right')%>; padding-top:3px;">
     <% if mode == :view %>
-      <%=link_to_function(image_tag("tr8n/table_edit.png"), "switchSectionMode('#{section}', 'edit')") %>
+      <%=link_to_function("#{image_tag("/tr8n/images/table_edit.png")}", "switchSectionMode('#{section}', 'edit')") %>
     <% else %>
-      <%=link_to_function(image_tag("tr8n/disk.png"), "submitSection('#{section}')")%>
-      <%=link_to_function(image_tag("tr8n/cancel.png"), "switchSectionMode('#{section}', 'view')")%>
+      <%=link_to_function(image_tag("/tr8n/images/disk.png"), "submitSection('#{section}')")%>
+      <%=link_to_function(image_tag("/tr8n/images/cancel.png"), "switchSectionMode('#{section}', 'view')")%>
     <% end %>  
   </div>
 
-  <%=trla(label, description) %>
+  <%=tra(label, description) %>
 </div>

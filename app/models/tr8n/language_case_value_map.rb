@@ -43,7 +43,6 @@
 
 class Tr8n::LanguageCaseValueMap < ActiveRecord::Base
   self.table_name = :tr8n_language_case_value_maps
-
   attr_accessible :keyword, :language_id, :translator_id, :map, :reported
   attr_accessible :language, :translator
 
@@ -55,8 +54,16 @@ class Tr8n::LanguageCaseValueMap < ActiveRecord::Base
   
   serialize :map
   
+  def self.cache_key(locale, keyword)
+    "language_case_value_map_[#{locale}]_[#{keyword}]"
+  end
+
+  def cache_key
+    self.class.cache_key(language.locale, keyword)
+  end
+
   def self.by_language_and_keyword(language, keyword)
-    Tr8n::Cache.fetch("language_case_value_map_#{language.id}_#{keyword}") do 
+    Tr8n::Cache.fetch(cache_key(language.locale, keyword)) do 
       find_by_language_id_and_keyword_and_reported(language.id, keyword, false)
     end
   end
@@ -118,7 +125,7 @@ class Tr8n::LanguageCaseValueMap < ActiveRecord::Base
   end
 
   def clear_cache
-    Tr8n::Cache.delete("language_case_value_map_#{language.id}_#{keyword}")
+    Tr8n::Cache.delete(cache_key)
   end
 
 end

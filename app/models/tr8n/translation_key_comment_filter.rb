@@ -46,8 +46,8 @@ class Tr8n::TranslationKeyCommentFilter < Tr8n::BaseFilter
     Tr8n::TranslationKeyComment
   end
 
-  def inner_joins
-    [:language, :translation_key, :translator]
-  end
+  # def inner_joins
+  #   [:language, :translation_key, :translator]
+  # end
 
 end

@@ -1,91 +1,82 @@
 <div id="basic_info_container">
-  <%=render(:partial => "header", :locals => {:section => "basic_info", :label => "Translator Details", :description => "Translator details section title", :mode => mode})%>
+  <div class="section_title">
+    <%=tra("Translator Details") %>
+  </div>
   
   <%= form_for(tr8n_current_translator, :as => :translator, :url => {:action => :index}, :html => {:id => 'basic_info_form', :method => :post}) do |f| %>
-    <div class="section grey">
-      <div style="float:right; padding-right:5px;">
-          <%=tr8n_help_icon_tag %>
-      </div>
-      <div ondblclick="switchSectionMode('basic_info', 'edit')">
+    <div class="section_box colored">
+      <div>
         <table>
           <tr>
-            <td style="width:120px;padding:3px;vertical-align:middle;font-weight:bold;"><%=trl("Name:")%></td>
+            <th style="width:120px;padding:3px;vertical-align:middle;font-weight:bold;"><%=tra("Name:")%></th>
             <td style="padding:3px;">
-              <% if Tr8n::Config.site_user_info_disabled? and mode == :edit %>
                 <%=f.text_field(:name)%>
-              <% else %>
-                <%=tr8n_current_translator.name%>
-              <% end %>
             </td>
           </tr>
 
           <tr>
-            <td style="width:120px;padding:3px;vertical-align:middle;font-weight:bold;"><%=trla("Gender:")%></td>
+            <th style="width:120px;padding:3px;vertical-align:middle;font-weight:bold;"><%=tra("Access Key:")%></th>
             <td style="padding:3px;">
-              <% if Tr8n::Config.site_user_info_disabled? and mode == :edit %>
+                <%=tr8n_current_translator.access_key || "not generated" %>
+
+                (<%= link_to(tra('generate'), {:action => :generate_access_key}) %>)
+                <span style="color: #888"><%=tra("Allows you to access restricted sections when you are not logged in.") %></span>
+
+            </td>
+          </tr>
+
+          <tr>
+            <th style="width:120px;padding:3px;vertical-align:middle;font-weight:bold;"><%=tra("Gender:")%></th>
+            <td style="padding:3px;">
                 <%=f.radio_button(:gender, "male")%> <%=tr('Male', 'Gender') %>
                 &nbsp; <%=f.radio_button(:gender, "female")%> <%=tra('Female', 'Gender') %>
                 &nbsp; <%=f.radio_button(:gender, "unknown")%> <%=tra('Unknown', 'Gender') %>
-              <% else %>
-                <%=tr8n_current_translator.gender%>
-              <% end %>
             </td>
           </tr>
-					
-					<% if Tr8n::Config.site_user_info_disabled? %>
+
+          <tr>
+            <th style="width:120px;padding:3px;vertical-align:middle;font-weight:bold;"><%=tra("Email:")%></th>
+            <td style="padding:3px;">
+                <%=f.text_field(:email)%>
+            </td>
+          </tr>
+          <tr>
+            <th style="width:120px;padding:3px;vertical-align:middle;font-weight:bold;"><%=tra("Password:")%></th>
+            <td style="padding:3px;">
+                <%=f.password_field(:password)%>
+            </td>
+          </tr>
+          <tr>
+            <th style="width:120px;padding:3px;vertical-align:middle;font-weight:bold;"><%=tra("Photo Url:")%></th>
+            <td style="padding:3px;">
+                <%=f.text_field(:mugshot)%>
+            </td>
+          </tr>
+          <tr>
+            <th style="width:120px;padding:3px;vertical-align:middle;font-weight:bold;"><%=tra("Link Url")%></th>
+            <td style="padding:3px;">
+                <%=f.text_field(:link)%>
+            </td>
+          </tr>
+
+					<% if Tr8n::Config.enable_translator_language? %>
 	          <tr>
-	            <td style="width:120px;padding:3px;vertical-align:middle;font-weight:bold;"><%=trla("Email:")%></td>
+	            <th style="padding:3px;vertical-align:middle;font-weight:bold;"><%=tra("Fallback Language:", "Language to fall back onto if the language phrase is not translated")%></th>
 	            <td style="padding:3px;">
-	              <% if mode == :edit %>
-	                <%=f.text_field(:email)%>
-	              <% else %>
-	                <%=tr8n_current_translator.email%>
-	              <% end %>
-	            </td>
-	          </tr>
-	          <tr>
-	            <td style="width:120px;padding:3px;vertical-align:middle;font-weight:bold;"><%=trla("Password:")%></td>
-	            <td style="padding:3px;">
-	              <% if mode == :edit %>
-	                <%=f.password_field(:password)%>
-	              <% else %>
-	                **********
-	              <% end %>
-	            </td>
-	          </tr>
-	          <tr>
-	            <td style="width:120px;padding:3px;vertical-align:middle;font-weight:bold;"><%=trla("Photo Url:")%></td>
-	            <td style="padding:3px;">
-	              <% if mode == :edit %>
-	                <%=f.text_field(:mugshot)%>
-	              <% else %>
-	                <%=tr8n_current_translator.mugshot%>
-	              <% end %>
-	            </td>
-	          </tr>
-	          <tr>
-	            <td style="width:120px;padding:3px;vertical-align:middle;font-weight:bold;"><%=trla("Link Url")%></td>
-	            <td style="padding:3px;">
-	              <% if mode == :edit %>
-	                <%=f.text_field(:link)%>
-	              <% else %>
-	                <%=tr8n_current_translator.link%>
-	              <% end %>
+	               <%=select_tag("translator[fallback_language_id]", options_for_select(Tr8n::Language.options, @fallback_language.id.to_s))%>
 	            </td>
 	          </tr>
           <% end %>
-										
-					<% if Tr8n::Config.enable_translator_language? %>
-	          <tr>
-	            <td style="padding:3px;vertical-align:middle;font-weight:bold;"><%=trla("Fallback Language:")%></td>
-	            <td style="padding:3px;">
-	              <% if mode == :edit %>
-	                <%=select_tag("translator[fallback_language_id]", options_for_select(Tr8n::Language.options, @fallback_language.id.to_s))%>
-	              <% else %>
-	                <%=@fallback_language.english_name%>
-	              <% end %>  
-	            </td>
-	          </tr>
+
+          <% if Tr8n::Config.enable_translator_language? or Tr8n::Config.site_user_info_disabled? %>
+            <tr>
+              <th style="padding:3px;vertical-align:middle;font-weight:bold;"></th>
+              <td style="padding-top:15px;padding-bottom:15px;">
+                 <button type="submit" class="translator_btn translator_submit_btn" onClick="Tr8n.submit('basic_info_form'); return false;">
+                    <span><%=tra("Save")%></span>
+                  </button>
+              </td>
+            </tr>
           <% end %>
 					
         </table>

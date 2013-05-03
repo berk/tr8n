@@ -1,0 +1,36 @@
+<% if lang.total_metric.not_translated_count == 0 and lang.total_metric.key_count > 0 %>
+  <div class="section_box" style="background-color:#ECFFEF; font-size: 12px; margin-top:3x; margin-bottom:15px; color: #999;">
+    <%=tra("This language is fully translated.")%>
+  </div>
+<% else %>
+  <div class="section_box" style="background-color:#EFF8FF; font-size: 12px; margin-top:3x; margin-bottom:15px; color: #999;">
+    <%=tra("This language has [link: {count} {_phrases}] that need to be translated.", nil, 
+            :count => lang.total_metric.not_translated_count,
+            :link => lambda{|str| link_to(str, :controller => "/tr8n/phrases", :action => :index, :locale => lang.locale, :phrase_type => :without)},
+            :_phrases => "phrase".pluralize_for(lang.total_metric.not_translated_count)
+     )%>
+  </div>
+<% end %>
+
+<div style="font-size:14px; border-bottom:1px solid #ccc; margin-bottom:5px;">
+  <div style="<%=tr8n_style_attribute_tag('float', 'right')%>">
+    <%=tr8n_translator_rank_tag(@translator, translator_metric.rank)%>
+  </div>
+	
+  <%=tr8n_toggler_tag("stats_content_#{lang.id}", "", true)%>
+	<%=tra("Language Statistics") %>
+</div>
+
+<div id="stats_content_<%=lang.id%>" style="">
+	<table style="width:100%">
+	  <tr>
+      <td style="width:50%; padding-top:3px; padding-right:3px; padding-bottom:10px;">
+          <%=render :partial => "translator_metric", :locals => {:translator_metric => translator_metric, :lang => lang} %>
+      </td>      	  	
+	    <td style="width:50%;padding-top:3px; padding-bottom:10px;">
+          <%=render :partial => "language_metric", :locals => {:language_metric => lang.total_metric, :lang => lang} %>
+	    </td>        
+	  </tr>
+	</table>  
+</div>
+

@@ -44,7 +44,6 @@
 
 class Tr8n::LanguageCaseRule < ActiveRecord::Base
   self.table_name = :tr8n_language_case_rules
-
   attr_accessible :language_case_id, :language_id, :translator_id, :definition, :position
   attr_accessible :language, :language_case, :translator
   
@@ -59,7 +58,7 @@ class Tr8n::LanguageCaseRule < ActiveRecord::Base
   end
 
   def self.cache_key(id)
-    "language_case_rule_#{id}"
+    "language_case_rule_[#{id}]"
   end
 
   def cache_key
@@ -151,7 +150,6 @@ class Tr8n::LanguageCaseRule < ActiveRecord::Base
   
   def apply(value)
     value = value.to_s
-
     values = sanitize_values(definition["value1"])
     regex = values.join('|')
     case definition["operation"]
@@ -198,7 +196,7 @@ class Tr8n::LanguageCaseRule < ActiveRecord::Base
     desc << describe_part(1)
   
     if ["true", true].include?(definition["multipart"])
-      desc << " " << definition["operator"]
+      desc << " " << definition["operator"].to_s
       desc << describe_part(2)
     end
     
@@ -223,6 +221,7 @@ class Tr8n::LanguageCaseRule < ActiveRecord::Base
       when "is_not" then desc << " is not"        
     end
     desc << " <strong>'" << humanize_values(definition["value#{index}"]) << "'</strong>"
+    desc.html_safe
   end
   
 end

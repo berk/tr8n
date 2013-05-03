@@ -1,0 +1,71 @@
+<%= tr8n_with_options_tag(:default_locale => Tr8n::Config.default_admin_locale, :admin => true) do %>
+
+  <%= render :partial => "/tr8n/common/header" %>
+  
+  <div class="section_title">
+    <%= render :partial => "/tr8n/translator/sections" %>
+    <%=tra("Your Assignments") %>
+    <span dir="ltr">(<%= tr8n_current_language.english_name %>)</span>
+    <span style='font-size:12px;'>
+      <%= link_to_function("Change Language", "tr8nLightbox.show('/tr8n/language/select?lightbox=true', {height:500, width:400});") %>
+    </span>
+  </div>
+
+  <% if @components.any? %>
+  <div class="section_box" style="background-color:#EFF8FF;">
+    <%= tr("You have [bold: {count||assignment}]: {assignments}.", nil, :count => @components.size, :assignments => [@components.collect{|comp| link_to(comp.title, :anchor => "comp-#{comp.id}")}]) %>
+  </div>
+  <% else %>
+    <%= tr("You currently don't have any assignments.") %>
+  <% end %>
+
+  <% @components.each do |comp| %>
+    <div class="section_title">
+      <div style="<%=tr8n_style_attribute_tag('float', 'right')%>; font-size:12px; font-weight:normal; padding-top:5px;">
+        <%=link_to(tra("view all phrases"), :controller => "/tr8n/phrases", :action => :index, :component_id => comp.id)%>
+      </div>
+  
+      <%=tr8n_toggler_tag("comp_content_#{comp.id}")%>
+      
+      <span dir="ltr">
+        <a name="<%="comp-#{comp.id}"%>" style="text-decoration:none;color:black;"><%=comp.title%></a>
+      </span>
+    </div>
+    
+    <div id="comp_content_<%=comp.id%>" class="section_box colored">
+      <div class="section_box" style="background-color:#FDFFF0; margin-bottom:10px; margin-top:0px;">
+        <% if comp.languages.any? %>
+          <%=tr("This assignment contains [bold: {count||section}], which {count|needs, need} to be translated into the following languages: {languages}", nil, :count => comp.sources.size, :languages => [comp.languages.collect{|lang| link_to(lang.english_name, params.merge(:locale => lang.locale))}]) %>
+          <% else %>
+            <%=tr("This assignment contains [bold: {count||section}], which {count|needs, need} to be translated into all available languages.", nil, :count => comp.sources.size) %>
+          <% end %>
+      </div>      
+      <% comp.sources.each do |source| %>
+        <% 
+          background = "#FDFFCF"
+          if source.total_metric.completeness == 100 
+            background = "lightgreen"
+          elsif source.total_metric.completeness == 0 
+            background = "#FFB5B5"
+          end
+        %>
+        <div style="width:450px;display:inline-block; padding:7px; padding-bottom:0px; font-size:13px; background:<%=background%>; margin-bottom:10px; border-radius:10px;margin-right:3px;">
+          <div>
+            <div style="<%=tr8n_style_attribute_tag('float', 'right')%>; font-size:12px; font-weight:normal;">
+              <% unless source.url.blank? %>
+                <%= link_to("view page", source.url, :target => "_new")%>
+              <% end %>  
+            </div>
+            <strong><%=source.title%></strong>
+          </div>
+          <div id="comp_source_<%=source.id%>" style="width:450px;">
+            <%=render :partial => "/tr8n/translator/translation_source_metric", :locals => {:translation_source => source, :translation_source_metric => source.total_metric} %>
+          </div>
+        </div>
+      <% end %>
+    </div>    
+  <% end %>
+
+  <%= render :partial => "/tr8n/common/footer" %>
+
+<% end %>

@@ -61,8 +61,8 @@ class Tr8n::LanguageCaseValueMapFilter < Tr8n::BaseFilter
     return []
   end
 
-  def inner_joins
-    [:language, :translator]
-  end
+  # def inner_joins
+  #   [:language, :translator]
+  # end
 
 end

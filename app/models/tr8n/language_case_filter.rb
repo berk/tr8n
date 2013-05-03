@@ -46,8 +46,8 @@ class Tr8n::LanguageCaseFilter < Tr8n::BaseFilter
     Tr8n::LanguageCase
   end
 
-  def inner_joins
-    [:language, :translator]
-  end
+  # def inner_joins
+  #   [:language, :translator]
+  # end
 
 end

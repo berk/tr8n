@@ -50,8 +50,8 @@ class Tr8n::TranslatorFollowingFilter < Tr8n::BaseFilter
     "created_today"
   end
   
-  def inner_joins
-    [:translator]
-  end
+  # def inner_joins
+  #   [:translator]
+  # end
   
 end

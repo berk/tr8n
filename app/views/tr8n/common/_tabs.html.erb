@@ -19,6 +19,7 @@
             section_key_condition = tab[:key].to_s == "sitemap" ? (@section_key != nil) : (@section_key == nil)
 
             if tab[:actions].any?
+              pp tab[:controller], controller.controller_name, section_key_condition 
               current = (tab[:controller] == controller.controller_name and tab[:actions].include?(controller.action_name) and section_key_condition) 
             else
               current = (tab[:controller] == controller.controller_name and section_key_condition) 

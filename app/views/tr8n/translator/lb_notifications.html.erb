@@ -1,0 +1,19 @@
+<%= tr8n_lightbox_header_tag %>
+<div class="inner">
+  <div class="hd" style="">
+    <%= tr8n_lightbox_title_tag(tra("Tr8n Notifications")) %>
+  </div>
+
+  <div class="bd" <%=tr8n_dir_attribute_tag%> style="max-height:550px;overflow:auto;padding:3px;">
+    <% @notifications.each do |n| %>
+      <% next unless n.valid? %>
+      <%= render :partial => "/tr8n/translator/notifications/#{n.key}", :locals => {:notification => n} %>
+    <% end %>
+    <% if @notifications.empty? %>
+      <div style="text-align:center; padding:30px;">
+        <%=tra("You don't have any notifications yet.") %>
+      </div>
+    <% end %>
+  </div>
+</div>
+<%= tr8n_lightbox_footer_tag %>

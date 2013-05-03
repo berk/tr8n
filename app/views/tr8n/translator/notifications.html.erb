@@ -1,0 +1,27 @@
+<%= tr8n_with_options_tag(:default_locale => Tr8n::Config.default_admin_locale, :admin => true) do %>
+
+  <%= render :partial => "/tr8n/common/header" %>
+  
+  <div class="section_title">
+    <%= render :partial => "/tr8n/translator/sections" %>
+    <%=tra("Your Notifications") %>
+  </div>
+
+  <div class="section grey" style="margin-top:10px; margin-bottom:10px; padding:10px;">
+    <% if @notifications.any? %>
+      <%= render :partial => "/tr8n/common/paginator", :locals => {:objects => @notifications, :subject => 'notification'} %>
+    <% end %>
+
+    <% @notifications.each do |n| %>
+      <% next unless n.valid? %>
+      <%= render :partial => "/tr8n/translator/notifications/#{n.key}", :locals => {:notification => n} %>
+    <% end %>
+
+    <% if @notifications.empty? %>
+      <%=tr("You don't have any notifications yet.") %>
+    <% end %>
+  </div>
+
+  <%= render :partial => "/tr8n/common/footer" %>
+
+<% end %>  

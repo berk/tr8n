@@ -1,0 +1,87 @@
+<%= tr8n_with_options_tag(:default_locale => Tr8n::Config.default_admin_locale, :admin => true) do %>
+
+	<%= render :partial => "/tr8n/common/header" %>
+
+	<div id="basic_info_container">
+	  <div class="section_title">
+	    <%= render :partial => "/tr8n/translator/sections" %>
+		  <%=tra("Your Preferences") %>
+	  </div>
+	  
+	  <%= form_for(tr8n_current_translator, :as => :translator, :url => {:action => :settings}, :html => {:id => 'basic_info_form', :method => :post}) do |f| %>
+	    <div class="section grey">
+	        <table>
+	          <tr>
+	            <th style="width:120px;padding:3px;vertical-align:middle;font-weight:bold;"><%=tra("Name:")%></th>
+	            <td style="padding:3px;">
+	                <%=tr8n_current_translator.name%>
+	            </td>
+	          </tr>
+
+	          <tr>
+	            <th style="width:120px;padding:3px;vertical-align:middle;font-weight:bold;"><%=tra("Access Key:")%></th>
+	            <td style="padding:3px;">
+	                <%=tr8n_current_translator.access_key || "not generated" %>
+
+	                (<%= link_to(tra('generate'), {:action => :generate_access_key}) %>)
+	                <span style="color: #888"><%=tra("Allows you to access restricted sections when you are not logged in.") %></span>
+
+	            </td>
+	          </tr>
+
+						<% if Tr8n::Config.enable_translator_language? %>
+		          <tr>
+		            <th style="padding:3px;vertical-align:middle;font-weight:bold;"><%=tra("Fallback Language:", "Language to fall back onto if the language phrase is not translated")%></th>
+		            <td style="padding:3px;">
+		               <%=select_tag("translator[fallback_language_id]", options_for_select(Tr8n::Language.options, @fallback_language.id.to_s))%>
+		            </td>
+		          </tr>
+	          <% end %>
+
+	          <% if Tr8n::Config.enable_translator_language? or Tr8n::Config.site_user_info_disabled? %>
+	            <tr>
+	              <th style="padding:3px;vertical-align:middle;font-weight:bold;"></th>
+	              <td style="padding-top:15px;padding-bottom:15px;">
+	                 <button type="submit" class="translator_btn translator_submit_btn" onClick="Tr8n.submit('basic_info_form'); return false;">
+	                    <span><%=tra("Save")%></span>
+	                  </button>
+	              </td>
+	            </tr>
+	          <% end %>
+						
+	        </table>
+	    </div>
+	  <% end %>
+	</div>
+
+	<% if tr8n_current_translator.manager? %>
+	<div id="basic_info_container">
+	  <div class="section_title">
+		  <%=tra("Language Manager Settings") %>
+	  </div>
+	  <%= form_for(tr8n_current_translator, :as => :translator, :url => {:action => :settings}, :html => {:id => 'manager_info_form', :method => :post}) do |f| %>
+	  <div class="section grey">
+      <table>
+        <tr>
+          <th style="width:120px;padding:3px;vertical-align:middle;font-weight:bold;"><%=tra("Show locked keys:")%></th>
+          <td style="padding:3px;">
+              <%=check_box_tag(:show_locked_keys)%>
+          </td>
+        </tr>
+        <tr>
+          <th style="padding:3px;vertical-align:middle;font-weight:bold;"></th>
+          <td style="padding-top:15px;padding-bottom:15px;">
+             <button type="submit" class="translator_btn translator_submit_btn" onClick="Tr8n.submit('manager_info_form'); return false;">
+                <span><%=tra("Save")%></span>
+              </button>
+          </td>
+        </tr>
+      </table>
+	  </div>
+	  <% end %>
+	</div>	
+	<% end %>
+	
+	<%= render :partial => "/tr8n/common/footer" %>
+
+<% end %>	

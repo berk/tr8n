@@ -1,0 +1,38 @@
+<%= tr8n_lightbox_header_tag %>
+<div class="inner">
+    <div class="hd">
+        <%= tr8n_lightbox_title_tag(tra("Translation Key Caller")) %>
+    </div>
+    <div class="bd" style="padding-bottom:60px;">
+        <table class="admin_table">
+            <tr>
+                <th>
+                    Label:
+                </th>
+                <td>
+                    <%=@key_source.key.label %>
+                </td>
+            </tr>
+            <tr>
+                <th valign="top">
+                    Description:
+                </th>
+                <td>
+                    <%=@key_source.key.description %>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    Source:
+                </th>
+                <td>
+                    <%=@key_source.source.source %>
+                </td>
+            </tr>
+        </table>
+        <div style="height:400px; overflow:auto;">
+            <%=@caller.join("<br>") %>
+        </div>
+    </div>
+</div>
+<%= tr8n_lightbox_footer_tag %>

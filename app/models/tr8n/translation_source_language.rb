@@ -39,7 +39,6 @@
 
 class Tr8n::TranslationSourceLanguage < ActiveRecord::Base
   self.table_name = :tr8n_translation_source_languages
-
   attr_accessible :language_id, :translation_source_id
   attr_accessible :translation_source, :language
 

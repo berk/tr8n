@@ -45,7 +45,6 @@
 
 class Tr8n::LanguageUser < ActiveRecord::Base
   self.table_name = :tr8n_language_users
-
   attr_accessible :language_id, :user_id, :translator_id, :manager
   attr_accessible :language, :translator, :user
 
@@ -57,14 +56,14 @@ class Tr8n::LanguageUser < ActiveRecord::Base
   # users may choose to switch to a language without becoming translators
   # once user becomes a translator, this record will be associated with both for ease of use
   # when users get promoted, they are automatically get associated with a language and marked as translators
-  
-  def self.delete_all_languages_for_translator(translator)
-    Tr8n::LanguageUser.connection.execute("delete from #{Tr8n::LanguageUser.table_name} where translator_id = #{translator.id}")
-  end
 
   def self.find_or_create(user, language)
     lu = where("user_id = ? and language_id = ?", user.id, language.id).first
     lu || create(:user_id => user.id, :language_id => language.id)
+  end
+  
+  def self.delete_all_languages_for_translator(translator)
+    Tr8n::LanguageUser.connection.execute("delete from #{Tr8n::LanguageUser.table_name} where translator_id = #{translator.id}")
   end
 
   def self.check_default_language_for(user)

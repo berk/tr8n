@@ -6,18 +6,18 @@
   <%= will_filter_table_tag(@rules, :columns => [
     [:language_id, lambda{|rule|
       if rule.language
-        link_to(rule.language.english_name, {:controller => "/tr8n/admin/language", :action => :view, :lang_id => rule.language.id}, {:title => "Language Id: #{rule.language_id}"})
+        link_to(rule.language.english_name, :controller => "/tr8n/admin/language", :action => :view, :lang_id => rule.language.id)
       else
          "Deleted Language"    
       end  
-    }, :filterable => true], [:type, :filterable => true], :description, 
+    }], :type, :description, 
     [:translator_id, lambda{|rule|
       if rule.translator
         link_to(rule.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :translator_id => rule.translator.id)
       else
         "System Generated" 
       end  
-    }, :filterable => true], :created_at
+    }], :created_at
    ]) %>
 <% end %>
 

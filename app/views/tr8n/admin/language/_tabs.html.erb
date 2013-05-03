@@ -6,8 +6,7 @@
     ["Context Rules", {:action => :rules}],
     ["Cases", {:action => :cases}],
     ["Case Rules", {:action => :case_rules}],
-    ["Case Exceptions", {:action => :case_values}],
-  ].each do |link|
+    ["Case Exceptions", {:action => :case_values}]].each do |link|
       if controller.action_name == link.last[:action].to_s
         current_tab = link.first if current_tab.blank?
         links << link.first

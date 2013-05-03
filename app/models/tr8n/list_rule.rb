@@ -41,6 +41,7 @@
 #++
 
 class Tr8n::ListRule < Tr8n::LanguageRule
+  
   def self.description
     "token object may be a list, which"
   end

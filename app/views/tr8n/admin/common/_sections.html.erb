@@ -1,0 +1,32 @@
+<%
+  mode_keys = modes.collect{|m| m.last[:mode].to_s}
+  mode = modes.first.last[:mode].to_s unless mode_keys.include?(mode) 
+
+  links = []
+  current_section ||= ""
+  current_partial ||= ""
+  current_mode = {}
+  modes.each do |link|
+    if mode.to_s == link.last[:mode].to_s
+      current_mode = link
+      current_section = link.first if current_section.blank?
+      current_partial = link.last[:partial] || link.last[:mode] 
+      links << link.first.downcase
+    else
+      links << link_to(link.first.downcase, (opts[:params] || {}).merge(:mode => link.last[:mode].to_s))
+    end 
+  end   
+%>
+
+<div class="section_title">
+  <span style="font-size:12px; float:right; padding-top:5px;">
+    <%=links.join(" | ").html_safe %>
+  </span>
+  <% if opts[:title] %>
+    <%= opts[:title].call(current_mode) %>
+  <% else %>  
+    <%=current_section %>
+  <% end %>
+</div>
+
+<%= render :partial => current_partial.to_s %>

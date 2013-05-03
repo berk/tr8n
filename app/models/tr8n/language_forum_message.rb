@@ -43,7 +43,6 @@
 
 class Tr8n::LanguageForumMessage < ActiveRecord::Base
   self.table_name = :tr8n_language_forum_messages
-
   attr_accessible :language_id, :language_forum_topic_id, :translator_id, :message
   attr_accessible :language, :translator, :language_forum_topic
 
@@ -51,10 +50,17 @@ class Tr8n::LanguageForumMessage < ActiveRecord::Base
   belongs_to :translator,             :class_name => "Tr8n::Translator"  
   belongs_to :language_forum_topic,   :class_name => "Tr8n::LanguageForumTopic"
   
+  after_create :distribute_notification
+
   alias :topic :language_forum_topic
 
   def toHTML
     return "" unless message
     ERB::Util.html_escape(message).gsub("\n", "<br>")
   end
+
+  def distribute_notification
+    Tr8n::Notification.distribute(self)    
+  end
+
 end

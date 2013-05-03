@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2012 Michael Berkovich, tr8nhub.com
+# Copyright (c) 2010-2013 Michael Berkovich, tr8nhub.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -29,6 +29,20 @@ class Tr8n::Admin::LanguageController < Tr8n::Admin::BaseController
 
   def view
     @lang = Tr8n::Language.find(params[:lang_id])
+
+    klass = {
+      :metrics => Tr8n::LanguageMetric,
+      :context_rules => Tr8n::LanguageRule,
+      :cases => Tr8n::LanguageCase,
+      :case_rules => Tr8n::LanguageCaseRule,
+      :case_exceptions => Tr8n::LanguageCaseValueMap,
+    }[params[:mode].to_sym] if params[:mode]
+    klass ||= Tr8n::LanguageMetric
+
+    filter = {"wf_c0" => "language_id", "wf_o0" => "is", "wf_v0_0" => @lang.id}
+    extra_params = {:lang_id => @lang.id, :mode => params[:mode]}
+    @results = klass.filter(:params => params.merge(filter))
+    @results.wf_filter.extra_params.merge!(extra_params)
   end
 
   def enable
@@ -51,6 +65,14 @@ class Tr8n::Admin::LanguageController < Tr8n::Admin::BaseController
       end  
     end
     redirect_to_source
+  end
+    
+  def charts
+    
+  end
+
+  def metrics
+    @metrics = Tr8n::LanguageMetric.filter(:params => params, :filter => Tr8n::LanguageMetricFilter)
   end
 
   def users
@@ -92,7 +114,7 @@ class Tr8n::Admin::LanguageController < Tr8n::Admin::BaseController
       language.reset!
     end
     
-    redirect_to(:controller => "/tr8n/help", :action => "lb_done", :origin => params[:origin])
+    dismiss_lightbox
   end
 
   def case_rules

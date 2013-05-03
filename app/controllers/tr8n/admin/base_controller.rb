@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2012 Michael Berkovich, tr8nhub.com
+# Copyright (c) 2010-2013 Michael Berkovich, tr8nhub.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -33,6 +33,14 @@ class Tr8n::Admin::BaseController < Tr8n::BaseController
   
 private
 
+  def render_lightbox
+    render(:layout => false)
+  end
+
+  def dismiss_lightbox
+    redirect_to(:controller => "/tr8n/help", :action => "lb_done", :origin => params[:origin])
+  end
+
   def validate_tr8n_enabled
     # don't do anything for admin pages
   end
@@ -43,8 +51,8 @@ private
   
   def tr8n_admin_tabs
     [
+        {"title" => "Applications", "description" => "Admin tab", "controller" => "applications"},
         {"title" => "Languages", "description" => "Admin tab", "controller" => "language"},
-        {"title" => "Domains", "description" => "Admin tab", "controller" => "domain"},
         {"title" => "Translation Keys", "description" => "Admin tab", "controller" => "translation_key"},
         {"title" => "Translations", "description" => "Admin tab", "controller" => "translation"},
         {"title" => "Translators", "description" => "Admin tab", "controller" => "translator"},

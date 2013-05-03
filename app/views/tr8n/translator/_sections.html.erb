@@ -1,0 +1,10 @@
+<div style="<%=tr8n_style_attribute_tag('float', 'right')%>; font-size:12px; padding-top:5px;">
+  <%= tr8n_actions_tag([
+      link_to(tra("dashboard"), :controller => "/tr8n/translator", :action => :index),
+      link_to(tra("assignments"), :controller => "/tr8n/translator", :action => :assignments),
+      link_to(tra("notifications"), :controller => "/tr8n/translator", :action => :notifications),
+      link_to(tra("following"), :controller => "/tr8n/translator", :action => :following),
+      link_to(tra("preferences"), :controller => "/tr8n/translator", :action => :settings)
+    ])
+  %>
+</div>

@@ -49,7 +49,6 @@ require 'digest/md5'
 
 class Tr8n::TranslationKey < ActiveRecord::Base
   self.table_name = :tr8n_translation_keys
-
   attr_accessible :key, :label, :description, :verified_at, :translation_count, :admin, :locale, :level, :synced_at
   
   has_many :translations,             :class_name => "Tr8n::Translation",           :dependent => :destroy
@@ -66,7 +65,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   alias :comments     :translation_key_comments
 
   def self.cache_key(key_hash)
-    "translation_key_#{key_hash}"
+    "translation_key_[#{key_hash}]"
   end
 
   def cache_key
@@ -75,6 +74,8 @@ class Tr8n::TranslationKey < ActiveRecord::Base
 
   def self.find_or_create(label, desc = "", options = {})
     key = generate_key(label, desc).to_s
+
+    # Rails.logger.debug("********* Fetching key from source: #{Tr8n::Config.current_source.source}")
 
     tkey = Tr8n::Config.current_source.translation_key_for_key(key)
     tkey ||= begin
@@ -96,24 +97,21 @@ class Tr8n::TranslationKey < ActiveRecord::Base
                               :locale => locale,
                               :level => level,
                               :admin => Tr8n::Config.block_options[:admin])
-
-      verify_key(existing_key, options) # no longer needed
+      
       track_source(existing_key, options)  
       existing_key
     end
   end
 
-  # mark each key as verified - but only if caching is enabled
-  # verification is used to cleanup unused keys
-  def self.verify_key(tkey, options)
-    return unless Tr8n::Config.enable_key_verification?
-    existing_key.update_attributes(:verified_at => Time.now)
-  end
-
   # creates associations between the translation keys and sources
   # used for the site map and javascript support
   def self.track_source(translation_key, options = {})
-    translation_key_source = Tr8n::TranslationKeySource.find_or_create(translation_key, Tr8n::Config.current_source)
+    # source can be passed into an individual key, or as a block or fall back on the controller/action
+    source = options[:source] || Tr8n::Config.current_source_from_block_options || Tr8n::Config.current_source
+    translation_source = Tr8n::TranslationSource.find_or_create(source)
+
+    # each key is associated with one or more sources
+    translation_key_source = Tr8n::TranslationKeySource.find_or_create(translation_key, translation_source)
     Tr8n::Config.current_source.clear_cache_for_language
 
     # for debugging purposes only - this will track the actual location of the key in the source
@@ -131,6 +129,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
 
   # for key merging
   def reset_key!
+    Tr8n::Cache.delete(cache_key)
     self.update_attributes(:key => self.class.generate_key(label, description))
   end
   
@@ -142,16 +141,16 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     @tokenized_label ||= Tr8n::TokenizedLabel.new(label)
   end
 
+  # comments are left for a specific language
+  def comments(language = Tr8n::Config.current_language)
+    Tr8n::TranslationKeyComment.where("language_id = ? and translation_key_id = ?", language.id, self.id).all
+  end
+
   delegate :tokens, :tokens?, :to => :tokenized_label
   delegate :data_tokens, :data_tokens?, :to => :tokenized_label
   delegate :decoration_tokens, :decoration_tokens?, :to => :tokenized_label
   delegate :translation_tokens, :translation_tokens?, :to => :tokenized_label
   delegate :sanitized_label, :tokenless_label, :suggestion_tokens, :words, :to => :tokenized_label
-
-  # comments are left for a specific language
-  def comments(language = Tr8n::Config.current_language)
-    Tr8n::TranslationKeyComment.where("language_id = ? and translation_key_id = ?", language.id, self.id)
-  end
 
   # returns only the tokens that depend on one or more rules of the language, if any defined for the language
   def language_rules_dependant_tokens(language = Tr8n::Config.current_language)
@@ -180,7 +179,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   end
 
   def glossary
-    @glossary ||= Tr8n::Glossary.where("keyword in (?)", words).order("keyword asc")
+    @glossary ||= Tr8n::Glossary.where("keyword in (?)", words).order("keyword asc").all
   end
   
   def glossary?
@@ -219,6 +218,14 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     Tr8n::TranslatorFollowing.following_for(translator, self)
   end
     
+  def commented?(language, translator = nil)
+    translator ||= (Tr8n::Config.current_user_is_translator? ? Tr8n::Config.current_translator : nil)
+    return false unless translator
+    Tr8n::TranslationKeyComment.where("translator_id = ? and translation_key_id = ? and language_id = ?", 
+                                       translator.id, self.id, language.id).first
+  end
+
+
   def add_translation(label, rules = nil, language = Tr8n::Config.current_language, translator = Tr8n::Config.current_translator)
     raise Tr8n::Exception.new("The translator is blocked and cannot submit translations") if translator.blocked?
     raise Tr8n::Exception.new("The sentence contains dirty words") unless language.clean_sentence?(label)
@@ -246,6 +253,10 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     "translations_#{language.locale}_#{key}"
   end
   
+  def clear_translations_cache_for_language(language = Tr8n::Config.current_language)
+    Tr8n::Cache.delete(translations_cache_key(language)) 
+  end  
+
   def valid_translations_for_language(language = Tr8n::Config.current_language)
     translations_for(language, language.threshold)
   end
@@ -311,7 +322,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   end
 
   def self.random
-    self.limit(1).offset(count-1)
+    self.limit(1).offset(rand(count-1))
   end
 
   ###########################################################################
@@ -457,18 +468,22 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     Tr8n::TranslationKey.new(:label => label.to_s).substitute_tokens(label.to_s, tokens, options, language)
   end
 
+  def allowed_token?(token)
+    tokenized_label.allowed_token?(token)
+  end
+
   def substitute_tokens(translated_label, token_values, options = {}, language = Tr8n::Config.current_language)
     processed_label = translated_label.to_s.dup
 
     # substitute all data tokens
     Tr8n::TokenizedLabel.new(processed_label).data_tokens.each do |token|
-      next unless tokenized_label.allowed_token?(token)
+      next unless allowed_token?(token)
       processed_label = token.substitute(processed_label, token_values, options, language) 
     end
 
     # substitute all decoration tokens
     Tr8n::TokenizedLabel.new(processed_label).decoration_tokens.each do |token|
-      next unless tokenized_label.allowed_token?(token)
+      next unless allowed_token?(token)
       processed_label = token.substitute(processed_label, token_values, options, language) 
     end
     
@@ -477,10 +492,10 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   
   # TODO: move all this stuff out of the model to decorators
   def default_decoration(language = Tr8n::Config.current_language, options = {})
-    return label if Tr8n::Config.current_user_is_guest?
-    return label unless Tr8n::Config.current_user_is_translator?
-    return label unless can_be_translated?
-    return label if locked?(language)
+    return sanitized_label if Tr8n::Config.current_user_is_guest?
+    return sanitized_label unless Tr8n::Config.current_user_is_translator?
+    return sanitized_label unless can_be_translated?
+    return sanitized_label if locked?(language)
 
     classes = ['tr8n_translatable']
 
@@ -502,9 +517,14 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   end
   
   def can_be_translated?(translator = nil)
-    return false if locked?
     translator ||= (Tr8n::Config.current_user_is_translator? ? Tr8n::Config.current_translator : nil)
-    translator_level = translator ? translator.level : 0
+    if translator 
+      return false if locked? and not translator.manager? 
+      translator_level = translator.level
+    else   
+      return false if locked?
+      translator_level = 0
+    end
     translator_level >= level
   end
 
@@ -524,14 +544,17 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     return translated_label if options[:skip_decorations]
     return translated_label if Tr8n::Config.current_user_is_guest?
     return translated_label unless Tr8n::Config.current_user_is_translator?
+    return translated_label if Tr8n::Config.current_translator.blocked?
     return translated_label unless Tr8n::Config.current_translator.enable_inline_translations?
     return translated_label unless can_be_translated?
-    return translated_label if locked?(language)
     return translated_label if self.language == language
+    return translated_label if locked?(language) and not Tr8n::Config.current_translator.manager?
 
     classes = ['tr8n_translatable']
     
-    if language.default?
+    if locked?(language)
+      classes << 'tr8n_locked'
+    elsif language.default?
       classes << 'tr8n_not_translated'
     elsif options[:fallback] 
       classes << 'tr8n_fallback'
@@ -576,6 +599,26 @@ class Tr8n::TranslationKey < ActiveRecord::Base
       end
       map
     end
+  end
+
+  ###############################################################
+  ## Offline Tasks
+  ###############################################################
+  def update_metrics!(language = Tr8n::Config.current_language, opts = {})
+    Tr8n::OfflineTask.schedule(self.class.name, :update_metrics_offline, {
+                               :translation_key_id => self.id, 
+                               :language_id => language.id
+    })
+  end
+
+  def self.update_metrics_offline(opts)
+    tkey = Tr8n::TranslationKey.find(opts[:translation_key_id])
+    language = Tr8n::Language.find(opts[:language_id])
+    Tr8n::TranslationKeySource.where("translation_key_id = ?", tkey.id).all.each do |tks|
+      next unless tks.source
+      tks.source.update_metrics!(language)
+    end
+    language.total_metric.update_metrics!
   end
 
   ###############################################################
@@ -653,6 +696,10 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   
   def self.help_url
     '/tr8n/help'
+  end
+  
+  def suggestion_label
+    tokenless_label.gsub('"', '\"')
   end
   
   def suggestions?

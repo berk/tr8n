@@ -41,7 +41,6 @@
 
 class Tr8n::LanguageForumTopic < ActiveRecord::Base
   self.table_name = :tr8n_language_forum_topics
-
   attr_accessible :translator_id, :language_id, :topic
   attr_accessible :language, :translator
   

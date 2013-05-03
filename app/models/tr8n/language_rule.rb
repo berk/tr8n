@@ -42,7 +42,6 @@
 
 class Tr8n::LanguageRule < ActiveRecord::Base
   self.table_name = :tr8n_language_rules
-
   attr_accessible :language_id, :translator_id, :definition
   attr_accessible :language, :translator
 
@@ -54,18 +53,26 @@ class Tr8n::LanguageRule < ActiveRecord::Base
   
   serialize :definition
 
+  def self.cache_key(rule_id)
+    "language_rule_[#{rule_id}]"
+  end
+
+  def cache_key
+    self.class.cache_key(self.id)
+  end
+
   def definition
     @indifferent_def ||= HashWithIndifferentAccess.new(super)
   end
 
   def self.by_id(rule_id)
-    Tr8n::Cache.fetch("language_rule_#{rule_id}") do 
+    Tr8n::Cache.fetch(cache_key(rule_id)) do 
       find_by_id(rule_id)
     end
   end
   
   def self.for(language)
-    self.where("language_id = ?", language.id)
+    self.where("language_id = ?", language.id).all
   end
   
   def self.options
@@ -140,12 +147,19 @@ class Tr8n::LanguageRule < ActiveRecord::Base
   end
 
   def clear_cache
-    Tr8n::Cache.delete("language_rule_#{id}")
+    Tr8n::Cache.delete(cache_key)
   end
 
   ###############################################################
   ## Synchronization Methods
   ###############################################################
+  # {"locale"=>"ru", "label"=>"{count} сообщения", "rank"=>1, "rules"=>[
+  #        {"token"=>"count", "type"=>"number", "definition"=>
+  #             {"multipart"=>true, "part1"=>"ends_in", "value1"=>"2,3,4", "operator"=>"and", "part2"=>"does_not_end_in", "value2"=>"12,13,14"}
+  #        }
+  #     ]
+  # }
+
   def to_sync_hash(token, opts = {})
     {
       "token" => token,  
@@ -154,13 +168,6 @@ class Tr8n::LanguageRule < ActiveRecord::Base
     }
   end
   
-  # {"locale"=>"ru", "label"=>"{count} сообщения", "rank"=>1, "rules"=>[
-  #        {"token"=>"count", "type"=>"number", "definition"=>
-  #             {"multipart"=>true, "part1"=>"ends_in", "value1"=>"2,3,4", "operator"=>"and", "part2"=>"does_not_end_in", "value2"=>"12,13,14"}
-  #        }
-  #     ]
-  # }
-
   def self.create_from_sync_hash(lang, translator, rule_hash, opts = {})
     return unless rule_hash["token"] and rule_hash["type"] and rule_hash["definition"]
 

@@ -1,25 +1,128 @@
 <%= tr8n_with_options_tag(:default_locale => Tr8n::Config.default_admin_locale, :admin => true) do %>
 
-	<%=render(:partial => "/tr8n/common/header") %>
-	<%=render(:partial => "basic_info", :locals => {:mode => :view}) %>
+	<%= render :partial => "/tr8n/common/header" %>
 	
-	<script>
-	  function switchSectionMode(section, mode) {
-	    Tr8n.Utils.update(section + '_container', '/tr8n/translator/update_translator_section', {
-	      parameters: {section:section, mode:mode}
-	    });
-	  }
-	  
-	  function submitSection(section) {
-	    var params = Tr8n.Utils.serializeForm(section + '_form');
-	    params['section'] = section;
-	    Tr8n.Utils.update(section + '_container', '/tr8n/translator/update_translator_section', {
-	      parameters: params,
-	      method: 'post'
-	    });
-	  }
-	</script>
+	<div class="section_title">
+		<% if @translator == tr8n_current_translator %>
+			<%= render :partial => "/tr8n/translator/sections" %>
+	  	<%=tra("Your Dashboard") %>
+	  <% else %>
+	  	<div style="<%=tr8n_style_attribute_tag('float', 'right')%>; font-size:12px; padding-top:5px;">
+	  		<%
+	  			links = []
+	  			links << link_to("view profile", @translator.link) 
+	  			if Tr8n::TranslatorFollowing.following_for(tr8n_current_translator, @translator)
+		  			links << link_to("unfollow", :controller => "/tr8n/translator", :action => :unfollow, :translator_id => @translator.id) 
+		  		else
+		  			links << link_to("follow", :controller => "/tr8n/translator", :action => :follow, :translator_id => @translator.id) 
+		  		end
+	  		%>
+	  		<%=links.join(" | ").html_safe %>
+	  	</div>
+	  	<%=tra("{user}'s Dashboard", nil, :user => [@translator, :name]) %>
+	  <% end %>	  	
+	</div>
 	
-	<%= render :partial => "/tr8n/common/footer" %>
+	<div class="section" style="background-color:#FDFFF0;">
+	    <table style="width:100%">
+	      <tr>
+	        <td style="width:50%; padding-top:3px;">
+					  <table>
+					    <tr>
+					      <td style="vertical-align:top;padding-right:2px; width:60px;">
+					        <%=tr8n_user_mugshot_tag(@translator, :linked => true)%>
+					      </td>
+					      <td style="vertical-align:top">
+									<table>
+										<tr>
+											<td style="width:150px"><%=tra("Overall rank:") %></td>
+											<td>
+									        <%=tr8n_translator_rank_tag(@translator)%>			
+											</td>
+										</tr>
+										<tr>
+											<td><%=tra("{user|Registered on:}", nil, :user => @translator) %></td>
+											<td><%=@translator.created_at.trl%></td>
+										</tr>
+	                  <tr>
+	                    <td><%=tra("Total translations:") %></td>
+	                    <td><%=@translator.total_metric.total_translations%></td>
+	                  </tr>
+	                  <tr>
+	                    <td><%=tra("Total votes:") %></td>
+	                    <td>
+	                      <span style="color:green"><%=@translator.total_metric.positive_votes || 0 %></span>/<span style="color:red"><%=@translator.total_metric.negative_votes || 0 %></span>
+											</td>
+	                  </tr>
+	                  <tr>
+	                    <td><%=tra("Forum messages:") %></td>
+	                    <td>
+	                       <%=@translator.language_forum_messages.count %> 
+	                    </td>
+	                  </tr>
+	                  <tr>
+	                    <td style="vertical-align:top;"><%=tra("Languages:") %></td>
+	                    <td style="vertical-align:top;padding-right:10px;">
+			                  <% langs = [] %>
+			                  <% @translator.languages.each do |lang|
+			                      next if lang.default?
+			                      langs << link_to(lang.english_name, params.merge(:anchor => lang.locale))  
+			                     end %>       
+			                  <%= langs.join(" | ") %>
+	                    </td>
+	                  </tr>
+									</table>
+					      </td>
+					    </tr>
+					  </table>
+	        </td>       
+	      	
+	        <td style="width:50%;padding-top:3px;padding-right:3px;">
+	          <%=render :partial => "translator_metric", :locals => {:translator_metric => @translator.total_metric, :lang => nil} %>
+	        </td>       
+	      </tr>
+	    </table>  
+	</div>
+	
+	<% @languages.each do |lang_user| %>
+		<% lang = lang_user.language %>
+		<% next if lang.nil? or lang.default? %>
+		<% translator_metric = @translator.metric_for(lang) %>
+		
+		<div class="section_title">
+		  <div style="<%=tr8n_style_attribute_tag('float', 'right')%>; font-size:12px; font-weight:normal; padding-top:5px;">
+		  	<%
+		  		links = []
+		  		links << link_to(tra("select", "Language action link"), :locale => lang.locale)
+		  		links << link_to(tra("site map", "Language action link"), "/tr8n/phrases/map?locale=#{lang.locale}")
+		  		links << link_to(tra("phrases", "Language action link"), "/tr8n/phrases?locale=#{lang.locale}")
+		  		links << link_to(tra("translations", "Language action link"), "/tr8n/translations?locale=#{lang.locale}")
+		  		links << link_to(tra("awards", "Language action link"), "/tr8n/awards?locale=#{lang.locale}")
+		  		links << link_to(tra("discussions", "Language action link"), "/tr8n/forum?locale=#{lang.locale}")
 
-<% end %>	
+	      	if @translator == tr8n_current_translator
+		      	if @translator.manager?
+		         links << link_to(tra("manage", "Language action link"), "/tr8n/language/index?locale=#{lang.locale}")
+		      	end
+		      	links << link_to(tra("remove", "Language action link"), "/tr8n/language/remove?language_id=#{lang.id}")
+		    	end
+		  	%>
+	      <%= links.join(" | ").html_safe %>
+		  </div>
+	
+	    <%=tr8n_toggler_tag("lang_content_#{lang.id}")%>
+	    <%=image_tag("tr8n/flags/#{lang.flag}.png", :title=>lang.native_name) if Tr8n::Config.enable_language_flags? %>&nbsp;
+	    
+	    <span dir="ltr">
+	    	<a name="<%=lang.locale%>" style="text-decoration:none;color:black;"><%=lang.native_name%></a>
+	  	</span>
+		</div>
+		
+		<div id="lang_content_<%=lang.id%>" class="section grey">
+	    <%=render :partial=>"statistics", :locals => {:lang => lang, :translator_metric => translator_metric}%>
+		</div>
+	<% end %>
+
+	<%= render :partial => "/tr8n/common/footer" %>
+	
+<% end %>

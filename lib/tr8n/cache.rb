@@ -55,7 +55,7 @@ module Tr8n
     end
     
     def self.versioned_key(key)
-      "#{version}_#{key}"
+      "tr8n_v#{version}_#{key}"
     end
 
     def self.memory_store?

@@ -42,7 +42,6 @@ require "socket"
 
 class Tr8n::TranslationDomain < ActiveRecord::Base
   self.table_name = :tr8n_translation_domains
-
   attr_accessible :name, :description, :source_count
 
   after_save      :clear_cache
@@ -57,7 +56,7 @@ class Tr8n::TranslationDomain < ActiveRecord::Base
   alias :keys         :translation_keys
   
   def self.cache_key(domain_name)
-    "translation_domain_#{domain_name}"
+    "translation_domain_[#{domain_name}]"
   end
 
   def cache_key

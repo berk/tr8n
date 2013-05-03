@@ -1,0 +1,21 @@
+<%= will_filter_scripts_tag %>
+
+<%= will_filter_table_tag(@results, :columns => [
+  [:id, lambda{|comp| link_to(comp.id, {:action => :component, :comp_id => comp.id}) }], 
+  :key,
+  :name,
+  :state,
+  [:sources, lambda{ |comp| 
+    link_to(comp.sources.size, {:action => :component, :comp_id => comp.id, :mode => :sources})
+  }, 'padding:5px;text-align:right;white-space:nowrap;'],
+  [:translators, lambda{ |comp| 
+    link_to(comp.translators.size, {:action => :component, :comp_id => comp.id, :mode => :translators})
+  }, 'padding:5px;text-align:right;white-space:nowrap;'],
+  [:actions, lambda{|comp|
+    html = []
+    html << link_to("View", {:action => :component, :comp_id => comp.id})
+    html << link_to_function("Update", "tr8nLightbox.show('/tr8n/admin/applications/lb_update_component?comp_id=#{comp.id}', {height:400})")
+    html << link_to("Delete", {:action => :delete_component, :comp_id => comp.id}, {:confirm => "Are you sure you want to delete this component?"})
+    html.join(' | ')
+  }, 'padding:5px;text-align:right;white-space:nowrap;']
+]) %>

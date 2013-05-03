@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2012 Michael Berkovich, tr8n.net
+# Copyright (c) 2010-2013 Michael Berkovich, tr8nhub.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -31,15 +31,24 @@ module Tr8n
   
     # initializes language, user and translator
     # the variables are kept in a thread safe form throughout the request
-    def self.init(site_current_locale, site_current_user = nil, site_current_source = nil)
+    def self.init(site_current_locale, site_current_user = nil, source = nil, component = nil)
       Thread.current[:tr8n_current_language]   = Tr8n::Language.for(site_current_locale) || default_language
       Thread.current[:tr8n_current_user]       = site_current_user
       Thread.current[:tr8n_current_translator] = Tr8n::Translator.for(site_current_user)
-      Thread.current[:tr8n_current_source]     = Tr8n::TranslationSource.find_or_create(site_current_source) 
-      Thread.current[:tr8n_block_options]      = {}
+      Thread.current[:tr8n_current_source]     = Tr8n::TranslationSource.find_or_create(source || "undefined")
 
-      # pp Thread.current[:tr8n_current_source]
+      # register source with component
+      unless component.nil?
+        Thread.current[:tr8n_current_component]  = Tr8n::Component.find_or_create(component) 
+        Tr8n::ComponentSource.find_or_create(current_component, current_source)
+      else
+        Thread.current[:tr8n_current_component]  = nil
+      end
 
+      # register the total metric for the current source and language
+      current_source.total_metric 
+
+      Thread.current[:tr8n_block_options]      = []
     end
   
     def self.current_user
@@ -47,21 +56,66 @@ module Tr8n
     end
 
     def self.current_source
-      Thread.current[:tr8n_current_source]
+      Thread.current[:tr8n_current_source] ||= Tr8n::TranslationSource.find_or_create("undefined")
     end
   
+    def self.set_source(source)
+      Thread.current[:tr8n_current_source]     = Tr8n::TranslationSource.find_or_create(source)
+    end
+
+    def self.current_component
+      Thread.current[:tr8n_current_component]
+    end  
+
+    def self.set_component(component)
+      Thread.current[:tr8n_current_component]  = Tr8n::Component.find_or_create(component)
+    end
+
     def self.current_language
       Thread.current[:tr8n_current_language] ||= default_language
     end
   
+    def self.set_language(language)
+      Thread.current[:tr8n_current_language] = language
+    end
+
     def self.current_user_is_translator?
       Thread.current[:tr8n_current_translator] != nil
     end
   
-    def self.block_options
-      Thread.current[:tr8n_block_options] ||= {}
+    def self.current_user_is_authorized_to_view_component?(component = current_component)
+      return true if component.nil? # no component present, so be it
+
+      component = Tr8n::Component.find_by_key(component.to_s) if component.is_a?(Symbol)
+
+      return true unless component.restricted?
+      return false unless Tr8n::Config.current_user_is_translator?
+      return true if component.translator_authorized?
+
+      if Tr8n::Config.current_user_is_admin?
+        Tr8n::ComponentTranslator.find_or_create(component, Tr8n::Config.current_translator)
+        return true
+      end
+      
+      false
     end
-  
+
+    def self.current_user_is_authorized_to_view_language?(component = current_component, language = current_language)
+      return true if component.nil? # no component present, so be it
+
+      component = Tr8n::Component.find_by_key(component.to_s) if component.is_a?(Symbol)
+
+      if Tr8n::Config.current_user_is_translator? 
+        return true if component.translators.include?(Tr8n::Config.current_translator)
+      end
+
+      component.component_languages.each do |cl|
+        return cl.live? if cl.language_id == language.id 
+      end
+      
+      true
+    end
+
     # when this method is called, we create the translator record right away
     # and from this point on, will track the user
     # this can happen any time user tries to translate something or enables inline translations
@@ -69,6 +123,10 @@ module Tr8n
       Thread.current[:tr8n_current_translator] ||= Tr8n::Translator.register
     end
   
+    def self.set_translator(translator)
+      Thread.current[:tr8n_current_translator]  = translator
+    end
+
     def self.default_language
       return Tr8n::Language.new(:locale => default_locale) if disabled?
       @default_language ||= Tr8n::Language.for(default_locale) || Tr8n::Language.new(:locale => default_locale)
@@ -78,11 +136,6 @@ module Tr8n
     def self.system_translator
       @system_translator ||= Tr8n::Translator.where(:level => system_level).first || Tr8n::Translator.create(:user_id => 0, :level => system_level)
     end
-
-    # only one allowed per application
-    def self.application_translator_for(user)
-      Tr8n::Translator.where(:user_id => user.id, :level => application_level).first || Tr8n::Translator.create(:user_id => user.id, :level => application_level)
-    end
   
     def self.reset!
       # thread based variables
@@ -91,20 +144,28 @@ module Tr8n
       Thread.current[:tr8n_current_translator] = nil
       Thread.current[:tr8n_block_options]  = nil
       Thread.current[:tr8n_current_source] = nil
+      Thread.current[:tr8n_current_component] = nil
     end
 
     def self.models
       [ 
          Tr8n::LanguageRule, Tr8n::LanguageUser, Tr8n::Language, Tr8n::LanguageMetric,
          Tr8n::LanguageCase, Tr8n::LanguageCaseValueMap, Tr8n::LanguageCaseRule,
-         Tr8n::TranslationKey, Tr8n::TranslationKeySource, Tr8n::TranslationKeyComment, Tr8n::TranslationKeyLock,
-         Tr8n::TranslationSource, Tr8n::TranslationDomain, Tr8n::TranslationSourceLanguage,
-         Tr8n::Translation, Tr8n::TranslationVote,
+         Tr8n::TranslationKey, Tr8n::RelationshipKey, Tr8n::ConfigurationKey, 
+         Tr8n::TranslationKeySource, Tr8n::TranslationKeyComment, Tr8n::TranslationKeyLock,
+         Tr8n::TranslationSource, Tr8n::TranslationDomain, Tr8n::TranslationSourceLanguage, 
+         Tr8n::Translation, Tr8n::TranslationVote, Tr8n::TranslationSourceMetric,
          Tr8n::Translator, Tr8n::TranslatorLog, Tr8n::TranslatorMetric, 
          Tr8n::TranslatorFollowing, Tr8n::TranslatorReport, 
-         Tr8n::LanguageForumTopic, Tr8n::LanguageForumMessage,
-         Tr8n::Glossary, Tr8n::IpLocation, Tr8n::SyncLog
+         Tr8n::LanguageForumTopic, Tr8n::LanguageForumMessage, Tr8n::LanguageForumAbuseReport,
+         Tr8n::Glossary, Tr8n::IpLocation, Tr8n::SyncLog, Tr8n::Application, 
+         Tr8n::Component, Tr8n::ComponentSource, Tr8n::ComponentTranslator, Tr8n::ComponentLanguage,
+         Tr8n::Notification
       ]    
+    end
+
+    def self.guid
+      (0..16).to_a.map{|a| rand(16).to_s(16)}.join
     end
 
     # will clean all tables and initialize default values
@@ -166,7 +227,7 @@ module Tr8n
     end
   
     def self.dump_config
-      save_to_yaml("config.yaml", config)
+      save_to_yaml("config.yml.dump", config)
     end
   
     def self.config
@@ -229,16 +290,8 @@ module Tr8n
       config[:enable_language_cases]
     end
   
-    def self.enable_key_source_tracking?
-      config[:enable_key_source_tracking]
-    end
-
     def self.enable_key_caller_tracking?
       config[:enable_key_caller_tracking]
-    end
-
-    def self.enable_key_verification?
-      config[:enable_key_verification]
     end
 
     def self.enable_google_suggestions?
@@ -263,10 +316,6 @@ module Tr8n
 
     def self.enable_language_stats?
       config[:enable_language_stats]
-    end
-
-    def self.language_stats_realtime?
-      config[:language_stats_realtime]
     end
 
     def self.open_registration_mode?
@@ -301,6 +350,10 @@ module Tr8n
       config[:enable_country_tracking]
     end
   
+    def self.enable_relationships?
+      config[:enable_relationships]
+    end
+
     def self.enable_translator_tabs?
       config[:enable_translator_tabs]
     end
@@ -337,6 +390,7 @@ module Tr8n
 
     #########################################################
     # Caching
+    #########################################################
     def self.enable_caching?
       caching[:enabled]
     end
@@ -356,6 +410,7 @@ module Tr8n
 
     #########################################################
     # Logger
+    #########################################################
     def self.enable_logger?
       logger[:enabled]
     end
@@ -371,6 +426,7 @@ module Tr8n
   
     #########################################################
     # Site Info
+    #########################################################
     def self.site_title
       site_info[:title] 
     end
@@ -405,10 +461,6 @@ module Tr8n
       site_info[:current_locale_method]
     end
 
-    def self.enable_tr8n_method
-      site_info[:enable_tr8n_method]
-    end
-  
     def self.sitemap_sections
       @sitemap_sections ||= load_json(site_info[:sitemap_path])
     end
@@ -482,6 +534,13 @@ module Tr8n
       "Invalid user"
     end
 
+    def self.user_email(user)
+      user.send(site_user_info[:methods][:email])
+    rescue Exception => ex
+      Tr8n::Logger.error("Failed to fetch #{user_class_name} name: #{ex.to_s}")
+      "Unknown user"
+    end
+
     def self.user_gender(user)
       return "unknown" unless user
       user.send(site_user_info[:methods][:gender])
@@ -525,7 +584,13 @@ module Tr8n
     def self.current_user_is_admin?
       admin_user?
     end
-  
+
+    def self.current_user_is_manager?
+      return false unless current_user_is_translator?
+      return true if current_user_is_admin?
+      current_translator.manager?
+    end
+
     def self.guest_user?(user = Tr8n::Config.current_user)
       return true unless user
       user.send(site_user_info[:methods][:guest])
@@ -547,8 +612,8 @@ module Tr8n
     end
   
     #########################################################
-    # rules engine
-  
+    # RULES ENGINE
+    #########################################################
     def self.language_rule_classes
       @language_rule_classes ||= rules_engine[:language_rule_classes].collect{|lrc| lrc.constantize}
     end
@@ -679,9 +744,8 @@ module Tr8n
     end
 
     #########################################################
-    # localization
+    # LOCALIZATION
     #########################################################
-  
     def self.strftime_symbol_to_token(symbol)
       {
         "%a" => "{short_week_day_name}",
@@ -747,16 +811,16 @@ module Tr8n
       1000
     end
 
-    def self.admin_level
-      10000
-    end
-
     def self.application_level
       100000
     end
 
     def self.system_level
       1000000
+    end
+
+    def self.admin_level
+      100000000
     end
 
     def self.default_translation_key_level
@@ -862,5 +926,85 @@ module Tr8n
       HashWithIndifferentAccess.new(data)
     end
 
+    #########################################################
+    ### BLOCK OPTIONS
+    #########################################################
+    def self.block_options
+      (Thread.current[:tr8n_block_options] || []).last || {}
+    end
+
+    def self.current_source_from_block_options
+      arr = Thread.current[:tr8n_block_options] || []
+      arr.reverse.each do |opts|
+        return Tr8n::TranslationSource.find_or_create(opts[:source]) unless opts[:source].blank?
+      end
+      nil
+    end
+
+    def self.current_component_from_block_options
+      arr = Thread.current[:tr8n_block_options] || []
+      arr.reverse.each do |opts|
+        return Tr8n::Component.find_or_create(opts[:component]) unless opts[:component].blank?
+      end
+      Tr8n::Config.current_component
+    end
+
+    #########################################################
+    ### RELATIONSHIP AND CONFIGURATION KEYS
+    #########################################################
+    def self.init_relationship_keys
+      puts "Initializing default relationship keys..." unless env.test?
+
+      Tr8n::RelationshipKey.delete_all if env.test? or env.development?
+      
+      sys_translator = system_translator
+      
+      default_relationship_keys.each do |key, data|
+        puts key unless env.test?
+        rkey = Tr8n::RelationshipKey.find_or_create(key)
+        rkey.description ||= data.delete(:description)
+        rkey.level = curator_level # only admins and curators can see them for now
+        rkey.save
+        
+        data.each do |locale, labels|
+          language = Tr8n::Language.for(locale)
+          next unless language
+          labels = [labels].flatten # there could be a few translation variations
+          labels.each do |lbl|
+            trn = rkey.add_translation(lbl, nil, language, sys_translator)
+          end
+        end
+      end
+    end
+    
+    def self.default_relationship_keys
+      @default_relationship_keys ||= load_yml("/config/tr8n/data/default_relationship_keys.yml", nil)
+    end
+    
+    def self.init_configuration_keys
+      puts "Initializing default configuration keys..." unless env.test?
+
+      Tr8n::ConfigurationKey.delete_all if env.test? or env.development?
+      
+      sys_translator = system_translator
+      
+      default_configuration_keys.each do |key, value|
+        puts key unless env.test?
+        rkey = Tr8n::ConfigurationKey.find_or_create(key, value[:label], value[:description])
+        rkey.level = curator_level # only admins and curators can see them for now
+        rkey.save
+        
+        translations = value[:translations] || {}
+        translations.each do |locale, lbl|
+          language = Tr8n::Language.for(locale)
+          next unless language
+          rkey.add_translation(lbl, nil, language, sys_translator)
+        end
+      end
+    end
+    
+    def self.default_configuration_keys
+      @default_configuration_keys ||= load_yml("/config/tr8n/data/default_configuration_keys.yml", nil)
+    end
   end
 end

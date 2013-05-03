@@ -62,11 +62,7 @@ class Tr8n::LanguageRuleFilter < Tr8n::BaseFilter
       return Tr8n::Config.language_rule_classes.collect{|cls| cls.name}
     end
 
-    return super
-  end
-
-  def inner_joins
-    [:language, :translator]
+    super
   end
 
 end

@@ -38,7 +38,11 @@
         <%= hidden_field_tag(:lock, "true") %>
     <div id="tr8n_translator_buttons_container" class="buttons_container">
         <button type="submit" class="translator_btn translator_submit_btn" onClick="Tr8n.Translation.lock(); resizeFrame(); return false;">
-            <span><%=tra("Lock This Phrase")%></span>
+            <% if @translation_key.locked? %>
+              <span><%=tra("Unlock This Phrase")%></span>
+            <% else %>
+              <span><%=tra("Lock This Phrase")%></span>
+            <% end %> 
         </button>
     </div>
     </div>

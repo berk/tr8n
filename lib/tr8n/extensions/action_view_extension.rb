@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2012 Michael Berkovich, tr8n.net
+# Copyright (c) 2010-2013 Michael Berkovich, tr8n.net
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -392,35 +392,40 @@ module Tr8n
       html.join(' ').html_safe
     end
 
-    def tr8n_page_entries_info_tag(collection, options = {})
-      entry_name = options[:subject] || (collection.empty? ? 'entry' : collection.first.class.name.underscore.sub('_', ' ').split('/').last)
-      
-      if collection.total_pages < 2
-        case collection.size
-          when 0
-            tr("None found", "Paginator no entries message", {}, options)
-          when 1
-            tr("Displaying [strong: 1] #{entry_name}", "Paginator one page message", {}, options)
-          else
-            tr("Displaying [strong: all {count}] #{entry_name.pluralize}", "Paginator all entries message", {:count => collection.size}, options)
-        end
-      else
-        tr("Displaying #{entry_name.pluralize} [strong: {start_num} - {end_num}] of [strong: {total_count}] in total", 
-           "Paginator custom message", {
-              :start_num    => collection.offset_value + 1,
-              :end_num      => collection.offset_value + collection.length,
-              :total_count  => collection.total_count
-           }, options
-        )
-      end
-    end    
-
     def tr8n_with_options_tag(opts, &block)
-      Thread.current[:tr8n_block_options] = opts
-      if block_given?
-        ret = capture(&block) 
+      if Tr8n::Config.disabled?
+        return capture(&block) if block_given?
+        return ""
       end
-      Thread.current[:tr8n_block_options] = {}
+
+      Thread.current[:tr8n_block_options] ||= []   
+      Thread.current[:tr8n_block_options].push(opts)
+
+      component = Tr8n::Config.current_component_from_block_options
+      if component
+        source = Tr8n::Config.current_source_from_block_options
+        unless source.nil?
+          Tr8n::ComponentSource.find_or_create(component, source)
+        end
+      end
+
+      if Tr8n::Config.current_user_is_authorized_to_view_component?(component)
+        selected_language = Tr8n::Config.current_language
+        
+        unless Tr8n::Config.current_user_is_authorized_to_view_language?(component, selected_language)
+          Tr8n::Config.set_language(Tr8n::Config.default_language)
+        end
+
+        if block_given?
+          ret = capture(&block) 
+        end
+
+        Tr8n::Config.set_language(selected_language)
+      else
+        ret = ""
+      end
+
+      Thread.current[:tr8n_block_options].pop
       ret
     end
 
@@ -518,6 +523,130 @@ module Tr8n
   
     def tr8n_current_user_is_guest?
       Tr8n::Config.current_user_is_guest?
+    end
+
+
+    def tr8n_translator_tag(translator, options = {})
+      return "Deleted Translator" unless translator
+      
+      if options[:linked]
+        link_to(translator.name, translator.url)
+      else
+        translator.name
+      end
+    end
+
+    def tr8n_translator_mugshot_tag(translator, options = {})
+      if translator and !translator.mugshot.blank?
+        img_url = translator.mugshot
+      else
+        img_url = Tr8n::Config.silhouette_image
+      end
+      
+      img_tag = "<img src='#{img_url}' style='width:48px'>"
+      
+      if translator and options[:linked]
+        link_to(img_tag, translator.url)
+      else  
+        img_tag
+      end
+    end 
+
+    def tr8n_will_paginate(collection = nil, options = {})
+      will_paginate(collection, options.merge(:previous_label => tr("{laquo} Previous", "Previous entries in a list", {}, options), 
+                                              :next_label => tr("Next {raquo}", "Next entries in a list", {}, options)))
+    end
+
+    def tr8n_page_entries_info_tag(collection, options = {})
+      entry_name = options[:subject] || (collection.empty? ? 'entry' : collection.first.class.name.underscore.sub('_', ' ').split('/').last)
+      
+      if collection.total_pages < 2
+        case collection.size
+          when 0
+            tr("None found", "Paginator no entries message", {}, options)
+          when 1
+            tr("Displaying [strong: 1] #{entry_name}", "Paginator one page message", {}, options)
+          else
+            tr("Displaying [strong: all {count}] #{entry_name.pluralize}", "Paginator all entries message", {:count => collection.size}, options)
+        end
+      else
+        tr("Displaying #{entry_name.pluralize} [strong: {start_num} - {end_num}] of [strong: {total_count}] in total", 
+           "Paginator custom message", {
+              :start_num    => collection.offset_value + 1,
+              :end_num      => collection.offset_value + collection.length,
+              :total_count  => collection.total_count
+           }, options
+        )
+      end
+    end    
+
+    def tr8n_language_completeness_chart_tag(language = Tr8n::Config.current_language)
+      values = [language.total_metric.not_translated_count, language.total_metric.locked_key_count, language.total_metric.translated_key_count - language.total_metric.locked_key_count]
+      names = [trl("Not Translated"), trl("Approved"), trl("Pending Approval")]
+      colors = ['FF0000', '00FF00', 'FFFF00']
+      chart_url = "https://chart.googleapis.com/chart?cht=p3&chs=350x80&chd=t:#{values.join(',')}&chl=#{names.join('|')}&chco=#{colors.join('|')}"
+      image_tag(chart_url)
+    end
+    
+    def tr8n_translator_rank_chart_tag(translator, language = nil)
+      metric = language ? translator.metric_for(language) : translator.total_metric
+      values = [metric.rejected_translations, metric.accepted_translations, metric.pending_vote_translations]
+      names = [trl("Rejected"), trl("Accepted"), trl("Pending Votes")]
+      colors = ['FF0000', '00FF00', 'FFFF00']
+      chart_url = "https://chart.googleapis.com/chart?cht=p3&chs=350x80&chd=t:#{values.join(',')}&chl=#{names.join('|')}&chco=#{colors.join('|')}"
+      image_tag(chart_url)
+    end  
+
+    def tr8n_translation_source_completeness_chart_tag(metric = nil)
+      values = [metric.not_translated_count, metric.locked_key_count, metric.translated_key_count - metric.locked_key_count]
+      names = [trl("Not Translated"), trl("Approved"), trl("Pending Approval")]
+      colors = ['FF0000', '00FF00', 'FFFF00']
+      chart_url = "https://chart.googleapis.com/chart?cht=p3&chs=350x80&chd=t:#{values.join(',')}&chl=#{names.join('|')}&chco=#{colors.join('|')}"
+      image_tag(chart_url)
+    end  
+
+    def tr8n_when_string_tag(time, opts = {})
+      elapsed_seconds = Time.now - time
+      if elapsed_seconds < 0
+        tr('In the future, Marty!', 'Time reference')
+      elsif elapsed_seconds < 2.minutes
+        tr('a moment ago', 'Time reference')
+      elsif elapsed_seconds < 55.minutes
+        elapsed_minutes = (elapsed_seconds / 1.minute).to_i
+        tr("{minutes||minute} ago", 'Time reference', :minutes => elapsed_minutes)
+      elsif elapsed_seconds < 1.75.hours
+        tr("about an hour ago", 'Time reference')
+      elsif elapsed_seconds < 12.hours
+        elapsed_hours = (elapsed_seconds / 1.hour).to_i
+        tr("{hours||hour} ago", 'Time reference', :hours => elapsed_hours)
+      elsif time.today_in_time_zone?
+        display_time(time, :time_am_pm)
+      elsif time.yesterday_in_time_zone?
+        tr("Yesterday at {time}", 'Time reference', :time => time.tr(:time_am_pm).gsub('/ ', '/').sub(/^[0:]*/,""))
+      elsif elapsed_seconds < 5.days
+        time.tr(:day_time).gsub('/ ', '/').sub(/^[0:]*/,"")
+      elsif time.same_year_in_time_zone?
+        time.tr(:monthname_abbr_time).gsub('/ ', '/').sub(/^[0:]*/,"")
+      else
+        time.tr(:monthname_abbr_year_time).gsub('/ ', '/').sub(/^[0:]*/,"")
+      end
+    end
+
+    def tr8n_actions_tag(actions, opts = {}) 
+      opts[:separator] ||= ' | '
+      actions.join(opts[:separator]).html_safe
+    end
+
+    def tr8n_lightbox_header_tag(opts = {})
+      render(:partial => "/tr8n/common/lightbox_header")
+    end
+
+    def tr8n_lightbox_footer_tag(opts = {})
+      render(:partial => "/tr8n/common/lightbox_footer")
+    end
+
+    def tr8n_lightbox_title_tag(title, opts = {})
+      render(:partial => "/tr8n/common/lightbox_title", :locals => {:title => title})
     end
 
   private

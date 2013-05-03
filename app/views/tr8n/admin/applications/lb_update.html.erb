@@ -1,0 +1,45 @@
+<%= tr8n_lightbox_header_tag %>
+<div class="inner">
+    <div class="hd">
+        <%= tr8n_lightbox_title_tag(tra("Application Details")) %>
+    </div>
+    <div class="bd" style="padding-bottom:60px;">
+      <%= form_for(@app, :as => :app, :url => {:action => :update}, :html => {:id => 'tr8n_form', :method => :post, :class => "tr8n"}) do |form| %>
+        <%= form.hidden_field :id %>
+        <%= hidden_field_tag(:origin, params[:origin]) %>
+        <table class="admin_table">
+            <tr>
+                <th>
+                    <%=tra("Key:") %>
+                </th>
+                <td>
+                    <%= form.text_field :key, :style=>"width:99%;" %>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    <%=tra("Name:") %>
+                </th>
+                <td>
+                    <%= form.text_field :name, :style=>"width:99%;" %>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                   <%=tra("Description:") %>
+                </th>
+                <td>
+                    <%= form.text_area :description, :style=>"width:99%;height:80px" %>
+                </td>
+            </tr>
+        </table>
+      <% end %>
+      <div>
+          <em><%=tra("Note: if you have multiple subsystems, use the application key in each subsystem configuration file.") %></em>
+      </div>
+    </div>
+    <div class="ft">
+        <%= tr8n_lightbox_buttons_tag %>
+    </div>
+</div>
+<%= tr8n_lightbox_footer_tag %>

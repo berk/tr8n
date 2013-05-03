@@ -54,8 +54,8 @@ class Tr8n::TranslatorMetricFilter < Tr8n::BaseFilter
     "updated_today"
   end
 
-  def inner_joins
-    [:language, :translator]
-  end
+  # def inner_joins
+  #   [:language, :translator]
+  # end
 
 end
