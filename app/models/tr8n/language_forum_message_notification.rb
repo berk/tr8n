@@ -48,7 +48,7 @@ class Tr8n::LanguageForumMessageNotification < Tr8n::Notification
 
   def self.distribute(message)
     # find translators for all other translations of the key in this language
-    messages = Tr8n::LanguageForumMessage.where("language_forum_topic_id = ?", message.language_forum_topic.id).first
+    messages = Tr8n::LanguageForumMessage.where("language_forum_topic_id = ?", message.language_forum_topic.id)
 
     translators = []
     messages.each do |m|
