@@ -41,6 +41,7 @@ Tr8n.SDK.Api = {
       delete params.method;
     }
 
+    params["locale"] = Tr8n.locale;
     path = Tr8n.host + Tr8n.url.api + "/" + path.replace(/^\//,'');
 
     if (Tr8n.SDK.Request.sameOrigin()) {

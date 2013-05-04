@@ -22,12 +22,6 @@
 ****************************************************************************/
 
 
-// Tr8n.Utils.addEvent(window, 'load', function() {
-//   alert("Booting Tr8n");
-
-
-  // Tr8n.Utils.insertDiv('tr8n_root', 'display:none');
-
 window.Tr8n = window.$tr8n = Tr8n.Utils.extend(Tr8n, {
   element     : Tr8n.Utils.element,
   value       : Tr8n.Utils.value,
@@ -41,4 +35,4 @@ window.Tr8n = window.$tr8n = Tr8n.Utils.extend(Tr8n, {
 
 Tr8n.init();
 
-// });
+   

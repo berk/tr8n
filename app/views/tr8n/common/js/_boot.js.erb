@@ -1,0 +1,59 @@
+function addTr8nCSS(doc, src) {
+  var css = doc.createElement('link');
+  css.setAttribute('type', 'text/css');
+  if (src.indexOf('//') != -1) {
+    css.setAttribute('href', src);
+  } else {
+    css.setAttribute('href', '<%=uri.scheme%>://<%=uri.host%>' + src);
+  }
+  css.setAttribute('rel', 'stylesheet');
+  css.setAttribute('media', 'screen');
+  doc.getElementsByTagName('head')[0].appendChild(css);
+  return css;
+}
+ 
+function addTr8nScript(doc, id, src, onload) {
+  var script = doc.createElement('script');
+  script.setAttribute('id', id);
+  script.setAttribute('type', 'application/javascript');
+  if (src.indexOf('//') != -1) {
+    script.setAttribute('src', src);  
+  } else {
+    script.setAttribute('src', '<%=uri.scheme%>://<%=uri.host%>' + src);  
+  }
+  script.setAttribute('charset', 'UTF-8');
+  if (onload) script.onload = onload;
+  doc.getElementsByTagName('head')[0].appendChild(script);
+  return script;
+}
+
+(function(window) {
+    if (window.addEventListener) window.addEventListener('load', initTr8n, false); // Standard
+    else if (window.attachEvent) window.attachEvent('onload', initTr8n); // Microsoft
+    
+    function initTr8n() {
+      if (window.tr8nJQ) return;
+
+      addTr8nCSS(window.document, '/assets/tr8n/tr8n.css');
+      addTr8nCSS(window.document, '/assets/tr8n/keyboard_1_49.css');
+
+      var jQueryCurrentVersion = null;
+      if (!(typeof jQuery === "undefined")) {
+        jQueryCurrentVersion = $.noConflict(true);
+      }
+
+      addTr8nScript(window.document, 'tr8n-jquery', '<%=uri.scheme%>://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js', function() {
+        window.tr8nJQ = $.noConflict(true);
+        if (jQueryCurrentVersion) {
+          window.jQuery = window.$ = jQueryCurrentVersion;
+        }
+        addTr8nScript(window.document, 'tr8n-jssdk', "<%= params[:debug] ? '/assets/tr8n/tr8n.js': '/assets/tr8n/tr8n-compiled.js' %>", function() {
+          addTr8nScript(window.document, 'tr8n-proxy', '/tr8n/api/v1/proxy/init.js?<%=params.slice(:debug, :tml, :text, :source).merge(:t => Time.now.to_i).to_query.html_safe%>', function() {
+            if (typeof(onTr8nReady) === 'function') {
+               onTr8nReady();
+            }
+          });
+        });
+    });
+  }
+})(window);

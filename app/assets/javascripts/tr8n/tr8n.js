@@ -2331,6 +2331,7 @@ var Tr8n = {
   cookies: false,
   access_token: null,
   google_api_key: null,
+  locale: null,
   inline_translations_enabled: false,
 
   url: {
@@ -2370,7 +2371,7 @@ var Tr8n = {
     this.cookies    = opts.cookies  || this.cookies;
     this.host       = opts.host     || this.host;
 
-    Tr8n.log("Initializing Tr8n...");
+    Tr8n.log("Initializing Tr8n Core...");
 
     if (window.addEventListener) {  // all browsers except IE before version 9
       window.addEventListener("message", Tr8n.onMessage, false);
@@ -3266,6 +3267,31 @@ Tr8n.SDK.Request = {
 	},
 	
   ///////////////////////////////////////////////////////////////////////////////////////////////  
+  // CORS request
+  //
+  //    Tr8n.SDK.Request.cors(url[, paramerters, callback])
+  //
+  ///////////////////////////////////////////////////////////////////////////////////////////////  
+
+  cors: function(url, params, cb) {
+    window.tr8nJQ.ajax({
+        url: url,
+        type: 'POST',
+        data: params,
+        crossDomain: true
+    })
+    .done(function(data) { 
+      if(cb) cb(window.tr8nJQ.parseJSON(data));
+    })
+    .fail(function(data) {
+      alert("error"); 
+    })
+    .always(function(data) {
+
+    });    
+  },
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////  
 	// Same as a jsonp request but with an access token for oauth authentication
 	//
 	// 		Tr8n.SDK.Request.oauth(url[, paramerters, callback])
@@ -3278,7 +3304,7 @@ Tr8n.SDK.Request = {
 			Tr8n.Utils.extend(params, {access_token: Tr8n.access_token});
 		} 
 		
-		this.jsonp(url, params, cb);
+		this.cors(url, params, cb);
 	},
 
   ///////////////////////////////////////////////////////////////////////////////////////////////  
@@ -3427,6 +3453,7 @@ Tr8n.SDK.Api = {
       delete params.method;
     }
 
+    params["locale"] = Tr8n.locale;
     path = Tr8n.host + Tr8n.url.api + "/" + path.replace(/^\//,'');
 
     if (Tr8n.SDK.Request.sameOrigin()) {
@@ -3653,14 +3680,12 @@ Tr8n.SDK.Proxy = {
   scheduler_enabled: true,
   inline_translations_enabled: false,
   tml_enabled: false,
+  text_enabled: false,
   scheduler_interval: 5000,
   batch_size: 5,
   language: null,
   translations: {},
   missing_translation_keys: {},
-  source: null,  // the source is only needed for custom components - in most cases referrer should be used to minimize jsonp urls
-  page_locale: "en-US", // this needs to be dynamically determined based on tha page content
-  selected_locale: "en-US",
 
   init: function(opts) {
     Tr8n.log("Initializing Tr8n Client SDK...");
@@ -3671,25 +3696,11 @@ Tr8n.SDK.Proxy = {
     Tr8n.inline_translations_enabled = this.options['enable_inline_translations'];
     this.tml_enabled = this.options['enable_tml'];
     this.text_enabled = this.options['enable_text'];
-    this.source = this.options['source'];
-    this.selected_locale = this.options['locale'];
 
     this.language = new Tr8n.SDK.Language();
 
     this.initTranslations();
     this.runScheduledTasks();
-
-    if ( this.tml_enabled ) {
-      Tr8n.log("Parsing tml...");
-      Tr8n.Utils.addEvent(window, 'load', function() {
-        Tr8n.SDK.Proxy.initTml();
-      });
-    } else if ( this.text_enabled ) {
-      Tr8n.log("Parsing text...");
-      Tr8n.Utils.addEvent(window, 'load', function() {
-        Tr8n.SDK.Proxy.initText();
-      });
-    }
 
     return this;
   },
@@ -3772,7 +3783,7 @@ Tr8n.SDK.Proxy = {
 
       Tr8n.api('language/translate', {
         'batch': true, 
-        'source': self.source
+        'source': Tr8n.source
       }, function(data) {
           Tr8n.log("Received response from the server");
           self.registerTranslationKeys(data['phrases']);
@@ -3781,62 +3792,43 @@ Tr8n.SDK.Proxy = {
   },
     
   registerMissingTranslationKey: function(translation_key, token_values, options) {
-    // if selected language is the same as the page language - do not submit the missing keys
-    if (this.page_locale == this.selected_locale) return;
-
     if (!this.missing_translation_keys[translation_key.key]) {
-      // Tr8n.log('Adding missing translation key to the queue: ' + translation_key.key);
-      this.missing_translation_keys[translation_key.key] = {translation_key:translation_key, token_values:token_values, options:options};
+      // It is possible to have multiple different elements with the same key, but different tokens
+      this.missing_translation_keys[translation_key.key] = {translation_key:translation_key, tr8n_elements:[]};
     }
+    var tr8n_element = {tr8n_element_id:translation_key.element_id, token_values:token_values, options:options};
+    // Tr8n.log("Registering missing key data: " + JSON.stringify(tr8n_element));
+    this.missing_translation_keys[translation_key.key].tr8n_elements.push(tr8n_element);
   },
 
   submitMissingTranslationKeys: function() {
-    this.scheduler_enabled = false;
+    this.scheduler_enabled = false; // halt the scheduler
 
     var phrases = [];
-    var count = 0;
 
-    var keys = Object.keys(this.missing_translation_keys).sort();
-    for (var i=0; i<keys.length; i++) {
-      key = keys[i];
-      var missing_translation_key_data = this.missing_translation_keys[key];
-      var translation_key = missing_translation_key_data.translation_key;
-      
-      // when will this happen?
-      if (translation_key == null) continue;
-
-      // ignore lables that are too long
-      if (translation_key.label.length > 200) continue;
-
-      var phrase = {label: translation_key.label};
-      if (translation_key.description && translation_key.description.length > 0) phrase.description = translation_key.description;
-
-      phrases.push(phrase);
-
-      var url_params = JSON.stringify(phrases);
-
-      // Tr8n.log('Adding translation key ' + phrase.label + ' to the queue.');
-      // Tr8n.log('Params size is ' + url_params.length);
-
-      if (url_params.length > 200) { 
-        phrases.pop();
-        break;
-      }
-    }
-    
-    if (phrases.length == 0) {
-      // Tr8n.log('No missing translation keys to submit...');
+    var keys = Object.keys(this.missing_translation_keys);
+    if (keys.length == 0) {
       this.scheduler_enabled = true;
       return;
     }
+
+    for (var i=0; i<keys.length; i++) {
+      if (i>30) break; // lets do at most 50 at a time
+      var missing_key = this.missing_translation_keys[keys[i]].translation_key;
+      var phrase = {label: missing_key.label};
+      if (missing_key.description && missing_key.description.length > 0) {
+        phrase.description = missing_key.description;
+      }
+      phrases.push(phrase);
+    }
     
     var self = this;
-    Tr8n.log("Submitting " + phrases.length + " translation keys...");
+    Tr8n.log("Submitting " + phrases.length + " missing keys...");
     
     var params = {
+      source: Tr8n.source,
       phrases: JSON.stringify(phrases)
     };
-    if (self.source) params['source'] = self.source;   // don't send it unless it is set
 
     Tr8n.api('language/translate', params, function(data) {
         // Tr8n.log("Received response from the server: " + JSON.stringify(data));
@@ -3849,28 +3841,34 @@ Tr8n.SDK.Proxy = {
       translations = translations['phrases'];
     }
 
-    Tr8n.log("Received " + translations.length + " translation keys...");
+    // Tr8n.log("Received " + translations.length + " translation keys...");
 
-    for (i = 0; i < translations.length; i++) {
+    for (i=0; i<translations.length; i++) {
        var translation_key_data = translations[i];
 
-       // Tr8n.log("Registering new key " + JSON.stringify(translation_key_data));
-
+       // Tr8n.log("Updating translation key " + JSON.stringify(translation_key_data));
        this.translations[translation_key_data.key] = translation_key_data;
+
        var missing_key_data = this.missing_translation_keys[translation_key_data.key];
+       if (!missing_key_data) continue; // why?
+
+       var missing_key = missing_key_data.translation_key;
+       var tr8n_elements = missing_key_data.tr8n_elements;
        
-       var tr8nElement = Tr8n.element(translation_key_data.key);
-      
-       if (tr8nElement && missing_key_data.translation_key) {
-         tr8nElement.setAttribute('translation_key_id', translation_key_data['id']);
-         tr8nElement.innerHTML = missing_key_data.translation_key.translate(this.language, missing_key_data.token_values);
+       for (j=0; j<tr8n_elements.length; j++) {
+          var tr8n_element_data = tr8n_elements[j];
+          var tr8n_element = Tr8n.element(tr8n_element_data.tr8n_element_id);
+          if (!tr8n_element) continue; 
+          missing_key.original = translation_key_data.original;
+          tr8n_element.setAttribute('translation_key_id', translation_key_data['id']);
+           // Tr8n.log(missing_key_data.translation_key.decorationClasses());
+          tr8n_element.setAttribute('class', missing_key_data.translation_key.decorationClasses());
+          tr8n_element.innerHTML = missing_key.translate(this.language, tr8n_element_data.token_values, {'skip_decorations': true});
        }
-       
-       delete this.missing_translation_keys[missing_key_data.translation_key.key];
+       delete this.missing_translation_keys[translation_key_data.key];
     }
 
     var keys = Object.keys(this.missing_translation_keys);
-
     if (keys.length > 0) {
       this.submitMissingTranslationKeys();  
     } else {
@@ -4055,7 +4053,11 @@ Tr8n.SDK.Language.prototype = {
 
 
 Tr8n.SDK.TranslationKey = function(label, description, options) {
-  this.label = label;
+  this.id = null;                         // translation_key_id used by translator
+  this.key = null;                        // unique translation key used to find elements 
+  this.element_id = Tr8n.Utils.uuid();    // element id to be updated
+  this.original = true;                   // by default assuming there are no translations in the cache
+  this.label = label; 
   this.description = description;
   this.options = options;
   this.generateKey();
@@ -4066,10 +4068,7 @@ Tr8n.SDK.TranslationKey.prototype = {
   generateKey: function() {
     this.key = this.label + ";;;";
     if (this.description) this.key = this.key + this.description;
-       
-    // Tr8n.log('Preparing label signature: ' + this.key);
     this.key = MD5(this.key);
-    // Tr8n.log('Label signature: ' + this.key);
   },
 
   findFirstAcceptableTranslation: function(translations, token_values) {
@@ -4128,8 +4127,9 @@ Tr8n.SDK.TranslationKey.prototype = {
     
     var translations = Tr8n.SDK.Proxy.translations;
     var translation_key = translations[this.key];
-        
+
     if (translation_key) {
+       // Tr8n.log("Translate: found translation key: " + JSON.stringify(translation_key));
       // Tr8n.log("Found translations, evaluating rules...");      
       
       this.id = translation_key.id;
@@ -4180,36 +4180,35 @@ Tr8n.SDK.TranslationKey.prototype = {
     return this.decorateLabel(label, options);
   },
   
-  decorateLabel: function(label, options) {
-    if (!Tr8n.SDK.Proxy.inline_translations_enabled)
-      return label;
+  decorationClasses: function() {
+    var klasses = [];
+    klasses.push('tr8n_translatable');
+    if (Tr8n.SDK.Proxy.inline_translations_enabled) {
+      if (this.original)
+        klasses.push('tr8n_not_translated');
+      else  
+        klasses.push('tr8n_translated');
+    }
+    return klasses.join(' ');
+  },
 
+  decorateLabel: function(label, options) {
     options = options || {};
     if (options['skip_decorations'])
       return label;
       
     html = [];
     html.push("<tr8n ");
+    html.push(" id='" + this.element_id + "' ");
     
     if (this.id) 
       html.push(" translation_key_id='" + this.id + "' ");
-      
-    if (this.key) 
-      html.push(" id='" + this.key + "' ");
-  
-    var klasses = ['tr8n_translatable'];
-    
-    if (this.original)
-      klasses.push('tr8n_not_translated');
-    else  
-      klasses.push('tr8n_translated');
 
-    if (Tr8n.SDK.Proxy.inline_translations_enabled && this.id)
-      html.push(" class='" + klasses.join(' ') + "'");
-      
+    html.push(" class='" + this.decorationClasses() + "'");
     html.push(">");
     html.push(label);
     html.push("</tr8n>");
+
     return html.join("");
   }
 }
@@ -5347,12 +5346,6 @@ Tr8n.Translation = {
 }
 
 
-// Tr8n.Utils.addEvent(window, 'load', function() {
-//   alert("Booting Tr8n");
-
-
-  // Tr8n.Utils.insertDiv('tr8n_root', 'display:none');
-
 window.Tr8n = window.$tr8n = Tr8n.Utils.extend(Tr8n, {
   element     : Tr8n.Utils.element,
   value       : Tr8n.Utils.value,
@@ -5366,4 +5359,4 @@ window.Tr8n = window.$tr8n = Tr8n.Utils.extend(Tr8n, {
 
 Tr8n.init();
 
-// });
+   

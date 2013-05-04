@@ -24,44 +24,8 @@
 class Tr8n::Api::V1::ProxyController < Tr8n::Api::V1::BaseController
 
   def boot
-    uri = URI.parse(request.url)
-
-    script = []
-    script << "function addTr8nCSS(doc, src) {"
-    script << "var css = doc.createElement('link');"
-    script << "css.setAttribute('type', 'application/javascript');"
-    script << "css.setAttribute('href', src);"
-    script << "css.setAttribute('type', 'text/css');"
-    script << "css.setAttribute('rel', 'stylesheet');"
-    script << "css.setAttribute('media', 'screen');"
-    script << "doc.getElementsByTagName('head')[0].appendChild(css);"
-    script << "};"
-    script << "function addTr8nScript(doc, id, src, onload) {"
-    script << "var script = doc.createElement('script');"
-    script << "script.setAttribute('id', id);"
-    script << "script.setAttribute('type', 'application/javascript');"
-    script << "script.setAttribute('src', src);"
-    script << "script.setAttribute('charset', 'UTF-8');"
-    script << "if (onload) script.onload = onload;"
-    script << "doc.getElementsByTagName('head')[0].appendChild(script);"
-    script << "};"
-    script << "(function(doc) {if (doc.getElementById('tr8n-jssdk')) return;"
-
-    uri.path = "/assets/tr8n/tr8n.css"
-    script << "addTr8nCSS(doc, '#{uri.to_s}');"
-
-    if params[:debug]
-      uri.path = "/assets/tr8n/tr8n.js"    
-    else
-      uri.path = "/assets/tr8n/tr8n-compiled.js"    
-    end  
-    script << "addTr8nScript(doc, 'tr8n-jssdk', '#{uri.to_s}', function() {"
-
-    uri.path = "/tr8n/api/v1/proxy/init.js"    
-    script << "addTr8nScript(doc, 'tr8n-proxy', '#{uri.to_s}', function() {});"
-
-    script << "});}(document));"
-    render(:text => script.join(''), :content_type => "text/javascript")
+    params[:source] ||= Tr8n::TranslationSource.normalize_api_source(request.env['HTTP_REFERER'])
+    render(:partial => "/tr8n/common/js/boot", :formats => [:js], :locals => {:uri => URI.parse(request.url)}, :content_type => "text/javascript")
   end
 
   def init
@@ -74,10 +38,10 @@ class Tr8n::Api::V1::ProxyController < Tr8n::Api::V1::BaseController
     opts[:default_tokens]             = Tr8n::Config.default_data_tokens
     opts[:locale]                     = Tr8n::Config.current_language.locale
 
-    if params[:ext]
-      opts[:enable_text]              = true
+    if params[:text]
+      opts[:enable_text]              = (not params[:text].blank?)
     else
-      opts[:enable_tml]               = Tr8n::Config.enable_tml?
+      opts[:enable_tml]               = (not params[:tml].blank?) and Tr8n::Config.enable_tml?
     end
 
     opts[:rules]                      = { 
@@ -85,17 +49,11 @@ class Tr8n::Api::V1::ProxyController < Tr8n::Api::V1::BaseController
       :list   => Tr8n::Config.rules_engine[:gender_list_rule],  :date   => Tr8n::Config.rules_engine[:date_rule]
     }
 
-    uri = URI.parse(request.url)
-    host_url = "#{uri.scheme}://#{uri.host}#{uri.port ? ":#{uri.port}" : ''}"
+    source = params[:source] || request.env['HTTP_REFERER'] || 'undefined'
 
-    script << "Tr8n.host = '#{host_url}';"
+    # TODO: do some more manipulations with the source
 
-    script << "Tr8n.SDK.Proxy.init(#{opts.to_json});"
-
-    params[:source] ||= request.env['HTTP_REFERER']
-
-    source_ids = Tr8n::TranslationSource.where(:source => params[:source]).all.collect{|source| source.id}
-    
+    source_ids = Tr8n::TranslationSource.where(:source => source).all.collect{|src| src.id}
     if source_ids.empty?
       conditions = ["1=2"]
     else
@@ -108,19 +66,7 @@ class Tr8n::Api::V1::ProxyController < Tr8n::Api::V1::BaseController
       translations << tkey.translate(Tr8n::Config.current_language, {}, {:api => true})
     end
 
-    script << "Tr8n.SDK.Proxy.registerTranslationKeys(#{translations.to_json});"
-
-    if Tr8n::Config.enable_google_suggestions? and Tr8n::Config.current_user_is_translator?
-      script << "Tr8n.google_api_key = '#{Tr8n::Config.google_api_key}';"
-    end
-
-    if Tr8n::Config.enable_keyboard_shortcuts?
-      Tr8n::Config.default_shortcuts.each do |key, data|       
-        script << "shortcut.add('#{key}', function() {#{data['script']}});"
-      end
-    end
-
-    render(:text => script.join(''), :content_type => "text/javascript")
+    render(:partial => "/tr8n/common/js/init", :formats => [:js], :locals => {:uri => URI.parse(request.url), :opts => opts, :translations => translations, :source => source.to_s}, :content_type => "text/javascript")
   end
   
 end

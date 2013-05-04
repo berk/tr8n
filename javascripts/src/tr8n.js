@@ -35,6 +35,7 @@ var Tr8n = {
   cookies: false,
   access_token: null,
   google_api_key: null,
+  locale: null,
   inline_translations_enabled: false,
 
   url: {
@@ -74,7 +75,7 @@ var Tr8n = {
     this.cookies    = opts.cookies  || this.cookies;
     this.host       = opts.host     || this.host;
 
-    Tr8n.log("Initializing Tr8n...");
+    Tr8n.log("Initializing Tr8n Core...");
 
     if (window.addEventListener) {  // all browsers except IE before version 9
       window.addEventListener("message", Tr8n.onMessage, false);

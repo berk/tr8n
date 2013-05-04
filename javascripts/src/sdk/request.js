@@ -101,6 +101,31 @@ Tr8n.SDK.Request = {
 	},
 	
   ///////////////////////////////////////////////////////////////////////////////////////////////  
+  // CORS request
+  //
+  //    Tr8n.SDK.Request.cors(url[, paramerters, callback])
+  //
+  ///////////////////////////////////////////////////////////////////////////////////////////////  
+
+  cors: function(url, params, cb) {
+    window.tr8nJQ.ajax({
+        url: url,
+        type: 'POST',
+        data: params,
+        crossDomain: true
+    })
+    .done(function(data) { 
+      if(cb) cb(window.tr8nJQ.parseJSON(data));
+    })
+    .fail(function(data) {
+      alert("error"); 
+    })
+    .always(function(data) {
+
+    });    
+  },
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////  
 	// Same as a jsonp request but with an access token for oauth authentication
 	//
 	// 		Tr8n.SDK.Request.oauth(url[, paramerters, callback])
@@ -113,7 +138,7 @@ Tr8n.SDK.Request = {
 			Tr8n.Utils.extend(params, {access_token: Tr8n.access_token});
 		} 
 		
-		this.jsonp(url, params, cb);
+		this.cors(url, params, cb);
 	},
 
   ///////////////////////////////////////////////////////////////////////////////////////////////  

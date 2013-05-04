@@ -22,7 +22,11 @@
 ****************************************************************************/
 
 Tr8n.SDK.TranslationKey = function(label, description, options) {
-  this.label = label;
+  this.id = null;                         // translation_key_id used by translator
+  this.key = null;                        // unique translation key used to find elements 
+  this.element_id = Tr8n.Utils.uuid();    // element id to be updated
+  this.original = true;                   // by default assuming there are no translations in the cache
+  this.label = label; 
   this.description = description;
   this.options = options;
   this.generateKey();
@@ -33,10 +37,7 @@ Tr8n.SDK.TranslationKey.prototype = {
   generateKey: function() {
     this.key = this.label + ";;;";
     if (this.description) this.key = this.key + this.description;
-       
-    // Tr8n.log('Preparing label signature: ' + this.key);
     this.key = MD5(this.key);
-    // Tr8n.log('Label signature: ' + this.key);
   },
 
   findFirstAcceptableTranslation: function(translations, token_values) {
@@ -95,8 +96,9 @@ Tr8n.SDK.TranslationKey.prototype = {
     
     var translations = Tr8n.SDK.Proxy.translations;
     var translation_key = translations[this.key];
-        
+
     if (translation_key) {
+       // Tr8n.log("Translate: found translation key: " + JSON.stringify(translation_key));
       // Tr8n.log("Found translations, evaluating rules...");      
       
       this.id = translation_key.id;
@@ -147,36 +149,35 @@ Tr8n.SDK.TranslationKey.prototype = {
     return this.decorateLabel(label, options);
   },
   
-  decorateLabel: function(label, options) {
-    if (!Tr8n.SDK.Proxy.inline_translations_enabled)
-      return label;
+  decorationClasses: function() {
+    var klasses = [];
+    klasses.push('tr8n_translatable');
+    if (Tr8n.SDK.Proxy.inline_translations_enabled) {
+      if (this.original)
+        klasses.push('tr8n_not_translated');
+      else  
+        klasses.push('tr8n_translated');
+    }
+    return klasses.join(' ');
+  },
 
+  decorateLabel: function(label, options) {
     options = options || {};
     if (options['skip_decorations'])
       return label;
       
     html = [];
     html.push("<tr8n ");
+    html.push(" id='" + this.element_id + "' ");
     
     if (this.id) 
       html.push(" translation_key_id='" + this.id + "' ");
-      
-    if (this.key) 
-      html.push(" id='" + this.key + "' ");
-  
-    var klasses = ['tr8n_translatable'];
-    
-    if (this.original)
-      klasses.push('tr8n_not_translated');
-    else  
-      klasses.push('tr8n_translated');
 
-    if (Tr8n.SDK.Proxy.inline_translations_enabled && this.id)
-      html.push(" class='" + klasses.join(' ') + "'");
-      
+    html.push(" class='" + this.decorationClasses() + "'");
     html.push(">");
     html.push(label);
     html.push("</tr8n>");
+
     return html.join("");
   }
 }

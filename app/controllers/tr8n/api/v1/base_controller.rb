@@ -24,6 +24,7 @@
 class Tr8n::Api::V1::BaseController < ApplicationController
   
   before_filter :check_api_enabled
+  before_filter :cors_preflight_check
 
   if Tr8n::Config.api_skip_before_filters.any?
     skip_before_filter *Tr8n::Config.api_skip_before_filters
@@ -43,6 +44,38 @@ private
     sanitize_api_response({"error" => "Api is disabled"}) unless Tr8n::Config.enable_api?
   end
   
+  # If this is a preflight OPTIONS request, then short-circuit the
+  # request, return only the necessary headers and return an empty
+  # text/plain.
+  def cors_preflight_check
+    if request.headers["HTTP_ORIGIN"] and access_control_allow_origin
+      headers['Access-Control-Allow-Origin'] = request.headers["HTTP_ORIGIN"]
+      headers['Access-Control-Expose-Headers'] = 'ETag'
+      headers['Access-Control-Allow-Methods'] = 'GET, POST, PATCH, PUT, DELETE, OPTIONS, HEAD'
+      headers['Access-Control-Allow-Headers'] = '*,X-Requested-With,X-Prototype-Version,Content-Type,If-Modified-Since,If-None-Match,Auth-User-Token'
+      headers['Access-Control-Max-Age'] = '1728000'
+      headers['Access-Control-Allow-Credentials'] = 'true'
+
+      if request.method == :options
+        return render(:text => '', :content_type => 'text/plain')
+      end
+    end    
+  end
+
+  def access_control_allow_origin
+    #if request.headers["HTTP_ORIGIN"] && /^https?:\/\/(.*)\.some\.site\.com$/i.match(request.headers["HTTP_ORIGIN"])
+    # origin    = request.headers['Origin'].to_s
+    # from_geni = origin =~ /geni.com/
+    # from_ssl  = ["http://#{SITE}", "https://#{SITE}"].include? origin
+
+    # if from_geni || from_ssl
+    #   origin
+    # else
+    #   ''
+    # end
+    true
+  end
+
   def tr8n_current_user
     Tr8n::Config.current_user
   end

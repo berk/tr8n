@@ -1,15 +1,9 @@
 <% if Tr8n::Config.enabled? and not params[:disable_tr8n_js] %>
+  <%=stylesheet_link_tag("tr8n/tr8n.css") -%>
+  <%=stylesheet_link_tag("tr8n/keyboard_1_49.css") -%>
 
 	<%= tr8n_splash_screen_tag %>
 
-  <% if Tr8n::Config.enable_software_keyboard? %>
-    <script> 
-      VKI_default_layout = "<%=Tr8n::KeyboardMapping.current_1_49%>";
-    </script>     
-    <%=stylesheet_link_tag("tr8n/keyboard_1_49.css") -%>
-  <% end %>  
-
-  <%=stylesheet_link_tag("tr8n/tr8n.css") -%>
   <style type="text/css">
   .tr8n_fltr {
     <%=tr8n_style_attribute_tag('float', 'right')%> !important;
@@ -25,41 +19,62 @@
   }
   </style>
 
-  <% if params[:tr8n_debug_js] %>
-    <%=javascript_include_tag("tr8n/tr8n.js", :charset => "UTF-8") -%>
-  <% else %>  
-    <%=javascript_include_tag("tr8n/tr8n-compiled.js", :charset => "UTF-8") -%>
-  <% end %>
+  <script type="text/javascript">
+  <!--
+    VKI_default_layout = "<%=Tr8n::KeyboardMapping.current_1_49%>";
 
-  <% if Tr8n::Config.enable_effects? %>
-    <%=javascript_include_tag(Tr8n::Config.effects_library_path) -%>
-	<% end %>
-	
-  <% unless params[:tr8n_disable_client_sdk] %>
-    <% if Tr8n::Config.enable_client_sdk? and not opts[:disable_tr8n_client_sdk] %>
-      <%= tr8n_client_sdk_tag(opts) %>
-      <%= tr8n_translations_cache_tag(opts) %>
-    <% end %>
-  <% end %>
+    function addTr8nCSS(doc, src) {
+      var css = doc.createElement('link');
+      css.setAttribute('type', 'text/css');
+      css.setAttribute('href', src);
+      css.setAttribute('rel', 'stylesheet');
+      css.setAttribute('media', 'screen');
+      doc.getElementsByTagName('head')[0].appendChild(css);
+      return css;
+    };
+     
+    function addTr8nScript(doc, id, src, onload) {
+      var script = doc.createElement('script');
+      script.setAttribute('id', id);
+      script.setAttribute('type', 'application/javascript');
+      script.setAttribute('src', src);
+      script.setAttribute('charset', 'UTF-8');
+      if (onload) script.onload = onload;
+      doc.getElementsByTagName('head')[0].appendChild(script);
+      return script;
+    };
 
-  <% unless params[:tr8n_disable_suggestions] %>
-    <% if Tr8n::Config.enable_google_suggestions? and Tr8n::Config.current_user_is_translator? %>  
-      <script type="text/javascript">
-  			Tr8n.google_api_key = "<%=Tr8n::Config.google_api_key %>";
-  		</script>
-    <% end %>
-  <% end %>
+    (function(window) {
+        if (window.addEventListener) {
+            // Standard
+            window.addEventListener('load', initTr8n, false);
+        }
+        else if (window.attachEvent) {
+            // Microsoft
+            window.attachEvent('onload', initTr8n);
+        }
+        function initTr8n() {
+          if (window.tr8nJQ) return;
 
-  <% unless params[:tr8n_disable_shortcuts] %>
-    <% if Tr8n::Config.enable_keyboard_shortcuts? %>  
-      <script type="text/javascript">
-         <% Tr8n::Config.default_shortcuts.each do |key, data| %>     	
-  				  shortcut.add("<%=key%>", function() {
-  				    <%=data["script"].html_safe%>
-  				  });
-  			 <% end %>
-      </script>
-    <% end %>  
-  <% end %>
+          var jQueryCurrentVersion = null;
+          if (!(typeof jQuery === "undefined")) {
+            jQueryCurrentVersion = $.noConflict(true);
+          }
+
+          addTr8nScript(window.document, 'jquery', '//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js', function() {
+            window.tr8nJQ = $.noConflict(true);
+            if (jQueryCurrentVersion) {
+              window.jQuery = window.$ = jQueryCurrentVersion;
+            }
+            addTr8nScript(window.document, 'tr8n-jssdk', "<%= params[:tr8n_debug_js] ? '/assets/tr8n/tr8n.js': '/assets/tr8n/tr8n-compiled.js' %>", function() {
+              addTr8nScript(window.document, 'tr8n-proxy', '/tr8n/api/v1/proxy/init.js', function() {
+                // alert("Done");  
+              });
+            });
+        });
+      }
+    })(window);
+  //-->
+  </script>
 
 <% end %>

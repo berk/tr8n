@@ -177,9 +177,10 @@ class CreateTr8nTables < ActiveRecord::Migration
     add_index :tr8n_translation_keys, [:key], :unique => true, :name => :tr8n_tk_k
 
     create_table :tr8n_translation_sources do |t|
+      t.integer   :application_id
+      t.integer   :translation_domain_id
       t.integer   :parent_id
       t.string    :source
-      t.integer   :translation_domain_id
       t.integer   :completeness
       t.string    :name
       t.string    :description
@@ -285,6 +286,7 @@ class CreateTr8nTables < ActiveRecord::Migration
     create_table :tr8n_translation_domains do |t|
       t.string        :name
       t.string        :description
+      t.integer       :application_id
       t.integer       :source_count,  :default => 0
       t.timestamps
     end

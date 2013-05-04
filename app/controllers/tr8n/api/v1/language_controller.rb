@@ -26,6 +26,10 @@ class Tr8n::Api::V1::LanguageController < Tr8n::Api::V1::BaseController
   # for ssl access to the translator - using ssl_requirement plugin  
   ssl_allowed :translate  if respond_to?(:ssl_allowed)
 
+  def test
+    sanitize_api_response({:message => "Hello World"})
+  end
+
   # returns a list of all languages
   def index
     languages = []
@@ -40,7 +44,7 @@ class Tr8n::Api::V1::LanguageController < Tr8n::Api::V1::BaseController
   end
   
   def translate
-    language = Tr8n::Language.for(params[:language]) || tr8n_current_language
+    language = Tr8n::Language.for(params[:language] || params[:locale]) || tr8n_current_language
     return sanitize_api_response(translate_phrase(language, params, {:source => source, :api => :translate})) if params[:label]
     
     # API signature
@@ -83,13 +87,13 @@ class Tr8n::Api::V1::LanguageController < Tr8n::Api::V1::BaseController
       translations = []
       phrases.each do |phrase|
         phrase = {:label => phrase} if phrase.is_a?(String)
-        translations << translate_phrase(language, phrase, {:source => source, :url => source, :api => :translate})
+        translations << translate_phrase(language, phrase, {:source => source, :url => request.env['HTTP_REFERER'], :api => :translate})
       end
 
       return sanitize_api_response({:phrases => translations})    
     end
     
-    sanitize_api_response(:phrases => {})
+    sanitize_api_response(:phrases => [])
   rescue Tr8n::KeyRegistrationException => ex
     sanitize_api_response({"error" => ex.message})
   end
