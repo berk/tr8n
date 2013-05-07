@@ -21,6 +21,11 @@
 					hideLightbox();
 	      }
 	    });		  
+
+	    Tr8n.Utils.addEvent(window, "load", function(event) {
+	    	Tr8n.postMessage('tr8n:cookie:tr8n_signed_request:<%=Tr8n::Config.generate_signed_request%>;', '<%=params[:origin]%>');
+	    });		  
+
 		</script>
 		<style>
 			body {

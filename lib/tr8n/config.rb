@@ -900,6 +900,16 @@ module Tr8n
     #########################################################
     # Sharing
     #########################################################
+    def self.generate_signed_request
+      params = []
+      params << current_language.locale
+      if current_user_is_translator?
+        params << current_translator.id
+        params << current_translator.inline_mode ? '1' : '0'
+      end
+      params.join(";")
+    end
+
     def self.shared_secret
       config[:sharing][:secret]
     end

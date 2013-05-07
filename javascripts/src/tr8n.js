@@ -134,6 +134,11 @@ var Tr8n = {
       return;
     }
 
+    if (elements[1] == 'cookie') {
+      document.cookie = escape(elements[2]) + "=" + escape(elements[3]) + "; path=/";
+      return;
+    }
+
     if (elements[1] == 'translation') {
       if (elements[2] == 'report') {
         Tr8n.UI.Translator.hide();

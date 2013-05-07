@@ -33,7 +33,9 @@
 				    
             <% sanitized_label = @translation_key.tokenless_label.gsub('"', '\"') %>
             <script type="text/javascript">
-            		Tr8n.Translation.suggest("<%=@translation_key.id %>", "<%=sanitized_label %>", "<%=@translation_key.suggestion_tokens.join(',')%>", "<%=@translation_key.language.google_key%>", "<%=tr8n_current_language.google_key%>");
+							window.setTimeout(function() {
+            			Tr8n.Translation.suggest("<%=@translation_key.id %>", "<%=sanitized_label %>", "<%=@translation_key.suggestion_tokens.join(',')%>", "<%=@translation_key.language.google_key%>", "<%=tr8n_current_language.google_key%>");
+            	}, 1000);
             </script>
 				  
 				    <div  class="tr8n_txtl" style="color:grey; font-size:12px; padding-top:10px;">

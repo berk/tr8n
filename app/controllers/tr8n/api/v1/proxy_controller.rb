@@ -24,7 +24,7 @@
 class Tr8n::Api::V1::ProxyController < Tr8n::Api::V1::BaseController
 
   def boot
-    params[:source] ||= Tr8n::TranslationSource.normalize_api_source(request.env['HTTP_REFERER'])
+    params[:source] ||= Tr8n::TranslationSource.normalize_api_source(request.env['HTTP_REFERER'] || "undefined")
     render(:partial => "/tr8n/common/js/boot", :formats => [:js], :locals => {:uri => URI.parse(request.url)}, :content_type => "text/javascript")
   end
 
