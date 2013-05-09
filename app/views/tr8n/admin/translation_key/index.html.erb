@@ -2,42 +2,44 @@
 <%= render :partial => "tabs" %>
 <%= tr8n_will_filter(@keys) %>
 
-<!-- 
-<%=link_to_function("Import Translation Keys", "tr8nLightbox.show('/tr8n/admin/translation_key/lb_import', {height:280})") %>
- | 
---> 
-<%=link_to_function("Reset Verification Flags", "resetVerificationFlags()")%>
- | 
-<%=link_to_function("Update Translation Counts", 'updateTranslationCounts()')%>
+
+<%= tr8n_actions_tag([
+        link_to_function("Add Translation Key", "Tr8n.UI.Lightbox.show('/tr8n/admin/translation_key/lb_update')"),
+        link_to_function("Update Translation Counts", 'updateTranslationCounts()')
+      ])
+%>
 <br>
 
-<% form_tag("", :id => "keys_form") do %>
+<%= form_tag("", :id => "tr8n_form") do %>
+  <%= hidden_field_tag(:type, "translation_key") %>
 	<%= will_filter_table_tag(@keys, :columns => [
 	  [:checkbox, :keys],
+    :id,
 	  [:label, lambda{|key|
-	    html = link_to(key.label, :action => :view, :key_id => key.id) 
+	    html = [link_to(key.label, :action => :view, :id => key.id)]
 	    html << '<div style="color:grey; font-size:10px;">'
 	    html << key.description.to_s  
 	    html << '</div>'  
+      html.join("").html_safe
 	  }],
     :locale,
     [:admin, lambda{|key| key.admin}, 'padding:5px;text-align:right;'],
     [:level, lambda{|key| key.level}, 'padding:5px;text-align:right;'], 
-	  [:translation_count, lambda{|key| link_to(key.translation_count || 0, "/tr8n/admin/translation/index?wf_c0=translation_key_id&wf_o0=is&wf_v0_0=#{key.id}")}, 'padding:5px;text-align:right;'],
+	  [:translation_count, lambda{|key| link_to(key.translation_count || 0, "/tr8n/admin/translation/index?wf_c0=translation_id&wf_o0=is&wf_v0_0=#{key.id}")}, 'padding:5px;text-align:right;'],
 	  [:created_at, lambda{|key| key.created_at}, 'padding:5px;text-align:right;'],
 	  [:verified_at, lambda{|key| key.verified_at}, 'padding:5px;text-align:right;'],
 	  [:actions, lambda{|key|
-	    html = []
-	    html << link_to_function("Update", "tr8nLightbox.show('/tr8n/admin/translation_key/lb_update?key_id=#{key.id}', {height:450})")
-	    html << link_to("Delete", {:action => :delete, :key_id => key.id}, {:confirm => "Are you sure you want to delete this key?"})
-	    html.join(' | ')
+      tr8n_actions_tag([
+	      link_to_function("Update", "Tr8n.UI.Lightbox.show('/tr8n/admin/translation_key/lb_update?id=#{key.id}')"),
+        link_to_function("Delete", "deleteObjects('#{key.id}')")
+      ])
 	  }, 'padding:5px;text-align:right;white-space:nowrap;']
 	]) %>
 <% end %>
 
 <%= will_filter_actions_bar_tag(@keys, [
   ['Merge Selected Keys', 'mergeSelectedKeys()'],
-  ['Delete Selected Keys', 'deleteSelectedKeys()'],
+  ['Delete Selected Keys', 'deleteObjects()'],
   ['Associate With Source', 'addSelectedKeysToSource()'],
 ]) %>
 
@@ -63,22 +65,9 @@
 			alert('At least two keys must be selected.');
 			return;
 		}
-		tr8nLightbox.show('/tr8n/admin/translation_key/lb_merge?keys=' + keys, {height:350});
+		Tr8n.UI.Lightbox.show('/tr8n/admin/translation_key/lb_merge?keys=' + keys, {height:350});
 	}
 
-  function deleteSelectedKeys() {
-    if (!confirm('Are you sure you want to delete all selected keys?'))
-       return;
-    Tr8n.element('keys_form').action = "/tr8n/admin/translation_key/delete";
-    Tr8n.element('keys_form').submit();
-  }
-
-  function resetVerificationFlags() {
-    if (!confirm('Are you sure you want to run this opperation?'))
-       return;
-    location = '/tr8n/admin/translation_key/reset_verification_flags' 
-  }
-	
   function updateTranslationCounts() {
     if (!confirm('Are you sure you want to run this opperation?'))
        return;
@@ -91,7 +80,7 @@
       alert('At least one key must be selected.');
       return;
     }
-    tr8nLightbox.show('/tr8n/admin/translation_key/lb_add_to_source?keys=' + keys, {height:350});
+    Tr8n.UI.Lightbox.show('/tr8n/admin/translation_key/lb_add_to_source?keys=' + keys, {height:350});
   }
 
 </script>

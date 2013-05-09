@@ -23,7 +23,7 @@
         html << '</span>'
         html.join(' ').html_safe
       }, 'width:30px;'],
-      [:english_name, lambda{|al| link_to(al.language.english_name, :controller=>"/tr8n/admin/language", :action => :view, :lang_id => al.language.id)}],
+      [:english_name, lambda{|al| link_to(al.language.english_name, :controller=>"/tr8n/admin/language", :action => :view, :id => al.language.id)}],
       [:actions, lambda{|al|
         tr8n_actions_tag([
           link_to_function("Remove", "deleteObjects('#{al.id}')")

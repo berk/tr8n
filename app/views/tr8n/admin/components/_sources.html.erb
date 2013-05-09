@@ -1,12 +1,12 @@
 <%= will_filter_scripts_tag %>
 
 <%= tr8n_actions_tag([
-  link_to_function("Add Sources", "Tr8n.UI.Lightbox.show('/tr8n/admin/applications/lb_add_objects_to_component?type=source&comp_id=#{@comp.id}', {height:450})"),
+  link_to_function("Add Sources", "Tr8n.UI.Lightbox.show('/tr8n/admin/components/lb_add_objects?type=source&id=#{@comp.id}', {height:450})"),
 ])
 %>
 
 <%= form_tag("", :id => "sources_form") do %>
-  <%= hidden_field_tag(:type, "source") %>
+  <%= hidden_field_tag(:type, "component_source") %>
   <%= will_filter_table_tag(@results, :columns => [
     [:checkbox, 'component_objects'],     
     [:id, lambda{|source| 
@@ -27,21 +27,12 @@
     [:actions, lambda{|source|
       tr8n_actions_tag([
         link_to_function("Update", "Tr8n.UI.Lightbox.show('/tr8n/admin/applications/lb_update_source?source_id=#{source.translation_source.id}', {height:350})"),
-        link_to("Remove", {:action => :remove_objects_from_component, :component_object_id => source.id, :type => :source}, {:confirm => "Are you sure you want to remove this source from the component?"})
+        link_to_function("Remove", "deleteObjects('#{source.id}')")
       ])
     }, 'padding:5px;text-align:right;white-space:nowrap;width:200px;']
   ]) %>
 <% end %>
 
 <%= will_filter_actions_bar_tag(@results, [
-  ['Remove Selected Sources', 'removeAllSelected()']
+  ['Remove Selected Sources', 'deleteObjects()']
 ]) %>
-
-<script>
-  function removeAllSelected() {
-    if (!confirm('Are you sure you want to remove all selected sources from this component?'))
-       return;
-    Tr8n.element('sources_form').action = "/tr8n/admin/applications/remove_objects_from_component";
-    Tr8n.element('sources_form').submit();
-  }
-</script>   

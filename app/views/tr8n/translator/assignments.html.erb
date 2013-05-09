@@ -35,7 +35,7 @@
     <div id="comp_content_<%=comp.id%>" class="section_box colored">
       <div class="section_box" style="background-color:#FDFFF0; margin-bottom:10px; margin-top:0px;">
         <% if comp.languages.any? %>
-          <%=tr("This assignment contains [bold: {count||section}], which {count|needs, need} to be translated into the following languages: {languages}", nil, :count => comp.sources.size, :languages => [comp.languages.collect{|lang| link_to(lang.english_name, params.merge(:locale => lang.locale))}]) %>
+          <%=tr("This assignment contains [bold: {count||section}], which {count|needs, need} to be translated into the following languages: {languages}", nil, :count => comp.sources.size, :languages => comp.languages.collect{|lang| link_to(lang.english_name, params.merge(:locale => lang.locale))}.join(", ")) %>
           <% else %>
             <%=tr("This assignment contains [bold: {count||section}], which {count|needs, need} to be translated into all available languages.", nil, :count => comp.sources.size) %>
           <% end %>

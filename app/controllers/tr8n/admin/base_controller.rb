@@ -66,6 +66,12 @@ class Tr8n::Admin::BaseController < Tr8n::BaseController
         object = Tr8n::ComponentTranslator.find_by_id(id)
       when "component_source"
         object = Tr8n::ComponentSource.find_by_id(id)
+      when "lock"
+        object = Tr8n::TranslationKeyLock.find_by_id(id)
+      when "comment"
+        object = Tr8n::TranslationKeyComment.find_by_id(id)
+      when "vote"
+        object = Tr8n::TranslationVote.find_by_id(id)
       else 
         next  
       end

@@ -1,6 +1,10 @@
-<% form_tag("", :id => "locks_form") do %>
+<%= will_filter_scripts_tag %>
+
+<%= form_tag("", :id => "tr8n_form") do %>
+<%=hidden_field_tag(:type, :lock) %>
+
 <%= will_filter_table_tag(@results, :columns => [
-  [:checkbox, :locks],    
+  [:checkbox, :ids],    
   [:language_id, lambda{|lock|
     if lock.language
       link_to(lock.language.english_name, :controller => "/tr8n/admin/language", :action => :view, :lang_id => lock.language.id)
@@ -18,26 +22,18 @@
   :locked, :updated_at,
   [:actions, lambda{|lock|
     html = []
+    html << link_to_function("Delete", "deleteObjects('#{lock.id}')")
     if lock.locked?
       html << link_to("Unlock", {:controller => "/tr8n/admin/translation_key", :action => :update_lock, :lock_id => lock.id, :locked => "false"}, {:confirm => "Are you sure you want to lock this key in #{lock.language.english_name}?"})
     else
       html << link_to("Lock", {:controller => "/tr8n/admin/translation_key", :action => :update_lock, :lock_id => lock.id, :locked => "true"}, {:confirm => "Are you sure you want to unlock this key in #{lock.language.english_name}?"})
     end
-    html.join(' | ')
+    html.join(' | ').html_safe
   }, 'padding:5px;text-align:right;white-space:nowrap;']
 
 ]) %>
 <% end %>
 
 <%= will_filter_actions_bar_tag(@results, [
-  ['Delete Selected Locks', 'deleteSelectedLocks()'] 
+  ['Delete Selected Locks', 'deleteObjects()'] 
 ]) %>
-
-<script>
-  function deleteSelectedLocks() {
-    if (!confirm('Are you sure you want to run this opperation?'))
-       return;
-    Tr8n.element('locks_form').action = "/tr8n/admin/translation_key/delete_lock";
-    Tr8n.element('locks_form').submit();
-  }
-</script>

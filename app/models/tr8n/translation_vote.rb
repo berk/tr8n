@@ -47,10 +47,15 @@ class Tr8n::TranslationVote < ActiveRecord::Base
 
   belongs_to :translation,  :class_name => "Tr8n::Translation"
   belongs_to :translator,   :class_name => "Tr8n::Translator"
-    
+  
+  after_destroy :update_translation_rank  
+
   def self.find_or_create(translation, translator)
     vote = where("translation_id = ? and translator_id = ?", translation.id, translator.id).first
     vote ||= create(:translation => translation, :translator => translator, :vote => 0)
   end
   
+  def update_translation_rank
+    translation.update_rank!
+  end
 end

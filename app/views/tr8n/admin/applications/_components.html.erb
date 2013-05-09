@@ -1,7 +1,7 @@
 <%= will_filter_scripts_tag %>
 
 <%= tr8n_actions_tag([
-    link_to_function("Add Component", "Tr8n.UI.Lightbox.show('/tr8n/admin/applications/lb_update_component?app_id=#{@app.id}', {width:650})")
+    link_to_function("Add Component", "Tr8n.UI.Lightbox.show('/tr8n/admin/components/lb_update?app_id=#{@app.id}', {width:650})")
   ])
 %>
 
@@ -9,19 +9,22 @@
   <%= hidden_field_tag(:type, "component") %>
   <%= will_filter_table_tag(@results, :columns => [
     [:checkbox, 'ids'], 
-    [:id, lambda{|comp| link_to(comp.id, {:action => :component, :comp_id => comp.id}) }], 
+    [:id, lambda{|comp| link_to(comp.id, {:controller => "/tr8n/admin/components", :action => :view, :id => comp.id}) }], 
     :key,
     :name,
     :state,
+    [:languages, lambda{ |comp| 
+      link_to(comp.languages.size, {:controller => "/tr8n/admin/components", :action => :view, :id => comp.id, :mode => :languages})
+    }, 'padding:5px;text-align:right;white-space:nowrap;'],
     [:sources, lambda{ |comp| 
-      link_to(comp.sources.size, {:action => :component, :comp_id => comp.id, :mode => :sources})
+      link_to(comp.sources.size, {:controller => "/tr8n/admin/components", :action => :view, :id => comp.id, :mode => :sources})
     }, 'padding:5px;text-align:right;white-space:nowrap;'],
     [:translators, lambda{ |comp| 
-      link_to(comp.translators.size, {:action => :component, :comp_id => comp.id, :mode => :translators})
+      link_to(comp.translators.size, {:controller => "/tr8n/admin/components", :action => :view, :id => comp.id, :mode => :translators})
     }, 'padding:5px;text-align:right;white-space:nowrap;'],
     [:actions, lambda{|comp|
       tr8n_actions_tag([
-        link_to_function("Update", "Tr8n.UI.Lightbox.show('/tr8n/admin/applications/lb_update_component?comp_id=#{comp.id}', {width:650})"),
+        link_to_function("Update", "Tr8n.UI.Lightbox.show('/tr8n/admin/components/lb_update?id=#{comp.id}', {width:650})"),
         link_to_function("Delete", "deleteObjects('#{comp.id}')")
       ])
     }, 'padding:5px;text-align:right;white-space:nowrap;']

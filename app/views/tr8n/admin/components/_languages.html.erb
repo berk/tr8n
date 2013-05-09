@@ -1,12 +1,12 @@
 <%= will_filter_scripts_tag %>
 
 <%= tr8n_actions_tag([
-    link_to_function("Add Languages", "Tr8n.UI.Lightbox.show('/tr8n/admin/applications/lb_add_objects_to_component?type=language&comp_id=#{@comp.id}', {height:450})"),
+    link_to_function("Add Languages", "Tr8n.UI.Lightbox.show('/tr8n/admin/components/lb_add_objects?type=language&id=#{@comp.id}', {height:450})"),
   ])
 %>
 
 <%= form_tag("", :id => "lang_form") do %>
-  <%= hidden_field_tag(:type, "language") %>
+  <%= hidden_field_tag(:type, "component_language") %>
   <%= will_filter_table_tag(@results, :columns => [
       [:checkbox, 'component_objects'],     
       [:id, lambda{|ulang| ulang.language ?  ulang.language.id : ''}, 'width:60px;'],
@@ -23,7 +23,7 @@
         html << '</span>'
         html.join(' ').html_safe
       }, 'width:30px;'],
-      [:english_name, lambda{|ulang| link_to(ulang.language.english_name, :action => :view, :lang_id => ulang.language.id)}],
+      [:english_name, lambda{|ulang| link_to(ulang.language.english_name, :action => :view, :id => ulang.language.id)}],
       [:state, lambda{|ulang| ulang.state}, 'width:100px;'],
       [:actions, lambda{|ulang|
         html = []
@@ -32,21 +32,12 @@
         else
           html << link_to("Restrict", {:action => :change_component_language_state, :component_language_id => ulang.id, :state => :restricted}, {:confirm => "Are you sure you want to restrict this language?"})
         end
-        html << link_to("Remove", {:action => :remove_objects_from_component, :component_object_id => ulang.id, :type => :language}, {:confirm => "Are you sure you want to remove this language from the component?"})
+        html << link_to_function("Remove", "deleteObjects('#{ulang.id}')")
         html.join(' | ').html_safe
       }, 'padding:5px;text-align:right;white-space:nowrap;width:200px;']        
     ]) %>
 <% end %>
 
 <%= will_filter_actions_bar_tag(@results, [
-  ['Remove From Component', 'removeFromComponent()']
+  ['Remove From Component', 'deleteObjects()']
 ]) %>
-
-<script>
-  function removeFromComponent() {
-    if (!confirm('Are you sure you want to remove selected languages from this component?'))
-       return;
-    Tr8n.element('lang_form').action = "/tr8n/admin/applications/remove_objects_from_component";
-    Tr8n.element('lang_form').submit();
-  }
-</script>   

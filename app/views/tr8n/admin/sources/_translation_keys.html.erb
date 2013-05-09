@@ -12,21 +12,19 @@
 
   <%= will_filter_table_tag(@results, :columns => [
     [:checkbox, :ids],
-    [:id, lambda{|key|
-      link_to(key.id, :controller => "/tr8n/admin/translation_key", :action => :view, :key_id => key.id) 
-    }],
+    :id,
     [:label, lambda{|key|
-      html = key.label
+      html = [link_to(key.label, :controller => "/tr8n/admin/translation_key", :action => :view, :id => key.id) ]
       html << '<div style="color:grey; font-size:10px; padding-top:3px;">'
       html << key.description.to_s  
       html << '</div>' 
-      html.html_safe 
+      html.join("").html_safe 
     }],
-    [:translation_count, lambda{|key| link_to(key.translation_count || 0, :controller => "/tr8n/admin/translation_key", :action => :view, :key_id => key.id, :mode => :translations)}, 'padding:5px;text-align:right;'],
+    [:translation_count, lambda{|key| link_to(key.translation_count || 0, :controller => "/tr8n/admin/translation_key", :action => :view, :id => key.id, :mode => :translations)}, 'padding:5px;text-align:right;'],
     [:created_at, lambda{|key| key.created_at}, 'padding:5px;text-align:right;'],
     [:actions, lambda{|key|
       tr8n_actions_tag([
-        link_to_function("Update", "Tr8n.UI.Lightbox.show('/tr8n/admin/translation_key/lb_update?key_id=#{key.id}', {height:450})"),
+        link_to_function("Update", "Tr8n.UI.Lightbox.show('/tr8n/admin/translation_key/lb_update?id=#{key.id}', {height:450})"),
         link_to_function("Delete", "deleteObjects('#{key.id}')")
       ])
     }, 'padding:5px;text-align:right;white-space:nowrap;']
@@ -57,8 +55,8 @@
   function removeSelectedKeysFromSource() {
     if (!confirm('Make sure the keys are removed from the actual source code. Otherwise they will reappear here again. \nAre you sure you want to remove selected keys from this source?'))
        return;
-    Tr8n.element('keys_form').action = "/tr8n/admin/applications/remove_keys_from_source";
-    Tr8n.element('keys_form').submit();
+    Tr8n.element('tr8n_form').action = "/tr8n/admin/applications/remove_keys_from_source";
+    Tr8n.element('tr8n_form').submit();
   }
 
   function mergeSelectedKeys() {

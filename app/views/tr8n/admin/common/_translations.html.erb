@@ -1,0 +1,69 @@
+<%= will_filter_scripts_tag %>
+
+<%= form_tag({}, :id => :tr8n_form, :method => :get) do %>
+  <%=hidden_field_tag(:type, :translation) %>
+
+  <%= will_filter_table_tag(@results, :columns => [
+    [:checkbox, :translations],
+    :id,
+    [:label, lambda{|translation|
+      html = []
+      html << link_to(translation.label, :controller => "/tr8n/admin/translation", :action => :view, :id => translation.id)
+      if translation.context
+        html << "<div style='font-size:10px;color:grey'>"
+        html << "Context: #{translation.context}"
+        html << "</div>"
+      end
+
+      unless @hide_keys
+        html << "<div style='background:#fffeee; font-size:9px; padding:5px; margin-top:10px; margin-bottom:5px; border:1px dotted #eee;'>"
+        html << link_to(translation.translation_key.label, :controller => "/tr8n/admin/translation_key", :action => :view, :id => translation.translation_key.id)
+        html << "<div style='font-size:10px;color:grey;padding-top:3px;'>"
+        html << translation.translation_key.description
+        html << "</div>"
+        html.join("").html_safe 
+        html << "</div>"
+      end
+
+      html.join("").html_safe 
+    }, :title => "Translation"],
+    [:language_id, lambda{|translation|
+      if translation.language
+        link_to(translation.language.english_name, :controller => "/tr8n/admin/language", :action => :view, :id => translation.language.id)
+      else
+         "Deleted Language"    
+      end  
+    }],
+    [:translator_id, lambda{|translation|
+      if translation.translator
+        link_to(translation.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :id => translation.translator.id)
+      else
+        "Unknown" 
+      end  
+    }],
+    [:rank, lambda{|translation| 
+      html = []
+      if translation.rank >= Tr8n::Config.translation_threshold
+        html << "<span style='color:green'>"
+      elsif translation.rank >= 0
+        html << "<span style='color:yellow'>"
+      else
+        html << "<span style='color:red'>"
+      end     
+      html << translation.rank
+      html << "</span>"
+      html.join("").html_safe
+    }, 'text-align:right;'],
+    [:actions, lambda{|translation|
+      tr8n_actions_tag([
+        link_to_function("Delete", "deleteObjects('#{translation.id}')")
+      ])
+    }, 'text-align:right;white-space:nowrap;']
+  ]) %>
+
+
+<% end %>
+
+<%= will_filter_actions_bar_tag(@results, [
+    ['Delete Selected Translations', 'deleteObjects()'] 
+]) %>

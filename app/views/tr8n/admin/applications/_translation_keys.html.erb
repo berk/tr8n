@@ -1,42 +1,9 @@
-<%= will_filter_scripts_tag %>
-
-<%= form_tag("", :id => "tr8n_form", :method => :get) do %>
-  <%=hidden_field_tag(:comp_id, params[:comp_id]) %>
-  <%=hidden_field_tag(:app_id, params[:app_id]) %>
+<div style="border:1px solid #ccc;padding:10px;background:#eee;margin-top:10px;margin-bottom:10px;">
+<%= form_tag({}, :id => :tr8n_query_form, :method => :get) do %>
+  <%=hidden_field_tag(:id, @app.id) %>
   <%=hidden_field_tag(:mode, params[:mode]) %>
-  <%=hidden_field_tag(:type, "translation_key") %>
-  
-  <div style="border:1px solid #ccc;padding:10px;background:#eee;margin-top:10px;margin-bottom:10px;">
-    <%= render(:partial => "/tr8n/admin/common/search_module") %>
-  </div>
+  <%= render(:partial => "/tr8n/admin/common/search_module") %>
+<% end %>  
+</div>
 
-  <%= will_filter_table_tag(@results, :columns => [
-    [:checkbox, 'ids'],     
-    [:id, lambda{|key|
-      link_to(key.id, :controller => "/tr8n/admin/translation_key", :action => :view, :key_id => key.id) 
-    }],
-    [:label, lambda{|key|
-      html = key.label
-      html << '<div style="color:grey; font-size:10px; padding-top:3px;">'
-      html << key.description.to_s  
-      html << '</div>'  
-      html.html_safe
-    }],
-    :locale,
-    [:admin, lambda{|key| key.admin}, 'padding:5px;text-align:right;'],
-    [:level, lambda{|key| key.level}, 'padding:5px;text-align:right;'], 
-    [:translation_count, lambda{|key| link_to(key.translation_count || 0, :controller => "/tr8n/admin/translation_key", :action => :view, :key_id => key.id, :mode => :translations)}, 'padding:5px;text-align:right;'],
-    [:created_at, lambda{|key| key.created_at}, 'padding:5px;text-align:right;'],
-    [:actions, lambda{|key|
-      tr8n_actions_tag([
-        link_to_function("Update", "Tr8n.UI.Lightbox.show('/tr8n/admin/translation_key/lb_update?key_id=#{key.id}', {height:450})"),
-        link_to_function("Delete", "deleteObjects('#{key.id}')")
-      ])
-    }, 'padding:5px;text-align:right;white-space:nowrap;']
-  ]) %>
-
-<% end %>
-
-<%= will_filter_actions_bar_tag(@results, [
-  ['Delete Selected Keys', 'deleteObjects()'],
-]) %>
+<%=render :partial => "/tr8n/admin/common/translation_keys" %>

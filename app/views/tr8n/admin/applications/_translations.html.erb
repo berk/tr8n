@@ -1,84 +1,20 @@
-<%= will_filter_scripts_tag %>
-
-<%= form_tag({}, :id => :tr8n_form, :method => :get) do %>
-  <%=hidden_field_tag(:comp_id, params[:comp_id]) %>
-  <%=hidden_field_tag(:source_id, params[:source_id]) %>
-  <%=hidden_field_tag(:app_id, params[:app_id]) %>
+<div style="border:1px solid #ccc;padding:10px;background:#eee;margin-top:10px;margin-bottom:10px;">
+<%= form_tag({}, :id => :tr8n_query_form, :method => :get) do %>
+  <%=hidden_field_tag(:id, @app.id) %>
   <%=hidden_field_tag(:mode, params[:mode]) %>
-  <%=hidden_field_tag(:type, :translation) %>
-  
-  <div style="border:1px solid #ccc;padding:10px;background:#eee;margin-top:10px;margin-bottom:10px;">
-    <%= render(:partial => "/tr8n/admin/common/search_module") %>
-    <% if @language_options or @translator_options %>
-      <div style="padding-top:10px;">
-        <% if @language_options %>
-          Language: <%=select_tag(:language, options_for_select(@language_options, params[:language])) %>
-          &nbsp;
-        <% end %>
-        <% if @translator_options %>
-          Translator: <%=select_tag(:translator, options_for_select(@translator_options, params[:translator])) %>
-        <% end %>
-      </div>
-    <% end %>
-  </div>
+  <%= render(:partial => "/tr8n/admin/common/search_module") %>
+  <% if @language_options or @translator_options %>
+    <div style="padding-top:10px;">
+      <% if @language_options %>
+        Language: <%=select_tag(:language, options_for_select(@language_options, params[:language])) %>
+        &nbsp;
+      <% end %>
+      <% if @translator_options %>
+        Translator: <%=select_tag(:translator, options_for_select(@translator_options, params[:translator])) %>
+      <% end %>
+    </div>
+  <% end %>
+<% end %>  
+</div>
 
-  <%= will_filter_table_tag(@results, :columns => [
-    [:checkbox, :ids],
-    :id,
-    [:translation_key_id, lambda{|translation|
-       html = []
-       html << link_to(translation.translation_key.label, :controller => "/tr8n/admin/translation_key", :action => :view, :key_id => translation.translation_key.id)
-       html << "<div style='font-size:10px;color:grey'>"
-       html << translation.translation_key.description
-       html << "</div>"
-       html.join("").html_safe 
-    }],    
-    [:label, lambda{|translation|
-      html = []
-      html << link_to(translation.label, :controller => "/tr8n/admin/translation", :action => :view, :translation_id => translation.id)
-      if translation.context
-        html << "<div style='font-size:10px;color:grey'>"
-        html << "Context: #{translation.context}"
-        html << "</div>"
-      end
-      html.join("").html_safe 
-    }, {:title => "Translation"}],
-    [:language_id, lambda{|translation|
-      if translation.language
-        link_to(translation.language.english_name, :controller => "/tr8n/admin/language", :action => :view, :lang_id => translation.language.id)
-      else
-         "Deleted Language"    
-      end  
-    }],
-    [:translator_id, lambda{|translation|
-      if translation.translator
-        link_to(translation.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :translator_id => translation.translator.id)
-      else
-        "Unknown" 
-      end  
-    }],
-    [:rank, lambda{|translation| 
-      html = []
-      if translation.rank >= Tr8n::Config.translation_threshold
-        html << "<span style='color:green'>"
-      elsif translation.rank >= 0
-        html << "<span style='color:yellow'>"
-      else
-        html << "<span style='color:red'>"
-      end     
-      html << translation.rank
-      html << "</span>"
-      html.join("").html_safe
-    }, 'text-align:right;width:50px;'],
-    :created_at,
-    [:actions, lambda{|translation|
-      tr8n_actions_tag([
-        link_to_function("Delete", "deleteObjects('#{translation.id}')")
-      ])
-    }, 'text-align:right;white-space:nowrap;']
-  ]) %>
-<% end %>
-
-<%= will_filter_actions_bar_tag(@results, [
-  ['Delete Selected Translations', 'deleteObjects()'] 
-]) %>
+<%=render :partial => "/tr8n/admin/common/translations" %>

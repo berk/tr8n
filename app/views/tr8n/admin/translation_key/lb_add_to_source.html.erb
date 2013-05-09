@@ -5,7 +5,7 @@
     </div>
     <div class="bd" style="padding-bottom:60px;">
       <%= form_for(@source, :as => :source, :url => {:action => :lb_add_to_source}, :html => {:id => 'tr8n_form', :method => :post, :class => "tr8n"}) do |form| %>
-        <%= hidden_field_tag :source_url, request.env['HTTP_REFERER'] %>
+        <%= hidden_field_tag(:origin, params[:origin]) %>
         <%= hidden_field_tag :keys, params[:keys] %>
         <div style="margin-bottom:5px;padding:5px;">
           Select an existing source: <%=select_tag(:source_id, options_for_select(@sources)) %>

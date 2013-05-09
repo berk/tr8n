@@ -7,7 +7,7 @@
       <%= form_for(@key, :as => :translation_key, :url => {:action => :merge}, :html => {:id => 'tr8n_form', :method => :post, :class => "tr8n"}) do |form| %>
         <%= form.hidden_field :id %>
         <%= hidden_field_tag :keys, @keys.collect{|key| key.id}.join(',') %>
-        <%= hidden_field_tag :source_url, request.env['HTTP_REFERER'] %>
+        <%= hidden_field_tag(:origin, params[:origin]) %>
         
       	<div style="background-color:#f1f4fa; padding:5px; max-height:120px; overflow:auto; margin-bottom: 10px; border: 1px solid #ccc;">
       		<table style="width:100%">

@@ -24,7 +24,7 @@
 class Tr8n::Admin::LanguageController < Tr8n::Admin::BaseController
   
   def index
-    @languages = Tr8n::Language.filter(:params => params, :filter => Tr8n::LanguageFilter)
+    @results = Tr8n::Language.filter(:params => params, :filter => Tr8n::LanguageFilter)
   end
 
   def view

@@ -1,19 +1,19 @@
 <%= will_filter_scripts_tag %>
 
 <%= tr8n_actions_tag([
-    link_to_function("Add Translators", "Tr8n.UI.Lightbox.show('/tr8n/admin/applications/lb_add_objects_to_component?type=translator&comp_id=#{@comp.id}', {height:450})"),
+    link_to_function("Add Translators", "Tr8n.UI.Lightbox.show('/tr8n/admin/components/lb_add_objects?type=translator&id=#{@comp.id}', {height:450})"),
   ])
 %>
 
 <%= form_tag("", :id => "tr8n_form") do %>
-  <%= hidden_field_tag(:type, "translator") %>
+  <%= hidden_field_tag(:type, "component_translator") %>
   <%= will_filter_table_tag(@results, :columns => [
       [:checkbox, 'component_objects'],     
       [:id, lambda{|ctran|
         ctran.translator.id
       }],
       [:name, lambda{|ctran|
-         link_to(ctran.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :translator_id => ctran.translator.id) 
+         link_to(ctran.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :id => ctran.translator.id) 
       }],
       [:country, lambda{|ctran|
         ctran.translator.country_code
@@ -59,7 +59,7 @@
       }, 'text-align:right;width:100px;'],
       [:actions, lambda{|ctran|
         tr8n_actions_tag([
-          link_to("Remove", {:action => :remove_objects_from_component, :component_object_id => ctran.id, :type => :translator}, :confirm => "Are you sure you want to do that?")
+          link_to_function("Remove", "deleteObjects('#{ctran.id}')")
         ])
       }, 'text-align:right;white-space:nowrap;']
 
@@ -67,14 +67,6 @@
 <% end %>
 
 <%= will_filter_actions_bar_tag(@results, [
-  ['Remove From Component', 'removeFromComponent()']
+  ['Remove From Component', 'deleteObjects()']
 ]) %>
-
-<script>
-  function removeFromComponent() {
-    if (!confirm('Are you sure you want to remove all selected translators from this component?'))
-       return;
-    Tr8n.element('tr8n_form').action = "/tr8n/admin/applications/remove_objects_from_component";
-    Tr8n.element('tr8n_form').submit();
-  }
-</script>   
+ 

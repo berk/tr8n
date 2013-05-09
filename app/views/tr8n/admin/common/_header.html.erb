@@ -1,4 +1,11 @@
 <div class="translations_navigation" dir="ltr">
+  <div style="float:right">
+    <%= form_tag("/tr8n/admin/translation_key", :id => "tr8n_key_search_form", :method => :get) do %>
+        <%=hidden_field_tag("wf_c0", "label") %>
+        <%=hidden_field_tag("wf_o0", "contains") %>
+        <%= text_field_tag("wf_v0_0", "", :style => "width:250px;font-size:15px;background: white url(/assets/tr8n/icn_search.png) left no-repeat; padding-left: 20px; border-radius:10px;", :placeholder => trla("Search translation keys")) %>
+    <% end %>
+  </div>
   <div style="font-size:22px; font-weight: bold;">
 	  <%= image_tag("tr8n/tr8n_logo2.png", :style=>"width:50px;") %>  
     <%=tra("Administration Tools")%>

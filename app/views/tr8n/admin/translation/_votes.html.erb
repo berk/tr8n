@@ -1,9 +1,12 @@
-<% form_tag("", :id => "votes_form") do %>
-  <%= will_filter_table_tag(@votes, :columns => [
-    [:checkbox, :votes],
+<%= will_filter_scripts_tag %>
+
+<%= form_tag("", :id => "tr8n_form") do %>
+  <%= hidden_field_tag(:type, "vote") %>
+  <%= will_filter_table_tag(@results, :columns => [
+    [:checkbox, :ids],
     [:translator_id, lambda{|vote|
       if vote.translator
-        link_to(vote.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :translator_id => vote.translator.id)
+        link_to(vote.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :id => vote.translator.id)
       else
         "Unknown" 
       end  
@@ -17,25 +20,16 @@
       end     
       html << vote.vote
       html << "</span>"
-      html.join("")
+      html.join("").html_safe
     }, 'text-align:right;'],
     [:actions, lambda{|vote|
-      html = []
-      html << link_to("Delete", {:action => :delete_vote, :vote_id => vote.id}, {:confirm => "Are you sure you want to delete this vote?"})
-      html.join(' | ')
+      tr8n_actions_tag([
+        link_to_function("Delete", "deleteObjects('#{vote.id}')")
+      ])
     }, 'text-align:right;white-space:nowrap;']
   ]) %>
 <% end %>
 
-<%= will_filter_actions_bar_tag(@votes, [
-  ['Delete Selected Votes', 'deleteSelectedVotes()'] 
+<%= will_filter_actions_bar_tag(@results, [
+  ['Delete Selected Votes', 'deleteObjects()'] 
 ]) %>
-
-<script>
-  function deleteSelectedVotes() {
-    if (!confirm('Are you sure you want to run this opperation?'))
-       return;
-    Tr8n.element('votes_form').action = "/tr8n/admin/translation/delete_vote";
-    Tr8n.element('votes_form').submit();
-  }
-</script>

@@ -7,7 +7,7 @@
 <%= render :partial => "/tr8n/admin/common/header" %>
 <%= render :partial => "tabs" %>
 
-<%= tr8n_will_filter(@languages) %>
+<%= tr8n_will_filter(@results) %>
 
 <%=link_to_function("+ Add New Language", "Tr8n.UI.Lightbox.show('/tr8n/admin/language/lb_update', {height:400})")%>
  | 
@@ -15,7 +15,7 @@
 <br>
 
 <%= form_tag("", :id => "languages_form") do %>
-	<%= will_filter_table_tag(@languages, :columns => [
+	<%= will_filter_table_tag(@results, :columns => [
     [:checkbox, 'languages'],
 	  [:flag, lambda{|lang| image_tag("tr8n/flags/#{lang.flag}.png")}],
 	  [:locale, lambda{|lang|
@@ -75,7 +75,7 @@
 	]) %>
 <% end %>
 
-<%= will_filter_actions_bar_tag(@languages, [
+<%= will_filter_actions_bar_tag(@results, [
 	['Enable Selected Languages', 'enableSelectedLanguages()'], 
 	['Disable Selected Languages', 'disableSelectedLanguages()'],
 	['Add To Component', 'addSelectedLanguagesToComponent()'],

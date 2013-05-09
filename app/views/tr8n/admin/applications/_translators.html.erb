@@ -14,7 +14,7 @@
       }],
       [:name, lambda{|at|
         if at.translator
-         link_to(at.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :translator_id => at.translator.id) 
+         link_to(at.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :id => at.translator.id) 
         else
           "deleted"
         end
