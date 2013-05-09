@@ -358,6 +358,10 @@ module Tr8n
       config[:enable_translator_tabs]
     end
 
+    def self.offline_task_method
+      config[:offline_task_method]
+    end
+
     #########################################################
     # Config Sections
     def self.caching
@@ -431,6 +435,10 @@ module Tr8n
       site_info[:title] 
     end
 
+    def self.contact_email
+      site_info[:contact_email]
+    end
+
     def self.splash_screen
       site_info[:splash_screen]  
     end
@@ -447,6 +455,10 @@ module Tr8n
 
     def self.multiple_base_languages?
       self.default_admin_locale == default_locale
+    end
+
+    def self.base_url
+      site_info[:base_url]
     end
 
     def self.default_url

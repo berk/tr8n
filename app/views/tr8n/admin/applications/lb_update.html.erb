@@ -1,21 +1,34 @@
 <%= tr8n_lightbox_header_tag %>
 <div class="inner">
     <div class="hd">
-        <%= tr8n_lightbox_title_tag(tra("Application Details")) %>
+        <% if @app.id.nil? %>
+            <%= tr8n_lightbox_title_tag(tra("New Application")) %>
+        <% else %>
+            <%= tr8n_lightbox_title_tag(tra("Application Details")) %>
+        <% end %>
     </div>
-    <div class="bd" style="padding-bottom:60px;">
-      <%= form_for(@app, :as => :app, :url => {:action => :update}, :html => {:id => 'tr8n_form', :method => :post, :class => "tr8n"}) do |form| %>
-        <%= form.hidden_field :id %>
+    <div class="bd" style="padding-bottom:80px;">
+      <%= form_for(@app, :as => :app, :url => {:id => @app.id}, :html => {:id => 'tr8n_form', :method => :post, :class => "tr8n"}) do |form| %>
         <%= hidden_field_tag(:origin, params[:origin]) %>
         <table class="admin_table">
+            <% unless @app.id.nil? %>
             <tr>
                 <th>
                     <%=tra("Key:") %>
                 </th>
                 <td>
-                    <%= form.text_field :key, :style=>"width:99%;" %>
+                    <%= @app.key %>
                 </td>
             </tr>
+            <tr>
+                <th>
+                    <%=tra("Secret:") %>
+                </th>
+                <td>
+                    <%= @app.secret %>
+                </td>
+            </tr>
+            <% end %>
             <tr>
                 <th>
                     <%=tra("Name:") %>
@@ -32,10 +45,23 @@
                     <%= form.text_area :description, :style=>"width:99%;height:80px" %>
                 </td>
             </tr>
+            <% if @app.id.nil? %>
+            <tr>
+                <th>
+                   <%=tra("Domains:") %>
+                </th>
+                <td>
+                    <%= text_area_tag :domains, "", :style=>"width:99%;height:80px" %>
+                    <div style="color:#666; font-size:11px; padding:5px;">
+                      <%=tra("Enter one domain per line") %>
+                    </div>
+                </td>
+            </tr>
+            <% end %>
         </table>
       <% end %>
-      <div>
-          <em><%=tra("Note: if you have multiple subsystems, use the application key in each subsystem configuration file.") %></em>
+      <div style="color:#666; font-size:11px;">
+          <%=tra("Note: if you have multiple subsystems, use the application key in each subsystem configuration file.") %>
       </div>
     </div>
     <div class="ft">

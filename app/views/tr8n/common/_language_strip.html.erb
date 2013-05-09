@@ -1,29 +1,19 @@
-<% if Tr8n::Config.enabled? and (Tr8n::Config.open_registration_mode? or Tr8n::Config.current_user_is_translator?) %>
-  <div class="tr8n_language_strip" style="font-size:12px;">
-	  <% featured_languages = Tr8n::Language.featured_languages %>
-		
-  	<% featured_languages.each do |lang| %>
-		    <%= tr8n_language_name_tag(lang, opts) %> &nbsp;
-		<% end %>
-		
-		<% if featured_languages.size > 0 %>
-				<% if opts[:javascript] %>
-				  <span id="tr8n_more_strip_languages">
-				    <%=link_to_function("&raquo;".html_safe, "Tr8n.Effects.hide('tr8n_more_strip_languages'); Tr8n.Effects.appear('tr8n_other_strip_languages');") %>
-					</span>	
-					
-					<span id="tr8n_other_strip_languages" style="display:none">
-					  <% (Tr8n::Language.enabled_languages - featured_languages).each do |lang| %>
-			        <%= tr8n_language_name_tag(lang, opts) %> &nbsp;
-			      <% end %>
-						
-			      <span id="tr8n_less_strip_languages">
-			        <%=link_to_function("&laquo;".html_safe, "Tr8n.Effects.show('tr8n_more_strip_languages'); Tr8n.Effects.fade('tr8n_other_strip_languages');") %>
-			      </span> 
-					</span>
-				<% else %>
-		      <%=link_to("&raquo;".html_safe, "/tr8n/language/table") %>
-				<% end %>	
+<% if Tr8n::Config.enabled? %>
+<style>
+.tr8n_language_strip                            {text-align:center; color:#777;}
+.tr8n_language_strip a                          {text-decoration:none; color:#777; outline:none; border:0px; font-size:10px;}
+.tr8n_language_strip a img                      {border:0px;}
+.tr8n_language_strip a:hover                    {text-decoration:underline}  
+</style>
+<div class="tr8n_language_strip" style="font-size:12px;">
+    <% featured_languages = Tr8n::Language.featured_languages %>
+    
+    <% featured_languages.each do |lang| %>
+        <%= tr8n_language_name_tag(lang, opts) %> &nbsp;
+    <% end %>
+    
+    <% if featured_languages.size > 0 %>
+        <%=link_to_function("&raquo;".html_safe, "Tr8n.UI.LanguageSelector.show(true)") %>
     <% end %> 
-  </div>
+</div>
 <% end %>

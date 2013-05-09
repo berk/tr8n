@@ -27,7 +27,11 @@ module Tr8n
     def self.schedule(class_name, method_name, opts = {})
       # default implementation just passes the call right back
       # you can monkey patch this class to use an offline system of your preference
-      class_name.constantize.send(method_name, opts)
+      if Tr8n::Config.offline_task_method == "delayed_jobs"
+        class_name.constantize.delay.send(method_name, opts)
+      else
+        class_name.constantize.send(method_name, opts)
+      end
     end
 
   end 

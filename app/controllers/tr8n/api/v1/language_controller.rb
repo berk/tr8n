@@ -87,7 +87,11 @@ class Tr8n::Api::V1::LanguageController < Tr8n::Api::V1::BaseController
       translations = []
       phrases.each do |phrase|
         phrase = {:label => phrase} if phrase.is_a?(String)
-        translations << translate_phrase(language, phrase, {:source => source, :url => request.env['HTTP_REFERER'], :api => :translate})
+        language = phrase[:locale].blank? ? Tr8n::Config.default_language.locale : (Tr8n::Language.for(phrase[:locale]) || Tr8n::Language.find_by_google_key(phrase[:locale]))
+
+        pp  "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@", language
+
+        translations << translate_phrase(language, phrase, {:source => source, :url => request.env['HTTP_REFERER'], :api => :translate, :locale => language.locale})
       end
 
       return sanitize_api_response({:phrases => translations})    

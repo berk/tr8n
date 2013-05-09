@@ -42,12 +42,5 @@ class Tr8n::Admin::GlossaryController < Tr8n::Admin::BaseController
     end
     dismiss_lightbox
   end
-  
-  def delete
-    glossary = Tr8n::Glossary.find_by_id(params[:glossary_id]) if params[:glossary_id]
-    glossary.destroy if glossary
-
-    redirect_to_source
-  end  
-    
+      
 end

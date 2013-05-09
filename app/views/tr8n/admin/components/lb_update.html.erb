@@ -1,0 +1,57 @@
+<%= tr8n_lightbox_header_tag %>
+<div class="inner">
+    <div class="hd">
+        <%= tr8n_lightbox_title_tag("Component Details") %>
+    </div>
+    <div class="bd" style="padding-bottom:60px;">
+        <%= form_for(@comp, :as => :comp, :url => {:id => @comp.id}, :html => {:id => 'tr8n_form', :method => :post, :class => "tr8n"}) do |form| %>
+        <%= hidden_field_tag(:origin, params[:origin]) %>
+        <table class="admin_table">
+            <tr>
+                <th>
+                    Application:
+                </th>
+                <td>
+                    <%= select_tag "comp[application_id]", options_for_select(@apps, @comp.application_id || params[:app_id]), :style=>"width:99%;" %>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    Key:
+                </th>
+                <td>
+                    <%= form.text_field :key, :style=>"width:99%;" %>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    Name:
+                </th>
+                <td>
+                    <%= form.text_field :name, :style=>"width:99%;" %>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                   Description:
+                </th>
+                <td>
+                    <%= form.text_area :description, :style=>"width:99%;height:80px;" %>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    State:
+                </th>
+                <td>
+                    <%= select_tag("comp[state]", options_for_select(Tr8n::Component.state_options, @comp.state), :style=>"width:99%;") %>
+                </td>
+            </tr>
+        </table>
+        <% end %>
+    </div>
+    <div class="ft">
+        <%= tr8n_lightbox_buttons_tag %>
+    </div>
+</div>
+<%= tr8n_lightbox_footer_tag %>

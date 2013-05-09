@@ -1,0 +1,84 @@
+<%= render :partial => "/tr8n/admin/common/header" %>
+<%= render :partial => "tabs", :locals => {:current_tab => @app.name} %>
+
+<table class="admin_table">
+    <tr>
+        <th width="160">
+            Application Id
+        </th>
+        <td>
+            <%=@app.id %>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Key
+        </th>
+        <td>
+            <%=@app.key %>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Secret
+        </th>
+        <td>
+            <%=@app.secret %>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Name
+        </th>
+        <td>
+            <%=@app.name %>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Description
+        </th>
+        <td>
+            <%=@app.description %>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Created At
+        </th>
+        <td>
+            <%=@app.created_at %>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            
+        </th>
+        <td>
+            <%= tr8n_actions_tag([
+                link_to_function("Update", "Tr8n.UI.Lightbox.show('/tr8n/admin/applications/lb_update?id=#{@app.id}', {width:650})")
+              ])
+            %>
+        </td>
+    </tr>    
+</table>
+
+<%=  tr8n_sections_tag(:modes => [
+          ["Application Metrics", {:mode => :metrics}],
+          ["Domains", {:mode => :domains}],
+          ["Languages", {:mode => :languages}],
+          ["Translators", {:mode => :translators}],
+          ["Sources", {:mode => :sources}],
+          ["Components", {:mode => :components}],
+          ["Translation Keys", {:mode => :translation_keys}],
+          ["Translations", {:mode => :translations}],
+        ],
+        :params => {
+          :id => @app.id
+        }
+) %>
+
+<%= render :partial => "/tr8n/admin/common/footer" %>
+
+<script>
+</script>   

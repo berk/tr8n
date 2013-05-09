@@ -2,7 +2,7 @@
 <%= render :partial => "tabs" %>
 <%= tr8n_will_filter(@reports) %>
 
-<%= form_tag("", :id => "sources_form") do %>
+<% form_tag("", :id => "sources_form") do %>
   <%= will_filter_table_tag(@reports, :columns => [
     :created_at,
     [:translator_id, lambda{|report|
@@ -11,9 +11,9 @@
       else
         "Unknown" 
       end  
-    }, :filterable => true],
-    [:object_type, :filterable => true], 
-    [:object_id, :filterable => true],
+    }],
+    :object_type, 
+    :object_id,
     :reason,
     :comment
   ]) %>

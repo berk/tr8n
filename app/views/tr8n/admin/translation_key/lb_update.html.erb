@@ -1,14 +1,12 @@
-<%= render :partial => "/tr8n/common/lightbox_header" %>
-
 <div class="inner">
     <div class="hd">
         <div style="float:right;">
-            <%=link_to_function(image_tag("tr8n/close.gif"), "Tr8n.UI.Lightbox.hide();") %>
+            <%=link_to_function(image_tag("/tr8n/images/close.gif"), "tr8nLightbox.hide();") %>
         </div>
         Translation Key Details
     </div>
-    <div class="bd" style="height:250px;overflow:auto;">
-        <%= form_for(@key, :as => :translation_key, :url => {:action => :update}, :html => {:id => 'tr8n_form', :method => :post, :class => "tr8n"}) do |form| %>
+    <div class="bd">
+        <% form_for(:translation_key, @key, :url => {:action => :update}, :html => {:id => 'tr8n_form', :method => :post, :class => "tr8n"}) do |form| %>
         <%= form.hidden_field :id %>
         <%= hidden_field_tag :source_url, request.env['HTTP_REFERER'] %>
         <table class="admin_table">
@@ -33,7 +31,7 @@
                     <%=tra("Label:") %>
                 </th>
                 <td>
-                    <%= form.text_field :label, :style=>"width:99%;" %>
+                    <%= form.text_area :label, :style=>"width:99%;height:100px;" %>
                 </td>
             </tr>
             <tr>
@@ -41,12 +39,20 @@
                     <%=tra("Description:") %>
                 </th>
                 <td>
-                    <%= form.text_field :description, :style=>"width:99%;" %>
+                    <%= form.text_area :description, :style=>"width:99%;height:50px;" %>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    <%=tra("Level:") %>
+                </th>
+                <td>
+                    <%= form.text_field :level, :style=>"width:99%;" %>
                 </td>
             </tr>
         </table>
         <div>
-            <em>Note: changing translation key may invalidate the translations. Don't forget to change the code to reflect the new label and description. Otherwise the lookup will fail and a new key will be registered.</em>
+            <em>Note: make sure to change the source code to reflect the new label and description. Otherwise the lookup will fail and the old key will be re-registered.</em>
         </div>
         <% end %>
     </div>

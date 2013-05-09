@@ -1,5 +1,5 @@
 <%= render :partial => "/tr8n/admin/common/header" %>
-<%= render :partial => "tabs", :locals => {:current_tab => "Translator Details"} %>
+<%= render :partial => "tabs", :locals => {:current_tab => "Translator: #{@translator.name}"} %>
 
 <table class="admin_table">
     <tr>
@@ -25,6 +25,16 @@
     </tr>
     <tr>
         <th>
+            Access Code
+        </th>
+        <td>
+            <%= @translator.access_key %>
+            (<%= link_to('generate', {:action => :generate_access_key, :translator_id => @translator.id}, {:confirm => "Are you sure you want to generate translator access key?"}) %>)
+            <span style="color: #888">Used to access restricted components when user is logged out.</span>
+        </td>
+    </tr> 
+    <tr>
+        <th>
             Site Administrator
         </th>
         <td>
@@ -37,36 +47,16 @@
         </th>
         <td>
             <span id="translator_level_container"> 
-              <span id='translator_title'><%= @translator.title %></span>
+              <span id='translator_title'><%= @translator.title %> (<%= @translator.level %>)</span>
               &nbsp;&nbsp;
               <%= link_to_function('change', "Tr8n.Effects.hide('translator_level_container'); Tr8n.Effects.show('translator_level_options_container');") unless @translator.admin? %>
             </span>
             
             <span id="translator_level_options_container" style='display:none'>
-            	<%= form_tag(:action => :update, :translator_id => @translator.id) do %>
+            	<% form_tag do %>
 	              <%= select_tag('translator_level', options_for_select(Tr8n::Translator.level_options, @translator.level.to_s)) %>
 	              <%= link_to_function('save', 'updateTranslatorLevel()')%> | <%= link_to_function('cancel', "Tr8n.Effects.show('translator_level_container'); Tr8n.Effects.hide('translator_level_options_container');")%>
 							<% end %>
-            </span>
-            
-        </td>
-    </tr> 
-    <tr>
-        <th>
-            Voting Power
-        </th>
-        <td>
-            <span id="translator_power_container"> 
-              <span id='translator_title'><%= @translator.voting_power %></span>
-              &nbsp;&nbsp;
-              <%= link_to_function('change', "Tr8n.Effects.hide('translator_power_container'); Tr8n.Effects.show('translator_power_value_container');") %>
-            </span>
-            
-            <span id="translator_power_value_container" style='display:none'>
-              <%= form_tag({:action => :update, :translator_id => @translator.id}, :id => :power_form) do %>
-                <%= text_field_tag(:new_voting_power, @translator.voting_power) %>
-                <%= link_to_function("save", "Tr8n.Effects.submit('power_form')")%> | <%= link_to_function('cancel', "Tr8n.Effects.show('translator_power_container'); Tr8n.Effects.hide('translator_power_value_container');")%>
-              <% end %>
             </span>
             
         </td>
@@ -144,16 +134,6 @@
             <%=@translator.updated_at %>
         </td>
     </tr>
-		<tr>
-        <th>
-            Selected Languages
-        </th>
-        <td>
-					<%= @translator.language_users.collect{|lu|
-                  link_to(lu.language.english_name, :controller => "/tr8n/admin/language", :action => :view, :lang_id => lu.language.id) 
-              }.join(", ").html_safe -%>
-        </td>
-		</tr>	    
     <tr>
         <th>
             
@@ -167,10 +147,6 @@
 
           | <%=link_to("Delete", {:action => :delete, :translator_id => @translator.id}, :confirm => "Are you sure you want to do that?")%>
 					
-          | <%=link_to("View Translations", "/tr8n/admin/translation?wf_c0=translator_id&wf_o0=is&wf_v0_0=#{@translator.id}") %>
-          | <%=link_to("View Metrics", "/tr8n/admin/translator/metrics?wf_c0=translator_id&wf_o0=is&wf_v0_0=#{@translator.id}") %>
-          | <%=link_to("View Reported Translations", "/tr8n/admin/translation?wf_c0=translator_id&wf_o0=is&wf_v0_0=#{@translator.id}&wf_c1=rank&wf_o1=is_less_than&wf_v1_0=-100") %>
-          | <%=link_to("View Reported Forum Messages", "/tr8n/admin/forum/reports?wf_c0=author_id&wf_o0=is&wf_v0_0=#{@translator.id}") %>
         </td>
     </tr>    
 </table>
@@ -182,67 +158,30 @@
   }  
 </script>
 
-<h1>
-  <div style="font-size:12px; float:right;padding-top:10px;">
-    <%=link_to("view all", "/tr8n/admin/translator/metrics")%>
-  </div>
 
-	Metrics
-</h1>
-<table class="admin_table">
-<thead>
-  <tr>
-    <th style="">Language</th>
-    <th style="">Translations Count</th>
-    <th style="">Votes Count</th>
-  </tr>
-</thead>
-<tbody>
-  <% @translator.translator_metrics.each do |metric| -%>
-    <% next unless metric.language %>
-    <tr>
-      <td><%= link_to(metric.language.english_name, :controller => "/tr8n/admin/language", :action => :view, :lang_id => metric.language.id) %></td>
-      <td><%= metric.total_translations %></td>
-      <td>
-          <%=metric.total_votes || 0 %>
-          (<span style="color:green"><%=metric.positive_votes || 0 %></span>/<span style="color:red"><%=metric.negative_votes || 0 %></span>)
-      </td>
-    </tr>
-  <% end -%>
-</tbody>
-</table>
-<br>
+<%=  tr8n_sections_tag(:modes => [
+            ["Activity",    {:mode => :activity}],
+            ["Assignments", {:mode => :assignments}],
+            ["Metrics",     {:mode => :metrics}],
+            ["Languages",   {:mode => :languages}],
+            ["Translations",   {:mode => :translations}],
+            ["Votes",   {:mode => :votes}],
+            ["Locks",   {:mode => :locks}],
+            ["Following",   {:mode => :following}],
+            ["Forum Messages",   {:mode => :messages}],
+            ["Reports",   {:mode => :reports}],
+        ],
+        :params => {
+            :translator_id => @translator.id
+        }
+) %>
 
-<h1>
-  <div style="font-size:12px; float:right;padding-top:10px;">
-    <%=link_to("view all", "/tr8n/admin/translator/log?wf_c0=translator_id&wf_o0=is&wf_v0_0=#{@translator.id}")%>
-  </div>
-	Recent Activity <span style="color:grey; font-size:12px;">(last 20 actions)</span>
-</h1>
-<table class="admin_table">
-<thead>
-  <tr>
-    <th style="width:150px">Created At</th>
-    <th style="width:150px">Actor</th>
-    <th style="">Action</th>
-  </tr>
-</thead>
-<tbody>
-  <% @translator.last_logs.each do |log| -%>
-    <tr>
-      <td><%= log.created_at.strftime("%m/%d/%Y %H:%M:%S") %></td>
-      <td><%= link_to(log.translator.name, "/admin/users/user?profile=#{log.translator.user.id}") if log.translator.user %>
-      <td style="<%=log.decoration%>"><%= log.describe %></td>
-    </tr>
-  <% end -%>
-</tbody>
-</table>
 <%= render :partial => "/tr8n/admin/common/footer" %>
 
 <script>
 	function updateTranslatorLevel() {
 		var reason = prompt("Please provide the reason for promoting/demoting this translator:");
 		if (reason) reason = "";
-		location = "/tr8n/admin/translator/update?translator_id=<%=@translator.id%>&new_level=" + Tr8n.value('translator_level') + "&reason=" + reason;
+		location = "/tr8n/admin/translator/update_level?translator_id=<%=@translator.id%>&new_level=" + Tr8n.value('translator_level') + "&reason=" + reason;
 	}
 </script>

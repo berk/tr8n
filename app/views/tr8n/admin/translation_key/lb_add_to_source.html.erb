@@ -1,0 +1,57 @@
+<%= tr8n_lightbox_header_tag %>
+<div class="inner">
+    <div class="hd">
+        <%= tr8n_lightbox_title_tag(tra("Adding Translation Keys To Source")) %>
+    </div>
+    <div class="bd" style="padding-bottom:60px;">
+      <%= form_for(@source, :as => :source, :url => {:action => :lb_add_to_source}, :html => {:id => 'tr8n_form', :method => :post, :class => "tr8n"}) do |form| %>
+        <%= hidden_field_tag :source_url, request.env['HTTP_REFERER'] %>
+        <%= hidden_field_tag :keys, params[:keys] %>
+        <div style="margin-bottom:5px;padding:5px;">
+          Select an existing source: <%=select_tag(:source_id, options_for_select(@sources)) %>
+        </div>
+        <div style="padding:5px;">
+          <div style="padding-bottom:10px;">or create a new one:</div>
+          <table class="admin_table">
+              <tr>
+                  <th>
+                      Key: (required)
+                  </th>
+                  <td>
+                      <%= form.text_field :source, :style=>"width:99%;" %>
+                  </td>
+              </tr>
+              <tr>
+                    <th>
+                        Url:
+                    </th>
+                    <td>
+                        <%= form.text_field :url, :style=>"width:99%;" %>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        Name:
+                    </th>
+                    <td>
+                        <%= form.text_field :name, :style=>"width:99%;" %>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                       Description:
+                    </th>
+                    <td>
+                        <%= form.text_area :description, :style=>"width:99%;height:50px;" %>
+                    </td>
+                </tr>              
+          </table>
+        </div>
+      <% end %>
+
+    </div>
+    <div class="ft">
+        <%= tr8n_lightbox_buttons_tag %>
+    </div>
+</div>
+<%= tr8n_lightbox_footer_tag %>

@@ -1,0 +1,80 @@
+<div style="padding-top:10px;padding-bottom:10px;">
+  Jump to: <%= @results.collect{|comp| link_to(comp.name, params.merge(:anchor => "comp-#{comp.id}"))}.join(", ").html_safe %>
+</div>
+
+<% @results.each do |comp| %>
+
+<div class="section_title" style="font-size:16px;">
+  <div style="<%=tr8n_style_attribute_tag('float', 'right')%>;font-size:12px;">
+    <%=link_to("view component", :action => :component, :comp_id => comp.id)%>
+  </div>
+
+  <%=tr8n_toggler_tag("comp_content_#{comp.id}")%>
+  
+  <span dir="ltr">
+    <a name="<%="comp-#{comp.id}"%>" style="text-decoration:none;color:black;font-weight:bold;"><%= comp.name %></a>
+  </span>
+</div>
+
+<div id="comp_content_<%=comp.id%>" class="section_box colored">
+<% languages = comp.languages.sort{|lang1, lang2| lang1.english_name <=> lang2.english_name} %>
+
+<% languages.each do |language| %>
+  <% 
+    metrics = comp.sources.collect{|s| s.total_metric(language)} 
+  %>
+  <div class="section_box" style="background-color:#FDFFF0; margin-bottom:10px; margin-top:0px;">
+    <table>
+      <tr>
+        <td style="width:20%;text-align:left; padding:10px 0px; font-size:18px; vertical-align:middle;">
+          <%= tr8n_language_flag_tag(language) %> 
+          <%= link_to(language.english_name, :action => :component, :comp_id => comp.id, :mode => :component_metrics, :show_language=>language.id, :anchor => "language-#{language.id}") %>
+        </td>
+        <td style="text-align:center;width:40%;">
+          <center>
+            <% 
+              percent = metrics.collect{|m| m.translation_completeness}.sum/metrics.count
+              if percent < 20
+                bgcolor = "#FFD6D6"
+              elsif percent < 80
+                bgcolor = "#FEFFD6"
+              else
+                bgcolor = "#D6FFE7"
+              end
+            %>
+            <div style="padding:5px;border:1px dotted #ccc; width:80px; border-radius:10px; background-color:<%=bgcolor%>">
+              <div style="font-size:18px;font-weight:bold;">
+                <%=percent  %>%
+              </div>
+              Translated
+            </div>
+          </center>
+        </td>
+        <td style="text-align:center;width:40%;">
+          <center>
+            <% 
+              percent = metrics.collect{|m| m.completeness}.sum/metrics.count
+              if percent < 20
+                bgcolor = "#FFD6D6"
+              elsif percent < 80
+                bgcolor = "#FEFFD6"
+              else
+                bgcolor = "#D6FFE7"
+              end
+            %>
+            <div style="padding:5px;border:1px dotted #ccc; width:80px; border-radius:10px; background-color:<%=bgcolor%>">
+            <div style="font-size:18px;font-weight:bold;">
+              <%=percent  %>%
+            </div>
+            Locked
+            </div>
+          </center>
+        </td>
+      </tr>
+    </table>
+  </div>
+<% end %> 
+
+</div>  
+
+<% end %>

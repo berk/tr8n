@@ -1,0 +1,17 @@
+  <%= will_filter_table_tag(@results, :columns => [
+    :id,
+    [:source, lambda{|source| 
+      link_to(source.translation_source.source, :controller => "/tr8n/admin/applications", :action => :source, :source_id => source.translation_source.id)
+    }],
+    [:name, lambda{|source| 
+      source.translation_source.name
+    }],
+    [:description, lambda{|source| 
+      source.translation_source.description
+    }],
+    [:actions, lambda{|source|
+      html = []
+      html << link_to_function("Update", "tr8nLightbox.show('/tr8n/admin/applications/lb_update_source?source_id=#{source.translation_source.id}', {height:350})")
+      html.join(' | ')
+    }, 'padding:5px;text-align:right;white-space:nowrap;']
+  ]) %>

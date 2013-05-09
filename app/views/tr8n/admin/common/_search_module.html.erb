@@ -1,0 +1,3 @@
+<%= text_field_tag(:q, params[:q], :style => "width:88%", :placeholder => trla("Search for specific records")) %>
+<%= link_to_function("<span>#{tra("Search")}</span>".html_safe, "Tr8n.Effects.submit('tr8n_form');", :class => "tr8n_grey_button tr8n_pcb") %>
+<%= link_to_function("<span>#{tra("Clear")}</span>".html_safe, "Tr8n.element('q').value = '';Tr8n.Effects.submit('tr8n_form');", :class => "tr8n_grey_button tr8n_pcb") %>

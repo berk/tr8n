@@ -2,7 +2,7 @@
 <%= render :partial => "tabs" %>
 <%= tr8n_will_filter(@votes) %>
 
-<%= form_tag("", :id => "votes_form") do %>
+<% form_tag("", :id => "votes_form") do %>
   <%= will_filter_table_tag(@votes, :columns => [
     [:checkbox, :votes],
     [:translation_key, lambda{|vote|
@@ -12,7 +12,7 @@
 	      html << "<div style='font-size:10px;color:grey'>"
 	      html << vote.translation.translation_key.description
 	      html << "</div>"
-	      html.join("").html_safe
+	      html.join("")
       else
         "Deleted Translation"  
       end  
@@ -33,18 +33,18 @@
 	        html << "Context: #{vote.translation.context}"
 	        html << "</div>"
 	      end
-	      html.join("").html_safe 
+	      html.join("") 
       else
         "Deleted Translation"  
       end  
-    }, :filterable => true],
+    }],
     [:translator_id, lambda{|vote|
       if vote.translator
         link_to(vote.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :translator_id => vote.translator.id)
       else
         "Unknown" 
       end  
-    }, :filterable => true],
+    }],
     [:vote, lambda{|vote| 
       html = []
       if vote.vote == 1
@@ -54,12 +54,12 @@
       end     
       html << vote.vote
       html << "</span>"
-      html.join("").html_safe
+      html.join("")
     }, 'text-align:right;'],
     [:actions, lambda{|vote|
       html = []
       html << link_to("Delete", {:action => :delete_vote, :vote_id => vote.id}, {:confirm => "Are you sure you want to delete this vote?"})
-      html.join(' | ').html_safe
+      html.join(' | ')
     }, 'text-align:right;white-space:nowrap;']
   ]) %>
 <% end %>

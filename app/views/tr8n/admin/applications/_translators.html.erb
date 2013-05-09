@@ -1,0 +1,89 @@
+<%= will_filter_scripts_tag %>
+
+<%= tr8n_actions_tag([
+    link_to_function("Add Translators", "Tr8n.UI.Lightbox.show('/tr8n/admin/applications/lb_add_objects?type=translator&id=#{@app.id}', {height:450})"),
+  ])
+%>
+
+<%= form_tag({}, :id => :tr8n_form) do %>
+  <%= hidden_field_tag(:type, "application_translator") %>
+  <%= will_filter_table_tag(@results, :columns => [
+      [:checkbox, 'ids'],     
+      [:id, lambda{|at|
+        at.translator_id
+      }],
+      [:name, lambda{|at|
+        if at.translator
+         link_to(at.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :translator_id => at.translator.id) 
+        else
+          "deleted"
+        end
+      }],
+      [:country, lambda{|at|
+        if at.translator
+          at.translator.country_code
+        end
+      }],
+      [:admin, lambda{|at|
+        if at.translator
+          at.translator.admin?  
+        end
+      }, 'text-align:right'],
+      [:level, lambda{|at|
+        if at.translator
+          if at.translator.admin?
+            "<span style='color:red'>#{at.translator.title}</span>".html_safe
+          elsif at.translator.manager?
+            "<span style='color:brown'>#{at.translator.title}</span>".html_safe
+          else
+            at.translator.title
+          end     
+        end
+      }, 'text-align:right'],
+      [:blocked, lambda{|at|
+        if at.translator
+          html = []
+          if at.translator.blocked?
+            html << "<span style='color:red'>"
+          else
+            html << "<span style='color:green'>"
+          end     
+          html << at.translator.blocked?
+          html << "</span>"
+          html.join("").html_safe
+        end
+      }, 'text-align:right'],
+      [:rank, lambda{|at|
+        if at.translator
+          at.translator.rank ? (at.translator.rank * 100).to_i / 100.0 : 0
+        end
+      }, 'text-align:right'], 
+      [:translation_count, lambda{|at|
+        if at.translator
+          link_to(at.translator.total_metric.total_translations || 0, "/tr8n/admin/translation?wf_c0=translator_id&wf_o0=is&wf_v0_0=#{at.translator.id}")
+        end
+      }, 'text-align:right;width:150px;'],
+      [:vote_count, lambda{|at|
+        if at.translator
+          html = []
+          html << (at.translator.total_metric.total_votes || 0)
+          html << " (<span style='color:green'>"
+          html << (at.translator.total_metric.positive_votes || 0) 
+          html << "</span>/<span style='color:red'>"
+          html << (at.translator.total_metric.negative_votes || 0)
+          html << "</span>)"
+          html.join("").html_safe     
+        end
+      }, 'text-align:right;width:100px;'],
+      [:actions, lambda{|at|
+        tr8n_actions_tag([
+          link_to_function("Remove", "deleteObjects('#{at.id}')")
+        ])
+      }, 'text-align:right;white-space:nowrap;']
+
+  ]) %>
+<% end %>
+
+<%= will_filter_actions_bar_tag(@results, [
+  ['Remove From Component', 'deleteObjects()']
+]) %>

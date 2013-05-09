@@ -1,0 +1,69 @@
+<%= render :partial => "/tr8n/admin/common/header" %>
+<%= render :partial => "tabs" %>
+<%= tr8n_will_filter(@sources) %>
+
+<%= tr8n_actions_tag([
+    link_to_function("Add Source", "Tr8n.UI.Lightbox.show('/tr8n/admin/sources/lb_update', {width:650})")
+  ])
+%>
+
+<%= form_tag("", :id => "tr8n_form") do %>
+  <%= hidden_field_tag(:type, "source") %>
+  <%= will_filter_table_tag(@sources, :columns => [
+    [:checkbox, 'ids'],     
+    [:id, lambda{|source| 
+      link_to(source.id, :action => :view, :id => source.id)
+    }], 
+    [:source, lambda{|source| 
+      link_to(source.source, :action => :view, :id => source.id)
+    }, :title => "URL"], 
+    :name, :description,
+    [:keys, lambda{|source|
+      link_to(source.total_metric.key_count, "/tr8n/admin/sources/view?mode=translation_keys&id=#{source.id}")
+    }, 'text-align:right'],
+    [:application, lambda{|source| 
+      if source.application
+        link_to(source.application.name, :controller => "/tr8n/admin/applications", :action => :view, :id => source.application_id)
+      end
+    }], 
+    [:actions, lambda{|source|
+      tr8n_actions_tag([
+        link_to("Recalculate", {:action => :recalculate_metric, :metric_id => source.total_metric.id}, {:confirm => "Are you sure you want to recaluclate this source?"}),
+        link_to_function("Update", "Tr8n.UI.Lightbox.show('/tr8n/admin/sources/lb_update?id=#{source.id}', {width:650})"),
+        link_to_function("Delete", "deleteObjects('#{source.id}')")
+      ])
+    }, 'padding:5px;text-align:right;white-space:nowrap;']
+  ]) %>
+<% end %>
+
+<%= will_filter_actions_bar_tag(@sources, [
+  ['Delete Selected Sources', 'deleteObjects()'],
+  ['Add To Component', 'addSelectedSourcesToComponent()'],
+]) %>
+
+<%= render :partial => "/tr8n/admin/common/footer" %>
+
+<script>
+  function getSelectedSources() {
+    var i=0;
+    var checkbox = Tr8n.element('wf_check_' + i);
+    var sources = [];
+    while (checkbox) {
+      if (checkbox.checked) {
+        sources.push(checkbox.value);
+      }
+      checkbox = Tr8n.element('wf_check_' + (++i));
+    }
+    return sources; 
+  }
+
+  function addSelectedSourcesToComponent() {
+    var sources = getSelectedSources();
+    if (sources.length == 0) {
+      alert('At least one key must be selected.');
+      return;
+    }
+    Tr8n.UI.Lightbox.show('/tr8n/admin/sources/lb_add_to_component?sources=' + sources, {height:400});
+  }
+
+</script>	

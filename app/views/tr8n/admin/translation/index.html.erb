@@ -2,24 +2,17 @@
 <%= render :partial => "tabs" %>
 <%= tr8n_will_filter(@translations) %>
 
-<%= form_tag("", :id => "translations_form") do %>
+<% form_tag("", :id => "translations_form") do %>
   <%= will_filter_table_tag(@translations, :columns => [
     [:checkbox, :translations],
-    [:translation_key_id, lambda{|translation|
-       html = []
-       html << link_to(translation.translation_key.label, :controller => "/tr8n/admin/translation_key", :action => :view, :key_id => translation.translation_key.id)
-       html << "<div style='font-size:10px;color:grey'>"
-       html << translation.translation_key.description
-       html << "</div>"
-       html.join("").html_safe 
-    }, :filterable => true],
+    :id,
     [:language_id, lambda{|translation|
       if translation.language
         link_to(translation.language.english_name, :controller => "/tr8n/admin/language", :action => :view, :lang_id => translation.language.id)
       else
          "Deleted Language"    
       end  
-    }, :filterable => true],
+    }],
     [:label, lambda{|translation|
       html = []
       html << link_to(translation.label, :action => :view, :translation_id => translation.id)
@@ -28,7 +21,15 @@
         html << "Context: #{translation.context}"
 				html << "</div>"
       end
-      html.join("").html_safe 
+      html.join("") 
+    }],
+    [:translation_key_id, lambda{|translation|
+       html = []
+       html << link_to(translation.translation_key.label, :controller => "/tr8n/admin/translation_key", :action => :view, :key_id => translation.translation_key.id)
+       html << "<div style='font-size:10px;color:grey'>"
+       html << translation.translation_key.description
+       html << "</div>"
+       html.join("") 
     }],
     [:translator_id, lambda{|translation|
       if translation.translator
@@ -36,7 +37,7 @@
       else
         "Unknown" 
       end  
-    }, :filterable => true],
+    }],
     [:rank, lambda{|translation| 
       html = []
       if translation.rank >= Tr8n::Config.translation_threshold
@@ -48,13 +49,13 @@
       end     
       html << translation.rank
       html << "</span>"
-      html.join("").html_safe
+      html.join("")
     }, 'text-align:right;'],
     [:actions, lambda{|translation|
       html = []
       html << link_to("View", :action => :view, :translation_id => translation.id)
       html << link_to("Delete", {:action => :delete, :translation_id => translation.id}, {:confirm => "Are you sure you want to delete this translation?"})
-      html.join(' | ').html_safe
+      html.join(' | ')
     }, 'text-align:right;white-space:nowrap;']
   ]) %>
 <% end %>

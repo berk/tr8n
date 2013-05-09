@@ -42,10 +42,12 @@ require "socket"
 
 class Tr8n::TranslationDomain < ActiveRecord::Base
   self.table_name = :tr8n_translation_domains
-  attr_accessible :name, :description, :source_count
+  attr_accessible :name, :description, :source_count, :application_id
 
   after_save      :clear_cache
   after_destroy   :clear_cache
+  
+  belongs_to  :application,               :class_name => "Tr8n::Application"
   
   has_many    :translation_sources,       :class_name => "Tr8n::TranslationSource",     :dependent => :destroy
   has_many    :translation_key_sources,   :class_name => "Tr8n::TranslationKeySource",  :through => :translation_sources

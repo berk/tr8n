@@ -44,6 +44,8 @@ defaults:
 
   enable_translator_tabs:     true      # enables translation tools tabs 
 
+  offline_task_method:        "delayed_jobs"
+
   #############################################################################
   # Google translation suggestions is now a paid feature by Google.
   # 

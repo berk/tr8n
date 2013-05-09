@@ -47,6 +47,8 @@ Tr8n.SDK.TML.Label = function(node) {
   this.label = this.label.replace(/\n/g, '');
   this.label = Tr8n.Utils.trim(this.label);
 
+  this.options["locale"] = this.node.attributes['locale']; 
+  this.options["skip_decorations"] = this.node.attributes['skip_decorations']; 
   // console.log(this.label + " : " + this.description);
 }
 

@@ -28,7 +28,7 @@ class Tr8n::Admin::ClientsdkController < Tr8n::Admin::BaseController
   end
   
   def lb_samples
-    render :layout => false
+    render_lightbox
   end
 
 end

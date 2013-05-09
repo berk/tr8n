@@ -1,0 +1,47 @@
+<%= will_filter_scripts_tag %>
+
+<%= tr8n_actions_tag([
+  link_to_function("Add Sources", "Tr8n.UI.Lightbox.show('/tr8n/admin/applications/lb_add_objects_to_component?type=source&comp_id=#{@comp.id}', {height:450})"),
+])
+%>
+
+<%= form_tag("", :id => "sources_form") do %>
+  <%= hidden_field_tag(:type, "source") %>
+  <%= will_filter_table_tag(@results, :columns => [
+    [:checkbox, 'component_objects'],     
+    [:id, lambda{|source| 
+      link_to(source.translation_source.id, :action => :source, :source_id => source.translation_source.id)
+    }, 'width:100px;'],
+    [:source, lambda{|source| 
+      link_to(source.translation_source.source, :action => :source, :source_id => source.translation_source.id)
+    }],
+    [:name, lambda{|source| 
+        source.translation_source.name
+    }],
+    [:description, lambda{|source| 
+        source.translation_source.description
+    }],
+    [:keys, lambda{|source|
+      link_to(source.translation_source.total_metric.key_count, "/tr8n/admin/applications/source?mode=translation_keys&source_id=#{source.translation_source.id}")
+    }, 'text-align:right;width:100px;'],
+    [:actions, lambda{|source|
+      tr8n_actions_tag([
+        link_to_function("Update", "Tr8n.UI.Lightbox.show('/tr8n/admin/applications/lb_update_source?source_id=#{source.translation_source.id}', {height:350})"),
+        link_to("Remove", {:action => :remove_objects_from_component, :component_object_id => source.id, :type => :source}, {:confirm => "Are you sure you want to remove this source from the component?"})
+      ])
+    }, 'padding:5px;text-align:right;white-space:nowrap;width:200px;']
+  ]) %>
+<% end %>
+
+<%= will_filter_actions_bar_tag(@results, [
+  ['Remove Selected Sources', 'removeAllSelected()']
+]) %>
+
+<script>
+  function removeAllSelected() {
+    if (!confirm('Are you sure you want to remove all selected sources from this component?'))
+       return;
+    Tr8n.element('sources_form').action = "/tr8n/admin/applications/remove_objects_from_component";
+    Tr8n.element('sources_form').submit();
+  }
+</script>   

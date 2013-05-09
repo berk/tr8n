@@ -101,7 +101,7 @@ class Tr8n::Admin::LanguageController < Tr8n::Admin::BaseController
     @language = Tr8n::Language.find_by_id(params[:lang_id]) unless params[:lang_id].blank?
     @language = Tr8n::Language.new unless @language
     
-    render :layout => false
+    render_lightbox
   end
 
   def update
@@ -129,7 +129,7 @@ class Tr8n::Admin::LanguageController < Tr8n::Admin::BaseController
     @map = Tr8n::LanguageCaseValueMap.find_by_id(params[:map_id]) if params[:map_id]
     @map ||= Tr8n::LanguageCaseValueMap.new(:language => tr8n_current_language)
     
-    render :layout => false
+    render_lightbox
   end
   
   def delete_value_map

@@ -1,0 +1,80 @@
+<%= will_filter_scripts_tag %>
+
+<%= tr8n_actions_tag([
+    link_to_function("Add Translators", "Tr8n.UI.Lightbox.show('/tr8n/admin/applications/lb_add_objects_to_component?type=translator&comp_id=#{@comp.id}', {height:450})"),
+  ])
+%>
+
+<%= form_tag("", :id => "tr8n_form") do %>
+  <%= hidden_field_tag(:type, "translator") %>
+  <%= will_filter_table_tag(@results, :columns => [
+      [:checkbox, 'component_objects'],     
+      [:id, lambda{|ctran|
+        ctran.translator.id
+      }],
+      [:name, lambda{|ctran|
+         link_to(ctran.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :translator_id => ctran.translator.id) 
+      }],
+      [:country, lambda{|ctran|
+        ctran.translator.country_code
+      }],
+      [:admin, lambda{|ctran|
+        ctran.translator.admin?  
+      }, 'text-align:right'],
+      [:level, lambda{|ctran|
+        if ctran.translator.admin?
+          "<span style='color:red'>#{ctran.translator.title}</span>".html_safe
+        elsif ctran.translator.manager?
+          "<span style='color:brown'>#{ctran.translator.title}</span>".html_safe
+        else
+          ctran.translator.title
+        end     
+      }, 'text-align:right'],
+      [:blocked, lambda{|ctran|
+        html = []
+        if ctran.translator.blocked?
+          html << "<span style='color:red'>"
+        else
+          html << "<span style='color:green'>"
+        end     
+        html << ctran.translator.blocked?
+        html << "</span>"
+        html.join("").html_safe
+      }, 'text-align:right'],
+      [:rank, lambda{|ctran|
+        ctran.translator.rank ? (ctran.translator.rank * 100).to_i / 100.0 : 0
+      }, 'text-align:right'], 
+      [:translation_count, lambda{|ctran|
+        link_to(ctran.translator.total_metric.total_translations || 0, "/tr8n/admin/translation?wf_c0=translator_id&wf_o0=is&wf_v0_0=#{ctran.translator.id}")
+      }, 'text-align:right;width:150px;'],
+      [:vote_count, lambda{|ctran|
+        html = []
+        html << (ctran.translator.total_metric.total_votes || 0)
+        html << " (<span style='color:green'>"
+        html << (ctran.translator.total_metric.positive_votes || 0) 
+        html << "</span>/<span style='color:red'>"
+        html << (ctran.translator.total_metric.negative_votes || 0)
+        html << "</span>)"
+        html.join("").html_safe     
+      }, 'text-align:right;width:100px;'],
+      [:actions, lambda{|ctran|
+        tr8n_actions_tag([
+          link_to("Remove", {:action => :remove_objects_from_component, :component_object_id => ctran.id, :type => :translator}, :confirm => "Are you sure you want to do that?")
+        ])
+      }, 'text-align:right;white-space:nowrap;']
+
+  ]) %>
+<% end %>
+
+<%= will_filter_actions_bar_tag(@results, [
+  ['Remove From Component', 'removeFromComponent()']
+]) %>
+
+<script>
+  function removeFromComponent() {
+    if (!confirm('Are you sure you want to remove all selected translators from this component?'))
+       return;
+    Tr8n.element('tr8n_form').action = "/tr8n/admin/applications/remove_objects_from_component";
+    Tr8n.element('tr8n_form').submit();
+  }
+</script>   

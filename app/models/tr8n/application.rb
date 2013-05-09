@@ -43,11 +43,30 @@ class Tr8n::Application < ActiveRecord::Base
   attr_accessible :key, :name, :description
 
   has_many :components, :class_name => 'Tr8n::Component', :dependent => :destroy
-  has_many :component_sources, :class_name => 'Tr8n::ComponentSource', :through => :components
-  has_many :translation_sources, :class_name => 'Tr8n::TranslationSource', :through => :component_sources
+
+  has_many :translation_domains, :class_name => 'Tr8n::TranslationDomain', :dependent => :destroy
+  alias :domains :translation_domains
+
+  has_many :translation_sources, :class_name => 'Tr8n::TranslationSource', :dependent => :destroy
+  alias :sources :translation_sources
+
+  has_many :application_languages, :class_name => 'Tr8n::ApplicationLanguage', :dependent => :destroy
+  alias :languages :application_languages
+
+  has_many :application_translators, :class_name => 'Tr8n::ApplicationTranslator', :dependent => :destroy
+  alias :translators :application_translators
+
+  before_create :generate_keys
 
   def self.options
     Tr8n::Application.find(:all, :order => "name asc").collect{|app| [app.name, app.id]}
+  end
+
+protected
+
+  def generate_keys
+    self.key = Tr8n::Config.guid if key.nil?
+    self.secret = Tr8n::Config.guid if secret.nil?
   end
 
 end

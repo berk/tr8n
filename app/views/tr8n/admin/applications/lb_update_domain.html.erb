@@ -1,0 +1,36 @@
+<%= tr8n_lightbox_header_tag %>
+<div class="inner">
+    <div class="hd">
+        <%= tr8n_lightbox_title_tag(tra("Domain Details")) %>
+    </div>
+    <div class="bd" style="padding-bottom:80px;">
+        <%= form_for(@domain, :as => :domain, :url => {:domain_id => @domain.id, :app_id => @app.id}, :html => {:id => 'tr8n_form', :method => :post, :class => "tr8n"}) do |form| %>
+            <%= hidden_field_tag(:origin, params[:origin]) %>
+            <table class="admin_table">
+                <tr>
+                    <th>
+                        <%= tra("URI:") %>
+                    </th>
+                    <td>
+                        <%= form.text_field :name, :style=>"width:99%;" %>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                       <%= tra("Description:") %>
+                    </th>
+                    <td>
+                        <%= form.text_area :description, :style=>"width:99%;height:80px;" %>
+                    </td>
+                </tr>
+            </table>
+        <% end %>
+          <div style="color:#666; font-size:11px;">
+              <%=tra("Note: Only authorized domains will be allowed to use translation features") %>
+          </div>
+    </div>
+    <div class="ft">
+        <%= tr8n_lightbox_buttons_tag %>
+    </div>
+</div>
+<%= tr8n_lightbox_footer_tag %>

@@ -46,11 +46,12 @@
 
 class Tr8n::TranslationSource < ActiveRecord::Base
   self.table_name = :tr8n_translation_sources
-  attr_accessible :source, :translation_domain_id, :url, :name, :description, :translation_domain, :key_count
+  attr_accessible :source, :translation_domain_id, :url, :name, :description, :translation_domain, :key_count, :application_id, :application
 
   after_destroy   :clear_cache
   after_save      :clear_cache
   
+  belongs_to  :application,                   :class_name => "Tr8n::Application"
   belongs_to  :translation_domain,            :class_name => "Tr8n::TranslationDomain"
   
   has_many    :translation_key_sources,       :class_name => "Tr8n::TranslationKeySource",      :dependent => :destroy

@@ -3806,6 +3806,33 @@ Tr8n.SDK.Proxy = {
     this.missing_translation_keys[translation_key.key].tr8n_elements.push(tr8n_element);
   },
 
+  detectLocale: function(label) {
+    if (Tr8n.page_locale) 
+      return Tr8n.page_locale;
+
+    if (!Tr8n.google_api_key) 
+      return Tr8n.default_locale;
+
+    var detected_locale = Tr8n.default_locale;
+    window.tr8nJQ.ajax({
+      url: "https://www.googleapis.com/language/translate/v2/detect",
+      method: "GET",
+      async: false,
+      data: {
+        "key": Tr8n.google_api_key,
+        "q": label
+      }
+    }).done(function(data) {
+      if (!data["data"] || !data["data"]["detections"] || data["data"]["detections"].length == 0) 
+        return Tr8n.default_locale;
+      var first_detection = data["data"]["detections"][0][0];
+      detected_locale = first_detection["language"];
+    }).fail(function() {
+      return detected_locale;
+    });
+    return detected_locale;
+  },
+
   submitMissingTranslationKeys: function() {
     this.scheduler_enabled = false; // halt the scheduler
 
@@ -3820,7 +3847,9 @@ Tr8n.SDK.Proxy = {
     for (var i=0; i<keys.length; i++) {
       if (i>30) break; // lets do at most 50 at a time
       var missing_key = this.missing_translation_keys[keys[i]].translation_key;
-      var phrase = {label: missing_key.label};
+
+      var locale = missing_key.locale || this.detectLocale(missing_key.label);
+      var phrase = {label: missing_key.label, locale: locale};
       if (missing_key.description && missing_key.description.length > 0) {
         phrase.description = missing_key.description;
       }
@@ -4753,6 +4782,8 @@ Tr8n.SDK.TML.Label = function(node) {
   this.label = this.label.replace(/\n/g, '');
   this.label = Tr8n.Utils.trim(this.label);
 
+  this.options["locale"] = this.node.attributes['locale']; 
+  this.options["skip_decorations"] = this.node.attributes['skip_decorations']; 
   // console.log(this.label + " : " + this.description);
 }
 

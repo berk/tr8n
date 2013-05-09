@@ -2,7 +2,7 @@
 <%= render :partial => "tabs" %>
 <%= tr8n_will_filter(@locks) %>
 
-<%= form_tag("", :id => "locks_form") do %>
+<% form_tag("", :id => "locks_form") do %>
   <%= will_filter_table_tag(@locks, :columns => [
 		[:checkbox, :locks],    
 		[:language_id, lambda{|lock|
@@ -11,15 +11,13 @@
       else
          "Deleted Language"    
       end  
-    }, :filterable => true], 
+    }], 
     [:translation_key_id, lambda{|lock|
       if lock.translation_key
-        html = []
-	      html << link_to(lock.translation_key.label, :action => :view, :key_id => lock.translation_key.id) 
+	      html = link_to(lock.translation_key.label, :action => :view, :key_id => lock.translation_key.id) 
 	      html << '<div style="color:grey; font-size:10px;">'
 	      html << lock.translation_key.description.to_s  
 	      html << '</div>'
-        html.join('').html_safe
       else
         "Deleted Translation Key"
       end  
@@ -30,12 +28,12 @@
       else
          "Deleted Translator"    
       end  
-    }, :filterable => true], 
+    }], 
     :locked, :updated_at
   ]) %>
 <% end %>
 
-<%= will_filter_actions_bar_tag(@locks, [
+<%= will_filter_actions_bar_tag(@keys, [
   ['Delete Selected Locks', 'deleteSelectedLocks()'] 
 ]) %>
 

@@ -1,0 +1,42 @@
+<%= render :partial => "/tr8n/admin/common/header" %>
+<%= render :partial => "tabs" %>
+<%= tr8n_will_filter(@key_sources) %>
+
+<%= form_tag("", :id => "tr8n_form") do %>
+  <%= hidden_field_tag(:type, "key_source") %>
+  <%= will_filter_table_tag(@key_sources, :columns => [
+    [:checkbox, 'ids'],  
+    [:translation_source_id, lambda{|key_source|
+      html = []
+      html << link_to(key_source.source.source, "/tr8n/admin/sources/key_sources?wf_c0=translation_source_id&wf_o0=is&wf_v0_0=#{key_source.source.id}")
+      html << "<div style='color:grey; font-size:10px;'>"
+      if key_source.details
+        key_source.details.each do |key, value|
+          html << link_to_function(value.first, "Tr8n.UI.Lightbox.show('/tr8n/admin/applications/lb_caller?key_source_id=#{key_source.id}&caller_key=#{key}', {height:550, width:1000})")
+          html << "<br>"
+        end
+      end
+      html << "</div>"
+      html.join("").html_safe
+    }],
+    [:translation_key_id, lambda{|key_source|
+      html = []
+      html << link_to(key_source.key.label, :controller => '/tr8n/admin/translation_key', :action => :view, :key_id => key_source.key.id)
+      html << "<div style='color:grey; font-size:10px;'>"
+      html << key_source.key.description
+      html << "</div>"
+      html.join("").html_safe
+    }], 
+    [:actions, lambda{|key_source|
+      tr8n_actions_tag([
+        link_to_function("Delete", "deleteObjects('#{key_source.id}')")
+      ])
+    }, 'padding:5px;text-align:right;white-space:nowrap;']
+  ]) %>
+<% end %>
+
+<%= will_filter_actions_bar_tag(@key_sources, [
+  ['Delete Selected Key Sources', 'deleteObjects()']
+]) %>
+
+<%= render :partial => "/tr8n/admin/common/footer" %>

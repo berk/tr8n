@@ -1,6 +1,7 @@
 <div class="translations_navigation" dir="ltr">
-  <div style="font-size:22px; font-weight: bold;padding-bottom:15px;">
-	  <%=tra("Tr8n Administration Tools")%>
+  <div style="font-size:22px; font-weight: bold;">
+	  <%= image_tag("tr8n/tr8n_logo2.png", :style=>"width:50px;") %>  
+    <%=tra("Administration Tools")%>
 	</div>
 
   <ul class="translations_tab_nav translations_tabs">
@@ -27,4 +28,37 @@
 </div>
 
 <div class="tr8n tr8n_admin" dir="ltr">
+
+<script>
+  function deleteObjects(id) {
+    if (id) {
+      if (!confirm(trl('Are you sure you want to delete this ' + Tr8n.value("type") + '?')))
+         return;
+       location = '/tr8n/admin/applications/delete?type=' + Tr8n.value("type") + '&ids=' + id;
+       return;
+    }
+    
+    if (!confirm(trl('Are you sure you want to delete all selected objects?')))
+       return;
+
+    Tr8n.element('tr8n_form').action = "/tr8n/admin/applications/delete";
+    Tr8n.element('tr8n_form').submit();
+  }
+
+  function removeObjects(id) {
+    if (id) {
+      if (!confirm(trl('Are you sure you want to remove this ' + Tr8n.value("type") + ' from ' + Tr8n.value("container") + '?')))
+         return;
+       location = '/tr8n/admin/applications/remove?container=' + Tr8n.value("container") + '&type=' + Tr8n.value("type") + '&ids=' + id;
+       return;
+    }
+    
+    if (!confirm(trl('Are you sure you want to remove all selected objects from ' + Tr8n.value("container") + '?')))
+       return;
+
+    Tr8n.element('tr8n_form').action = "/tr8n/admin/applications/remove";
+    Tr8n.element('tr8n_form').submit();
+  }
+
+</script> 
   

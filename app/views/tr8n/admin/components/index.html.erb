@@ -1,0 +1,41 @@
+<%= render :partial => "/tr8n/admin/common/header" %>
+<%= render :partial => "tabs" %>
+<%= tr8n_will_filter(@comps) %>
+
+<%= tr8n_actions_tag([
+    link_to_function("Add Component", "Tr8n.UI.Lightbox.show('/tr8n/admin/components/lb_update', {width:650})")
+  ])
+%>
+
+<%= form_tag("", :id => "tr8n_form") do %>
+  <%= hidden_field_tag(:type, "component") %>
+  <%= will_filter_table_tag(@comps, :columns => [
+    [:checkbox, 'ids'],     
+    [:id, lambda{|comp| link_to(comp.id, {:action => :view, :id => comp.id})}], 
+    :key,
+    [:name, lambda{|comp| link_to_unless(comp.name.blank?, comp.name, {:action => :view, :id => comp.id})}], 
+    :state,
+    [:languages, lambda{ |comp| 
+      link_to(comp.languages.size, {:action => :view, :id => comp.id, :mode => :languages})
+    }, 'padding:5px;text-align:right;white-space:nowrap;'],
+    [:translators, lambda{ |comp| 
+      link_to(comp.translators.size, {:action => :view, :id => comp.id, :mode => :translators})
+    }, 'padding:5px;text-align:right;white-space:nowrap;'],
+    [:sources, lambda{ |comp| 
+      link_to(comp.sources.size, {:action => :view, :id => comp.id, :mode => :sources})
+    }, 'padding:5px;text-align:right;white-space:nowrap;'],
+    [:application_id, lambda{|comp| comp.application ? comp.application.name : ""}, :title => "Application"],
+    [:actions, lambda{|comp|
+      tr8n_actions_tag([
+        link_to_function("Update", "Tr8n.UI.Lightbox.show('/tr8n/admin/components/lb_update?id=#{comp.id}', {width:650})"),
+        link_to_function("Delete", "deleteObjects('#{comp.id}')")
+      ])
+    }, 'padding:5px;text-align:right;white-space:nowrap;']
+  ]) %>
+<% end %>
+
+<%= will_filter_actions_bar_tag(@comps, [
+  ['Delete Selected Components', 'deleteObjects()']
+]) %>
+
+<%= render :partial => "/tr8n/admin/common/footer" %>

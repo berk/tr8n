@@ -22,14 +22,30 @@
 #++
 
 class Tr8n::Admin::TranslationKeyController < Tr8n::Admin::BaseController
-  
+
   def index
     @keys = Tr8n::TranslationKey.filter(:params => params, :filter => Tr8n::TranslationKeyFilter)
   end
   
   def view
     @key = Tr8n::TranslationKey.find_by_id(params[:key_id])
-    redirect_to(:action => :index) unless @key
+    unless @key
+      trfe("Invalid key id")
+      return redirect_to(:action => :index) 
+    end
+
+    klass = {
+      :sources => Tr8n::TranslationKeySource,
+      :locks => Tr8n::TranslationKeyLock,
+      :comments => Tr8n::TranslationKeyComment,
+      :translations => Tr8n::Translation,
+    }[params[:mode].to_sym] if params[:mode]
+    klass ||= Tr8n::Translation
+
+    filter = {"wf_c0" => "translation_key_id", "wf_o0" => "is", "wf_v0_0" => @key.id}
+    extra_params = {:key_id => @key.id, :mode => params[:mode]}
+    @results = klass.filter(:params => params.merge(filter))
+    @results.wf_filter.extra_params.merge!(extra_params)
   end
   
   def delete
@@ -50,6 +66,32 @@ class Tr8n::Admin::TranslationKeyController < Tr8n::Admin::BaseController
     render :layout => false
   end
 
+  def lb_import
+    render :layout => false
+  end
+
+  def lb_add_to_source
+    if request.post?
+      if params[:source][:source].strip.blank?
+        source = Tr8n::TranslationSource.find_by_id(params[:source_id]) 
+      else
+        source = Tr8n::TranslationSource.create(params[:source])
+      end
+
+      keys = params[:keys] || ''
+      keys = keys.split(',')
+      keys = Tr8n::TranslationKey.find(:all, :conditions => ["id in (?)", keys])
+      keys.each do |key|
+        Tr8n::TranslationKeySource.find_or_create(key, source) 
+      end
+
+      return redirect_to_source
+    end
+
+    @sources = Tr8n::TranslationSource.find(:all, :order => "name asc, source asc").collect{|s| [s.name_and_source, s.id]}
+    render :layout => false
+  end
+
   def update
     key = Tr8n::TranslationKey.find_by_id(params[:translation_key][:id]) unless params[:translation_key][:id].blank?
     
@@ -64,24 +106,33 @@ class Tr8n::Admin::TranslationKeyController < Tr8n::Admin::BaseController
     redirect_to_source
   end
   
+  def update_lock
+    lock = Tr8n::TranslationKeyLock.find(params[:lock_id])
+
+    if params[:locked] == "true"
+      lock.lock!
+    else
+      lock.unlock!
+    end
+
+    redirect_to_source
+  end
+
   def lb_merge
     @keys = params[:keys] || ''
-    @keys = @keys.split(',').select { |id| id =~ /^\d+$/ }
-    @keys = Tr8n::TranslationKey.find(:all, :conditions => ["id in (?)", @keys]) unless @keys.empty?
+    @keys = @keys.split(',')
+    @keys = Tr8n::TranslationKey.find(:all, :conditions => ["id in (?)", @keys])
     @key = @keys.first
     
     render :layout => false
   end
 
   def merge
-    redirect_to_source unless (params[:translation_key] && params[:translation_key][:id])
     master_key = Tr8n::TranslationKey.find_by_id(params[:translation_key].delete(:id))
     
     keys = params[:keys] || ''
-    keys = keys.split(',').select { |id| id =~ /^\d+$/ }
-    redirect_to_source if keys.empty?
-    
-    keys = Tr8n::TranslationKey.find(:all, :conditions => ["id in (?)", keys]) 
+    keys = keys.split(',')
+    keys = Tr8n::TranslationKey.find(:all, :conditions => ["id in (?)", keys])
     keys.each do |key|
       next if key.id == master_key.id
       key.translations.each do |translation|
@@ -111,10 +162,6 @@ class Tr8n::Admin::TranslationKeyController < Tr8n::Admin::BaseController
   
   def comments
     @comments = Tr8n::TranslationKeyComment.filter(:params => params, :filter => Tr8n::TranslationKeyCommentFilter)
-  end
-  
-  def sync_logs
-    @logs = Tr8n::SyncLog.filter(:params => params, :filter => Tr8n::SyncLogFilter)
   end
   
   def delete_comment

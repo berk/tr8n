@@ -343,6 +343,7 @@ class CreateTr8nTables < ActiveRecord::Migration
 
     create_table :tr8n_applications do |t|
       t.string :key
+      t.string :secret
       t.string :name
       t.string :description
       t.timestamps
@@ -411,6 +412,23 @@ class CreateTr8nTables < ActiveRecord::Migration
       t.timestamps
     end
     add_index :tr8n_translation_source_metrics, [:translation_source_id, :language_id], :name => "tr8n_trans_source_metrs_tsili"     
+
+    create_table :tr8n_application_languages do |t|
+      t.integer :application_id,        :null => false
+      t.integer :language_id,           :null => false
+      t.timestamps
+    end
+    add_index :tr8n_application_languages, [:application_id], :name => "tr8n_app_lang_app_id"
+
+    create_table :tr8n_application_translators do |t|
+      t.integer :application_id
+      t.integer :translator_id
+      t.integer :language_id
+      t.timestamps
+    end
+    add_index :tr8n_application_translators, [:application_id], :name => "tr8n_app_trn_comp_id"
+    add_index :tr8n_application_translators, [:translator_id], :name => "tr8n_app_trn_trn_id"
+    add_index :tr8n_application_translators, [:language_id], :name => "tr8n_app_trn_lang_id"
   end
 
   def self.down
@@ -447,5 +465,7 @@ class CreateTr8nTables < ActiveRecord::Migration
     drop_table :tr8n_component_sources
     drop_table :tr8n_notifications
     drop_table :tr8n_translation_source_metrics
+    drop_table :tr8n_application_languages
+    drop_table :tr8n_application_translators
   end
 end

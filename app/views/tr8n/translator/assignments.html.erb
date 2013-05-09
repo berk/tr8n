@@ -7,7 +7,7 @@
     <%=tra("Your Assignments") %>
     <span dir="ltr">(<%= tr8n_current_language.english_name %>)</span>
     <span style='font-size:12px;'>
-      <%= link_to_function("Change Language", "tr8nLightbox.show('/tr8n/language/select?lightbox=true', {height:500, width:400});") %>
+      <%= link_to_function("Change Language", "Tr8n.UI.LanguageSelector.show(true)") %>
     </span>
   </div>
 

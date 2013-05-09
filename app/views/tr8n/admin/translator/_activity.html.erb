@@ -1,0 +1,12 @@
+  <%= will_filter_table_tag(@results, :columns => [
+    :created_at, 
+    :action, 
+    :reference,
+    [:description, lambda{|log|
+      html = []
+      html << "<div style='#{log.decoration}'>"
+      html << log.describe
+      html << "</div>"
+      html.join("")
+    }]
+  ]) %>

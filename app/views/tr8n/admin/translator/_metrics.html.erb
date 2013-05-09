@@ -1,0 +1,10 @@
+  <%= will_filter_table_tag(@results, :columns => [
+    [:language_id, lambda{|metric|
+      if metric.language
+        link_to(metric.language.english_name, :controller => "/tr8n/admin/language", :action => :view, :lang_id => metric.language.id)
+      else
+         "Deleted Language"    
+      end  
+    }],
+    :total_translations, :accepted_translations, :rejected_translations, :total_votes, :positive_votes, :negative_votes, :updated_at
+  ]) %>

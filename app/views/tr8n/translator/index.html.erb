@@ -64,8 +64,9 @@
 	                    <td style="vertical-align:top;"><%=tra("Languages:") %></td>
 	                    <td style="vertical-align:top;padding-right:10px;">
 			                  <% langs = [] %>
-			                  <% @translator.languages.each do |lang|
-			                      next if lang.default?
+			                  <% @languages.each do |lu|
+			                  		lang = lu.language
+			                      next if lang.nil? or lang.default?
 			                      langs << link_to(lang.english_name, params.merge(:anchor => lang.locale))  
 			                     end %>       
 			                  <%= langs.join(" | ").html_safe %>
