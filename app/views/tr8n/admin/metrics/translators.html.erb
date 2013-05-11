@@ -4,6 +4,7 @@
 
 <%= form_tag("", :id => "metrics_form") do %>
   <%= will_filter_table_tag(@metrics, :columns => [
+    [:icn, image_tag("tr8n/icons/chart_bar.png"), :title => "", :style => "width:12px;"],
     [:translator_id, lambda{|metric|
       if metric.translator
         link_to(metric.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :translator_id => metric.translator.id)

@@ -3,8 +3,10 @@
 <%= tr8n_will_filter(@messages) %>
 
 <%= form_tag("", :id => "topics_form") do %>
+  <%= hidden_field_tag(:type, "message") %>
   <%= will_filter_table_tag(@messages, :columns => [
     [:icn, image_tag("tr8n/icons/comment.png"), :title => "", :style => "width:12px;"],
+    [:checkbox, :ids],
     :created_at,
     [:language_id, lambda{|message|
       if message.language
@@ -27,11 +29,17 @@
     :message,
 
     [:actions, lambda{|message|
-        actions = []
-        actions << link_to("Delete", {:action => :delete, :msg_id => message.id}, {:confirm => "Are you sure you want to delete this message?"})
-        actions.join(" | ").html_safe
+      tr8n_actions_tag([
+        link_to_function("Delete", "deleteObjects('#{message.id}')")
+      ])
     }, 'white-space: nowrap'] 
   ]) %>
+
 <% end %>
+
+
+<%= will_filter_actions_bar_tag(@messages, [
+  ['Delete Selected Messages', 'deleteObjects()'] 
+]) %>
 
 <%= render :partial => "/tr8n/admin/common/footer" %>

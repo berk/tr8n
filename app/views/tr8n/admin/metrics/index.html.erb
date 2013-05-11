@@ -3,7 +3,7 @@
 
 <% @languages.each do |lang| %>
 
-<div class="section_title">
+<div class="section_title"  style="margin-bottom:0px;border-bottom:0px;">
 	 <div style="float:right; font-size:12px; padding-top:5px;">
      <span style="color:#666">Translated Key Count:</span> <%= lang.total_metric.translated_key_count %> 
      <span style="color:#666">Translations:</span> <%= lang.total_metric.translation_count %> 
@@ -15,13 +15,14 @@
    <%= tr8n_language_name_tag(lang, :linked => false) %> &nbsp;
 </div>
 
-<div id="lang_content_<%=lang.id%>" class="section_box colored">
+<div id="lang_content_<%=lang.id%>" class="section_box colored" style="margin-top:0px;border:1px solid #eee">
 	<% 
 		@translators = Tr8n::Translator.top_translators_for_language(lang)
 		if @translators.any?
 	%>
 		<table>
-			<tr style="background-color:#eee;border-bottom:1px solid #ccc;">
+			<tr style="border-bottom:1px solid #ccc;">
+				<td></td>
 				<td>Translator Id</td>
 				<td>User Id</td>
 				<td>Name</td>
@@ -30,19 +31,20 @@
 			</tr>	
 			<% @translators.each do |tm| %>
 			<tr style="border-bottom:1px dotted #ccc;">
-				<td>
+				<td style="width:20px;padding:3px;"><%=image_tag("tr8n/icons/user.png")%></td>
+				<td style="padding:3px;">
 					<%=tm.translator_id if tm.translator %>
 				</td>
-				<td>
+				<td style="padding:3px;">
 					<%=tm.translator.user_id if tm.translator %>
 				</td>
-				<td>
+				<td style="padding:3px;">
 					<%=tm.translator.name if tm.translator %>
 				</td>
-				<td>
+				<td style="padding:3px;">
 	        <%=tm.total_translations%>
 				</td>
-				<td>
+				<td style="padding:3px;">
 	        <%=tm.total_votes%>
 	        (<span style="color:green" title="<%=trla('Number of positive votes', 'Awards section header')%>"><%=tm.positive_votes || 0 %></span>/<span style="color:red" title="<%=trla('Number of negative votes', 'Awards section header')%>"><%=tm.negative_votes || 0 %></span>)
 				</td>

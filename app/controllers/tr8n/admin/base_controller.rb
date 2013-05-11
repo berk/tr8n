@@ -74,6 +74,8 @@ class Tr8n::Admin::BaseController < Tr8n::BaseController
         object = Tr8n::TranslationVote.find_by_id(id)
       when "translator"
         object = Tr8n::Translator.find_by_id(id)
+      when "glossary"
+        object = Tr8n::Glossary.find_by_id(id)
       else 
         next  
       end

@@ -28,19 +28,19 @@ class Tr8n::Admin::GlossaryController < Tr8n::Admin::BaseController
   end
   
   def lb_update
-    @glossary = Tr8n::Glossary.find_by_id(params[:glossary_id]) if params[:glossary_id]
+    @glossary = Tr8n::Glossary.find_by_id(params[:id]) if params[:id]
     @glossary = Tr8n::Glossary.new unless @glossary
-    render_lightbox
-  end
 
-  def update
-    glossary = Tr8n::Glossary.find_by_id(params[:glossary][:id]) unless params[:glossary][:id].blank?
-    if glossary
-      glossary.update_attributes(params[:glossary])
-    else
-      glossary = Tr8n::Glossary.create(params[:glossary])
+    if request.post?
+      if @glossary.id
+        @glossary.update_attributes(params[:glossary])
+      else
+        @glossary = Tr8n::Glossary.create(params[:glossary])
+      end
+      return dismiss_lightbox
     end
-    dismiss_lightbox
+
+    render_lightbox
   end
       
 end

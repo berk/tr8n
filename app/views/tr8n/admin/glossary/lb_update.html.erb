@@ -1,10 +1,9 @@
-<%= render :partial => "/tr8n/common/lightbox_header" %>
-<%= form_for(@glossary, :as => :glossary, :url => {:action => :update}, :html => {:id => 'tr8n_form', :method => :post, :class => "tr8n"}) do |form| %>
-<%= form.hidden_field(:id) %>
-<%= hidden_field_tag(:origin, params[:origin]) %>
+<%= tr8n_lightbox_header_tag %>
+<%= form_for(@glossary, :as => :glossary, :url => {:id => @glossary.id}, :html => {:id => 'tr8n_form', :method => :post, :class => "tr8n"}) do |form| %>
+  <%= hidden_field_tag(:origin, params[:origin]) %>
   <div class="inner">
       <div class="hd">
-        <%= tr8n_lightbox_title("Glossary Term Details") %>
+        <%= tr8n_lightbox_title_tag("Glossary Term Details") %>
       </div>
       <div class="bd" style="padding-bottom:50px;">
           <table class="admin_table">
@@ -27,8 +26,8 @@
           </table>
       </div>
   		<div class="ft">
-        <%= render :partial => "/tr8n/admin/common/lightbox_buttons" %>			
+        <%= tr8n_lightbox_buttons_tag %>
   		</div>
   </div>
 <% end %>
-<%= render :partial => "/tr8n/common/lightbox_footer" %>
+<%= tr8n_lightbox_footer_tag %>
