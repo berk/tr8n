@@ -72,6 +72,8 @@ class Tr8n::Admin::BaseController < Tr8n::BaseController
         object = Tr8n::TranslationKeyComment.find_by_id(id)
       when "vote"
         object = Tr8n::TranslationVote.find_by_id(id)
+      when "translator"
+        object = Tr8n::Translator.find_by_id(id)
       else 
         next  
       end
@@ -81,14 +83,6 @@ class Tr8n::Admin::BaseController < Tr8n::BaseController
   end  
 
 private
-
-  def render_lightbox
-    render(:layout => false)
-  end
-
-  def dismiss_lightbox
-    redirect_to(:controller => "/tr8n/help", :action => "lb_done", :origin => params[:origin])
-  end
 
   def validate_tr8n_enabled
     # don't do anything for admin pages

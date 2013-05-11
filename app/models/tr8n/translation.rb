@@ -57,6 +57,9 @@ class Tr8n::Translation < ActiveRecord::Base
   belongs_to :language,         :class_name => "Tr8n::Language"
   belongs_to :translation_key,  :class_name => "Tr8n::TranslationKey"
   belongs_to :translator,       :class_name => "Tr8n::Translator"
+
+  has_many :translation_key_sources,  :class_name => "Tr8n::TranslationKeySource",  :through => :translation_key
+  has_many :translation_sources,      :class_name => "Tr8n::TranslationSource",     :through => :translation_key_sources
   
   has_many   :translation_votes, :class_name => "Tr8n::TranslationVote", :dependent => :destroy
   
@@ -347,36 +350,45 @@ class Tr8n::Translation < ActiveRecord::Base
   
   def self.for_params(params, language = Tr8n::Config.current_language)
     results = self.where("language_id = ?", language.id)
+
+    # only translations from the selected application
+    if params[:application]
+      results = results.joins(:translation_sources).where("tr8n_translation_sources.application_id = ?", params[:application].id)
+    end
     
     # ensure that only allowed translations are visible
     allowed_level = Tr8n::Config.current_user_is_translator? ? Tr8n::Config.current_translator.level : 0
-    results = results.where("translation_key_id in (select id from tr8n_translation_keys where level <= ?)", allowed_level) 
+    results = results.joins(:translation_key).where("tr8n_translation_keys.level <= ?", allowed_level) 
     
-    results = results.where("label like ?", "%#{params[:search]}%") unless params[:search].blank?
+    if params[:only_phrases]  
+      results = results.where("tr8n_translation_keys.type is null or tr8n_translation_keys.type = ? or tr8n_translation_keys.type = ?", 'Tr8n::TranslationKey', 'TranslationKey')
+    end
+
+    results = results.where("tr8n_translations.label like ?", "%#{params[:search]}%") unless params[:search].blank?
   
     if params[:with_status] == "accepted"
-      results = results.where("rank >= ?", Tr8n::Config.translation_threshold)
+      results = results.where("tr8n_translations.rank >= ?", Tr8n::Config.translation_threshold)
     elsif params[:with_status] == "pending"
-      results = results.where("rank >= 0 and rank < ?", Tr8n::Config.translation_threshold)
+      results = results.where("tr8n_translations.rank >= 0 and tr8n_translations.rank < ?", Tr8n::Config.translation_threshold)
     elsif params[:with_status] == "rejected"
-      results = results.where("rank < 0")
+      results = results.where("tr8n_translations.rank < 0")
     end
     
     if params[:submitted_by] == "me"
-      results = results.where("translator_id = ?", Tr8n::Config.current_user_is_translator? ? Tr8n::Config.current_translator.id : 0)
+      results = results.where("tr8n_translations.translator_id = ?", Tr8n::Config.current_user_is_translator? ? Tr8n::Config.current_translator.id : 0)
     end
     
     if params[:submitted_on] == "today"
       date = Date.today
-      results = results.where("created_at >= ? and created_at < ?", date, date + 1.day)
+      results = results.where("tr8n_translations.created_at >= ? and tr8n_translations.created_at < ?", date, date + 1.day)
     elsif params[:submitted_on] == "yesterday"
       date = Date.today - 1.days
-      results = results.where("created_at >= ? and created_at < ?", date, date + 1.day)
+      results = results.where("tr8n_translations.created_at >= ? and tr8n_translations.created_at < ?", date, date + 1.day)
     elsif params[:submitted_on] == "last_week"
       date = Date.today - 7.days
-      results = results.where("created_at >= ? and created_at < ?", date, Date.today)
+      results = results.where("tr8n_translations.created_at >= ? and tr8n_translations.created_at < ?", date, Date.today)
     end    
-    results
+    results.uniq
   end 
     
 end

@@ -1,5 +1,6 @@
 <%= will_filter_scripts_tag %>
 <%= will_filter_table_tag(@results, :columns => [
+    [:icn, image_tag("tr8n/icons/chart_bar.png"), :title => "", :style => "width:12px;"],
     :type, :metric_date, :user_count, :translator_count, 
     :translation_count, :key_count, :locked_key_count
   ]) 

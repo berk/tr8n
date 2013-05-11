@@ -13,6 +13,7 @@
 <%= form_tag("", :id => "tr8n_form") do %>
   <%= hidden_field_tag(:type, "translation_key") %>
 	<%= will_filter_table_tag(@keys, :columns => [
+    [:icn, image_tag("tr8n/icons/key.png"), :title => "", :style => "width:12px;"],
 	  [:checkbox, :keys],
     :id,
 	  [:label, lambda{|key|

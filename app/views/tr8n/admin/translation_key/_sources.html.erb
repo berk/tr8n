@@ -1,6 +1,7 @@
   <%= will_filter_scripts_tag %>
 
   <%= will_filter_table_tag(@results, :columns => [
+    [:icn, image_tag("tr8n/icons/page_white_code.png"), :title => "", :style => "width:12px;"],
     :id,
     [:source, lambda{|source| 
       link_to(source.translation_source.source, :controller => "/tr8n/admin/sources", :action => :view, :id => source.translation_source.id)

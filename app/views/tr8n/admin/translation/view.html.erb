@@ -2,10 +2,10 @@
 
 <div class="section_title">
   <span style="font-size:12px; float:right; padding-top:5px;">
-    <%=link_to("View Translations", {:action => :index})%> 
-    | <%=link_to("View Translation Votes", {:action => :votes})%> 
+    <%=link_to("Translations", {:action => :index})%> 
+    | <%=link_to("Votes", {:action => :votes})%> 
   </span> 
-	Translation Details
+	<%=image_tag("tr8n/flags/#{@translation.language.flag}.png")%> Translation Details
 </div>
 
 <table class="admin_table">

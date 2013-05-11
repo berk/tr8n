@@ -29,6 +29,40 @@ class Tr8n::TranslationsController < Tr8n::BaseController
   # for ssl access to the translator - using ssl_requirement plugin  
   ssl_allowed :submit  if respond_to?(:ssl_allowed)
   
+  # list of translations    
+  def index
+    # In the embedded mode - there should be only one application
+    begin
+      @selected_application = send(:tr8n_selected_application)
+    rescue 
+      @selected_application = Tr8n::Config.current_app
+    end
+
+    pp @selected_application
+    @translations = Tr8n::Translation.for_params(params.merge(:application => @selected_application, :only_phrases => true))
+    @translations = @translations.order("created_at desc, rank desc").page(page).per(per_page)
+    # restricted_keys = Tr8n::TranslationKey.all_restricted_ids
+
+    # # exclude all restricted always
+    # if restricted_keys.any?
+    #   @translations = @translations.where("translation_key_id not in (?)", restricted_keys)
+    # end
+
+    # @followed_translators = tr8n_current_translator.followed_objects("Tr8n::Translator")
+    # unless [nil, "", "anyone", "me"].include?(params[:submitted_by])
+    #   translator = Tr8n::Translator.find_by_id(params[:submitted_by])  
+    #   if translator
+    #     if translator == tr8n_current_translator
+    #       params[:submitted_by] = :me
+    #     elsif not @followed_translators.include?(translator)
+    #       @followed_translators << translator
+    #     end
+    #   end
+    # end
+
+    # @translations = Tr8n::Translation.for_params(params).order("created_at desc, rank desc").page(page).per(per_page)
+  end
+
   # main translation method used by the translator and translation screens
   def submit
     destination_url = params[:destination_url] || {:controller => '/tr8n/language', :action => '/translator', :mode => 'done', :origin => params[:origin]}
@@ -139,11 +173,6 @@ class Tr8n::TranslationsController < Tr8n::BaseController
     # this is called from the inline translator with reordering the translations based on ranks
     translations = translation_key.inline_translations_for(tr8n_current_language)
     render(:partial => '/tr8n/common/translation_votes', :locals => {:translation_key => translation_key, :translations => translations, :section_key => ""})
-  end
-
-  # list of translations    
-  def index
-    @translations = Tr8n::Translation.for_params(params).order("created_at desc, rank desc").page(page).per(per_page)
   end
 
   # ajax based method for updating individual translations

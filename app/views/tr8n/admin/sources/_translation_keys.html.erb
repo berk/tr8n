@@ -11,6 +11,7 @@
   </div>
 
   <%= will_filter_table_tag(@results, :columns => [
+    [:icn, image_tag("tr8n/icons/key.png"), :title => "", :style => "width:12px;"],
     [:checkbox, :ids],
     :id,
     [:label, lambda{|key|

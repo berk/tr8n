@@ -81,7 +81,7 @@ class Tr8n::ConfigurationKey < Tr8n::TranslationKey
   ## Feature Related Stuff
   ###############################################################
 
-  def self.title
+  def title
     "Configuration Key".translate
   end
 

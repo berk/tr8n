@@ -4,6 +4,7 @@
   <%=hidden_field_tag(:type, :translation) %>
 
   <%= will_filter_table_tag(@results, :columns => [
+    [:flag, lambda{|t| t.language ? image_tag("tr8n/flags/#{t.language.flag}.png") : ''}, :style => 'width:20px;vertical-align:middle;', :title => ''],
     [:checkbox, :translations],
     :id,
     [:label, lambda{|translation|

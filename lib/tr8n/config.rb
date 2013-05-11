@@ -55,6 +55,14 @@ module Tr8n
       Thread.current[:tr8n_current_user]
     end
 
+    def self.current_application
+      Thread.current[:tr8n_current_application] || Tr8n::Application.for(:default)
+    end  
+
+    def self.set_application(key)
+      Thread.current[:tr8n_current_application] = Tr8n::Application.for(key)
+    end
+
     def self.current_source
       Thread.current[:tr8n_current_source] ||= Tr8n::TranslationSource.find_or_create("undefined")
     end

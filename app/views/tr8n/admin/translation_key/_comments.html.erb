@@ -3,7 +3,8 @@
 <%= form_tag("", :id => "tr8n_form") do %>
   <%=hidden_field_tag(:type, :comment) %>
   <%= will_filter_table_tag(@results, :columns => [
-    [:checkbox, :comments],    
+    [:icn, image_tag("tr8n/icons/comment.png"), :title => "", :style => "width:12px;"],
+    [:checkbox, :ids],    
     [:language_id, lambda{|comment|
       if comment.language
         link_to(comment.language.english_name, :controller => "/tr8n/admin/language", :action => :view, :lang_id => comment.language.id)

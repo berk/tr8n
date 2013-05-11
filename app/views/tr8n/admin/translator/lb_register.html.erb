@@ -1,12 +1,10 @@
+<%= tr8n_lightbox_header_tag %>
 <div class="inner">
     <div class="hd">
-        <div style="float:right;">
-            <%=link_to_function(image_tag("/tr8n/images/close.gif"), "tr8nLightbox.hide();") %>
-        </div>
-        User Translator Registration
+        <%= tr8n_lightbox_title_tag("User Translator Registration") %>
     </div>
-    <div class="bd">
-        <% form_for(:translator, @translator, :url => {:action => :register}, :html => {:id => 'tr8n_form', :method => :post, :class => "tr8n"}) do |form| %>
+    <div class="bd" style="padding-bottom:60px;">
+        <%= form_for(@translator, :as => :translator, :url => {:action => :register}, :html => {:id => 'tr8n_form', :method => :post, :class => "tr8n"}) do |form| %>
         <%= form.hidden_field :id %>
         <%= hidden_field_tag :source_url, request.env['HTTP_REFERER'] %>
         <table class="admin_table">
@@ -25,3 +23,4 @@
       <%= render :partial => "/tr8n/admin/common/lightbox_buttons" %>     
     </div>
 </div>
+<%= tr8n_lightbox_footer_tag %>

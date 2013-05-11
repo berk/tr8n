@@ -1,5 +1,5 @@
 <%= render :partial => "/tr8n/admin/common/header" %>
-<%= render :partial => "tabs", :locals => {:current_tab => @source.title} %>
+<%= render :partial => "tabs", :locals => {:current_tab => "#{image_tag("tr8n/icons/page_white_code.png")} #{@source.title}".html_safe} %>
 
 <table class="admin_table">
     <tr>
@@ -56,7 +56,7 @@
         </th>
         <td>
         <%= tr8n_actions_tag([ 
-            link_to_function("Update", "Tr8n.UI.Lightbox.show('/tr8n/admin/applications/lb_update_source?source_id=#{@source.id}', {height:350})"),
+            link_to_function("Update", "Tr8n.UI.Lightbox.show('/tr8n/admin/sources/lb_update?id=#{@source.id}', {height:350})"),
             link_to("Recalculate All Metrics", "/tr8n/admin/applications/recalculate_source?source_id=#{@source.id}", :confirm => "Are you sure you want to recalculate all metrics for this source?"),
             link_to("Remove All Keys", "/tr8n/admin/applications/remove_keys_from_source?all=true&source_id=#{@source.id}", :confirm => "Are you sure you want to remove all keys from this source?")
           ])

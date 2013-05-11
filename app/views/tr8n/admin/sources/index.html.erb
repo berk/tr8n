@@ -3,13 +3,14 @@
 <%= tr8n_will_filter(@sources) %>
 
 <%= tr8n_actions_tag([
-    link_to_function("Add Source", "Tr8n.UI.Lightbox.show('/tr8n/admin/sources/lb_update', {width:650})")
+    link_to_function("+ Add Source", "Tr8n.UI.Lightbox.show('/tr8n/admin/sources/lb_update', {width:650})")
   ])
 %>
 
 <%= form_tag("", :id => "tr8n_form") do %>
   <%= hidden_field_tag(:type, "source") %>
   <%= will_filter_table_tag(@sources, :columns => [
+    [:icn, image_tag("tr8n/icons/page_white_code.png"), :title => "", :style => "width:12px;"],
     [:checkbox, 'ids'],     
     [:id, lambda{|source| 
       link_to(source.id, :action => :view, :id => source.id)
@@ -28,7 +29,7 @@
     }], 
     [:actions, lambda{|source|
       tr8n_actions_tag([
-        link_to("Recalculate", {:action => :recalculate_metric, :metric_id => source.total_metric.id}, {:confirm => "Are you sure you want to recaluclate this source?"}),
+        link_to("Recalculate", {:action => :recalculate_metric, :metric_id => source.total_metric.id}),
         link_to_function("Update", "Tr8n.UI.Lightbox.show('/tr8n/admin/sources/lb_update?id=#{source.id}', {width:650})"),
         link_to_function("Delete", "deleteObjects('#{source.id}')")
       ])

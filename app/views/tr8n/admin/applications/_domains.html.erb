@@ -1,21 +1,22 @@
 <%= will_filter_scripts_tag %>
 
 <%= tr8n_actions_tag([
-    link_to_function("Add Domain", "Tr8n.UI.Lightbox.show('/tr8n/admin/applications/lb_update_domain?app_id=#{@app.id}', {width:650})")
+    link_to_function("Add Domain", "Tr8n.UI.Lightbox.show('/tr8n/admin/applications/lb_update_domain?id=#{@app.id}', {width:650})")
   ])
 %>
 
 <%= form_tag("", :id => "tr8n_form") do %>
   <%= hidden_field_tag(:type, "domain") %>
   <%= will_filter_table_tag(@results, :columns => [
-    [:checkbox, 'ids'], 
-    :id, 
+    [:icn, image_tag("tr8n/icons/world_link.png"), :title => "", :style => "width:12px;"],
+    [:checkbox, 'ids', 'vertical-align:middle'], 
+    [:id, :style => 'width:60px;'], 
     [:name, :title => "URI"], 
     :description, 
     :source_count,
     [:actions, lambda{|domain|
       tr8n_actions_tag([
-        link_to_function("Update", "Tr8n.UI.Lightbox.show('/tr8n/admin/applications/lb_update_domain?domain_id=#{domain.id}&app_id=#{@app.id}', {width:650})"),
+        link_to_function("Update", "Tr8n.UI.Lightbox.show('/tr8n/admin/applications/lb_update_domain?domain_id=#{domain.id}&id=#{@app.id}', {width:650})"),
         link_to_function("Delete", "deleteObjects('#{domain.id}')")
       ])
     }, 'padding:5px;text-align:right;white-space:nowrap;width:200px;']

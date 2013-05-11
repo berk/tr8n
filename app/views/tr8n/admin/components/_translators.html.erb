@@ -8,6 +8,7 @@
 <%= form_tag("", :id => "tr8n_form") do %>
   <%= hidden_field_tag(:type, "component_translator") %>
   <%= will_filter_table_tag(@results, :columns => [
+      [:icn, image_tag("tr8n/icons/user.png"), :title => "", :style => "width:12px;"],
       [:checkbox, 'component_objects'],     
       [:id, lambda{|ctran|
         ctran.translator.id

@@ -5,14 +5,25 @@
 <%= form_tag("", :id => "tr8n_form") do %>
   <%= hidden_field_tag(:type, "vote") %>
   <%= will_filter_table_tag(@results, :columns => [
-    [:checkbox, :ids],
-    [:language, lambda{|vote|
-      if vote.translation and vote.translation.language
-        link_to(vote.translation.language.english_name, :controller => "/tr8n/admin/language", :action => :view, :id => vote.translation.language.id)
+    [:icn, lambda{|vote|
+      if vote.vote > 0
+        image_tag("tr8n/icons/thumb_up.png")
       else
-         "Deleted Language"    
-      end  
-    }],
+        image_tag("tr8n/icons/thumb_down.png")
+      end
+    }, :title => "", :style => "width:12px;vertical-align:middle"],
+    [:checkbox, :ids],
+    [:vote, lambda{|vote| 
+      html = []
+      if vote.vote == 1
+        html << "<span style='color:green'>"
+      else
+        html << "<span style='color:red'>"
+      end     
+      html << vote.vote
+      html << "</span>"
+      html.join("").html_safe
+    }, 'text-align:right;width:50px;'],
     [:translation_id, lambda{|vote|
       if vote.translation
 	      html = []
@@ -34,6 +45,13 @@
         "Deleted Translation"  
       end  
     }, :title => "Translation"],
+    [:language, lambda{|vote|
+      if vote.translation and vote.translation.language
+        link_to(vote.translation.language.english_name, :controller => "/tr8n/admin/language", :action => :view, :id => vote.translation.language.id)
+      else
+         "Deleted Language"    
+      end  
+    }],
     [:translator_id, lambda{|vote|
       if vote.translator
         link_to(vote.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :id => vote.translator.id)
@@ -41,17 +59,6 @@
         "Unknown" 
       end  
     }],
-    [:vote, lambda{|vote| 
-      html = []
-      if vote.vote == 1
-        html << "<span style='color:green'>"
-      else
-        html << "<span style='color:red'>"
-      end     
-      html << vote.vote
-      html << "</span>"
-      html.join("").html_safe
-    }, 'text-align:right;'],
     [:actions, lambda{|vote|
       tr8n_actions_tag([
         link_to_function("Delete", "deleteObjects('#{vote.id}')")

@@ -1,39 +1,16 @@
-<% form_tag("", :id => "votes_form") do %>
+<%= will_filter_scripts_tag %>
+
+<%= form_tag("", :id => "tr8n_form") do %>
+  <%= hidden_field_tag(:type, "vote") %>
   <%= will_filter_table_tag(@results, :columns => [
-    [:checkbox, :votes],
-    [:translation_key, lambda{|vote|
-      if vote.translation
-        html = []
-        html << link_to(vote.translation.translation_key.label, :controller => "/tr8n/admin/translation_key", :action => :view, :key_id => vote.translation.translation_key.id)
-        html << "<div style='font-size:10px;color:grey'>"
-        html << vote.translation.translation_key.description
-        html << "</div>"
-        html.join("")
+    [:icn, lambda{|vote|
+      if vote.vote > 0
+        image_tag("tr8n/icons/thumb_up.png")
       else
-        "Deleted Translation"  
-      end  
-    }],
-    [:language, lambda{|vote|
-      if vote.translation and vote.translation.language
-        link_to(vote.translation.language.english_name, :controller => "/tr8n/admin/language", :action => :view, :lang_id => vote.translation.language.id)
-      else
-         "Deleted Language"    
-      end  
-    }],
-    [:translation_id, lambda{|vote|
-      if vote.translation
-        html = []
-        html << link_to(vote.translation.label, :controller=> "/tr8n/admin/translation", :action => :view, :translation_id => vote.translation.id)
-        if vote.translation.context
-          html << "<div style='font-size:10px;color:grey'>"
-          html << "Context: #{vote.translation.context}"
-          html << "</div>"
-        end
-        html.join("") 
-      else
-        "Deleted Translation"  
-      end  
-    }],
+        image_tag("tr8n/icons/thumb_down.png")
+      end
+    }, :title => "", :style => "width:12px;vertical-align:middle"],
+    [:checkbox, :ids],
     [:vote, lambda{|vote| 
       html = []
       if vote.vote == 1
@@ -43,26 +20,51 @@
       end     
       html << vote.vote
       html << "</span>"
-      html.join("")
-    }, 'text-align:right;'],
-    :created_at,
+      html.join("").html_safe
+    }, 'text-align:right;width:50px;'],
+    [:translation_id, lambda{|vote|
+      if vote.translation
+        html = []
+        html << link_to(vote.translation.label, :action => :view, :id => vote.translation.id)
+        if vote.translation.context
+          html << "<div style='font-size:10px;color:grey'>"
+          html << "Context: #{vote.translation.context}"
+          html << "</div>"
+        end
+
+        html << "<div style='background:#fffeee; font-size:9px; padding:5px; margin-top:10px; margin-bottom:5px; border:1px dotted #eee;'>"
+        html << link_to(vote.translation.translation_key.label, :controller => "/tr8n/admin/translation_key", :action => :view, :id => vote.translation.translation_key.id)
+        html << "<div style='font-size:10px;color:grey;padding-top:3px;'>"
+        html << vote.translation.translation_key.description
+        html << "</div>"
+
+        html.join("").html_safe 
+      else
+        "Deleted Translation"  
+      end  
+    }, :title => "Translation"],
+    [:language, lambda{|vote|
+      if vote.translation and vote.translation.language
+        link_to(vote.translation.language.english_name, :controller => "/tr8n/admin/language", :action => :view, :id => vote.translation.language.id)
+      else
+         "Deleted Language"    
+      end  
+    }],
+    [:translator_id, lambda{|vote|
+      if vote.translator
+        link_to(vote.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :id => vote.translator.id)
+      else
+        "Unknown" 
+      end  
+    }],
     [:actions, lambda{|vote|
-      html = []
-      html << link_to("Delete", {:controller=> "/tr8n/admin/translation", :action => :delete_vote, :vote_id => vote.id}, {:confirm => "Are you sure you want to delete this vote?"})
-      html.join(' | ')
+      tr8n_actions_tag([
+        link_to_function("Delete", "deleteObjects('#{vote.id}')")
+      ])
     }, 'text-align:right;white-space:nowrap;']
   ]) %>
 <% end %>
 
-<%= will_filter_actions_bar_tag(@votes, [
-  ['Delete Selected Votes', 'deleteSelectedVotes()'] 
+<%= will_filter_actions_bar_tag(@results, [
+  ['Delete Selected Votes', 'deleteObjects()'] 
 ]) %>
-
-<script>
-  function deleteSelectedVotes() {
-    if (!confirm('Are you sure you want to run this opperation?'))
-       return;
-    Tr8n.element('votes_form').action = "/tr8n/admin/translation/delete_vote";
-    Tr8n.element('votes_form').submit();
-  }
-</script>

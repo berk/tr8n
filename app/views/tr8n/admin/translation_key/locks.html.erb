@@ -1,10 +1,18 @@
 <%= render :partial => "/tr8n/admin/common/header" %>
 <%= render :partial => "tabs" %>
-<%= tr8n_will_filter(@locks) %>
+<%= tr8n_will_filter(@results) %>
 
-<% form_tag("", :id => "locks_form") do %>
-  <%= will_filter_table_tag(@locks, :columns => [
-		[:checkbox, :locks],    
+<%= form_tag("", :id => "tr8n_form") do %>
+  <%=hidden_field_tag(:type, :lock) %>
+  <%= will_filter_table_tag(@results, :columns => [
+    [:icn, lambda{|lock|
+      if lock.locked?
+        image_tag("tr8n/icons/lock.png")
+      else
+        image_tag("tr8n/icons/lock_open.png")
+      end
+    }, :title => "", :style => "width:12px;"],
+		[:checkbox, :ids],    
 		[:language_id, lambda{|lock|
       if lock.language
         link_to(lock.language.english_name, :controller => "/tr8n/admin/language", :action => :view, :lang_id => lock.language.id)
@@ -14,36 +22,32 @@
     }], 
     [:translation_key_id, lambda{|lock|
       if lock.translation_key
-	      html = link_to(lock.translation_key.label, :action => :view, :key_id => lock.translation_key.id) 
+        html = []
+	      html << link_to(lock.translation_key.label, :action => :view, :key_id => lock.translation_key.id) 
 	      html << '<div style="color:grey; font-size:10px;">'
 	      html << lock.translation_key.description.to_s  
 	      html << '</div>'
+        html.join().html_safe
       else
         "Deleted Translation Key"
       end  
     }], 
-    [:translator_id, lambda{|lock|
-      if lock.translator
-        link_to(lock.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :translator_id => lock.translator.id) 
+    :locked, :updated_at,
+    [:actions, lambda{|lock|
+      html = []
+      html << link_to_function("Delete", "deleteObjects('#{lock.id}')")
+      if lock.locked?
+        html << link_to("Unlock", {:controller => "/tr8n/admin/translation_key", :action => :update_lock, :lock_id => lock.id, :locked => "false"}, {:confirm => "Are you sure you want to lock this key in #{lock.language.english_name}?"})
       else
-         "Deleted Translator"    
-      end  
+        html << link_to("Lock", {:controller => "/tr8n/admin/translation_key", :action => :update_lock, :lock_id => lock.id, :locked => "true"}, {:confirm => "Are you sure you want to unlock this key in #{lock.language.english_name}?"})
+      end
+      html.join(' | ').html_safe
     }], 
-    :locked, :updated_at
   ]) %>
 <% end %>
 
-<%= will_filter_actions_bar_tag(@keys, [
-  ['Delete Selected Locks', 'deleteSelectedLocks()'] 
+<%= will_filter_actions_bar_tag(@results, [
+  ['Delete Selected Locks', 'deleteObjects()'] 
 ]) %>
 
 <%= render :partial => "/tr8n/admin/common/footer" %>
-
-<script>
-  function deleteSelectedLocks() {
-    if (!confirm('Are you sure you want to run this opperation?'))
-       return;
-    Tr8n.element('locks_form').action = "/tr8n/admin/translation_key/delete_lock";
-    Tr8n.element('locks_form').submit();
-  }
-</script>

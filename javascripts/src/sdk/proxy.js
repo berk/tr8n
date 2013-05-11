@@ -120,8 +120,22 @@ Tr8n.SDK.Proxy = {
     return this;
   },
 
+  shouldBeTranslated: function(label) {
+    // blanks
+    if (!label || label == "") return false;
+    // one character strings
+    if (label.length < 2) return false;
+    // 1  12,344 23,956,669.34 - numbers should never be translated
+    if (/^[\d.,]*$/.test(label)) return false;
+    // non human readable text
+    if (/^[~`!@#$%\^&*\(\)\{\}\[\]|:"<>?;'\.\s\\,\+\-\/]*$/.test(label)) return false;
+    return true;
+  },
+
   translate: function(label, description, tokens, options) {
-    if (!label) return "";
+    if (!this.shouldBeTranslated(label))
+      return label;
+
     description = description || "";
     tokens = tokens || {};
     options = options || {};

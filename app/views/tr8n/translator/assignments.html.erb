@@ -13,7 +13,7 @@
 
   <% if @components.any? %>
   <div class="section_box" style="background-color:#EFF8FF;">
-    <%= tr("You have [bold: {count||assignment}]: {assignments}.", nil, :count => @components.size, :assignments => [@components.collect{|comp| link_to(comp.title, :anchor => "comp-#{comp.id}")}]) %>
+    <%= tr("You have [bold: {count||assignment}]: {assignments}.", nil, :count => @components.size, :assignments => @components.collect{|comp| link_to(comp.title, :anchor => "comp-#{comp.id}")}.join(", ")) %>
   </div>
   <% else %>
     <%= tr("You currently don't have any assignments.") %>

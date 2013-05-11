@@ -1,4 +1,7 @@
+  <%= will_filter_scripts_tag %>
+
   <%= will_filter_table_tag(@results, :columns => [
+    [:icn, image_tag("tr8n/icons/chart_bar.png"), :title => "", :style => "width:12px;"],
     [:language_id, lambda{|metric|
       if metric.language
         link_to(metric.language.english_name, :controller => "/tr8n/admin/language", :action => :view, :lang_id => metric.language.id)

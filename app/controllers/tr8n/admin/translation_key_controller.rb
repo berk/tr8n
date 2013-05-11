@@ -69,6 +69,9 @@ class Tr8n::Admin::TranslationKeyController < Tr8n::Admin::BaseController
       else
         @key = Tr8n::TranslationKey.create(params[:translation_key])
       end
+
+      @key.reset_key!
+
       return dismiss_lightbox      
     end
 
@@ -94,20 +97,11 @@ class Tr8n::Admin::TranslationKeyController < Tr8n::Admin::BaseController
         Tr8n::TranslationKeySource.find_or_create(key, source) 
       end
 
-      return redirect_to_source
+      return dismiss_lightbox
     end
 
     @sources = Tr8n::TranslationSource.find(:all, :order => "name asc, source asc").collect{|s| [s.name_and_source, s.id]}
     render_lightbox
-  end
-
-  def update
-    key = Tr8n::TranslationKey.find_by_id(params[:translation_key][:id]) unless params[:translation_key][:id].blank?
-    
-
-    key.reset_key!
-
-    redirect_to_source
   end
   
   def update_lock
@@ -161,15 +155,15 @@ class Tr8n::Admin::TranslationKeyController < Tr8n::Admin::BaseController
     master_key.update_translation_count!
     master_key.unlock_all!
     
-    redirect_to_source
+    dismiss_lightbox
   end
   
   def comments
-    @comments = Tr8n::TranslationKeyComment.filter(:params => params, :filter => Tr8n::TranslationKeyCommentFilter)
+    @results = Tr8n::TranslationKeyComment.filter(:params => params, :filter => Tr8n::TranslationKeyCommentFilter)
   end
   
   def locks
-    @locks = Tr8n::TranslationKeyLock.filter(:params => params, :filter => Tr8n::TranslationKeyLockFilter)
+    @results = Tr8n::TranslationKeyLock.filter(:params => params, :filter => Tr8n::TranslationKeyLockFilter)
   end
   
   def update_translation_counts

@@ -8,22 +8,23 @@
 <%= form_tag({}, :id => :tr8n_form) do %>
   <%= hidden_field_tag(:type, "application_translator") %>
   <%= will_filter_table_tag(@results, :columns => [
+      [:icn, image_tag("tr8n/icons/user.png"), :title => "", :style => "width:12px;"],
       [:checkbox, 'ids'],     
       [:id, lambda{|at|
         at.translator_id
-      }],
+      }, :style => 'vertical-align:middle'],
       [:name, lambda{|at|
         if at.translator
          link_to(at.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :id => at.translator.id) 
         else
           "deleted"
         end
-      }],
+      }, :style => 'vertical-align:middle'],
       [:country, lambda{|at|
         if at.translator
           at.translator.country_code
         end
-      }],
+      }, :style => 'vertical-align:middle'],
       [:admin, lambda{|at|
         if at.translator
           at.translator.admin?  

@@ -82,6 +82,13 @@ class Tr8n::TranslatorController < Tr8n::BaseController
   end
   
   def lb_report
+    if request.post?
+      @reported_object = params[:object_type].constantize.find(params[:object_id])
+      Tr8n::TranslatorReport.submit(Tr8n::Config.current_translator, @reported_object, params[:reason], params[:comment])
+      trfn("Thank you for submitting your report.")
+      return dismiss_lightbox
+    end
+
     if params[:translation_key_id]
       @reported_object = Tr8n::TranslationKey.find_by_id(params[:translation_key_id])
     elsif params[:translation_id]
@@ -92,16 +99,6 @@ class Tr8n::TranslatorController < Tr8n::BaseController
       @reported_object = Tr8n::TranslationKeyComment.find_by_id(params[:comment_id])
     end
     render :layout => false
-  end
-  
-  def submit_report
-    if request.post?
-      reported_object = params[:object_type].constantize.find(params[:object_id])
-      Tr8n::TranslatorReport.submit(Tr8n::Config.current_translator, reported_object, params[:reason], params[:comment])
-      trfn("Thank you for submitting your report.")
-    end
-    
-    redirect_to_source
   end
   
   def assignments

@@ -8,6 +8,7 @@
 <%= form_tag("", :id => "sources_form") do %>
   <%= hidden_field_tag(:type, "component_source") %>
   <%= will_filter_table_tag(@results, :columns => [
+    [:icn, image_tag("tr8n/icons/page_white_code.png"), :title => "", :style => "width:12px;"],
     [:checkbox, 'component_objects'],     
     [:id, lambda{|source| 
       link_to(source.translation_source.id, :action => :source, :source_id => source.translation_source.id)
@@ -22,11 +23,11 @@
         source.translation_source.description
     }],
     [:keys, lambda{|source|
-      link_to(source.translation_source.total_metric.key_count, "/tr8n/admin/applications/source?mode=translation_keys&source_id=#{source.translation_source.id}")
+      link_to(source.translation_source.total_metric.key_count, "/tr8n/admin/sources/view?mode=translation_keys&id=#{source.translation_source.id}")
     }, 'text-align:right;width:100px;'],
     [:actions, lambda{|source|
       tr8n_actions_tag([
-        link_to_function("Update", "Tr8n.UI.Lightbox.show('/tr8n/admin/applications/lb_update_source?source_id=#{source.translation_source.id}', {height:350})"),
+        link_to_function("Update", "Tr8n.UI.Lightbox.show('/tr8n/admin/sources/lb_update?id=#{source.translation_source.id}', {height:350})"),
         link_to_function("Remove", "deleteObjects('#{source.id}')")
       ])
     }, 'padding:5px;text-align:right;white-space:nowrap;width:200px;']

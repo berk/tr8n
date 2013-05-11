@@ -1,4 +1,4 @@
-<%= render :partial => "/tr8n/common/lightbox_header" %>
+<%= tr8n_lightbox_header_tag %>
 <style>
   .title {
     padding: 5px;
@@ -21,9 +21,9 @@
 </style>
 <div class="inner">
 	<div class="hd" style="">
-  <%= render :partial => '/tr8n/phrases/header' %>
+    <%= render :partial => '/tr8n/phrases/header' %>
 	</div>
-  <div class="bd">
+  <div class="bd" style="padding-bottom:60px;">
     <div style="color:grey;font-size:20px;padding-bottom:10px;">
         <%=tra("Translation Key Sources")%>
     </div>
@@ -46,4 +46,4 @@
      <%=link_to_function("<span>#{tra("Close")}</span>".html_safe, "hideLightbox()", :class => "tr8n_grey_button tr8n_pcb") %>
 	</div>
 </div>
-<%= render :partial => "/tr8n/common/lightbox_footer" %>
+<%= tr8n_lightbox_footer_tag %>

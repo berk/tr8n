@@ -28,20 +28,32 @@ class Tr8n::PhrasesController < Tr8n::BaseController
   before_filter :init_sitemap_section, :except => [:translate, :vote]
   
   def index
-    @translation_keys = Tr8n::TranslationKey.for_params(params)
-   
-    unless params[:section_key].blank?
-      source_names = sitemap_sources_for(@section_key)
-      source_ids = Tr8n::TranslationSource.where("source in (?)", source_names).collect{|source| source.id}
-      
-      if source_ids.empty?
-        @translation_keys = @translation_keys.where("1=2")
-      else  
-        @translation_keys = @translation_keys.where("(id in (select distinct(translation_key_id) from tr8n_translation_key_sources where translation_source_id in (?)))", source_ids.uniq)
-      end
+    # In the embedded mode - there should be only one application
+    begin
+      @selected_application = send(:tr8n_selected_application)
+    rescue 
+      @selected_application = Tr8n::Config.current_app
     end
-    
-    @translation_keys = @translation_keys.order("created_at desc").page(page).per(per_page)
+
+    @translation_keys = Tr8n::TranslationKey.for_params(params.merge(:application => @selected_application))
+
+    sources = sources_from_params
+
+    if sources.any?
+      @translation_keys = translation_keys_for_sources(sources, @translation_keys)
+    else
+      # get a list of all restricted keys
+      restricted_keys = Tr8n::TranslationKey.all_restricted_ids
+
+      # exclude all restricted keys
+      if restricted_keys.any?
+        @translation_keys =  @translation_keys.where("id not in (?)", restricted_keys)
+      end
+
+      @translated = Tr8n::Config.current_language.total_metric.translation_completeness
+      @locked = Tr8n::Config.current_language.completeness
+      @translation_keys = @translation_keys.order("created_at desc").page(page).per(per_page)
+    end
   end
   
   def view
@@ -248,6 +260,53 @@ class Tr8n::PhrasesController < Tr8n::BaseController
   end
     
 private
+
+  def sources_from_params
+    unless params[:section_key].blank?
+      return sitemap_sources_for(@section_key) 
+    end
+    unless params[:component_id].blank?
+      @component = Tr8n::Component.find_by_id(params[:component_id])
+      return [] unless @component
+      return @component.sources.collect{|src| src.source}
+    end
+
+    return params[:sources] unless params[:sources].blank? 
+    return [params[:source]] unless params[:source].blank?
+    []
+  end
+
+  def translation_keys_for_sources(sources, keys)
+    @selected_sources = []
+    @translated = 0
+    @locked = 0
+
+    sources = Tr8n::TranslationSource.where("application_id = ? and source in (?)", Tr8n::Config.current_application.id, sources).all
+    if sources.empty?
+      return keys.where("tr8n_translation_keys.id = -1") 
+    end
+
+    source_ids = []
+    sources.each do |source|
+      next unless source.translator_authorized?
+      source_ids << source.id
+      @selected_sources << source
+      @locked += (source.total_metric.completeness || 0)
+      @translated += (source.total_metric.translation_completeness || 0)
+    end
+
+    # avg of the total
+    if source_ids.empty?
+      @translated = 0
+      @locked = 0
+      return keys.where("tr8n_translation_keys.id = -1") 
+    end
+
+    @locked = @locked/source_ids.size
+    @translated = @translated/source_ids.size
+    keys = keys.where("(tr8n_translation_keys.id in (select distinct(tr8n_translation_key_sources.translation_key_id) from tr8n_translation_key_sources where tr8n_translation_key_sources.translation_source_id in (?)))", source_ids.uniq)
+    keys.order("tr8n_translation_keys.created_at desc").page(page).per(per_page)
+  end
 
   def init_sitemap_section
     return if params[:section_key].blank?

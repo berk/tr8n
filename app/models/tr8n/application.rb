@@ -1,4 +1,4 @@
-#--
+2#--
 # Copyright (c) 2010-2013 Michael Berkovich, tr8nhub.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -58,8 +58,33 @@ class Tr8n::Application < ActiveRecord::Base
 
   before_create :generate_keys
 
+  after_destroy :clear_cache
+  after_save :clear_cache
+
+  def self.cache_key(key)
+    "application_[#{key.to_s}]"
+  end
+
+  def cache_key
+    self.class.cache_key(key)
+  end
+
+  def self.for(key)
+    Tr8n::Cache.fetch(cache_key(key)) do 
+      app = where("key = ?", key.to_s).first
+      if app.nil? and key == :default
+        app = create(:key => key, :name => Tr8n::Config.site_title)
+      end
+      app
+    end  
+  end
+
   def self.options
     Tr8n::Application.find(:all, :order => "name asc").collect{|app| [app.name, app.id]}
+  end
+
+  def clear_cache
+    Tr8n::Cache.delete(cache_key)
   end
 
 protected

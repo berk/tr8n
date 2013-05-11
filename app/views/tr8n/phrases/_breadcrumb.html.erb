@@ -1,11 +1,38 @@
+<div style="padding-bottom:15px;padding-top:0px;<%=tr8n_style_attribute_tag('text-align', 'left')%>;font-size:12px; margin-bottom: 0px;<%=tr8n_style_directional_attribute_tag('padding', 'right', '5px')%>;">
+  <% if controller.action_name == "index" %>
+    <div style="<%=tr8n_style_attribute_tag('float', 'right')%>">
+      <div class="tr8n_progress_bar" style="display:inline-block"><div class="tr8n_progress_indicator" style="width:<%=@translated%>%"></div></div>
+      <div style="display:inline-block;vertical-align:top;font-size:12px;padding-left:10px;"><%=tr("{count}% Translated", nil, :count => @translated)%></div>
+      &nbsp;&nbsp;
+      <div class="tr8n_progress_bar" style="display:inline-block"><div class="tr8n_progress_indicator" style="width:<%=@locked%>%"></div></div>
+      <div style="display:inline-block;vertical-align:top;font-size:12px;padding-left:10px;"><%=tr("{count}% Locked", nil, :count => @locked)%></div>
+    </div>  
+  <% end %>
 <% if @section_key %>
-  <div class="tr8n_txtl" style="padding-top:0px;padding-bottom:15px;font-size:12px; margin-bottom: 0px;">
       <%=link_to(tra("Site Map"), :action => :map)%> 
-			<% @section.parents[1..-1].each do |section| %>
-        >> <%=link_to(tra(section.label, section.description), :action => :index, :section_key => section.key) %>
-			<% end %>	
+      <% @section.parents[1..-1].each do |section| %>
+        &raquo; <%=link_to(tra(section.label, section.description), :action => :index, :section_key => section.key) %>
+      <% end %> 
       <% if @translation_key %>
-      >> <%=link_to(@translation_key.label, :action => :view, :translation_key_id => @translation_key.id, :section_key => @section.key) %>
+      &raquo; <%=link_to(@translation_key.label, :action => :view, :translation_key_id => @translation_key.id, :section_key => @section.key) %>
       <% end %>
-  </div>
+<% else %>
+      <%=link_to(tra("Site Map"), :action => :map)%> 
+      &raquo;
+      <%=link_to(tra("All Phrases"), :action => :index)%> 
+      <% if @component %>
+        &raquo;
+        <%= link_to(@component.title, params) %>
+      <% elsif @selected_sources and @selected_sources.any? %>
+        &raquo;
+        <% 
+          source_links = []
+          @selected_sources.each do |source|
+            source_links << link_to(source.title, params.merge(:sources => nil, :source => source.source)) 
+          end 
+        %>
+
+        <%= source_links.join(", ") %>
+      <% end %>
 <% end %>
+</div>

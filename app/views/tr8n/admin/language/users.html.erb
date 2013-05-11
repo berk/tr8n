@@ -4,6 +4,7 @@
 
 <%= form_tag("", :id => "language_users_form") do %>
   <%= will_filter_table_tag(@users, :columns => [
+    [:icn, image_tag("tr8n/icons/user.png"), :title => "", :style => "width:12px;"],
     [:language_id, lambda{|language_user|
       if language_user.language
         link_to(language_user.language.english_name, :controller => "/tr8n/admin/language", :action => :view, :lang_id => language_user.language.id)

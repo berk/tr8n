@@ -7,7 +7,9 @@
 <%= link_to("Update translators stats", {:action => :update_stats}, :confirm => "Are you sure you want to run this opperation?")%>
 
 <%= form_tag("", :id => "translators_form") do %>
+  <%= hidden_field_tag(:type, "translator") %>
   <%= will_filter_table_tag(@translators, :columns => [
+    [:icn, image_tag("tr8n/icons/user.png"), :title => "", :style => "width:12px;"],
     [:checkbox, :translators],
     :id,
     [:name, lambda{|translator|
@@ -55,28 +57,20 @@
     }, 'text-align:right'],
     [:actions, lambda{|translator|
       tr8n_actions_tag([
-        link_to("View", :action => :view, :translator_id => translator.id),
-        link_to("Delete", {:action => :delete, :translator_id => translator.id}, :confirm => "Are you sure you want to do that?")
+        link_to_function("Delete", "deleteObjects('#{translator.id}')")
       ])
     }, 'text-align:right;white-space:nowrap;']
   ]) %>
 <% end %>
 
 <%= will_filter_actions_bar_tag(@translators, [
-  ['Delete Selected Translators', 'deleteSelectedTranslators()'],
+  ['Delete Selected Translators', 'deleteObjects()'],
   ['Add To Component', 'addSelectedTranslatorsToComponent()'],
 ]) %>
 
 <%= render :partial => "/tr8n/admin/common/footer" %>
 
 <script>
-  function deleteSelectedTranslators() {
-    if (!confirm('Are you sure you want to run this opperation?'))
-       return;
-    Tr8n.element('translators_form').action = "/tr8n/admin/translator/delete";
-    Tr8n.element('translators_form').submit();
-  }
-
   function getSelectedTranslators() {
     var i=0;
     var checkbox = Tr8n.element('wf_check_' + i);

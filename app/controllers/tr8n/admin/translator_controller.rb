@@ -102,7 +102,7 @@ class Tr8n::Admin::TranslatorController < Tr8n::Admin::BaseController
    
   def lb_register
     @translator = Tr8n::Translator.new    
-    render :layout => false
+    render_lightbox
   end
 
   def register

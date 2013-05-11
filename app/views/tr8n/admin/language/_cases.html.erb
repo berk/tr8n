@@ -1,5 +1,6 @@
 <%= will_filter_scripts_tag %>
 <%= will_filter_table_tag(@results, :columns => [
+  [:icn, image_tag("tr8n/icons/page_lightning.png"), :title => "", :style => "width:12px;"],
   :id, :keyword, :latin_name, :native_name, :description, 
   [:translator_id, lambda{|lcase|
     if lcase.translator

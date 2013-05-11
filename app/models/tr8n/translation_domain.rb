@@ -42,7 +42,7 @@ require "socket"
 
 class Tr8n::TranslationDomain < ActiveRecord::Base
   self.table_name = :tr8n_translation_domains
-  attr_accessible :name, :description, :source_count, :application_id
+  attr_accessible :name, :description, :source_count, :application, :application_id
 
   after_save      :clear_cache
   after_destroy   :clear_cache
@@ -66,15 +66,10 @@ class Tr8n::TranslationDomain < ActiveRecord::Base
   end
 
   def self.find_or_create(source)
-    # begin
-    #   domain_name = URI.parse(source || 'localhost').host || 'localhost'
-    # rescue Exception => ex
-    #   domain_name = source
-    # end
-
-    domain_name = Socket::gethostname
+    domain_name = source || Socket::gethostname
     Tr8n::Cache.fetch(cache_key(domain_name)) do 
-      find_by_name(domain_name) || create(:name => domain_name)
+      domain = find_by_name(domain_name) 
+      domain ||= create(:name => domain_name, :application => Tr8n::Application.create(:name => domain_name, :description => "Automatically created from API call"))
     end  
   end
   

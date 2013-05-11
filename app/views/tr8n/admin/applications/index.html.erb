@@ -7,25 +7,26 @@
 <%= form_tag("", :id => "tr8n_form") do %>
   <%=hidden_field_tag(:type, "application") %>
   <%= will_filter_table_tag(@apps, :columns => [
-    :id,
+    [:icn, image_tag("tr8n/icons/cog.png"), :title => "", :style => "width:12px;"],
+    [:id, {:style => 'width:10px;'}],
     [:name, lambda{|app|
       link_to(app.name, {:action => :view, :id => app.id}) unless app.name.blank?
-    }],
-    :description,
+    }, 'vertical-align:middle;'],
+    [:description, :style => 'vertical-align:middle;'],
     [:domains, lambda{|app|
-      link_to(app.domains.count, "/tr8n/admin/application/view/#{app.id}?mode=domains")
-    }, 'text-align:right'],
+      link_to(app.domains.count, "/tr8n/admin/applications/view/#{app.id}?mode=domains")
+    }, 'text-align:right;'],
     [:languages, lambda{|app|
-      link_to(app.languages.count, "/tr8n/admin/application/view/#{app.id}?mode=languages")
+      link_to(app.languages.count, "/tr8n/admin/applications/view/#{app.id}?mode=languages")
     }, 'text-align:right'],
     [:translators, lambda{|app|
-      link_to(app.translators.count, "/tr8n/admin/application/view/#{app.id}?mode=translators")
+      link_to(app.translators.count, "/tr8n/admin/applications/view/#{app.id}?mode=translators")
     }, 'text-align:right'],
     [:sources, lambda{|app|
-      link_to(app.sources.count, "/tr8n/admin/application/view/#{app.id}?mode=sources")
+      link_to(app.sources.count, "/tr8n/admin/applications/view/#{app.id}?mode=sources")
     }, 'text-align:right'],
     [:components, lambda{|app|
-      link_to(app.components.count, "/tr8n/admin/application/view/#{app.id}?mode=components")
+      link_to(app.components.count, "/tr8n/admin/applications/view/#{app.id}?mode=components")
     }, 'text-align:right'],
     [:actions, lambda{|app|
       tr8n_actions_tag([

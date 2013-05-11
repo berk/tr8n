@@ -33,7 +33,12 @@
         <td style="text-align:center;width:40%;">
           <center>
             <% 
-              percent = metrics.collect{|m| m.translation_completeness}.sum/metrics.count
+              if metrics.count > 0
+                percent = metrics.collect{|m| m.translation_completeness}.sum/metrics.count
+              else
+                percent = 0
+              end
+
               if percent < 20
                 bgcolor = "#FFD6D6"
               elsif percent < 80
@@ -53,7 +58,12 @@
         <td style="text-align:center;width:40%;">
           <center>
             <% 
-              percent = metrics.collect{|m| m.completeness}.sum/metrics.count
+              if metrics.count > 0
+                percent = metrics.collect{|m| m.completeness}.sum/metrics.count
+              else
+                percent = 0
+              end
+
               if percent < 20
                 bgcolor = "#FFD6D6"
               elsif percent < 80

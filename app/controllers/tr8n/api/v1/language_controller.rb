@@ -34,7 +34,7 @@ class Tr8n::Api::V1::LanguageController < Tr8n::Api::V1::BaseController
   def index
     languages = []
     Tr8n::Language.enabled_languages.each do |lang|
-      languages << {:locale => lang.locale, 
+      languages << {:locale => lang.locale,  
                     :name => lang.full_name, 
                     :english_name => lang.english_name, 
                     :native_name => lang.native_name, 
@@ -44,8 +44,16 @@ class Tr8n::Api::V1::LanguageController < Tr8n::Api::V1::BaseController
   end
   
   def translate
+    # TODO: add mechanism to determine app from key
+    if request.env['HTTP_REFERER']
+      uri = URI.parse(request.env['HTTP_REFERER'])
+      domain = Tr8n::TranslationDomain.find_or_create(uri.host)
+    else
+      domain = Tr8n::TranslationDomain.find_or_create("Unknown domain")
+    end
+
     language = Tr8n::Language.for(params[:language] || params[:locale]) || tr8n_current_language
-    return sanitize_api_response(translate_phrase(language, params, {:source => source, :api => :translate})) if params[:label]
+    return sanitize_api_response(translate_phrase(language, params, {:source => source, :api => :translate, :application => domain.application})) if params[:label]
     
     # API signature
     # {:source => "", :language => "", :phrases => [{:label => ""}]}
@@ -89,9 +97,7 @@ class Tr8n::Api::V1::LanguageController < Tr8n::Api::V1::BaseController
         phrase = {:label => phrase} if phrase.is_a?(String)
         language = phrase[:locale].blank? ? Tr8n::Config.default_language.locale : (Tr8n::Language.for(phrase[:locale]) || Tr8n::Language.find_by_google_key(phrase[:locale]))
 
-        pp  "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@", language
-
-        translations << translate_phrase(language, phrase, {:source => source, :url => request.env['HTTP_REFERER'], :api => :translate, :locale => language.locale})
+        translations << translate_phrase(language, phrase, {:source => source, :url => request.env['HTTP_REFERER'], :api => :translate, :locale => language.locale, :application => domain.application})
       end
 
       return sanitize_api_response({:phrases => translations})    

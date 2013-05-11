@@ -71,27 +71,27 @@ class Tr8n::TranslationSource < ActiveRecord::Base
     "#{uri.host}#{uri.path}"
   end
 
-  def self.cache_key(source)
-    "source_[#{source.to_s}]"
+  def self.cache_key(application, source)
+    "source_[#{application.id}]_[#{source.to_s}]"
   end
 
   def cache_key
-    self.class.cache_key(source)
+    self.class.cache_key(application || Tr8n::Config.current_application, source)
   end
 
   def clear_cache
     Tr8n::Cache.delete(cache_key)
   end
   
-  def self.find_or_create(source, url = nil)
+  def self.find_or_create(source, application = Tr8n::Config.current_application)
     return source if source.is_a?(Tr8n::TranslationSource)
     source = source.to_s.split("://").last.split("?").first
 
-    Tr8n::Cache.fetch(cache_key(source)) do 
-      source = where("source = ?", source).first || create(:source => source)
-      source.update_attributes(
-        :key_count => Tr8n::TranslationKeySource.count(:id, :conditions => ["translation_source_id = ?", source.id])
-      )
+    Tr8n::Cache.fetch(cache_key(application, source)) do 
+      source = where("application_id = ? and source = ?", application.id, source).first || create(:application => application, :source => source)
+      # source.update_attributes( # do it offline
+      #   :key_count => Tr8n::TranslationKeySource.count(:id, :conditions => ["translation_source_id = ?", source.id])
+      # )
       source
     end  
   end

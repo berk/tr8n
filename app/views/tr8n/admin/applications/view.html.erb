@@ -1,5 +1,5 @@
 <%= render :partial => "/tr8n/admin/common/header" %>
-<%= render :partial => "tabs", :locals => {:current_tab => @app.name} %>
+<%= render :partial => "tabs", :locals => {:current_tab => "#{image_tag("tr8n/icons/cog.png")} #{@app.name}".html_safe} %>
 
 <table class="admin_table">
     <tr>

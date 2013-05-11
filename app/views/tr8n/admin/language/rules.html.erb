@@ -4,6 +4,7 @@
 
 <%= form_tag("", :id => "rules_form") do %>
   <%= will_filter_table_tag(@rules, :columns => [
+    [:icn, image_tag("tr8n/icons/lightbulb.png"), :title => "", :style => "width:12px;"],
     [:language_id, lambda{|rule|
       if rule.language
         link_to(rule.language.english_name, :controller => "/tr8n/admin/language", :action => :view, :lang_id => rule.language.id)

@@ -52,12 +52,12 @@ class Tr8n::TranslationSourceMetric < ActiveRecord::Base
   after_destroy   :clear_cache
   after_save      :clear_cache
 
-  def self.cache_key(source, locale)
-    "source_metric_[#{source.to_s}]_[#{locale}]"
+  def self.cache_key(application, source, locale)
+    "source_metric_[#{application.id}]_[#{source.to_s}]_[#{locale}]"
   end
 
   def cache_key
-    self.class.cache_key(translation_source.source, language.locale)
+    self.class.cache_key(translation_source.application, translation_source.source, language.locale)
   end
 
   def clear_cache
@@ -65,7 +65,7 @@ class Tr8n::TranslationSourceMetric < ActiveRecord::Base
   end
 
   def self.find_or_create(translation_source, language = Tr8n::Config.current_language)
-    Tr8n::Cache.fetch(cache_key(translation_source.source, language.locale)) do 
+    Tr8n::Cache.fetch(cache_key(translation_source.application, translation_source.source, language.locale)) do 
       translation_source_metric = where("translation_source_id = ? and language_id = ?", translation_source.id, language.id).first
       translation_source_metric ||= create(:translation_source => translation_source, :language => language)
     end

@@ -4,7 +4,15 @@
 <%=hidden_field_tag(:type, :lock) %>
 
 <%= will_filter_table_tag(@results, :columns => [
+  [:icn, lambda{|lock|
+    if lock.locked?
+      image_tag("tr8n/icons/lock.png")
+    else
+      image_tag("tr8n/icons/lock_open.png")
+    end
+  }, :title => "", :style => "width:12px;"],
   [:checkbox, :ids],    
+  :locked, 
   [:language_id, lambda{|lock|
     if lock.language
       link_to(lock.language.english_name, :controller => "/tr8n/admin/language", :action => :view, :lang_id => lock.language.id)
@@ -19,7 +27,7 @@
        "Deleted Translator"    
     end  
   }], 
-  :locked, :updated_at,
+  :updated_at,
   [:actions, lambda{|lock|
     html = []
     html << link_to_function("Delete", "deleteObjects('#{lock.id}')")

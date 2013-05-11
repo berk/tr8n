@@ -22,15 +22,26 @@
 ****************************************************************************/
 
 @mixin rounded-corners($radius) {
-  border-radius: $radius;
-  -moz-border-radius: $radius;
   -webkit-border-radius: $radius;
+   -khtml-border-radius: $radius;
+     -moz-border-radius: $radius;
+      -ms-border-radius: $radius;
+       -o-border-radius: $radius;
+          border-radius: $radius;
 }
 
 @mixin shadow($info) {
 	box-shadow:$info;
 	-moz-box-shadow:$info;
 	-webkit-box-shadow:$info;
+}
+
+@mixin transition($info) {
+	-webkit-transition: all 1500ms cubic-bezier $info; 
+	   -moz-transition: all 1500ms cubic-bezier $info; 
+	    -ms-transition: all 1500ms cubic-bezier $info; 
+	     -o-transition: all 1500ms cubic-bezier $info; 
+	        transition: all 1500ms cubic-bezier $info; 	
 }
 
 /****************************************/
@@ -782,3 +793,20 @@ body.tr8n_grey_disabled_button span             {background-position: right -626
   vertical-align:middle;
   cursor:pointer;
 }
+
+.tr8n_progress_bar  {
+	background:#fff;
+	border:solid 1px #ccc;
+	border-color:#ddd #f6f6f6 #f6f6f6 #ddd;
+	padding:3px;width:100px;
+	margin:0 0 5px 0; 
+	@include rounded-corners(3px);
+}
+
+.tr8n_progress_indicator {
+	background: #83ce2a; 
+	height:8px;
+	@include rounded-corners(1px);
+	@include transition((0.250, 0.460, 0.450, 0.940));
+}
+

@@ -31,9 +31,14 @@ function addTr8nScript(doc, id, src, onload) {
     if (window.addEventListener) window.addEventListener('load', initTr8n, false); // Standard
     else if (window.attachEvent) window.attachEvent('onload', initTr8n); // Microsoft
     
-    function initTr8n() {
-      if (window.tr8nJQ) return;
+    window.setTimeout(function(){
+      initTr8n();
+    }, 1000);  
 
+    function initTr8n() {
+      if (window.tr8nLoaded) return;
+
+      window.tr8nLoaded = true;
       addTr8nCSS(window.document, '/assets/tr8n/tr8n.css');
       addTr8nCSS(window.document, '/assets/tr8n/keyboard_1_49.css');
 

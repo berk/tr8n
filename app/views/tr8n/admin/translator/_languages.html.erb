@@ -1,8 +1,10 @@
+<%= will_filter_scripts_tag %>
+
 <%= will_filter_table_tag(@results, :columns => [
     [:flag, lambda{|ulang| 
       return "deleted" unless ulang.language
-      image_tag("/tr8n/images/flags/#{ulang.language.flag}.png")
-    }],
+      image_tag("tr8n/flags/#{ulang.language.flag}.png")
+    }, :title => ""],
     [:locale, lambda{|ulang|
       return "deleted" unless ulang.language
       lang = ulang.language
@@ -14,7 +16,7 @@
       end
       html << lang.locale
       html << '</span>'
-      html.join(' ')
+      html.join(' ').html_safe
     }],
     [:english_name, lambda{|ulang| 
       return "deleted" unless ulang.language
@@ -35,7 +37,7 @@
       end
       html << lang.right_to_left?
       html << '</span>'
-      html.join(' ')
+      html.join(' ').html_safe
     }],
     :user_id, :translator_id, :created_at
   ]) %>

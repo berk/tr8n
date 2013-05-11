@@ -16,8 +16,8 @@
 
 <%= form_tag("", :id => "languages_form") do %>
 	<%= will_filter_table_tag(@results, :columns => [
+    [:flag, lambda{|lang| image_tag("tr8n/flags/#{lang.flag}.png")}, :style => 'width:20px;', :title => ''],
     [:checkbox, 'languages'],
-	  [:flag, lambda{|lang| image_tag("tr8n/flags/#{lang.flag}.png")}],
 	  [:locale, lambda{|lang|
 	    html = []
 	    if lang.enabled?

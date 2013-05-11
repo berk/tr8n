@@ -4,6 +4,7 @@
 
 <%= form_tag("", :id => "rules_form") do %>
   <%= will_filter_table_tag(@case_rules, :columns => [
+    [:icn, image_tag("tr8n/icons/lightning.png"), :title => "", :style => "width:12px;"],
     [:language_id, lambda{|lcase|
       if lcase.language
         link_to(lcase.language.english_name, :controller => "/tr8n/admin/language", :action => :view, :lang_id => lcase.language.id)

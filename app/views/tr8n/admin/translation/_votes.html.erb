@@ -3,14 +3,14 @@
 <%= form_tag("", :id => "tr8n_form") do %>
   <%= hidden_field_tag(:type, "vote") %>
   <%= will_filter_table_tag(@results, :columns => [
-    [:checkbox, :ids],
-    [:translator_id, lambda{|vote|
-      if vote.translator
-        link_to(vote.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :id => vote.translator.id)
+    [:icn, lambda{|vote|
+      if vote.vote > 0
+        image_tag("tr8n/icons/thumb_up.png")
       else
-        "Unknown" 
-      end  
-    }],
+        image_tag("tr8n/icons/thumb_down.png")
+      end
+    }, :title => "", :style => "width:12px;"],
+    [:checkbox, :ids],
     [:vote, lambda{|vote| 
       html = []
       if vote.vote == 1
@@ -21,7 +21,15 @@
       html << vote.vote
       html << "</span>"
       html.join("").html_safe
-    }, 'text-align:right;'],
+    }, 'text-align:right;width:50px;'],
+    [:translator_id, lambda{|vote|
+      if vote.translator
+        link_to(vote.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :id => vote.translator.id)
+      else
+        "Unknown" 
+      end  
+    }],
+    :updated_at, 
     [:actions, lambda{|vote|
       tr8n_actions_tag([
         link_to_function("Delete", "deleteObjects('#{vote.id}')")

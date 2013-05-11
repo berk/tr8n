@@ -1,3 +1,4 @@
+<%= tr8n_lightbox_header_tag %>
 <style>
   .lightbox {
   	background-color: white;
@@ -71,9 +72,9 @@
     <% end %>    
   </div>
 
-	<div class="bd" <%=tr8n_dir_attribute_tag%>>
-	    <% form_tag({:action => :submit_report}, {:method => :post, :id => :tr8n_form}) do %>
-	      <%= hidden_field_tag :source_url, request.env['HTTP_REFERER'] %>
+	<div class="bd" <%=tr8n_dir_attribute_tag%> style="padding-bottom:80px;">
+	    <%= form_tag({}, {:method => :post, :id => :tr8n_form}) do %>
+	      <%= hidden_field_tag(:origin, params[:origin]) %>
 	      <%= hidden_field_tag(:object_id, @reported_object.id) %>
 	      <%= hidden_field_tag(:object_type, @reported_object.class.name) %>
 	      <div class="content">
@@ -109,3 +110,4 @@
       <%= render :partial => '/tr8n/admin/common/lightbox_buttons' %>  
 	</div>
 </div>
+<%= tr8n_lightbox_footer_tag %>

@@ -8,34 +8,34 @@
 <%= form_tag("", :id => "lang_form") do %>
   <%= hidden_field_tag(:type, "component_language") %>
   <%= will_filter_table_tag(@results, :columns => [
-      [:checkbox, 'component_objects'],     
-      [:id, lambda{|ulang| ulang.language ?  ulang.language.id : ''}, 'width:60px;'],
-      [:flag, lambda{|ulang| ulang.language ? image_tag("tr8n/flags/#{ulang.language.flag}.png") : ''}, 'width:30px;'],
-      [:locale, lambda{|ulang|
-        lang = ulang.language
-        html = []
-        if lang.enabled?
-          html << '<span style="color:green">'
-        else  
-          html << '<span style="color:red">'
-        end
-        html << lang.locale
-        html << '</span>'
-        html.join(' ').html_safe
-      }, 'width:30px;'],
-      [:english_name, lambda{|ulang| link_to(ulang.language.english_name, :action => :view, :id => ulang.language.id)}],
-      [:state, lambda{|ulang| ulang.state}, 'width:100px;'],
-      [:actions, lambda{|ulang|
-        html = []
-        if ulang.restricted?
-          html << link_to("Release Live", {:action => :change_component_language_state, :component_language_id => ulang.id, :state => :live}, {:confirm => "Are you sure you want to release this language?"})
-        else
-          html << link_to("Restrict", {:action => :change_component_language_state, :component_language_id => ulang.id, :state => :restricted}, {:confirm => "Are you sure you want to restrict this language?"})
-        end
-        html << link_to_function("Remove", "deleteObjects('#{ulang.id}')")
-        html.join(' | ').html_safe
-      }, 'padding:5px;text-align:right;white-space:nowrap;width:200px;']        
-    ]) %>
+    [:flag, lambda{|ulang| ulang.language ? image_tag("tr8n/flags/#{ulang.language.flag}.png") : ''}, :style => 'width:20px;', :title => ''],
+    [:checkbox, 'component_objects'],     
+    [:id, lambda{|ulang| ulang.language ?  ulang.language.id : ''}, 'width:60px;'],
+    [:locale, lambda{|ulang|
+      lang = ulang.language
+      html = []
+      if lang.enabled?
+        html << '<span style="color:green">'
+      else  
+        html << '<span style="color:red">'
+      end
+      html << lang.locale
+      html << '</span>'
+      html.join(' ').html_safe
+    }, 'width:30px;'],
+    [:english_name, lambda{|ulang| link_to(ulang.language.english_name, :action => :view, :id => ulang.language.id)}],
+    [:state, lambda{|ulang| ulang.state}, 'width:100px;'],
+    [:actions, lambda{|ulang|
+      html = []
+      if ulang.restricted?
+        html << link_to("Release Live", {:action => :change_component_language_state, :component_language_id => ulang.id, :state => :live}, {:confirm => "Are you sure you want to release this language?"})
+      else
+        html << link_to("Restrict", {:action => :change_component_language_state, :component_language_id => ulang.id, :state => :restricted}, {:confirm => "Are you sure you want to restrict this language?"})
+      end
+      html << link_to_function("Remove", "deleteObjects('#{ulang.id}')")
+      html.join(' | ').html_safe
+    }, 'padding:5px;text-align:right;white-space:nowrap;width:200px;']        
+  ]) %>
 <% end %>
 
 <%= will_filter_actions_bar_tag(@results, [

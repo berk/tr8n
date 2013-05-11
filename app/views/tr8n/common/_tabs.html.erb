@@ -1,4 +1,10 @@
 <div class="translations_navigation" <%=tr8n_dir_attribute_tag%>>
+  <div style="float:right">
+    <%= form_tag("/tr8n/phrases", :id => "tr8n_key_search_form", :method => :get) do %>
+        <%= text_field_tag("search", "", :style => "width:150px;font-size:13px;background: white url(/assets/tr8n/icn_search.png) right no-repeat; padding-right: 20px; border-radius:10px;", :placeholder => trla("Quick search")) %>
+    <% end %>
+  </div>
+
   <div style="font-size:22px; font-weight: bold;padding-bottom:15px; <%=tr8n_style_attribute_tag('text-align', 'left')%>;">
 	 <%=tra("Translation Tools") %>
 	 - <%=tra("{language} Language", nil, :language => tr8n_current_language.native_name)%>

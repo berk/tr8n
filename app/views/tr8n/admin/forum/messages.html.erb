@@ -3,7 +3,9 @@
 <%= tr8n_will_filter(@messages) %>
 
 <%= form_tag("", :id => "topics_form") do %>
-  <%= will_filter_table_tag(@messages, :columns => [:created_at,
+  <%= will_filter_table_tag(@messages, :columns => [
+    [:icn, image_tag("tr8n/icons/comment.png"), :title => "", :style => "width:12px;"],
+    :created_at,
     [:language_id, lambda{|message|
       if message.language
         link_to(message.language.english_name, :controller => "/tr8n/admin/language", :action => :view, :lang_id => message.language.id)

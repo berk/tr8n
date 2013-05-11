@@ -1,5 +1,5 @@
 <%= render :partial => "/tr8n/admin/common/header" %>
-<%= render :partial => "tabs", :locals => {:current_tab => "Language Details"} %>
+<%= render :partial => "tabs", :locals => {:current_tab => "#{image_tag("tr8n/flags/#{@lang.flag}.png")} Language Details".html_safe} %>
 
 <table class="admin_table">
     <tr>

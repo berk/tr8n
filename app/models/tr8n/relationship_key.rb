@@ -133,7 +133,7 @@ class Tr8n::RelationshipKey < Tr8n::TranslationKey
     lock_for(language).locked?
   end
 
-  def self.title
+  def title
     "Relationship Key".translate
   end
 

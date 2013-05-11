@@ -50,6 +50,14 @@ module Tr8n
   
   private
   
+    def render_lightbox
+      render(:layout => false)
+    end
+
+    def dismiss_lightbox
+      redirect_to(:controller => "/tr8n/help", :action => "lb_done", :origin => params[:origin])
+    end
+  
     def tr8n_features_tabs
       @tabs ||= begin 
         tabs = Tr8n::Config.features.clone

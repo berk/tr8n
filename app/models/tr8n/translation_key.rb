@@ -75,29 +75,27 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   def self.find_or_create(label, desc = "", options = {})
     key = generate_key(label, desc).to_s
 
-    # Rails.logger.debug("********* Fetching key from source: #{Tr8n::Config.current_source.source}")
-
     tkey = Tr8n::Config.current_source.translation_key_for_key(key)
     tkey ||= begin
       # pp "key for label #{label} not found in cache"
       existing_key = where(:key => key).first
       
-      level = options[:level] || Tr8n::Config.block_options[:level] || Tr8n::Config.default_translation_key_level
-      role_key = options[:role] || Tr8n::Config.block_options[:role] 
-      if role_key
-        level = Tr8n::Config.translator_roles[role_key]
-        raise Tr8n::Exception("Unknown translator role: #{role_key}") unless level 
+      existing_key ||= begin
+        level = options[:level] || Tr8n::Config.block_options[:level] || Tr8n::Config.default_translation_key_level
+        role_key = options[:role] || Tr8n::Config.block_options[:role] 
+        if role_key
+          level = Tr8n::Config.translator_roles[role_key]
+          raise Tr8n::Exception("Unknown translator role: #{role_key}") unless level 
+        end
+        locale = options[:locale] || Tr8n::Config.block_options[:default_locale] || Tr8n::Config.default_locale
+        create( :key => key.to_s, 
+                :label => label, 
+                :description => desc, 
+                :locale => locale,
+                :level => level,
+                :admin => Tr8n::Config.block_options[:admin] )
       end
 
-      locale = options[:locale] || Tr8n::Config.block_options[:default_locale] || Tr8n::Config.default_locale
-      
-      existing_key ||= create(:key => key.to_s, 
-                              :label => label, 
-                              :description => desc, 
-                              :locale => locale,
-                              :level => level,
-                              :admin => Tr8n::Config.block_options[:admin])
-      
       track_source(existing_key, options)  
       existing_key
     end
@@ -108,7 +106,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   def self.track_source(translation_key, options = {})
     # source can be passed into an individual key, or as a block or fall back on the controller/action
     source = options[:source] || Tr8n::Config.current_source_from_block_options || Tr8n::Config.current_source
-    translation_source = Tr8n::TranslationSource.find_or_create(source)
+    translation_source = Tr8n::TranslationSource.find_or_create(source, options[:application] || Tr8n::Config.current_application)
 
     # each key is associated with one or more sources
     translation_key_source = Tr8n::TranslationKeySource.find_or_create(translation_key, translation_source)
@@ -595,7 +593,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     @source_map ||= begin
       map = {}
       sources.each do |source|
-        (map[source.domain.name] ||= []) << source
+        (map[source.application.name] ||= []) << source
       end
       map
     end
@@ -690,8 +688,18 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   ## Feature Methods
   ###############################################################
   
-  def self.title
-    "Original Phrase in {language}".translate(nil, :language => Tr8n::Config.current_language.native_name)
+  def language
+    @language ||= begin
+      if locale.nil? 
+        Tr8n::Config.default_language 
+      else
+        Tr8n::Language.for(locale) || Tr8n::Config.default_language
+      end
+    end
+  end
+
+  def title
+    "Original Phrase in {language}".translate(nil, :language => language.native_name)
   end
   
   def self.help_url
@@ -721,7 +729,18 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   ###############################################################
   ## Search Methods
   ###############################################################
-  
+  def self.all_restricted_ids
+    Tr8n::TranslationKey.find(:all, 
+        :select => "distinct tr8n_translation_keys.id",
+        :conditions => ["c.state = ?", 'restricted'],
+        :joins => [
+          "join tr8n_translation_key_sources as tks on tr8n_translation_keys.id = tks.translation_key_id",
+          "join tr8n_component_sources as cs on tks.translation_source_id = cs.translation_source_id",
+          "join tr8n_components as c on cs.component_id = c.id"
+        ]
+    ).collect{|key| key.id}
+  end
+      
   def self.filter_phrase_type_options
     [["all", "any"], 
      ["without translations", "without"], 
@@ -743,8 +762,22 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   end
   
   def self.for_params(params)
-    results = self.where("tr8n_translation_keys.locale <> ? and (level is null or level <= ?)", Tr8n::Config.current_language.locale, Tr8n::Config.current_user_is_translator? ? Tr8n::Config.current_translator.level : 0)
-    
+    # only show keys of language other than the kyes themselves
+    results = self.where("tr8n_translation_keys.locale <> ?", Tr8n::Config.current_language.locale)
+
+    # only show keys for the current applications - determined through sources
+    if params[:application]
+      results = results.joins(:translation_sources).where("tr8n_translation_sources.application_id = ?", params[:application].id)
+    end
+
+    # only show keys translators has rights to view
+    if Tr8n::Config.current_user_is_translator?
+      results = results.where("level is null or level <= ?", Tr8n::Config.current_translator.level)
+    else
+      results = results.where("level is null or level = 0")
+    end
+
+    # allow translators to query keys    
     unless params[:search].blank?
       results = results.where("(tr8n_translation_keys.label like ? or tr8n_translation_keys.description like ?)", "%#{params[:search]}%", "%#{params[:search]}%")
     end
@@ -776,6 +809,6 @@ class Tr8n::TranslationKey < ActiveRecord::Base
       results = results.where("tr8n_translation_keys.id not in (select tr8n_translation_key_locks.translation_key_id from tr8n_translation_key_locks where tr8n_translation_key_locks.language_id = ? and tr8n_translation_key_locks.locked = ?)", Tr8n::Config.current_language.id, true)
     end
     
-    results.order("created_at desc")
+    results.order("created_at desc").uniq
   end    
 end
