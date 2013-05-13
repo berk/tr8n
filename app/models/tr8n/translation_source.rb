@@ -67,8 +67,10 @@ class Tr8n::TranslationSource < ActiveRecord::Base
   alias :metrics  :translation_source_metrics
   
   def self.normalize_api_source(url)
+    return nil if url.blank?
     uri = URI.parse(url)
-    "#{uri.host}#{uri.path}"
+    return "/" if uri.path.blank?
+    uri.path
   end
 
   def self.cache_key(application, source)

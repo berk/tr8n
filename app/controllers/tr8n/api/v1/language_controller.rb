@@ -26,10 +26,6 @@ class Tr8n::Api::V1::LanguageController < Tr8n::Api::V1::BaseController
   # for ssl access to the translator - using ssl_requirement plugin  
   ssl_allowed :translate  if respond_to?(:ssl_allowed)
 
-  def test
-    sanitize_api_response({:message => "Hello World"})
-  end
-
   # returns a list of all languages
   def index
     languages = []
@@ -44,15 +40,11 @@ class Tr8n::Api::V1::LanguageController < Tr8n::Api::V1::BaseController
   end
   
   def translate
-    # TODO: add mechanism to determine app from key
-    if request.env['HTTP_REFERER']
-      uri = URI.parse(request.env['HTTP_REFERER'])
-      domain = Tr8n::TranslationDomain.find_or_create(uri.host)
-    else
-      domain = Tr8n::TranslationDomain.find_or_create("Unknown domain")
-    end
-
+    domain = Tr8n::TranslationDomain.find_or_create(request.env['HTTP_REFERER'])
     language = Tr8n::Language.for(params[:language] || params[:locale]) || tr8n_current_language
+    Tr8n::Config.set_application(domain.application)
+    Tr8n::Config.set_language(language)
+
     return sanitize_api_response(translate_phrase(language, params, {:source => source, :api => :translate, :application => domain.application})) if params[:label]
     
     # API signature

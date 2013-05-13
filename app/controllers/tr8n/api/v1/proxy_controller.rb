@@ -24,7 +24,6 @@
 class Tr8n::Api::V1::ProxyController < Tr8n::Api::V1::BaseController
 
   def boot
-    params[:source] ||= Tr8n::TranslationSource.normalize_api_source(request.env['HTTP_REFERER'] || "undefined")
     render(:partial => "/tr8n/common/js/boot", :formats => [:js], :locals => {:uri => URI.parse(request.url)}, :content_type => "text/javascript")
   end
 
@@ -32,6 +31,7 @@ class Tr8n::Api::V1::ProxyController < Tr8n::Api::V1::BaseController
     script = []
 
     opts = {}
+
     opts[:scheduler_interval]         = Tr8n::Config.default_client_interval
     opts[:enable_inline_translations] = (Tr8n::Config.current_user_is_translator? and Tr8n::Config.current_translator.enable_inline_translations? and (not Tr8n::Config.current_language.default?))
     opts[:default_decorations]        = Tr8n::Config.default_decoration_tokens
@@ -49,10 +49,13 @@ class Tr8n::Api::V1::ProxyController < Tr8n::Api::V1::BaseController
       :list   => Tr8n::Config.rules_engine[:gender_list_rule],  :date   => Tr8n::Config.rules_engine[:date_rule]
     }
 
-    source = params[:source] || request.env['HTTP_REFERER'] || 'undefined'
+    domain = Tr8n::TranslationDomain.find_or_create(request.env['HTTP_REFERER'])
+    Tr8n::Config.set_application(domain.application)
 
-    # TODO: do some more manipulations with the source
+    language = Tr8n::Language.for(params[:language] || params[:locale]) || Tr8n::Config.current_language
+    Tr8n::Config.set_language(language)
 
+    source = params[:source] || Tr8n::TranslationSource.normalize_api_source(request.env['HTTP_REFERER']) || 'undefined'
     source_ids = Tr8n::TranslationSource.where(:source => source).all.collect{|src| src.id}
     if source_ids.empty?
       conditions = ["1=2"]
