@@ -31,18 +31,19 @@ module Tr8n
   
     # initializes language, user and translator
     # the variables are kept in a thread safe form throughout the request
-    def self.init(site_current_locale, site_current_user = nil, source = nil, component = nil)
-      Thread.current[:tr8n_current_language]   = Tr8n::Language.for(site_current_locale) || default_language
-      Thread.current[:tr8n_current_user]       = site_current_user
-      Thread.current[:tr8n_current_translator] = Tr8n::Translator.for(site_current_user)
-      Thread.current[:tr8n_current_source]     = Tr8n::TranslationSource.find_or_create(source || "undefined")
+    def self.init(application, language, user = nil, source = nil, component = nil)
+      set_application(application)
+      set_language(language)
+      set_current_user(user)
+      set_current_translator(Tr8n::Translator.for(user))
+      set_source(Tr8n::TranslationSource.find_or_create(source || "undefined"))
 
       # register source with component
       unless component.nil?
-        Thread.current[:tr8n_current_component]  = Tr8n::Component.find_or_create(component) 
+        set_current_component(component)
         Tr8n::ComponentSource.find_or_create(current_component, current_source)
       else
-        Thread.current[:tr8n_current_component]  = nil
+        set_current_component(nil)
       end
 
       # register the total metric for the current source and language
@@ -55,29 +56,35 @@ module Tr8n
       Thread.current[:tr8n_current_user]
     end
 
+    def self.set_current_user(user)
+      Thread.current[:tr8n_current_user] = user
+    end
+
     def self.current_application
-      Thread.current[:tr8n_current_application] || Tr8n::Application.for(:default)
+      Thread.current[:tr8n_current_application]
     end  
 
-    def self.set_application(app)
-      app = Tr8n::Application.for(app) if app.is_a?(String)
-      Thread.current[:tr8n_current_application] = app
+    def self.set_application(application)
+      application = Tr8n::Application.for(application) if application.is_a?(String)
+      Thread.current[:tr8n_current_application] = application
     end
 
     def self.current_source
-      Thread.current[:tr8n_current_source] ||= Tr8n::TranslationSource.find_or_create("undefined")
+      Thread.current[:tr8n_current_source]
     end
   
     def self.set_source(source)
-      Thread.current[:tr8n_current_source]     = Tr8n::TranslationSource.find_or_create(source)
+      source = Tr8n::TranslationSource.find_or_create(source) if source.is_a?(String)
+      Thread.current[:tr8n_current_source] = source
     end
 
     def self.current_component
       Thread.current[:tr8n_current_component]
     end  
 
-    def self.set_component(component)
-      Thread.current[:tr8n_current_component]  = Tr8n::Component.find_or_create(component)
+    def self.set_current_component(component)
+      component = Tr8n::Component.find_or_create(component) if component.is_a?(String)
+      Thread.current[:tr8n_current_component] = component
     end
 
     def self.current_language
@@ -85,6 +92,7 @@ module Tr8n
     end
   
     def self.set_language(language)
+      language = Tr8n::Language.for(language) if language.is_a?(String)
       Thread.current[:tr8n_current_language] = language
     end
 
@@ -125,14 +133,11 @@ module Tr8n
       true
     end
 
-    # when this method is called, we create the translator record right away
-    # and from this point on, will track the user
-    # this can happen any time user tries to translate something or enables inline translations
     def self.current_translator
-      Thread.current[:tr8n_current_translator] ||= Tr8n::Translator.register
+      Thread.current[:tr8n_current_translator]
     end
   
-    def self.set_translator(translator)
+    def self.set_current_translator(translator)
       Thread.current[:tr8n_current_translator]  = translator
     end
 

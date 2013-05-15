@@ -34,14 +34,14 @@
       else
          "Deleted Language"    
       end  
-    }],
+    }, :filterable => true, :title => "Language"],
     [:translator_id, lambda{|translation|
       if translation.translator
         link_to(translation.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :id => translation.translator.id)
       else
         "Unknown" 
       end  
-    }],
+    }, :filterable => true, :title => "Translator"],
     [:rank, lambda{|translation| 
       html = []
       if translation.rank >= Tr8n::Config.translation_threshold

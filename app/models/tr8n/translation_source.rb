@@ -66,15 +66,22 @@ class Tr8n::TranslationSource < ActiveRecord::Base
   alias :keys     :translation_keys
   alias :metrics  :translation_source_metrics
   
-  def self.normalize_api_source(url)
+  def self.normalize_source(url)
     return nil if url.blank?
     uri = URI.parse(url)
+    path = uri.path
     return "/" if uri.path.blank?
-    uri.path
+    return path if path == "/"
+
+    # always must start with /
+    path = "/#{path}" if path[0] != "/"
+    # should not end with /
+    path = path[0..-2] if path[-1] == "/"
+    path
   end
 
-  def self.cache_key(application, source)
-    "source_[#{application.id}]_[#{source.to_s}]"
+  def self.cache_key(application, source_name)
+    "source_[#{application.id}]_[#{source_name.to_s}]"
   end
 
   def cache_key
@@ -85,16 +92,16 @@ class Tr8n::TranslationSource < ActiveRecord::Base
     Tr8n::Cache.delete(cache_key)
   end
   
-  def self.find_or_create(source, application = Tr8n::Config.current_application)
-    return source if source.is_a?(Tr8n::TranslationSource)
-    source = source.to_s.split("://").last.split("?").first
+  def self.find_or_create(source_name, application = Tr8n::Config.current_application)
+    return source_name if source_name.is_a?(Tr8n::TranslationSource)
 
-    Tr8n::Cache.fetch(cache_key(application, source)) do 
-      source = where("application_id = ? and source = ?", application.id, source).first || create(:application => application, :source => source)
-      # source.update_attributes( # do it offline
-      #   :key_count => Tr8n::TranslationKeySource.count(:id, :conditions => ["translation_source_id = ?", source.id])
-      # )
-      source
+    Tr8n::Cache.fetch(cache_key(application, source_name)) do 
+      ts = where("application_id = ? and source = ?", application.id, source_name).first 
+      ts ||= begin
+        src = create(:application => application, :source => source_name)
+        src.update_metrics!
+        src
+      end
     end  
   end
 

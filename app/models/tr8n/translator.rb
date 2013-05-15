@@ -113,6 +113,7 @@ class Tr8n::Translator < ActiveRecord::Base
     return nil unless translator
 
     # update all language user entries to add a translator id
+    #deprecated
     Tr8n::LanguageUser.where(:user_id => user.id).each do |lu|
       lu.update_attributes(:translator => translator)
     end

@@ -13,7 +13,6 @@
     [:id, :style => 'width:60px;'], 
     [:name, :title => "URI"], 
     :description, 
-    :source_count,
     [:actions, lambda{|domain|
       tr8n_actions_tag([
         link_to_function("Update", "Tr8n.UI.Lightbox.show('/tr8n/admin/applications/lb_update_domain?domain_id=#{domain.id}&id=#{@app.id}', {width:650})"),

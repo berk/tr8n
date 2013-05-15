@@ -1,0 +1,31 @@
+<%= tr8n_lightbox_header_tag %>
+<div class="inner" style="font-size:12px; font-family:arial;">
+  <div class="hd">
+    <%= tr8n_lightbox_title_tag("#{image_tag("tr8n/flags/#{@translation_source_metric.language.flag}.png", :style => 'vertical-align:top')} #{@translation_source_metric.language.native_name}".html_safe) %>
+  </div>
+
+  <div class="bd" style="background-color:white;">
+    <div>
+      <div style="float:right">
+        <%= @translation_source.application.name %>
+      </div>
+      <strong><%= @translation_source.source %></strong>
+    </div>
+
+
+    <%=render :partial => "/tr8n/translator/translation_source_metric", :locals => {:translation_source => @translation_source, :translation_source_metric => @translation_source_metric} %>
+
+    <div>
+      <div style="padding:5px;">
+        <%= tra("Not translated - phrases that don't have any translations.") %>
+      </div>
+      <div style="padding:5px;">
+        <%= tra("Pending Approval - phrases with translations that are awaiting language manager's review.") %>
+      </div>
+      <div style="padding:5px;">
+        <%= tra("Approved - phrases that have been translated, verified and locked by the language manager.") %>
+      </div>
+    </div>
+  </div>
+</div>
+<%= tr8n_lightbox_footer_tag %>

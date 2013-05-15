@@ -1,18 +1,23 @@
 <%= tr8n_with_options_tag(:default_locale => Tr8n::Config.default_admin_locale, :admin => true) do %>
 <div class="module page_title lengthy">
   <div class="inner">
-    <div class="hd">
-      <h1><%=Tr8n::Config.site_title %> Translations Terms of Use <span class="small quiet no_bold">updated January 12, 2012</span></h1>
+    <div class="hd" style="padding-left:10px;">
+      <span style="font-size:30px;">
+        <%=tr("{title} Terms of Use", nil, :title => Tr8n::Config.site_title) %> 
+      </span>
+      <span style="font-size:12px;color:#888;"><%= tr("updated {date}", nil, :date => Date.new(2013, 5, 15).tr(:monthname_year)) %></span>
     </div>
   </div>
 </div>
 
-<div style="padding:10px;border:1px solid #ccc;overflow:auto;height:500px;margin:10px;font-family:Arial;font-size:12px;">
+<div style="padding:10px;border:1px solid #ccc;overflow:auto;height:600px;margin:10px;font-family:Arial;font-size:12px;">
 	<%=render :partial => Tr8n::Config.registration_disclaimer_path %>
 </div>
 
 <div style="text-align:center; padding:15px;">
-  <%= link_to(trl('Agree', 'Client application action label'), {:action => :registration, :agree => :yes}, :class=>'button super blue xlarge') %>
+  <button type="submit" class="translator_btn translator_submit_btn" onClick="location='/tr8n/translator/registration?agree=yes';">
+      <span><%=tra("Agree")%></span>
+  </button>
   <%=tr("or")%> <%=link_to(tr("Cancel"), Tr8n::Config.default_url)%>
 </div>
 <% end %>

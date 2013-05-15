@@ -57,11 +57,14 @@ class Tr8n::Admin::ComponentsController < Tr8n::Admin::BaseController
     @type = component_link_types.first unless component_link_types.include?(@type)
 
     @comp = Tr8n::Component.find_by_id(params[:id])
+    @app = @comp.application
+
     if @type == "language"
-      @languages = Tr8n::Language.enabled_languages
+      @languages = @app.languages
     elsif @type == "source"   
-      @sources = Tr8n::TranslationSource.find(:all, :order => "source asc")
+      @sources = @app.sources.order("source asc")
     elsif @type == "translator"   
+      @translators = @app.translators
     end
     
     render :partial => "lb_add_#{@type.pluralize}"

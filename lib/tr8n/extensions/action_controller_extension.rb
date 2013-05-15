@@ -64,7 +64,7 @@ module Tr8n
       end
       
       def tr8n_source
-        "#{self.class.name.underscore.gsub("_controller", "")}/#{self.action_name}"
+        Tr8n::TranslationSource.normalize_source(request.url)
       rescue
         self.class.name
       end
@@ -87,17 +87,22 @@ module Tr8n
         self.send(Tr8n::Config.current_user_method)
       end
 
+      def tr8n_application
+        domain = Tr8n::TranslationDomain.find_or_create(request.url)
+        domain.application
+      end
+
       def init_tr8n
         return unless Tr8n::Config.enabled?
 
         # initialize request thread variables
-        Tr8n::Config.init(tr8n_init_current_locale, tr8n_init_current_user, tr8n_source, tr8n_component)
+        Tr8n::Config.init(tr8n_application, tr8n_init_current_locale, tr8n_init_current_user, tr8n_source, tr8n_component)
         
         # for logged out users, fallback onto tr8n_access_key
         if Tr8n::Config.current_user_is_guest?  
           tr8n_access_key = params[:tr8n_access_key] || session[:tr8n_access_key]
           unless tr8n_access_key.blank?
-            Tr8n::Config.set_translator(Tr8n::Translator.find_by_access_key(tr8n_access_key))
+            Tr8n::Config.set_current_translator(Tr8n::Translator.find_by_access_key(tr8n_access_key))
           end
         end
 

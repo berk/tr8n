@@ -20,6 +20,7 @@
     }, 'text-align:right;width:100px;'],
     [:actions, lambda{|source|
       tr8n_actions_tag([
+        link_to("Recalculate", {:controller => "/tr8n/admin/sources", :action => :recalculate_metric, :metric_id => source.total_metric.id}),
         link_to_function("Update", "Tr8n.UI.Lightbox.show('/tr8n/admin/sources/lb_update?id=#{source.id}', {height:350})"),
         link_to_function("Delete", "deleteObjects('#{source.id}')")
       ])

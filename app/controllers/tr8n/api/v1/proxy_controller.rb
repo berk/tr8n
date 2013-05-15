@@ -52,10 +52,12 @@ class Tr8n::Api::V1::ProxyController < Tr8n::Api::V1::BaseController
     domain = Tr8n::TranslationDomain.find_or_create(request.env['HTTP_REFERER'])
     Tr8n::Config.set_application(domain.application)
 
+    source = params[:source] || Tr8n::TranslationSource.normalize_source(request.env['HTTP_REFERER']) || 'undefined'
+    Tr8n::Config.set_source(Tr8n::TranslationSource.find_or_create(source, domain.application))
+
     language = Tr8n::Language.for(params[:language] || params[:locale]) || Tr8n::Config.current_language
     Tr8n::Config.set_language(language)
 
-    source = params[:source] || Tr8n::TranslationSource.normalize_api_source(request.env['HTTP_REFERER']) || 'undefined'
     source_ids = Tr8n::TranslationSource.where(:source => source).all.collect{|src| src.id}
     if source_ids.empty?
       conditions = ["1=2"]

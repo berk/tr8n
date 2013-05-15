@@ -41,7 +41,7 @@
 	    html << lang.right_to_left?
 	    html << '</span>'
 	    html.join(' ').html_safe
-	  }],
+	  }, :filterable => true],
 	  [:featured_index, lambda{|lang| lang.featured_index}, 'text-align:right;'],
 	  [:users, lambda{|lang| lang.total_metric.user_count}, 'text-align:right;'], 
 	  [:translators, lambda{|lang| lang.total_metric.translator_count}, 'text-align:right;'], 

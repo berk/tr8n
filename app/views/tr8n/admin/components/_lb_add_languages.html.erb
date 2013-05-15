@@ -3,15 +3,15 @@
     <div class="hd">
          <%= tr8n_lightbox_title_tag(tra("Add Languages To {comp}", nil, {:comp => @comp.name})) %>
     </div>
-    <div class="bd">
+    <div class="bd" style="padding-bottom:60px;">
         <%= form_tag({:action => :add_objects, :id => @comp.id}, {:id => 'tr8n_form', :method => :post, :class => "tr8n"}) do %>
         <%= hidden_field_tag(:origin, params[:origin]) %>
         <%= hidden_field_tag :type, params[:type] %>
         <%= hidden_field_tag :comp_id, params[:comp_id] %>
         <div style="max-height:340px;overflow:auto;font-size:12px;">
-            <% @languages.each do |lang| %>
+            <% @languages.each do |app_lang| %>
                 <div style="padding:5px; border-bottom:1px dotted #eee">
-                    <%= check_box_tag("ids[]", lang.id) %> &nbsp; <%= lang.full_name %>
+                    <%= check_box_tag("ids[]", app_lang.language.id) %> &nbsp; <%= app_lang.language.full_name %>
                 </div>
             <% end %>
         </div>    

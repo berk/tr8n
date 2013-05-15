@@ -3,7 +3,7 @@
     <div class="hd">
          <%= tr8n_lightbox_title_tag(tra("Add Sources To {comp}", nil, {:comp => @comp.name})) %>
     </div>
-    <div class="bd">
+    <div class="bd" style="padding-bottom:60px;">
         <%= form_tag({:action => :add_objects, :id => @comp.id}, {:id => 'tr8n_form', :method => :post, :class => "tr8n"}) do %>
         <%= hidden_field_tag(:origin, params[:origin]) %>
         <%= hidden_field_tag :type, params[:type] %>

@@ -32,17 +32,27 @@ class Tr8n::HelpController < Tr8n::BaseController
   end
     
   def lb_shortcuts
-    render :layout => false
+    render_lightbox
   end
 
   def lb_stats
-    render :layout => false
+    render_lightbox
   end
 
   def lb_done
-    render :layout => false
+    render_lightbox
   end
   
+  def lb_source
+    domain = Tr8n::TranslationDomain.find_or_create(params[:origin])
+    source = Tr8n::TranslationSource.normalize_source(params[:origin])    
+
+    @translation_source = Tr8n::TranslationSource.find_or_create(source, domain.application)
+    @translation_source_metric = @translation_source.total_metric
+    render_lightbox
+  end
+
+
   def credits
     
   end

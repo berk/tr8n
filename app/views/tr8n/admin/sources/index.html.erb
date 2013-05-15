@@ -22,11 +22,11 @@
     [:keys, lambda{|source|
       link_to(source.total_metric.key_count, "/tr8n/admin/sources/view?mode=translation_keys&id=#{source.id}")
     }, 'text-align:right'],
-    [:application, lambda{|source| 
+    [:application_id, lambda{|source| 
       if source.application
         link_to(source.application.name, :controller => "/tr8n/admin/applications", :action => :view, :id => source.application_id)
       end
-    }], 
+    }, :filterable => true, :title => "Application"], 
     [:actions, lambda{|source|
       tr8n_actions_tag([
         link_to("Recalculate", {:action => :recalculate_metric, :metric_id => source.total_metric.id}),

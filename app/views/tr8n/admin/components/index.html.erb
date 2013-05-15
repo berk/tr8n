@@ -25,7 +25,11 @@
     [:sources, lambda{ |comp| 
       link_to(comp.sources.size, {:action => :view, :id => comp.id, :mode => :sources})
     }, 'padding:5px;text-align:right;white-space:nowrap;'],
-    [:application_id, lambda{|comp| comp.application ? comp.application.name : ""}, :title => "Application"],
+    [:application_id, lambda{|comp| 
+      if comp.application
+        link_to(comp.application.name, :controller => "/tr8n/admin/applications", :action => :view, :id => comp.application_id)
+      end
+    }, :title => "Application", :filterable => true],
     [:actions, lambda{|comp|
       tr8n_actions_tag([
         link_to_function("Update", "Tr8n.UI.Lightbox.show('/tr8n/admin/components/lb_update?id=#{comp.id}', {width:650})"),

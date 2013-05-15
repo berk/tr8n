@@ -71,11 +71,7 @@ class Tr8n::Application < ActiveRecord::Base
 
   def self.for(key)
     Tr8n::Cache.fetch(cache_key(key)) do 
-      app = where("key = ?", key.to_s).first
-      if app.nil? and key == :default
-        app = create(:key => key, :name => Tr8n::Config.site_title)
-      end
-      app
+      where("key = ?", key.to_s).first
     end  
   end
 

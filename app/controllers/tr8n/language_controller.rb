@@ -278,7 +278,7 @@ module Tr8n
     # toggle inline translations popup window
     def toggle_inline_translations
       # redirect to login if not a translator
-      unless tr8n_current_user_is_guest?
+      if tr8n_current_user_is_translator?
         tr8n_current_translator.toggle_inline_translations!
       end
       render(:layout => false)

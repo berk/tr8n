@@ -44,21 +44,21 @@
       else
         "Deleted Translation"  
       end  
-    }, :title => "Translation"],
+    }, :title => "Translation", :filterable => true],
     [:language, lambda{|vote|
       if vote.translation and vote.translation.language
         link_to(vote.translation.language.english_name, :controller => "/tr8n/admin/language", :action => :view, :id => vote.translation.language.id)
       else
          "Deleted Language"    
       end  
-    }],
+    }, :title => "Language"],
     [:translator_id, lambda{|vote|
       if vote.translator
         link_to(vote.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :id => vote.translator.id)
       else
         "Unknown" 
       end  
-    }],
+    }, :filterable => true, :title => "Translator"],
     [:actions, lambda{|vote|
       tr8n_actions_tag([
         link_to_function("Delete", "deleteObjects('#{vote.id}')")

@@ -30,7 +30,7 @@ class Tr8n::TranslatorController < Tr8n::BaseController
 
   def registration
     if params[:agree] == "yes"
-      Tr8n::Config.current_translator # this will register a translator
+      Tr8n::Translator.register
       trfn("Thank you! You have been register as a translator")
       return redirect_to("/tr8n/phrases")
     end

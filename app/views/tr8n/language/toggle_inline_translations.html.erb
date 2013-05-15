@@ -9,10 +9,17 @@
             <%=tra("Inline translations have been disabled.") %>
         <% end %>            
       <% else %>
-        <%=tra("You must be a registered translator.") %>
-        <div style="font-size:12px;text-align:center;padding-top:15px;">
-          <%=tra("[link: Click here] to create a translator account.", nil, :link => lambda{|txt| link_to(txt, Tr8n::Config.login_url, :target => "_top")} ) %>
-        </div>
+        <% if tr8n_current_user %>
+          <%=tra("You must agree to the terms of use.") %>
+          <div style="font-size:12px;text-align:center;padding-top:15px;">
+            <%=tra("[link: Click here] to view the terms of use.", nil, :link => lambda{|txt| link_to(txt, "/tr8n/translator/registration", :target => "_top")} ) %>
+          </div>
+        <% else %>
+          <%=tra("You must be a registered translator.") %>
+          <div style="font-size:12px;text-align:center;padding-top:15px;">
+            <%=tra("[link: Click here] to create a translator account.", nil, :link => lambda{|txt| link_to(txt, Tr8n::Config.login_url, :target => "_top")} ) %>
+          </div>
+        <% end %>
       <% end %>
     </div>
 </div>

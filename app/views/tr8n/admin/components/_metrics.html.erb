@@ -146,7 +146,7 @@
                 <%=metrics[index].completeness %>%
               </td>
               <td>
-                <%=link_to(image_tag("tr8n/arrow_rotate_clockwise.png"), {:action => :recalculate_source, :source_id => source.id}, {:confirm => "Are you sure you want to recaluclate this source?"}) %>
+                <%=link_to(image_tag("tr8n/arrow_rotate_clockwise.png"), {:controller => "/tr8n/admin/sources", :action => :recalculate_source, :source_id => source.id}) %>
               </td>
             </tr>
           <% end %>

@@ -44,7 +44,7 @@ module Tr8n
   
     before_filter :validate_tr8n_enabled, :except => [:translate]
     before_filter :validate_guest_user, :except => [:select, :switch, :translate, :table, :registration]
-    before_filter :validate_current_user, :except => [:select, :switch, :translate, :table, :registration]
+    before_filter :validate_current_translator, :except => [:select, :switch, :translate, :table, :registration]
   
     layout Tr8n::Config.site_info[:tr8n_layout]
   
@@ -122,26 +122,16 @@ module Tr8n
       end
     end
 
-    # make sure users have the rights to access this section
-    def validate_current_user
-      return if Tr8n::Config.current_user_is_translator?
-
-      unless Tr8n::Config.open_registration_mode?
-        trfe("You don't have rights to access that section.")
-        return redirect_to(Tr8n::Config.default_url)
-      end
-
-      if Tr8n::Config.enable_registration_disclaimer?
-        redirect_to("/tr8n/translator/registration")
-      end
-    end
-
     # make sure that the current user is a translator
     def validate_current_translator
       if tr8n_current_user_is_translator? and tr8n_current_translator.blocked?
         trfe("Your translation privileges have been revoked. Please contact the site administrator for more details.")
         return redirect_to(Tr8n::Config.default_url)
       end
+
+      return if Tr8n::Config.current_user_is_translator?
+
+      redirect_to("/tr8n/translator/registration")
     end
 
     # make sure that the current user is a language manager

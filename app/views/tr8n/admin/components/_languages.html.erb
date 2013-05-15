@@ -28,9 +28,9 @@
     [:actions, lambda{|ulang|
       html = []
       if ulang.restricted?
-        html << link_to("Release Live", {:action => :change_component_language_state, :component_language_id => ulang.id, :state => :live}, {:confirm => "Are you sure you want to release this language?"})
+        html << link_to("Release Live", {:action => :change_component_language_state, :component_language_id => ulang.id, :state => :live})
       else
-        html << link_to("Restrict", {:action => :change_component_language_state, :component_language_id => ulang.id, :state => :restricted}, {:confirm => "Are you sure you want to restrict this language?"})
+        html << link_to("Restrict", {:action => :change_component_language_state, :component_language_id => ulang.id, :state => :restricted})
       end
       html << link_to_function("Remove", "deleteObjects('#{ulang.id}')")
       html.join(' | ').html_safe
