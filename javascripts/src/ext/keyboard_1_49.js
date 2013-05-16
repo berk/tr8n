@@ -56,6 +56,7 @@
  */
 var VKI_attach, VKI_close;
 var VKI_default_layout = VKI_default_layout || "US International";
+var VKI_default_keyboard_image = VKI_default_keyboard_image || "";
 
 (function() {
   var self = this;
@@ -75,7 +76,7 @@ var VKI_default_layout = VKI_default_layout || "US International";
   this.VKI_size = 2;  // Default keyboard size (1-5)
   this.VKI_sizeAdj = true;  // Allow user to adjust keyboard size
   this.VKI_clearPasswords = false;  // Clear password fields on focus
-  this.VKI_imageURI = "/assets/tr8n/keyboard.png";  // If empty string, use imageless mode
+  this.VKI_imageURI = VKI_default_keyboard_image;  // If empty string, use imageless mode
   this.VKI_clickless = 0;  // 0 = disabled, > 0 = delay in ms
   this.VKI_activeTab = 0;  // Tab moves to next: 1 = element, 2 = keyboard enabled element
   this.VKI_enterSubmit = true;  // Submit forms when Enter is pressed

@@ -57,4 +57,7 @@ class Tr8n::ComponentTranslatorNotification < Tr8n::Notification
     tr("You were assigned to translate a component.")
   end
 
+  def excerpt
+    :component_translator
+  end
 end

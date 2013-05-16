@@ -68,7 +68,9 @@ class Tr8n::TranslationDomain < ActiveRecord::Base
   def self.normalize_domain(url)
     return Socket::gethostname if url.blank?
     uri = URI.parse(url)
-    uri.host.split(".")[-2..-1].join(".")
+    parts = uri.host.split(".")
+    return parts.first if parts.size == 1
+    parts[-2..-1].join(".")
   end
 
   def self.find_or_create(url)

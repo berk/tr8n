@@ -72,20 +72,27 @@ class Tr8n::TranslationKeyCommentNotification < Tr8n::Notification
   def title
     if object.translation_key.followed?
       return tr("[link: {user}] commented on a translation to a phrase you are following.", nil, 
-          :user => actor, :link => [actor.url]
+          :user => actor, :link => {:href => actor.url}
       )
     end
 
     if object.translation_key.commented?(object.language)
       return tr("[link: {user}] replied to your comment.", nil, 
-          :user => actor, :link => [actor.url]
+          :user => actor, :link => {:href => actor.url}
       )
     end
 
     tr("[link: {user}] commented on a phrase you've translated.", nil, 
-      :user => actor, :link => [actor.url]
+      :user => actor, :link => {:href => actor.url}
     )
   end
 
+  def excerpt
+    :translation_key_comment
+  end
+
+  def language
+    object.language
+  end
 
 end

@@ -44,7 +44,7 @@
 class Tr8n::TranslationSourceMetric < ActiveRecord::Base
   self.table_name = :tr8n_translation_source_metrics
   
-  attr_accessible :translation_source, :language, :key_count, :locked_key_count, :translation_count, :translated_key_count
+  attr_accessible :translation_source, :language, :language_id, :key_count, :locked_key_count, :translation_count, :translated_key_count
 
   belongs_to  :translation_source,            :class_name => "Tr8n::TranslationSource"
   belongs_to  :language,                      :class_name => "Tr8n::Language"
@@ -67,7 +67,7 @@ class Tr8n::TranslationSourceMetric < ActiveRecord::Base
   def self.find_or_create(translation_source, language = Tr8n::Config.current_language)
     Tr8n::Cache.fetch(cache_key(translation_source.application, translation_source.source, language.locale)) do 
       translation_source_metric = where("translation_source_id = ? and language_id = ?", translation_source.id, language.id).first
-      translation_source_metric ||= create(:translation_source => translation_source, :language => language)
+      translation_source_metric ||= create(:translation_source => translation_source, :language_id => language.id)
     end
   end
 

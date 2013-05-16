@@ -99,9 +99,29 @@ class Tr8n::Notification < ActiveRecord::Base
     self.class.key(object)
   end
 
-  def valid?
+  def valid_notification?
     return false unless object
     true
+  end
+
+  def excerpt
+    nil
+  end
+
+  def has_excerpt?
+    not excerpt.nil?
+  end
+
+  def translation
+    nil
+  end
+
+  def translation_key
+    nil
+  end
+
+  def language
+    nil
   end
 
   def tr(label, description = nil, tokens = {}, options = {})

@@ -335,6 +335,8 @@ Tr8n.Utils = {
   toggleKeyboards: function() {
     if(!VKI_attach) return;
     if (!this.keyboardMode) {
+      Tr8n.UI.Lightbox.showHTML("<div style='text-align:center;font-size:15px;'>Software keyboard has been enabled.</div>", {width:400, height:50});
+
       this.keyboardMode = true;
 
       var elements = document.getElementsByTagName("input");
@@ -345,8 +347,14 @@ Tr8n.Utils = {
       for(i=0; i<elements.length; i++) {
         VKI_attach(elements[i]);
       }
+      window.setTimeout(function() {
+        Tr8n.UI.Lightbox.hide();
+      }, 2000);    
     } else {
-      window.location.reload();
+      Tr8n.UI.Lightbox.showHTML("<div style='text-align:center;font-size:15px;'>Software keyboard has been disabled.</div>", {width:400, height:50});
+      window.setTimeout(function() {
+        window.location.reload();
+      }, 1000);    
     }
   },
 

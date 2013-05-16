@@ -22,6 +22,10 @@
 #++
 
 class Tr8n::TranslatorController < Tr8n::BaseController
+
+    before_filter :validate_guest_user, :except => [:lb_notifications]
+    before_filter :validate_current_translator, :except => [:lb_notifications, :registration]
+
   def index
     @translator = Tr8n::Translator.find_by_id(params[:id]) if params[:id]
     @translator ||= Tr8n::Config.current_translator
@@ -111,12 +115,24 @@ class Tr8n::TranslatorController < Tr8n::BaseController
   end
 
   def notifications
-    @notifications = Tr8n::Notification.where("translator_id = ?", Tr8n::Config.current_translator.id).order("created_at desc").page(page).per(per_page)
+    @stories = Tr8n::Notification.where("translator_id = ?", Tr8n::Config.current_translator.id).order("created_at desc").page(page).per(per_page)
+    pp  @stories
   end
 
   def lb_notifications
-    @notifications = Tr8n::Notification.where("translator_id = ?", Tr8n::Config.current_translator.id).order("created_at desc").page(page).per(per_page)
-    render :layout => false
+    if tr8n_current_translator
+      @stories = Tr8n::Notification.where("translator_id = ?", Tr8n::Config.current_translator.id).order("created_at desc").limit(10).page(page).per(per_page)
+    end
+    render_lightbox
+  end
+
+  def delete_notification
+    n = Tr8n::Notification.find_by_id(params[:id])
+    if n.nil? or n.translator != tr8n_current_translator
+      return redirect_to_source
+    end
+    n.destroy
+    redirect_to_source
   end
 
   def following

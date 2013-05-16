@@ -5,15 +5,39 @@
   </div>
 
   <div class="bd" <%=tr8n_dir_attribute_tag%> style="max-height:550px;overflow:auto;padding:3px;">
-    <% @notifications.each do |n| %>
-      <% next unless n.valid? %>
-      <%= render :partial => "/tr8n/translator/notifications/#{n.key}", :locals => {:notification => n} %>
-    <% end %>
-    <% if @notifications.empty? %>
-      <div style="text-align:center; padding:30px;">
-        <%=tra("You don't have any notifications yet.") %>
+    <% if tr8n_current_translator %>
+      <% if @stories.empty? %>
+        <div style="text-align:center; padding:30px;">
+          <%=tra("You don't have any notifications yet.") %>
+        </div>
+      <% else %>
+        <% @stories.each do |n| %>
+          <% next unless n.valid_notification? %>
+          <%= render :partial => "notification", :locals => {:notification => n} %>
+        <% end %>
+
+        <% if @stories.size == 10 %>
+          <%=link_to("/tr8n/translator/notifications", :target => "_top") do %>
+            <div style="text-align:center;padding:8px;background:#eee;font-size:12px;"><%=tra("View all") %></div>
+          <% end %>  
+        <% end %>
+      <% end %>
+    <% else %>
+      <div style="text-align:center;padding-top:15px;">
+        <% if tr8n_current_user %>
+          <%=tra("You must agree to the terms of use.") %>
+          <div style="font-size:12px;padding:15px;">
+            <%=tra("[link: Click here] to view the terms of use.", nil, :link => lambda{|txt| link_to(txt, "/tr8n/translator/registration", :target => "_top")} ) %>
+          </div>
+        <% else %>
+          <%=tra("You must be a registered translator.") %>
+          <div style="font-size:12px;padding:15px;">
+            <%=tra("[link: Click here] to create a translator account.", nil, :link => lambda{|txt| link_to(txt, Tr8n::Config.login_url, :target => "_top")} ) %>
+          </div>
+        <% end %>
       </div>
     <% end %>
+
   </div>
 </div>
 <%= tr8n_lightbox_footer_tag %>

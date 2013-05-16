@@ -103,7 +103,7 @@ Tr8n.SDK.Proxy = {
   missing_translation_keys: {},
 
   init: function(opts) {
-    Tr8n.log("Initializing Tr8n Client SDK...");
+    Tr8n.log("Initializing Client SDK...");
 
     this.options = opts || (opts = {});
     this.scheduler_interval = this.options['scheduler_interval'] || this.scheduler_interval; 

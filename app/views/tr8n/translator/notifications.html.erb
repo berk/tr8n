@@ -8,16 +8,14 @@
   </div>
 
   <div class="section grey" style="margin-top:10px; margin-bottom:10px; padding:10px;">
-    <% if @notifications.any? %>
-      <%= render :partial => "/tr8n/common/paginator", :locals => {:objects => @notifications, :subject => 'notification'} %>
+    <%= tr8n_paginator_tag(@stories, :subject => 'notification') if @stories.any? %>      
+
+    <% @stories.each do |n| %>
+      <% next unless n.valid_notification? %>
+      <%= render :partial => "notification", :locals => {:notification => n} %>
     <% end %>
 
-    <% @notifications.each do |n| %>
-      <% next unless n.valid? %>
-      <%= render :partial => "/tr8n/translator/notifications/#{n.key}", :locals => {:notification => n} %>
-    <% end %>
-
-    <% if @notifications.empty? %>
+    <% if @stories.empty? %>
       <%=tr("You don't have any notifications yet.") %>
     <% end %>
   </div>

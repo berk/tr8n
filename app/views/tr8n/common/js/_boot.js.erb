@@ -31,24 +31,31 @@ function addTr8nScript(doc, id, src, onload) {
     <% if params[:immediate] == 'true' %>   
       initTr8n();
     <% else %>
-    if (window.addEventListener) window.addEventListener('load', initTr8n, false); // Standard
-    else if (window.attachEvent) window.attachEvent('onload', initTr8n); // Microsoft
-    window.setTimeout(function(){
-      initTr8n();
-    }, 1000);  
+      if (window.addEventListener) window.addEventListener('load', initTr8n, false); // Standard
+      else if (window.attachEvent) window.attachEvent('onload', initTr8n); // Microsoft
+      window.setTimeout(function(){
+        initTr8n();
+      }, 1000);  
     <% end %>
+
+    <% if Tr8n::Config.enable_software_keyboard? %>
+      VKI_default_layout = "<%=Tr8n::KeyboardMapping.current_1_49%>";
+    <% end %>  
 
     function initTr8n() {
       if (window.tr8nLoaded) return;
 
       window.tr8nLoaded = true;
       addTr8nCSS(window.document, '/assets/tr8n/tr8n.css');
-      addTr8nCSS(window.document, '/assets/tr8n/keyboard_1_49.css');
+      <% if Tr8n::Config.enable_software_keyboard? %>
+        addTr8nCSS(window.document, '/assets/tr8n/keyboard_1_49.css');
+      <% end %>  
 
       var jQueryCurrentVersion = null;
       if (!(typeof jQuery === "undefined")) {
         jQueryCurrentVersion = $.noConflict(true);
       }
+
 
       addTr8nScript(window.document, 'tr8n-jquery', '<%=uri.scheme%>://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js', function() {
         window.tr8nJQ = $.noConflict(true);

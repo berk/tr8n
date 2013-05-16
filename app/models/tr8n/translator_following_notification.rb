@@ -57,12 +57,12 @@ class Tr8n::TranslatorFollowingNotification < Tr8n::Notification
   def title
     if action == "got_followed"
       return tr("[link: {user}] is now following your translation activity.", nil, 
-          :user => actor, :link => [actor.url]
+          :user => actor, :link => {:href => actor.url}
       )
     end
 
     tr("You are now following [link: {user}]'s translation activity.", nil, 
-      :user => target, :link => [target.url]
+      :user => target, :link => {:href => target.url}
     )
   end
 end

@@ -67,8 +67,12 @@ class Tr8n::LanguageForumMessageNotification < Tr8n::Notification
 
   def title
     tr("[link: {user}] replied to a forum topic you are following.", nil, 
-      :user => actor, :link => [actor.url]
+      :user => actor, :link => {:href => actor.url}
     )
+  end
+
+  def excerpt
+    :language_forum_message
   end
 
 end

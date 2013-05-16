@@ -65,18 +65,31 @@ class Tr8n::TranslationNotification < Tr8n::Notification
   def title
     if object.translation_key.followed?
       return tr("[link: {user}] added a translation to a phrase you are following.", nil, 
-          :user => actor, :link => [actor.url]
+          :user => actor, :link => {:href => actor.url}
           )
     end
 
     if self.class.translators_for_translation(object).include?(translator)
       return tr("[link: {user}] added another translation to a phrase you've translated.", nil, 
-          :user => actor, :link => [actor.url]
+          :user => actor, :link => {:href => actor.url}
       )
     end
 
     tr("[link: {user}] added a new translation.", nil, 
-          :user => actor, :link => [actor.url]
+          :user => actor, :link => {:href => actor.url}
     )
   end
+
+  def excerpt
+    :translation
+  end
+
+  def translation
+    object
+  end
+
+  def language
+    translation.language
+  end
+  
 end

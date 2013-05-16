@@ -546,9 +546,9 @@ module Tr8n
       img_tag = "<img src='#{img_url}' style='width:48px'>"
       
       if translator and options[:linked]
-        link_to(img_tag, translator.url)
+        link_to(img_tag.html_safe, translator.url, :target => "_new").html_safe
       else  
-        img_tag
+        img_tag.html_safe
       end
     end 
 

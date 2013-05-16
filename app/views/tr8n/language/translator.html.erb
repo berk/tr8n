@@ -7,6 +7,7 @@
 	  <% if Tr8n::Config.enable_software_keyboard? %>
 	    <script> 
 	      VKI_default_layout = "<%=Tr8n::KeyboardMapping.current_1_49%>";
+	      VKI_default_keyboard_image = "/assets/tr8n/keyboard.png";
 	    </script>     
 	    <%=stylesheet_link_tag("tr8n/keyboard_1_49.css") -%>
 	  <% end %>  

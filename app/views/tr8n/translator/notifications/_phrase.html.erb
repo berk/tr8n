@@ -1,6 +1,6 @@
 <div style="font-size: 11px; color: grey; margin-top:5px; margin-bottom:5px; padding:5px; background:#f7f7f7; border-top:1px solid #eee">
   <span dir="ltr">
-   <%=link_to(translation_key.sanitized_label, :controller => "/tr8n/phrases", :action => :view, :locale => language.locale, :translation_key_id => translation_key.id) %>
+   <%=link_to(translation_key.sanitized_label, {:controller => "/tr8n/phrases", :action => :view, :locale => language.locale, :translation_key_id => translation_key.id}, :target => '_top') %>
   <% unless translation_key.description.blank? %>
     <div style="padding-top:5px;color:#888;font-weight:normal; font-size:10px;"><%= translation_key.description %></div>
   <% end %>  

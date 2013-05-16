@@ -605,6 +605,7 @@ shortcut = {
 }
 var VKI_attach, VKI_close;
 var VKI_default_layout = VKI_default_layout || "US International";
+var VKI_default_keyboard_image = VKI_default_keyboard_image || "";
 
 (function() {
   var self = this;
@@ -624,7 +625,7 @@ var VKI_default_layout = VKI_default_layout || "US International";
   this.VKI_size = 2;  // Default keyboard size (1-5)
   this.VKI_sizeAdj = true;  // Allow user to adjust keyboard size
   this.VKI_clearPasswords = false;  // Clear password fields on focus
-  this.VKI_imageURI = "/assets/tr8n/keyboard.png";  // If empty string, use imageless mode
+  this.VKI_imageURI = VKI_default_keyboard_image;  // If empty string, use imageless mode
   this.VKI_clickless = 0;  // 0 = disabled, > 0 = delay in ms
   this.VKI_activeTab = 0;  // Tab moves to next: 1 = element, 2 = keyboard enabled element
   this.VKI_enterSubmit = true;  // Submit forms when Enter is pressed
@@ -2371,7 +2372,7 @@ var Tr8n = {
     this.cookies    = opts.cookies  || this.cookies;
     this.host       = opts.host     || this.host;
 
-    Tr8n.log("Initializing Tr8n Core...");
+    Tr8n.log("Initializing Dispatcher...");
 
     if (window.addEventListener) {  // all browsers except IE before version 9
       window.addEventListener("message", Tr8n.onMessage, false);
@@ -2495,7 +2496,7 @@ Tr8n.Logger = {
   log: function(msg) {
     if (!Tr8n.logging) return;
 
-    if (window.console) window.console.log(msg);
+    if (window.console) window.console.log("tr8n: " + msg);
 
     Tr8n.Logger.append(Tr8n.Logger.timestampMessage(msg)); 
   },
@@ -3061,6 +3062,8 @@ Tr8n.Utils = {
   toggleKeyboards: function() {
     if(!VKI_attach) return;
     if (!this.keyboardMode) {
+      Tr8n.UI.Lightbox.showHTML("<div style='text-align:center;font-size:15px;'>Software keyboard has been enabled.</div>", {width:400, height:50});
+
       this.keyboardMode = true;
 
       var elements = document.getElementsByTagName("input");
@@ -3071,8 +3074,14 @@ Tr8n.Utils = {
       for(i=0; i<elements.length; i++) {
         VKI_attach(elements[i]);
       }
+      window.setTimeout(function() {
+        Tr8n.UI.Lightbox.hide();
+      }, 2000);    
     } else {
-      window.location.reload();
+      Tr8n.UI.Lightbox.showHTML("<div style='text-align:center;font-size:15px;'>Software keyboard has been disabled.</div>", {width:400, height:50});
+      window.setTimeout(function() {
+        window.location.reload();
+      }, 1000);    
     }
   },
 
@@ -3693,7 +3702,7 @@ Tr8n.SDK.Proxy = {
   missing_translation_keys: {},
 
   init: function(opts) {
-    Tr8n.log("Initializing Tr8n Client SDK...");
+    Tr8n.log("Initializing Client SDK...");
 
     this.options = opts || (opts = {});
     this.scheduler_interval = this.options['scheduler_interval'] || this.scheduler_interval; 

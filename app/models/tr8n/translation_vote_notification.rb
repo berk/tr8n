@@ -78,24 +78,36 @@ class Tr8n::TranslationVoteNotification < Tr8n::Notification
   def title
     if object.translation.translation_key.followed?
       return tr("[link: {user}] #{verb(object)} a translation to a phrase you are following.", nil, 
-          :user => actor, :link => [actor.url]
+          :user => actor, :link => {:href => actor.url}
       )
     end
 
     if object.translation.translator == Tr8n::Config.current_translator
       return tr("[link: {user}] #{verb(object)} your translation.", nil, 
-        :user => actor, :link => [actor.url]
+        :user => actor, :link => {:href => actor.url}
       )
     end
 
     if self.class.translators_for_translation(object.translation).include?(translator)
       return tr("[link: {user}] #{verb(object)} an alternative translation to a phrase you've translated.", nil, 
-        :user => actor, :link => [actor.url]
+        :user => actor, :link => {:href => actor.url}
       )
     end
 
     tr("[link: {user}] #{verb(object)} a translation.", nil, 
-      :user => actor, :link => [actor.url]
+      :user => actor, :link => {:href => actor.url}
     )
+  end
+
+  def excerpt
+    :translation
+  end
+
+  def translation
+    object.translation
+  end
+
+  def language
+    translation.language
   end
 end

@@ -44,7 +44,7 @@ Tr8n.Logger = {
   log: function(msg) {
     if (!Tr8n.logging) return;
 
-    if (window.console) window.console.log(msg);
+    if (window.console) window.console.log("tr8n: " + msg);
 
     Tr8n.Logger.append(Tr8n.Logger.timestampMessage(msg)); 
   },
