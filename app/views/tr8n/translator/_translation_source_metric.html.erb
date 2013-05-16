@@ -1,10 +1,10 @@
 <div class="section_box" style="text-align:center; width:95%; background-color:white;">
   <div style="font-size:14px; padding:3px;">
     
-    <%=tra("Component Phrases")%>
-    <span style="font-size:10px;color:#ccc;">
+    <%=tra("Source Phrases")%>
+    <div style="font-size:10px;color:#ccc;">
       <%= tra("{count}% Complete", "Completeness of a language", :count => (translation_source_metric.completeness || 0)) %>
-    </span>
+    </div>
   </div>
 
   <%= tr8n_translation_source_completeness_chart_tag(translation_source_metric)%>

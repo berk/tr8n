@@ -43,9 +43,9 @@ function addTr8nScript(doc, id, src, onload) {
     <% end %>  
 
     function initTr8n() {
-      if (window.tr8nLoaded) return;
+      if (window.tr8n_enabled) return;
+      window.tr8n_enabled = true;
 
-      window.tr8nLoaded = true;
       addTr8nCSS(window.document, '/assets/tr8n/tr8n.css');
       <% if Tr8n::Config.enable_software_keyboard? %>
         addTr8nCSS(window.document, '/assets/tr8n/keyboard_1_49.css');

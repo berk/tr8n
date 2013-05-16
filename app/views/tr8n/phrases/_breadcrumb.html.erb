@@ -17,22 +17,23 @@
       &raquo; <%=link_to(@translation_key.label, :action => :view, :translation_key_id => @translation_key.id, :section_key => @section.key) %>
       <% end %>
 <% else %>
-      <%=link_to(tra("Site Map"), :action => :map)%> 
-      &raquo;
-      <%=link_to(tra("All Phrases"), :action => :index)%> 
+      <%=link_to(@selected_application.name, :action => :index)%> 
       <% if @component %>
         &raquo;
-        <%= link_to(@component.title, params) %>
+        <%= link_to(@component.title, params.merge(:page => nil)) %>
       <% elsif @selected_sources and @selected_sources.any? %>
         &raquo;
         <% 
           source_links = []
           @selected_sources.each do |source|
-            source_links << link_to(source.title, params.merge(:sources => nil, :source => source.source)) 
+            source_links << link_to(source.title, params.merge(:page => nil)) 
           end 
         %>
 
-        <%= source_links.join(", ") %>
+        <%= source_links.join(", ").html_safe %>
+      <% else %>
+        &raquo;
+        <%=link_to(tra("All Phrases"), :action => :index)%>  
       <% end %>
 <% end %>
 </div>
