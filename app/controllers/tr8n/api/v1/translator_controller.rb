@@ -21,46 +21,51 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-class Tr8n::Api::V1::TranslationController < Tr8n::Api::V1::BaseController
+class Tr8n::Api::V1::TranslatorController < Tr8n::Api::V1::BaseController
 
-  def submit
-    ensure_post
-    ensure_translator
+  def index
+    ensure_get
+    ensure_translator     
 
-    if params[:key]
-      tkey = Tr8n::TranslationKey.find_by_key(params[:key])
-    elsif params[:id]
-      tkey = Tr8n::TranslationKey.find_by_id(params[:id])
-    end
-
-    unless tkey
-      raise Tr8n::Exception.new("Translation key not found")
-    end
-
-    if params[:locale]
-      language = Tr8n::Language.for(params[:locale])
-    end
-
-    unless language
-      raise Tr8n::Exception.new("Invalid or missing locale")
-    end
-
-    if params[:translation].blank?
-      raise Tr8n::Exception.new("Translation must be provided")
-    end
-    
-    translation = tkey.add_translation(params[:translation], nil, language, translator)
-    render_response({:translation_key => tkey.key, :translation => translation.label})
+    render_response(translator)
   end
 
-  def delete
-    ensure_post 
-    ensure_application_admin
+  def applications
+    ensure_get
+    ensure_translator      
 
-    trn = Tr8n::Translation.find_by_id(params[:id]) if params[:id]
-    trn.destroy if trn
- 
+    render_response(translator.applications)
+  end
+
+  def authorize
+    ensure_get
+
+    # ensure that there is a way to authenticate the user in the container application
+    user = Tr8n::Config.user_class_name.constantize.authenticate(params[:email], params[:password])
+    unless user 
+      return render_error("Invlaid email/password combination")
+    end
+    
+    unless user.translator
+      return render_error("Please visit the site and accept the terms of use")
+    end
+
+    access_token = Tr8n::AccessToken.find_or_create(user.translator)
+    render_response(:access_token => access_token.token)
+  end
+
+  def enable_inline_translations
+    ensure_get
+    ensure_translator
+    Tr8n::Translator.register.enable_inline_translations!
     render_success
-  end  
+  end
   
+  def disable_inline_translations
+    ensure_get
+    ensure_translator
+    Tr8n::Translator.register.disable_inline_translations!
+    render_success
+  end
+
 end

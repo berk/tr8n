@@ -79,6 +79,12 @@ class Tr8n::Translator < ActiveRecord::Base
   has_many  :language_forum_messages,       :class_name => "Tr8n::LanguageForumMessage",      :dependent => :destroy
   has_many  :languages,                     :class_name => "Tr8n::Language",                  :through => :language_users
 
+  has_many  :application_translators,       :class_name => 'Tr8n::ApplicationTranslator',     :dependent => :destroy
+  has_many  :applications,                  :class_name => 'Tr8n::Application',               :through => :application_translators
+  has_many  :component_translators,         :class_name => 'Tr8n::ComponentTranslator',       :dependent => :destroy
+  has_many  :components,                    :class_name => 'Tr8n::Component',                 :through => :component_translators
+
+
   belongs_to :fallback_language,            :class_name => 'Tr8n::Language',                  :foreign_key => :fallback_language_id
     
   def self.cache_key(user_id)
@@ -105,12 +111,24 @@ class Tr8n::Translator < ActiveRecord::Base
     trn
   end
 
+  def register_default_application
+    email = Tr8n::Config.user_email(user)
+    pp email
+    
+    domain_name = email.split("@").last
+    domain = Tr8n::TranslationDomain.find_or_create(nil, domain_name)
+    domain.application.add_translator(self) unless domain.application.translators.include?(self)
+    domain.application
+  end
+
   def self.register(user = Tr8n::Config.current_user)
     return nil unless user and user.id 
     return nil if Tr8n::Config.guest_user?(user)
 
     translator = Tr8n::Translator.find_or_create(user)
     return nil unless translator
+
+    translator.register_default_application
 
     # update all language user entries to add a translator id
     #deprecated
@@ -133,31 +151,13 @@ class Tr8n::Translator < ActiveRecord::Base
   end
 
   def update_metrics!(language = Tr8n::Config.current_language)
-    Tr8n::OfflineTask.schedule(self.class.name, :update_metrics_offline, {
-                               :translator_id => self.id, 
-                               :language_id => language.id
-    })
-  end
-  
-  def self.update_metrics_offline(opts)
-    translator = Tr8n::Translator.find_by_id(opts[:translator_id])
-    language = Tr8n::Language.find_by_id(opts[:language_id])
-    translator.total_metric.update_metrics!
-    translator.metric_for(language).update_metrics!
+    total_metric.update_metrics!
+    metric_for(language).update_metrics!
   end
 
   def update_rank!(language = Tr8n::Config.current_language)
-    Tr8n::OfflineTask.schedule(self.class.name, :update_rank_offline, {
-                               :translator_id => self.id, 
-                               :language_id => language.id
-    })
-  end
-
-  def self.update_rank_offline(opts)
-    translator = Tr8n::Translator.find_by_id(opts[:translator_id])
-    language = Tr8n::Language.find_by_id(opts[:language_id])
-    translator.total_metric.update_rank!
-    translator.metric_for(language).update_rank!
+    total_metric.update_rank!
+    metric_for(language).update_rank!
   end
 
   def rank
@@ -431,13 +431,19 @@ class Tr8n::Translator < ActiveRecord::Base
   ###############################################################
   ## Synchronization Methods
   ###############################################################
-  def to_sync_hash(opts = {})
+  def to_api_hash(opts = {})
     { 
       "id" => opts[:remote] ? self.remote_id : self.id, 
       "name" => self.name, 
+      "email" => self.email, 
       "gender" => self.gender, 
       "mugshot" => self.mugshot, 
-      "link" => self.link
+      "link" => self.link,
+      "inline_mode" => self.inline_mode,
+      "voting_power" => self.voting_power,
+      "rank" => self.rank,
+      "locale" => self.locale,
+      "level" => self.level,
     }
   end
 

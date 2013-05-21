@@ -47,9 +47,11 @@
 
 class Tr8n::TotalLanguageMetric < Tr8n::LanguageMetric
 
-  after_create :generate_metrics   
+  after_create :update_metrics!   
 
-  def update_metrics!
+  def update_metrics!(opts = {})
+    return Tr8n::OfflineTask.schedule(self, :update_metrics!, {:offline => true}) unless opts[:offline]
+
     self.user_count = Tr8n::LanguageUser.where("language_id = ?", language_id).count
     self.translator_count = Tr8n::LanguageUser.where("language_id = ? and translator_id is not null", language_id).count
     self.translation_count = Tr8n::Translation.where("language_id = ?", language_id).count
@@ -77,19 +79,6 @@ class Tr8n::TotalLanguageMetric < Tr8n::LanguageMetric
   def translation_completeness
     return 0 if key_count.nil? or key_count == 0
     (translated_key_count * 100)/key_count
-  end
-  
-  ###############################################################
-  ## Offline Tasks
-  ###############################################################
-  def generate_metrics
-    Tr8n::OfflineTask.schedule(self.class.name, :update_metrics_offline, {
-                               :language_metric_id => self.id
-    })
-  end
-
-  def self.update_metrics_offline(opts)
-    Tr8n::LanguageMetric.find_by_id(opts[:language_metric_id]).update_metrics!
   end
 
 end

@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2011 Michael Berkovich
+# Copyright (c) 2010-2013 Michael Berkovich, tr8nhub.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -21,29 +21,52 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-Tr8n::Engine.routes.draw do
-  [:awards, :chart, :forum, :glossary, :help, :language_cases,
-   :language, :phrases, :translations, :translator].each do |ctrl|
-    match "#{ctrl}(/:action)", :controller => "#{ctrl}"
-  end
-  
-  [:applications, :components, :sources, :chart, :clientsdk, :forum, :glossary, :language, :translation, 
-   :translation_key, :translator, :domain, :metrics].each do |ctrl|
-    match "admin/#{ctrl}(/:action)", :controller => "admin/#{ctrl}"
-  end
-  
-  [:application, :source, :component, :language, :translation_key, :translation, :translator, :proxy].each do |ctrl|
-    match "api/v1/#{ctrl}(/:action)", :controller => "api/v1/#{ctrl}"
-  end
-  
-  match "api/v1/language/translate.js", :controller => "api/v1/language", :action => "translate"
+###########################################################################
+## API for getting translations from the main server
+###########################################################################
 
-  namespace :tr8n do
-    root :to => "translator#index"
-    namespace :admin do
-      root :to => "applications#index"
+class Tr8n::Api::V1::ComponentController < Tr8n::Api::V1::BaseController
+  
+  before_filter :ensure_component
+
+  def index
+    ensure_get
+    ensure_application
+    ensure_valid_signature
+    render_response(component)
+  end
+
+  def languages
+    ensure_get
+    ensure_application
+    ensure_valid_signature
+    render_response(component.languages)
+  end
+
+  def sources
+    ensure_get
+    ensure_application
+    ensure_valid_signature
+    render_response(component.sources)
+  end
+
+  def translators
+    ensure_get
+    ensure_application
+    ensure_valid_signature
+    render_response(component.translators)
+  end
+
+private
+
+  def component
+    @component ||= Tr8n::Component.find_by_id(params[:id]) if params[:id]
+  end
+
+  def ensure_component
+    unless component
+      raise Tr8n::Exception.new("No valid source has been provided.")
     end
   end
-  
-  root :to => "translator#index"
+
 end

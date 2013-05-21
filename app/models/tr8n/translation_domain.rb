@@ -73,8 +73,8 @@ class Tr8n::TranslationDomain < ActiveRecord::Base
     parts[-2..-1].join(".")
   end
 
-  def self.find_or_create(url)
-    domain_name = normalize_domain(url)
+  def self.find_or_create(url, domain_name = nil)
+    domain_name = normalize_domain(url) if domain_name.nil?
     Tr8n::Cache.fetch(cache_key(domain_name)) do 
       domain = find_by_name(domain_name) 
       domain ||= create(:name => domain_name, :application => Tr8n::Application.create(:name => domain_name, :description => "Automatically created from API call"))

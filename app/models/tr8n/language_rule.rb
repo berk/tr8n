@@ -160,7 +160,7 @@ class Tr8n::LanguageRule < ActiveRecord::Base
   #     ]
   # }
 
-  def to_sync_hash(token, opts = {})
+  def to_api_hash(token, opts = {})
     {
       "token" => token,  
       "type" => self.class.keyword,

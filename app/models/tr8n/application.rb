@@ -51,10 +51,10 @@ class Tr8n::Application < ActiveRecord::Base
   alias :sources :translation_sources
 
   has_many :application_languages, :class_name => 'Tr8n::ApplicationLanguage', :dependent => :destroy
-  alias :languages :application_languages
+  has_many :languages, :class_name => 'Tr8n::Language', :through => :application_languages
 
   has_many :application_translators, :class_name => 'Tr8n::ApplicationTranslator', :dependent => :destroy
-  alias :translators :application_translators
+  has_many :translators, :class_name => 'Tr8n::Translator', :through => :application_translators
 
   before_create :generate_keys
 
@@ -81,6 +81,22 @@ class Tr8n::Application < ActiveRecord::Base
 
   def clear_cache
     Tr8n::Cache.delete(cache_key)
+  end
+
+  def add_translator(translator)
+    Tr8n::ApplicationTranslator.find_or_create(self, translator)
+  end
+
+  def add_language(language)
+    Tr8n::ApplicationLanguage.find_or_create(self, language)
+  end
+
+  def to_api_hash(opts = {})
+    {
+      :key => self.key,
+      :name => self.name,
+      :description => self.description,
+    }
   end
 
 protected

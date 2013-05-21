@@ -26,8 +26,18 @@ require 'logger'
 module Tr8n
   class Logger < Logger
   
-    def self.logger
+    def self.logger(name = nil)
       return Rails.logger unless Tr8n::Config.enable_logger?
+
+      if name
+        @loggers ||= {}
+        @loggers[name] ||= begin
+          lg =  Logger.new(File.join(Rails.root, 'log', "#{name}.log"))
+          lg
+        end   
+        return @loggers[name] 
+      end
+
       @logger ||= begin
         logfile_path = Tr8n::Config.log_path if Tr8n::Config.log_path.first == '/' 
         logfile_path = "#{Tr8n::Config.root}/#{Tr8n::Config.log_path}" unless logfile_path

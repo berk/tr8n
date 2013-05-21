@@ -273,17 +273,17 @@ class Tr8n::Translation < ActiveRecord::Base
   end
 
   def rules_sync_hash(opts = {})
-    @rules_sync_hash ||= (rules || []).collect{|rule| rule[:rule].to_sync_hash(rule[:token], opts)}
+    @rules_sync_hash ||= (rules || []).collect{|rule| rule[:rule].to_api_hash(rule[:token], opts)}
   end
 
   # serilaize translation to API hash to be used for synchronization
-  def to_sync_hash(opts = {})
+  def to_api_hash(opts = {})
     return {"locale" => language.locale, "label" => label, "rules" => rules_sync_hash(opts)} if opts[:comparible]
     
-    hash = {"locale" => language.locale, "label" => label, "rank" => rank, "rules" => rules_sync_hash(opts)}
+    hash = {"id" => id, "locale" => language.locale, "label" => label, "rank" => rank, "rules" => rules_sync_hash(opts)}
     if translator
       if opts[:include_translator] # tr8n.net => local = include full translator info
-        hash["translator"] = translator.to_sync_hash(opts)
+        hash["translator"] = translator.to_api_hash(opts)
       elsif translator.remote_id  # local => tr8n.net = include only the remote id of the translator if the translator is linked 
         hash["translator_id"] = translator.remote_id
       end  

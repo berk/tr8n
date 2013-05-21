@@ -51,9 +51,14 @@ class Tr8n::TranslationSourceMetric < ActiveRecord::Base
   
   after_destroy   :clear_cache
   after_save      :clear_cache
+  after_create    :update_metrics!
 
   def self.cache_key(application, source, locale)
-    "source_metric_[#{application.id}]_[#{source.to_s}]_[#{locale}]"
+    if application
+      "source_metric_[#{application.id}]_[#{source.to_s}]_[#{locale}]"
+    else
+      "source_metric_[deleted]_[#{source.to_s}]_[#{locale}]"
+    end
   end
 
   def cache_key
@@ -67,11 +72,13 @@ class Tr8n::TranslationSourceMetric < ActiveRecord::Base
   def self.find_or_create(translation_source, language = Tr8n::Config.current_language)
     Tr8n::Cache.fetch(cache_key(translation_source.application, translation_source.source, language.locale)) do 
       translation_source_metric = where("translation_source_id = ? and language_id = ?", translation_source.id, language.id).first
-      translation_source_metric ||= create(:translation_source => translation_source, :language_id => language.id)
+      translation_source_metric || create(:translation_source => translation_source, :language_id => language.id)
     end
   end
 
-  def update_metrics!
+  def update_metrics!(opts = {})
+    return Tr8n::OfflineTask.schedule(self, :update_metrics!, {:offline => true}) unless opts[:offline]
+
     self.key_count = Tr8n::TranslationKey.count("distinct tr8n_translation_keys.id",
         :conditions => ["tks.translation_source_id = ?", translation_source_id],
         :joins => [
@@ -130,19 +137,6 @@ class Tr8n::TranslationSourceMetric < ActiveRecord::Base
   def translation_completeness
     return 0 if key_count.nil? or key_count == 0
     (translated_key_count * 100)/key_count
-  end
-
-  ###############################################################
-  ## Offline Tasks
-  ###############################################################
-  def after_create
-    Tr8n::OfflineTask.schedule(self.class.name, :update_metrics_offline, {
-                               :translation_source_metric_id => self.id
-    })
-  end
-
-  def self.update_metrics_offline(opts)
-    Tr8n::TranslationSourceMetric.find_by_id(opts[:translation_source_metric_id]).update_metrics!
   end
 
 end

@@ -17,7 +17,7 @@
       &raquo; <%=link_to(@translation_key.label, :action => :view, :translation_key_id => @translation_key.id, :section_key => @section.key) %>
       <% end %>
 <% else %>
-      <%=link_to(@selected_application.name, :action => :index)%> 
+      <%=link_to(@selected_application ? @selected_application.name : "Tr8n Service", :action => :index)%> 
       <% if @component %>
         &raquo;
         <%= link_to(@component.title, params.merge(:page => nil)) %>

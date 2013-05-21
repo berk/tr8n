@@ -1,5 +1,5 @@
-#--
-# Copyright (c) 2010-2011 Michael Berkovich
+2#--
+# Copyright (c) 2010-2013 Michael Berkovich, tr8nhub.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -21,29 +21,31 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-Tr8n::Engine.routes.draw do
-  [:awards, :chart, :forum, :glossary, :help, :language_cases,
-   :language, :phrases, :translations, :translator].each do |ctrl|
-    match "#{ctrl}(/:action)", :controller => "#{ctrl}"
-  end
-  
-  [:applications, :components, :sources, :chart, :clientsdk, :forum, :glossary, :language, :translation, 
-   :translation_key, :translator, :domain, :metrics].each do |ctrl|
-    match "admin/#{ctrl}(/:action)", :controller => "admin/#{ctrl}"
-  end
-  
-  [:application, :source, :component, :language, :translation_key, :translation, :translator, :proxy].each do |ctrl|
-    match "api/v1/#{ctrl}(/:action)", :controller => "api/v1/#{ctrl}"
-  end
-  
-  match "api/v1/language/translate.js", :controller => "api/v1/language", :action => "translate"
+class Tr8n::AccessToken < ActiveRecord::Base
+  self.table_name = :tr8n_access_tokens
+  attr_accessible :token, :application_id, :translator_id, :scope, :expires_at, :application, :translator
 
-  namespace :tr8n do
-    root :to => "translator#index"
-    namespace :admin do
-      root :to => "applications#index"
+  belongs_to :application, :class_name => 'Tr8n::Application'
+  belongs_to :translator, :class_name => 'Tr8n::Translator'
+
+  before_create :generate_token
+
+  def self.for(token)
+    where("token = ?", token).first
+  end
+
+  def self.find_or_create(translator, application = nil)
+    if application
+      where("application_id = ? and translator_id = ?", application.id, translator.id).first || create(:application => application, :translator => translator)
+    else
+      where("translator_id = ?", translator.id).first || create(:translator => translator)
     end
   end
-  
-  root :to => "translator#index"
+
+protected
+
+  def generate_token
+    self.token = Tr8n::Config.guid if token.nil?
+  end
+
 end

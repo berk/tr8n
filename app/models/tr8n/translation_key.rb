@@ -227,7 +227,8 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   def add_translation(label, rules = nil, language = Tr8n::Config.current_language, translator = Tr8n::Config.current_translator)
     raise Tr8n::Exception.new("The translator is blocked and cannot submit translations") if translator.blocked?
     raise Tr8n::Exception.new("The sentence contains dirty words") unless language.clean_sentence?(label)
-    translation = Tr8n::Translation.create(:translation_key => self, :language => language, :translator => translator, :label => label, :rules => rules)
+    translation = Tr8n::Translation.new(:translation_key => self, :language => language, :translator => translator, :label => label, :rules => rules)
+    translation.save_with_log!(translator)
     translation.vote!(translator, 1)
     translation
   end
@@ -400,7 +401,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
 
   # new way of getting translations for an API call
   # TODO: switch to the new sync_hash method
-  def valid_translations_with_rules(language = Tr8n::Config.current_language)
+  def valid_translations_with_rules(language = Tr8n::Config.current_language, opts = {})
     translations = cached_translations_for_language(language)
     return [] if translations.empty?
     
@@ -614,7 +615,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     language = Tr8n::Language.find(opts[:language_id])
     Tr8n::TranslationKeySource.where("translation_key_id = ?", tkey.id).all.each do |tks|
       next unless tks.source
-      tks.source.update_metrics!(language)
+      tks.source.total_metric.update_metrics!
     end
     language.total_metric.update_metrics!
   end
@@ -626,20 +627,25 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     update_attributes(:synced_at => Time.now + 2.seconds)
   end
     
-  def to_sync_hash(opts = {})
-    { 
+  def to_api_hash(opts = {})
+    hash = { 
       "id" => self.id,
       "key" => self.key, 
       "label" => self.label, 
       "description" => self.description, 
       "locale" => (locale || Tr8n::Config.default_locale), 
-      "translations" => opts[:translations] || translations_for(opts[:languages], opts[:threshold] || Tr8n::Config.translation_threshold).collect{|t| t.to_sync_hash(opts)}
     }
+    
+    unless opts[:translations] == false
+      hash["translations"] = opts[:translations] || translations_for(opts[:languages], opts[:threshold] || Tr8n::Config.translation_threshold).collect{|t| t.to_api_hash(opts)}
+    end
+
+    hash
   end
 
   def transations_sync_hashes(opts = {})
     @transations_sync_hashes ||= begin
-      translations.collect{|t| t.to_sync_hash(:comparible => true)}
+      translations.collect{|t| t.to_api_hash(:comparible => true)}
     end  
   end
     

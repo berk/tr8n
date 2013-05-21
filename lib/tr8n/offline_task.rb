@@ -24,13 +24,23 @@
 module Tr8n
   class OfflineTask
 
-    def self.schedule(class_name, method_name, opts = {})
+    def self.schedule(obj, method_name, opts = {})
       # default implementation just passes the call right back
       # you can monkey patch this class to use an offline system of your preference
+      if obj.is_a?(String) or obj.is_a?(Symbol)
+        obj = obj.constantize
+      end
+
+      # Tr8n::Logger.logger(:offline).debug("*********************")
+      # Tr8n::Logger.logger(:offline).debug(obj.inspect)
+      # Tr8n::Logger.logger(:offline).debug(method_name)
+      # Tr8n::Logger.logger(:offline).debug(opts.inspect)
+      # Tr8n::Logger.logger(:offline).debug(caller.to_s)
+
       if Tr8n::Config.offline_task_method == "delayed_jobs"
-        class_name.constantize.delay.send(method_name, opts)
+        obj.delay.send(method_name, opts)
       else
-        class_name.constantize.send(method_name, opts)
+        obj.send(method_name, opts)
       end
     end
 

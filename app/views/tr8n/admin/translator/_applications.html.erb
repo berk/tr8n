@@ -1,0 +1,26 @@
+<%= will_filter_scripts_tag %>
+
+<%= form_tag("", :id => "tr8n_form") do %>
+  <%=hidden_field_tag(:type, :application_translator) %>
+  <%= will_filter_table_tag(@results, :columns => [
+      [:icn, image_tag("tr8n/icons/cog.png"), :title => "", :style => "width:12px;"],
+      [:checkbox, 'ids'],     
+      [:id, {:style => 'width:10px;'}],
+      [:name, lambda{|appt|
+        link_to(appt.application.name, {:controller => "/tr8n/admin/applications", :action => :view, :id => appt.application.id}) unless appt.application.name.blank?
+      }],
+      [:description, lambda{|appt|
+        appt.application.description
+      }],
+      [:actions, lambda{|appt|
+        tr8n_actions_tag([
+          link_to_function("Remove from app", "deleteObjects('#{appt.id}')")
+        ])
+      }, 'text-align:right;white-space:nowrap;']
+
+    ]) %>
+<% end %>
+
+<%= will_filter_actions_bar_tag(@results, [
+  ['Remove From Selected Applications', 'deleteObjects()']
+]) %>

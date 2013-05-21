@@ -110,4 +110,14 @@ class Tr8n::Component < ActiveRecord::Base
     Tr8n::Cache.delete(cache_key)
   end
 
+  def to_api_hash(opts = {})
+    {
+      :id => self.id,
+      :key => self.key,
+      :name => self.name,
+      :description => self.description,
+      :state => self.state,
+    }
+  end
+
 end

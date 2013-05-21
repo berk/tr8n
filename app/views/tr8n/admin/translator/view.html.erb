@@ -17,7 +17,7 @@
         <td>
           <% if @translator.user %>
             <%=link_to(@translator.name, @translator.link) %>
-            (<%=@translator.user.id%>)
+            (id: <%=@translator.user.id%>, email: <%=@translator.email%>)
           <% else %>
             Unknown  
           <% end %>  
@@ -161,6 +161,7 @@
 
 <%=  tr8n_sections_tag(:modes => [
             ["Activity",    {:mode => :activity}],
+            ["Applications", {:mode => :applications}],
             ["Assignments", {:mode => :assignments}],
             ["Metrics",     {:mode => :metrics}],
             ["Languages",   {:mode => :languages}],
@@ -172,7 +173,7 @@
             ["Reports",   {:mode => :reports}],
         ],
         :params => {
-            :translator_id => @translator.id
+            :id => @translator.id
         }
 ) %>
 

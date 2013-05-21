@@ -1,31 +1,24 @@
-<% form_tag("", :id => "translators_form") do %>
-<%= hidden_field_tag(:type, "translator") %>
-<%= will_filter_table_tag(@results, :columns => [
-    [:checkbox, 'component_objects'],     
-    [:id, lambda{|ctran|
-      ctran.component.id
-    }],
-    [:component, lambda{|ctran|
-       link_to(ctran.component.name, :controller => "/tr8n/admin/applications", :action => :component, :comp_id => ctran.component.id) 
-    }],
-    [:actions, lambda{|ctran|
-      html = []
-      html << link_to("Remove", {:controller => "/tr8n/admin/applications", :action => :remove_objects_from_component, :component_object_id => ctran.id, :type => :translator}, :confirm => "Are you sure you want to do that?")
-      html.join(' | ')
-    }, 'text-align:right;white-space:nowrap;']
+<%= will_filter_scripts_tag %>
+<%= form_tag("", :id => "tr8n_form") do %>
+  <%= hidden_field_tag(:type, "component_translator") %>
+  <%= will_filter_table_tag(@results, :columns => [
+      [:icn, image_tag("tr8n/icons/brick.png"), :title => "", :style => "width:12px;"],
+      [:checkbox, 'ids'],     
+      [:id, lambda{|ctran|
+        ctran.component.id
+      }, 'width:10px;'],
+      [:component, lambda{|ctran|
+         link_to(ctran.component.name, :controller => "/tr8n/admin/applications", :action => :component, :comp_id => ctran.component.id) 
+      }],
+      [:actions, lambda{|ctran|
+        tr8n_actions_tag([
+          link_to_function("Remove assignment", "deleteObjects('#{ctran.id}')")
+        ])
+      }, 'text-align:right;white-space:nowrap;width:150px;']
 
-  ]) %>
+    ]) %>
 <% end %>
 
 <%= will_filter_actions_bar_tag(@results, [
-  ['Remove Selected Translators', 'removeAllSelected()']
+  ['Remove From Selected Assignments', 'deleteObjects()']
 ]) %>
-
-<script>
-  function removeAllSelected() {
-    if (!confirm('Are you sure you want to remove all selected translators from this component?'))
-       return;
-    Tr8n.element('translators_form').action = "/tr8n/admin/applications/remove_objects_from_component";
-    Tr8n.element('translators_form').submit();
-  }
-</script>   

@@ -99,23 +99,15 @@ class Tr8n::TranslationSource < ActiveRecord::Base
       ts = where("application_id = ? and source = ?", application.id, source_name).first 
       ts ||= begin
         src = create(:application => application, :source => source_name)
-        src.update_metrics!
+        src.total_metric.update_metrics!
         src
       end
     end  
   end
 
-  def update_metrics!(language = Tr8n::Config.current_language)
-    metric = total_metric(language)
-    Tr8n::OfflineTask.schedule(metric.class.name, :update_metrics_offline, {
-                               :translation_source_metric_id => metric.id, 
-    })
-  end
-
   def total_metric(language = Tr8n::Config.current_language)
     Tr8n::TranslationSourceMetric.find_or_create(self, language)
   end
-
 
   def cache_key_for_language(language = Tr8n::Config.current_language)
     "translations_for_[#{self.source}]_#{language.locale}"
@@ -168,5 +160,27 @@ class Tr8n::TranslationSource < ActiveRecord::Base
       return false unless comp.translator_authorized?(translator)
     end
     true
+  end
+
+  def reset(opts = {})
+    return Tr8n::OfflineTask.schedule(self, :reset, {:offline => true}) unless opts[:offline]
+
+    translation_key_sources.each do |tks|
+      tks.destroy
+    end
+    metrics.each do |m|
+      m.update_metrics!(:offline => true)
+    end
+  end
+
+  def to_api_hash(opts = {})
+    {
+      :id => self.id,
+      :source => self.source,
+      :url => self.url,
+      :name => self.name,
+      :description => self.description,
+      :key_count => self.key_count
+    }
   end
 end

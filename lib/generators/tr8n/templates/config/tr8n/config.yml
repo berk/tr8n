@@ -147,6 +147,7 @@ defaults:
       methods:                                                    # User object methods mapping
         id:                     "id"
         name:                   "name"                            
+        email:                  "email"                            
         gender:                 "gender"
         admin:                  "admin?"            
         guest:                  "guest?"                          # if current_user is nil, the user is automatically a guest

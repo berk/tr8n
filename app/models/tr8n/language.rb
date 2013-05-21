@@ -254,13 +254,13 @@ class Tr8n::Language < ActiveRecord::Base
   
   def self.enabled_languages
     Tr8n::Cache.fetch(enabled_languages_cache_key) do 
-      find(:all, :conditions => ["enabled = ?", true], :order => "english_name asc")
+      where("enabled = ?", true).order("english_name asc").all
     end
   end
 
   def self.featured_languages
     Tr8n::Cache.fetch(featured_languages_cache_key) do 
-      find(:all, :conditions => ["enabled = ? and featured_index is not null and featured_index > 0", true], :order => "featured_index desc")
+      where("enabled = ? and featured_index is not null and featured_index > 0", true).order("featured_index desc").all
     end
   end
 
@@ -399,4 +399,20 @@ class Tr8n::Language < ActiveRecord::Base
     super || Tr8n::Config.translation_threshold
   end
 
+  def to_api_hash
+    {
+      :id => self.id,
+      :locale => self.locale,  
+      :name => self.full_name, 
+      :english_name => self.english_name, 
+      :native_name => self.native_name, 
+      :right_to_left => self.right_to_left,
+      :enabled => self.enabled,
+      :google_key => self.google_key,
+      :facebook_key => self.facebook_key,
+      :myheritage_key => self.myheritage_key,
+     }
+  end
+
 end
+

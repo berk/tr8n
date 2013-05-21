@@ -72,7 +72,7 @@ class Tr8n::SyncLog < ActiveRecord::Base
     
     Tr8n::TranslationKey.find_each(:conditions => conditions, :batch_size => batch_size) do |key|
       self.keys_sent += 1
-      tkey_hash = key.to_sync_hash(:languages => languages)
+      tkey_hash = key.to_api_hash(:languages => languages)
       self.translations_sent += tkey_hash["translations"].size if tkey_hash["translations"]
       translation_keys << tkey_hash
 

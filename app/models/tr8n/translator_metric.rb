@@ -73,7 +73,9 @@ class Tr8n::TranslatorMetric < ActiveRecord::Base
   end
 
   # updated when an action is done by the translator
-  def update_metrics!
+  def update_metrics!(opts = {})
+    return Tr8n::OfflineTask.schedule(self, :update_metrics!, {:offline => true}) unless opts[:offline]
+
     if language
       self.total_translations = Tr8n::Translation.where("translator_id = ? and language_id = ?", translator.id, language.id).count
       self.total_votes = Tr8n::TranslationVote.where("tr8n_translation_votes.translator_id = ? and tr8n_translations.language_id = ?", translator.id, language.id).joins(:translation).count
@@ -90,7 +92,9 @@ class Tr8n::TranslatorMetric < ActiveRecord::Base
   end
   
   # updated when an action is done to the translator's translations
-  def update_rank!
+  def update_rank!(opts = {})
+    return Tr8n::OfflineTask.schedule(self, :update_rank!, {:offline => true}) unless opts[:offline]
+    
     if language
       self.accepted_translations = Tr8n::Translation.where("translator_id = ? and language_id = ? and rank >= ?", translator.id, language.id, language.threshold).count
       self.rejected_translations = Tr8n::Translation.where("translator_id = ? and language_id = ? and rank < ?", translator.id, language.id, 0).count
@@ -111,4 +115,5 @@ class Tr8n::TranslatorMetric < ActiveRecord::Base
     return total_translations unless accepted_translations and rejected_translations
     total_translations - accepted_translations - rejected_translations
   end
+
 end

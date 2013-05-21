@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2012 Michael Berkovich, tr8nhub.com
+# Copyright (c) 2010-2013 Michael Berkovich, tr8nhub.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -25,9 +25,39 @@
 ## API for getting translations from the main server
 ###########################################################################
 
-class Tr8n::Api::V1::ApplicationController < ActionController::Base
+class Tr8n::Api::V1::ApplicationController < Tr8n::Api::V1::BaseController
   # for ssl access to the translator - using ssl_requirement plugin  
   ssl_allowed :sync  if respond_to?(:ssl_allowed)
+
+  def index
+    ensure_get
+    ensure_application
+    render_response(application)
+  end
+
+  def languages
+    ensure_get
+    ensure_application
+    render_response(application.languages)
+  end
+
+  def sources
+    ensure_get
+    ensure_application
+    render_response(application.sources)
+  end
+
+  def components
+    ensure_get
+    ensure_application
+    render_response(application.components)
+  end
+
+  def translators
+    ensure_get
+    ensure_application
+    render_response(application.translators)
+  end
 
   def sync
     ensure_push_enabled
@@ -51,9 +81,9 @@ class Tr8n::Api::V1::ApplicationController < ActionController::Base
     sync_log.finished_at = Time.now
     sync_log.save
     
-    sanitize_api_response(:translation_keys => payload)    
+    render_response(:translation_keys => payload)    
   rescue Tr8n::Exception => ex
-    sanitize_api_response("error" => ex.message)    
+    render_error(ex.message)    
   end
 
 private
@@ -67,8 +97,8 @@ private
     @translator ||= Tr8n::Config.system_translator
   end
   
-  def languages
-    @languages ||= Tr8n::Language.enabled_languages
+  def sync_languages
+    @sync_languages ||= Tr8n::Language.enabled_languages
   end
   
   def batch_size
@@ -95,7 +125,7 @@ private
 
       tkey.mark_as_synced!
     
-      payload << tkey.to_sync_hash(:translations => remaining_translations, :languages => languages)
+      payload << tkey.to_sync_hash(:translations => remaining_translations, :languages => sync_languages)
     end
     
     payload
@@ -109,7 +139,7 @@ private
     sync_log.keys_sent += changed_keys.size
     
     changed_keys.each do |tkey|
-      tkey_hash = tkey.to_sync_hash(:languages => languages)
+      tkey_hash = tkey.to_sync_hash(:languages => sync_languages)
       payload << tkey_hash
       sync_log.translations_sent += tkey_hash["translations"].size if tkey_hash["translations"]
       tkey.mark_as_synced!
@@ -117,13 +147,5 @@ private
     
     payload
   end  
-  
-  def sanitize_api_response(response)
-    if Tr8n::Config.api[:response_encoding] == "xml"
-      render(:text => response.to_xml)
-    else
-      render(:json => response.to_json)
-    end      
-  end
   
 end

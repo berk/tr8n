@@ -28,10 +28,11 @@ class Tr8n::Admin::TranslatorController < Tr8n::Admin::BaseController
   end
 
   def view
-    @translator = Tr8n::Translator.find(params[:translator_id])
+    @translator = Tr8n::Translator.find(params[:id])
     redirect_to(:action => :index) unless @translator
 
     klass = {
+      :applications => Tr8n::ApplicationTranslator,
       :assignments => Tr8n::ComponentTranslator,
       :metrics => Tr8n::TranslatorMetric,
       :languages => Tr8n::LanguageUser,

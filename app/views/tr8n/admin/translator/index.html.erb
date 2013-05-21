@@ -13,7 +13,7 @@
     [:checkbox, :ids],
     :id,
     [:name, lambda{|translator|
-       link_to(translator.name, :action => :view, :translator_id => translator.id) 
+       link_to(translator.name, :action => :view, :id => translator.id) 
     }],
     :country_code, 
     [:admin, lambda{|translator|

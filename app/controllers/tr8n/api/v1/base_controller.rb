@@ -38,6 +38,12 @@ class Tr8n::Api::V1::BaseController < ApplicationController
     after_filter *Tr8n::Config.api_after_filters
   end
 
+  rescue_from StandardError do |e|
+    pp e, e.backtrace
+    # log_exception(e)
+    render_response("error" => e.message)
+  end
+
 private
 
   def check_api_enabled
@@ -76,61 +82,116 @@ private
     true
   end
 
-  def tr8n_current_user
-    Tr8n::Config.current_user
+  def application
+    return nil if params[:app_key].blank?
+    @application ||= Tr8n::Application.find_by_key(params[:app_key])
   end
-  helper_method :tr8n_current_user
 
-  def tr8n_current_language
-    Tr8n::Config.current_language
+  def translator
+    return nil if params[:access_token].blank?
+    @translator ||= begin
+      token = Tr8n::AccessToken.find_by_token(params[:access_token])
+      if token
+        token.translator
+      else
+        nil
+      end
+    end
   end
-  helper_method :tr8n_current_language
 
-  def tr8n_default_language
-    Tr8n::Config.default_language
+  def language
+    return nil if params[:locale].blank?
+    @language ||= Tr8n::Language.for(params[:locale])
   end
-  helper_method :tr8n_default_language
 
-  def tr8n_current_translator
-    Tr8n::Config.current_translator
+  def ensure_get
+    unless request.get?
+      raise Tr8n::Exception.new("Must be a GET API call") 
+    end
   end
-  helper_method :tr8n_current_translator
-  
-  def tr8n_current_user_is_admin?
-    Tr8n::Config.current_user_is_admin?
-  end
-  helper_method :tr8n_current_user_is_admin?
-  
-  def tr8n_current_user_is_translator?
-    Tr8n::Config.current_user_is_translator?
-  end
-  helper_method :tr8n_current_user_is_translator?
 
-  def tr8n_current_user_is_manager?
-    return false unless Tr8n::Config.current_user_is_translator?
-    tr8n_current_translator.manager?
+  def ensure_post
+    unless request.post?
+      raise Tr8n::Exception.new("Must be a POST API call") 
+    end
   end
-  helper_method :tr8n_current_user_is_manager?
-  
-  def tr8n_current_user_is_guest?
-    Tr8n::Config.current_user_is_guest?
+
+  def ensure_translator
+    unless translator
+      raise Tr8n::Exception.new("Must be an authorized API call. Access token is missing or invalid.")
+    end
   end
-  helper_method :tr8n_current_user_is_guest?
+
+  def ensure_application_admin
+    ensure_translator
+    unless translator.admin?
+      raise Tr8n::Exception.new("Must be an administrator to perform this operation.")
+    end
+  end
+
+  def ensure_application
+    unless translator
+      raise Tr8n::Exception.new("Valid aplication key must be provided.")
+    end
+  end
+
+  def ensure_language
+    unless language
+      raise Tr8n::Exception.new("Valid locale must be provided.")
+    end
+  end
+
+  def ensure_valid_signature
+    # params[:sig] - miust be signed with the app secret
+    # only authorized apps can register keys
+  end
+
+  def limit
+    params[:limit] || 20
+  end
+
+  def offset
+    params[:offset] || 0
+  end
+
   
   def sanitize_label(label)
     label.strip
   end
   
-  def sanitize_api_response(response)
-    if params[:callback]
+  def render_response(response)
+    if params[:callback] # JSONP support
       return render(:text => "#{params[:callback]}(#{response.to_json});", :content_type => "text/javascript")
     end 
     
-    if Tr8n::Config.api[:response_encoding] == "xml"
-      render(:text => response.to_xml)
-    else
-      render(:text => response.to_json)
-    end      
+    if response.is_a?(Array)
+      results = []
+      response.collect do |obj| 
+        if obj.class.method_defined?(:to_api_hash)
+          results << obj.to_api_hash
+        else
+          results << obj
+        end
+      end 
+      response = {:results => results}
+
+      response['page']          = page if page > 1 || limit == results.size
+      response['previous_page'] = prev_page if page > 1
+      response['next_page']     = next_page if limit == results.size
+
+    elsif response.class.method_defined?(:to_api_hash)
+      response = response.to_api_hash
+    end
+
+    render(:text => response.to_json, :content_type => "text/json")
+  end
+
+  def render_error(msg)
+    render_response(:error => msg)
+  end
+
+  def render_success(msg = nil)
+    render_response(:status => msg || "Ok")
   end
 
   def source
