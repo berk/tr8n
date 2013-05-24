@@ -89,12 +89,16 @@ class Tr8n::Api::V1::LanguageController < Tr8n::Api::V1::BaseController
       
       return render_response({:phrases => translations})
     elsif params[:phrases]
-      
-      phrases = []
-      begin
-        phrases = HashWithIndifferentAccess.new({:data => JSON.parse(params[:phrases])})[:data]
-      rescue Exception => ex
-        return render_response({"error" => "Invalid request. JSON parsing failed: #{ex.message}"})
+
+      if params[:phrases].is_a?(String)
+        phrases = []
+        begin
+          phrases = HashWithIndifferentAccess.new({:data => JSON.parse(params[:phrases])})[:data]
+        rescue Exception => ex
+          return render_error("Invalid request. JSON parsing failed: #{ex.message}")
+        end
+      else
+        phrases = params[:phrases]
       end
 
       translations = []

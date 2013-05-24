@@ -58,24 +58,12 @@
         }
         function initTr8n() {
           if (window.tr8nJQ) return;
-
-          var jQueryCurrentVersion = null;
-          if (!(typeof jQuery === "undefined")) {
-            jQueryCurrentVersion = $.noConflict(true);
-          }
-
-          addTr8nScript(window.document, 'jquery', '//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js', function() {
-            window.tr8nJQ = $.noConflict(true);
-            if (jQueryCurrentVersion) {
-              window.jQuery = window.$ = jQueryCurrentVersion;
-            }
-            addTr8nScript(window.document, 'tr8n-jssdk', "<%= params[:tr8n_debug_js] ? '/assets/tr8n/tr8n.js': '/assets/tr8n/tr8n-compiled.js' %>", function() {
-              addTr8nScript(window.document, 'tr8n-proxy', '/tr8n/api/v1/proxy/init.js', function() {
-                // alert("Done");  
-              });
+          addTr8nScript(window.document, 'tr8n-jssdk', "<%= params[:tr8n_debug_js] ? '/assets/tr8n/tr8n.debug.js': '/assets/tr8n/tr8n.js' %>", function() {
+            addTr8nScript(window.document, 'tr8n-proxy', '/tr8n/api/v1/proxy/init.js', function() {
+              // alert("Done");  
             });
-        });
-      }
+          });
+        }
     })(window);
   //-->
   </script>

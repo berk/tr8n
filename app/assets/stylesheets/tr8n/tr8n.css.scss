@@ -139,11 +139,11 @@
 /*** Classes for the translatable elements
 /****************************************/
 
-.tr8n_not_translated                           {border-bottom: 2px solid red;}
-.tr8n_translated                               {border-bottom: 2px solid green;}
-.tr8n_fallback                                 {border-bottom: 2px solid yellow;}
-.tr8n_language_case                            {border: 1px dotted blue;}
-.tr8n_locked                                   {border-bottom: 2px solid blue;}
+.tr8n_not_translated                           {border-bottom: 2px solid red !important;}
+.tr8n_translated                               {border-bottom: 2px solid green !important;}
+.tr8n_fallback                                 {border-bottom: 2px solid yellow !important;}
+.tr8n_language_case                            {border: 1px dotted blue !important;}
+.tr8n_locked                                   {border-bottom: 2px solid blue !important;}
 
 /****************************************/
 /*** Classes for the popup windows

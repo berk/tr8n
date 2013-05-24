@@ -1,0 +1,56 @@
+source_root:          .
+compiler:
+  name:               closure
+groups:
+  jquery:
+    files:
+    -  vendor/jquery.before.js
+    -  vendor/jquery-1.9.1.js
+    -  vendor/jquery.after.js
+    -  vendor/jquery.ext.js
+    output:
+      path:              ../app/assets/javascripts/tr8n/jquery.js
+      debug:             true
+  tr8n:
+    files:
+    -  vendor/jquery.before.js
+    -  vendor/jquery-1.9.1.js
+    -  vendor/jquery.after.js
+    -  vendor/jquery.ext.js
+    -  vendor/inflector.js
+    -  vendor/md5.js
+    -  vendor/shortcut.js
+    -  vendor/keyboard_1_49.js
+    -  tr8n.js
+    -  logger.js
+    -  cookie.js
+    -  event.js
+    -  utils.js
+    -  effects.js
+    -  sdk/request.js
+    -  sdk/api.js
+    -  sdk/auth.js
+    -  sdk/proxy.js
+    -  sdk/language.js
+    -  sdk/translation_key.js
+    -  sdk/translation.js
+    -  sdk/tokens/base.js
+    -  sdk/tokens/data_token.js
+    -  sdk/tokens/transform_token.js
+    -  sdk/tokens/decoration_token.js
+    -  sdk/rules/base.js
+    -  sdk/rules/date_rule.js
+    -  sdk/rules/gender_rule.js
+    -  sdk/rules/numeric_rule.js
+    -  sdk/rules/list_rule.js
+    -  sdk/rules/gender_list_rule.js
+    -  sdk/tml/label.js
+    -  sdk/tml/token.js
+    -  ui/language_selector.js
+    -  ui/lightbox.js
+    -  ui/translator.js
+    -  ui/translation.js
+    -  boot.js
+    output:
+      path:              ../app/assets/javascripts/tr8n/tr8n.js
+      debug:             true

@@ -433,7 +433,7 @@ class CreateTr8nTables < ActiveRecord::Migration
     create_table :tr8n_access_tokens do |t|
       t.string    :type
       t.string    :token, :null => false
-      t.integer   :application_id, :null => false
+      t.integer   :application_id
       t.integer   :translator_id
       t.string    :scope
       t.timestamp :expires_at
