@@ -45,7 +45,7 @@ class Tr8n::Config
     end
 
     # register the total metric for the current source and language
-    current_source.total_metric 
+    current_source.total_metric unless current_language.default? 
 
     Thread.current[:tr8n_block_options]      = []
   end
