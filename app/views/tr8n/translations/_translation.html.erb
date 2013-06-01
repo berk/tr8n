@@ -31,7 +31,7 @@
 	<% else %>
     <%=link_to_function(image_tag("tr8n/thumb_up.png"), "Tr8n.Translation.vote('#{translation.translation_key.key}', '#{translation.id}', 1)")%> 
     <%=link_to_function(image_tag("tr8n/thumb_down.png"), "Tr8n.Translation.vote('#{translation.translation_key.key}','#{translation.id}', -1)")%> 
-    <%=link_to_function(image_tag("tr8n/exclamation.png"), "Tr8n.postMessage('tr8n:translation:report:#{translation.id}')")%>
+    <%=link_to_function(image_tag("tr8n/exclamation.png"), "Tr8n.postMessage({'subject': 'translation', 'action': 'report', 'id': '#{translation.id}'}, '#{params[:origin]}')")%>
   <% end %>   
 </td>
 

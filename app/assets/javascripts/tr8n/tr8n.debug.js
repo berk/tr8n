@@ -11883,6 +11883,1082 @@ var VKI_default_keyboard_image = VKI_default_keyboard_image || "";
   // }, false);
 })();
 
+var swfobject = function() {
+  
+  var UNDEF = "undefined",
+    OBJECT = "object",
+    SHOCKWAVE_FLASH = "Shockwave Flash",
+    SHOCKWAVE_FLASH_AX = "ShockwaveFlash.ShockwaveFlash",
+    FLASH_MIME_TYPE = "application/x-shockwave-flash",
+    EXPRESS_INSTALL_ID = "SWFObjectExprInst",
+    ON_READY_STATE_CHANGE = "onreadystatechange",
+    
+    win = window,
+    doc = document,
+    nav = navigator,
+    
+    plugin = false,
+    domLoadFnArr = [main],
+    regObjArr = [],
+    objIdArr = [],
+    listenersArr = [],
+    storedAltContent,
+    storedAltContentId,
+    storedCallbackFn,
+    storedCallbackObj,
+    isDomLoaded = false,
+    isExpressInstallActive = false,
+    dynamicStylesheet,
+    dynamicStylesheetMedia,
+    autoHideShow = true,
+  
+    
+  ua = function() {
+    var w3cdom = typeof doc.getElementById != UNDEF && typeof doc.getElementsByTagName != UNDEF && typeof doc.createElement != UNDEF,
+      u = nav.userAgent.toLowerCase(),
+      p = nav.platform.toLowerCase(),
+      windows = p ? /win/.test(p) : /win/.test(u),
+      mac = p ? /mac/.test(p) : /mac/.test(u),
+      webkit = /webkit/.test(u) ? parseFloat(u.replace(/^.*webkit\/(\d+(\.\d+)?).*$/, "$1")) : false, // returns either the webkit version or false if not webkit
+      ie = !+"\v1", // feature detection based on Andrea Giammarchi's solution: http://webreflection.blogspot.com/2009/01/32-bytes-to-know-if-your-browser-is-ie.html
+      playerVersion = [0,0,0],
+      d = null;
+    if (typeof nav.plugins != UNDEF && typeof nav.plugins[SHOCKWAVE_FLASH] == OBJECT) {
+      d = nav.plugins[SHOCKWAVE_FLASH].description;
+      if (d && !(typeof nav.mimeTypes != UNDEF && nav.mimeTypes[FLASH_MIME_TYPE] && !nav.mimeTypes[FLASH_MIME_TYPE].enabledPlugin)) { // navigator.mimeTypes["application/x-shockwave-flash"].enabledPlugin indicates whether plug-ins are enabled or disabled in Safari 3+
+        plugin = true;
+        ie = false; // cascaded feature detection for Internet Explorer
+        d = d.replace(/^.*\s+(\S+\s+\S+$)/, "$1");
+        playerVersion[0] = parseInt(d.replace(/^(.*)\..*$/, "$1"), 10);
+        playerVersion[1] = parseInt(d.replace(/^.*\.(.*)\s.*$/, "$1"), 10);
+        playerVersion[2] = /[a-zA-Z]/.test(d) ? parseInt(d.replace(/^.*[a-zA-Z]+(.*)$/, "$1"), 10) : 0;
+      }
+    }
+    else if (typeof win.ActiveXObject != UNDEF) {
+      try {
+        var a = new ActiveXObject(SHOCKWAVE_FLASH_AX);
+        if (a) { // a will return null when ActiveX is disabled
+          d = a.GetVariable("$version");
+          if (d) {
+            ie = true; // cascaded feature detection for Internet Explorer
+            d = d.split(" ")[1].split(",");
+            playerVersion = [parseInt(d[0], 10), parseInt(d[1], 10), parseInt(d[2], 10)];
+          }
+        }
+      }
+      catch(e) {}
+    }
+    return { w3:w3cdom, pv:playerVersion, wk:webkit, ie:ie, win:windows, mac:mac };
+  }(),
+  
+   
+  onDomLoad = function() {
+    if (!ua.w3) { return; }
+    if ((typeof doc.readyState != UNDEF && doc.readyState == "complete") || (typeof doc.readyState == UNDEF && (doc.getElementsByTagName("body")[0] || doc.body))) { // function is fired after onload, e.g. when script is inserted dynamically 
+      callDomLoadFunctions();
+    }
+    if (!isDomLoaded) {
+      if (typeof doc.addEventListener != UNDEF) {
+        doc.addEventListener("DOMContentLoaded", callDomLoadFunctions, false);
+      }   
+      if (ua.ie && ua.win) {
+        doc.attachEvent(ON_READY_STATE_CHANGE, function() {
+          if (doc.readyState == "complete") {
+            doc.detachEvent(ON_READY_STATE_CHANGE, arguments.callee);
+            callDomLoadFunctions();
+          }
+        });
+        if (win == top) { // if not inside an iframe
+          (function(){
+            if (isDomLoaded) { return; }
+            try {
+              doc.documentElement.doScroll("left");
+            }
+            catch(e) {
+              setTimeout(arguments.callee, 0);
+              return;
+            }
+            callDomLoadFunctions();
+          })();
+        }
+      }
+      if (ua.wk) {
+        (function(){
+          if (isDomLoaded) { return; }
+          if (!/loaded|complete/.test(doc.readyState)) {
+            setTimeout(arguments.callee, 0);
+            return;
+          }
+          callDomLoadFunctions();
+        })();
+      }
+      addLoadEvent(callDomLoadFunctions);
+    }
+  }();
+  
+  function callDomLoadFunctions() {
+    if (isDomLoaded) { return; }
+    try { // test if we can really add/remove elements to/from the DOM; we don't want to fire it too early
+      var t = doc.getElementsByTagName("body")[0].appendChild(createElement("span"));
+      t.parentNode.removeChild(t);
+    }
+    catch (e) { return; }
+    isDomLoaded = true;
+    var dl = domLoadFnArr.length;
+    for (var i = 0; i < dl; i++) {
+      domLoadFnArr[i]();
+    }
+  }
+  
+  function addDomLoadEvent(fn) {
+    if (isDomLoaded) {
+      fn();
+    }
+    else { 
+      domLoadFnArr[domLoadFnArr.length] = fn; // Array.push() is only available in IE5.5+
+    }
+  }
+  
+  
+  function addLoadEvent(fn) {
+    if (typeof win.addEventListener != UNDEF) {
+      win.addEventListener("load", fn, false);
+    }
+    else if (typeof doc.addEventListener != UNDEF) {
+      doc.addEventListener("load", fn, false);
+    }
+    else if (typeof win.attachEvent != UNDEF) {
+      addListener(win, "onload", fn);
+    }
+    else if (typeof win.onload == "function") {
+      var fnOld = win.onload;
+      win.onload = function() {
+        fnOld();
+        fn();
+      };
+    }
+    else {
+      win.onload = fn;
+    }
+  }
+  
+  
+  function main() { 
+    if (plugin) {
+      testPlayerVersion();
+    }
+    else {
+      matchVersions();
+    }
+  }
+  
+  
+  function testPlayerVersion() {
+    var b = doc.getElementsByTagName("body")[0];
+    var o = createElement(OBJECT);
+    o.setAttribute("type", FLASH_MIME_TYPE);
+    var t = b.appendChild(o);
+    if (t) {
+      var counter = 0;
+      (function(){
+        if (typeof t.GetVariable != UNDEF) {
+          var d = t.GetVariable("$version");
+          if (d) {
+            d = d.split(" ")[1].split(",");
+            ua.pv = [parseInt(d[0], 10), parseInt(d[1], 10), parseInt(d[2], 10)];
+          }
+        }
+        else if (counter < 10) {
+          counter++;
+          setTimeout(arguments.callee, 10);
+          return;
+        }
+        b.removeChild(o);
+        t = null;
+        matchVersions();
+      })();
+    }
+    else {
+      matchVersions();
+    }
+  }
+  
+  
+  function matchVersions() {
+    var rl = regObjArr.length;
+    if (rl > 0) {
+      for (var i = 0; i < rl; i++) { // for each registered object element
+        var id = regObjArr[i].id;
+        var cb = regObjArr[i].callbackFn;
+        var cbObj = {success:false, id:id};
+        if (ua.pv[0] > 0) {
+          var obj = getElementById(id);
+          if (obj) {
+            if (hasPlayerVersion(regObjArr[i].swfVersion) && !(ua.wk && ua.wk < 312)) { // Flash Player version >= published SWF version: Houston, we have a match!
+              setVisibility(id, true);
+              if (cb) {
+                cbObj.success = true;
+                cbObj.ref = getObjectById(id);
+                cb(cbObj);
+              }
+            }
+            else if (regObjArr[i].expressInstall && canExpressInstall()) { // show the Adobe Express Install dialog if set by the web page author and if supported
+              var att = {};
+              att.data = regObjArr[i].expressInstall;
+              att.width = obj.getAttribute("width") || "0";
+              att.height = obj.getAttribute("height") || "0";
+              if (obj.getAttribute("class")) { att.styleclass = obj.getAttribute("class"); }
+              if (obj.getAttribute("align")) { att.align = obj.getAttribute("align"); }
+              // parse HTML object param element's name-value pairs
+              var par = {};
+              var p = obj.getElementsByTagName("param");
+              var pl = p.length;
+              for (var j = 0; j < pl; j++) {
+                if (p[j].getAttribute("name").toLowerCase() != "movie") {
+                  par[p[j].getAttribute("name")] = p[j].getAttribute("value");
+                }
+              }
+              showExpressInstall(att, par, id, cb);
+            }
+            else { // Flash Player and SWF version mismatch or an older Webkit engine that ignores the HTML object element's nested param elements: display alternative content instead of SWF
+              displayAltContent(obj);
+              if (cb) { cb(cbObj); }
+            }
+          }
+        }
+        else {  // if no Flash Player is installed or the fp version cannot be detected we let the HTML object element do its job (either show a SWF or alternative content)
+          setVisibility(id, true);
+          if (cb) {
+            var o = getObjectById(id); // test whether there is an HTML object element or not
+            if (o && typeof o.SetVariable != UNDEF) { 
+              cbObj.success = true;
+              cbObj.ref = o;
+            }
+            cb(cbObj);
+          }
+        }
+      }
+    }
+  }
+  
+  function getObjectById(objectIdStr) {
+    var r = null;
+    var o = getElementById(objectIdStr);
+    if (o && o.nodeName == "OBJECT") {
+      if (typeof o.SetVariable != UNDEF) {
+        r = o;
+      }
+      else {
+        var n = o.getElementsByTagName(OBJECT)[0];
+        if (n) {
+          r = n;
+        }
+      }
+    }
+    return r;
+  }
+  
+  
+  function canExpressInstall() {
+    return !isExpressInstallActive && hasPlayerVersion("6.0.65") && (ua.win || ua.mac) && !(ua.wk && ua.wk < 312);
+  }
+  
+  
+  function showExpressInstall(att, par, replaceElemIdStr, callbackFn) {
+    isExpressInstallActive = true;
+    storedCallbackFn = callbackFn || null;
+    storedCallbackObj = {success:false, id:replaceElemIdStr};
+    var obj = getElementById(replaceElemIdStr);
+    if (obj) {
+      if (obj.nodeName == "OBJECT") { // static publishing
+        storedAltContent = abstractAltContent(obj);
+        storedAltContentId = null;
+      }
+      else { // dynamic publishing
+        storedAltContent = obj;
+        storedAltContentId = replaceElemIdStr;
+      }
+      att.id = EXPRESS_INSTALL_ID;
+      if (typeof att.width == UNDEF || (!/%$/.test(att.width) && parseInt(att.width, 10) < 310)) { att.width = "310"; }
+      if (typeof att.height == UNDEF || (!/%$/.test(att.height) && parseInt(att.height, 10) < 137)) { att.height = "137"; }
+      doc.title = doc.title.slice(0, 47) + " - Flash Player Installation";
+      var pt = ua.ie && ua.win ? "ActiveX" : "PlugIn",
+        fv = "MMredirectURL=" + win.location.toString().replace(/&/g,"%26") + "&MMplayerType=" + pt + "&MMdoctitle=" + doc.title;
+      if (typeof par.flashvars != UNDEF) {
+        par.flashvars += "&" + fv;
+      }
+      else {
+        par.flashvars = fv;
+      }
+      // IE only: when a SWF is loading (AND: not available in cache) wait for the readyState of the object element to become 4 before removing it,
+      // because you cannot properly cancel a loading SWF file without breaking browser load references, also obj.onreadystatechange doesn't work
+      if (ua.ie && ua.win && obj.readyState != 4) {
+        var newObj = createElement("div");
+        replaceElemIdStr += "SWFObjectNew";
+        newObj.setAttribute("id", replaceElemIdStr);
+        obj.parentNode.insertBefore(newObj, obj); // insert placeholder div that will be replaced by the object element that loads expressinstall.swf
+        obj.style.display = "none";
+        (function(){
+          if (obj.readyState == 4) {
+            obj.parentNode.removeChild(obj);
+          }
+          else {
+            setTimeout(arguments.callee, 10);
+          }
+        })();
+      }
+      createSWF(att, par, replaceElemIdStr);
+    }
+  }
+  
+  
+  function displayAltContent(obj) {
+    if (ua.ie && ua.win && obj.readyState != 4) {
+      // IE only: when a SWF is loading (AND: not available in cache) wait for the readyState of the object element to become 4 before removing it,
+      // because you cannot properly cancel a loading SWF file without breaking browser load references, also obj.onreadystatechange doesn't work
+      var el = createElement("div");
+      obj.parentNode.insertBefore(el, obj); // insert placeholder div that will be replaced by the alternative content
+      el.parentNode.replaceChild(abstractAltContent(obj), el);
+      obj.style.display = "none";
+      (function(){
+        if (obj.readyState == 4) {
+          obj.parentNode.removeChild(obj);
+        }
+        else {
+          setTimeout(arguments.callee, 10);
+        }
+      })();
+    }
+    else {
+      obj.parentNode.replaceChild(abstractAltContent(obj), obj);
+    }
+  } 
+
+  function abstractAltContent(obj) {
+    var ac = createElement("div");
+    if (ua.win && ua.ie) {
+      ac.innerHTML = obj.innerHTML;
+    }
+    else {
+      var nestedObj = obj.getElementsByTagName(OBJECT)[0];
+      if (nestedObj) {
+        var c = nestedObj.childNodes;
+        if (c) {
+          var cl = c.length;
+          for (var i = 0; i < cl; i++) {
+            if (!(c[i].nodeType == 1 && c[i].nodeName == "PARAM") && !(c[i].nodeType == 8)) {
+              ac.appendChild(c[i].cloneNode(true));
+            }
+          }
+        }
+      }
+    }
+    return ac;
+  }
+  
+  
+  function createSWF(attObj, parObj, id) {
+    var r, el = getElementById(id);
+    if (ua.wk && ua.wk < 312) { return r; }
+    if (el) {
+      if (typeof attObj.id == UNDEF) { // if no 'id' is defined for the object element, it will inherit the 'id' from the alternative content
+        attObj.id = id;
+      }
+      if (ua.ie && ua.win) { // Internet Explorer + the HTML object element + W3C DOM methods do not combine: fall back to outerHTML
+        var att = "";
+        for (var i in attObj) {
+          if (attObj[i] != Object.prototype[i]) { // filter out prototype additions from other potential libraries
+            if (i.toLowerCase() == "data") {
+              parObj.movie = attObj[i];
+            }
+            else if (i.toLowerCase() == "styleclass") { // 'class' is an ECMA4 reserved keyword
+              att += ' class="' + attObj[i] + '"';
+            }
+            else if (i.toLowerCase() != "classid") {
+              att += ' ' + i + '="' + attObj[i] + '"';
+            }
+          }
+        }
+        var par = "";
+        for (var j in parObj) {
+          if (parObj[j] != Object.prototype[j]) { // filter out prototype additions from other potential libraries
+            par += '<param name="' + j + '" value="' + parObj[j] + '" />';
+          }
+        }
+        el.outerHTML = '<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"' + att + '>' + par + '</object>';
+        objIdArr[objIdArr.length] = attObj.id; // stored to fix object 'leaks' on unload (dynamic publishing only)
+        r = getElementById(attObj.id);  
+      }
+      else { // well-behaving browsers
+        var o = createElement(OBJECT);
+        o.setAttribute("type", FLASH_MIME_TYPE);
+        for (var m in attObj) {
+          if (attObj[m] != Object.prototype[m]) { // filter out prototype additions from other potential libraries
+            if (m.toLowerCase() == "styleclass") { // 'class' is an ECMA4 reserved keyword
+              o.setAttribute("class", attObj[m]);
+            }
+            else if (m.toLowerCase() != "classid") { // filter out IE specific attribute
+              o.setAttribute(m, attObj[m]);
+            }
+          }
+        }
+        for (var n in parObj) {
+          if (parObj[n] != Object.prototype[n] && n.toLowerCase() != "movie") { // filter out prototype additions from other potential libraries and IE specific param element
+            createObjParam(o, n, parObj[n]);
+          }
+        }
+        el.parentNode.replaceChild(o, el);
+        r = o;
+      }
+    }
+    return r;
+  }
+  
+  function createObjParam(el, pName, pValue) {
+    var p = createElement("param");
+    p.setAttribute("name", pName);  
+    p.setAttribute("value", pValue);
+    el.appendChild(p);
+  }
+  
+  
+  function removeSWF(id) {
+    var obj = getElementById(id);
+    if (obj && obj.nodeName == "OBJECT") {
+      if (ua.ie && ua.win) {
+        obj.style.display = "none";
+        (function(){
+          if (obj.readyState == 4) {
+            removeObjectInIE(id);
+          }
+          else {
+            setTimeout(arguments.callee, 10);
+          }
+        })();
+      }
+      else {
+        obj.parentNode.removeChild(obj);
+      }
+    }
+  }
+  
+  function removeObjectInIE(id) {
+    var obj = getElementById(id);
+    if (obj) {
+      for (var i in obj) {
+        if (typeof obj[i] == "function") {
+          obj[i] = null;
+        }
+      }
+      obj.parentNode.removeChild(obj);
+    }
+  }
+  
+  
+  function getElementById(id) {
+    var el = null;
+    try {
+      el = doc.getElementById(id);
+    }
+    catch (e) {}
+    return el;
+  }
+  
+  function createElement(el) {
+    return doc.createElement(el);
+  }
+  
+    
+  function addListener(target, eventType, fn) {
+    target.attachEvent(eventType, fn);
+    listenersArr[listenersArr.length] = [target, eventType, fn];
+  }
+  
+  
+  function hasPlayerVersion(rv) {
+    var pv = ua.pv, v = rv.split(".");
+    v[0] = parseInt(v[0], 10);
+    v[1] = parseInt(v[1], 10) || 0; // supports short notation, e.g. "9" instead of "9.0.0"
+    v[2] = parseInt(v[2], 10) || 0;
+    return (pv[0] > v[0] || (pv[0] == v[0] && pv[1] > v[1]) || (pv[0] == v[0] && pv[1] == v[1] && pv[2] >= v[2])) ? true : false;
+  }
+  
+    
+  function createCSS(sel, decl, media, newStyle) {
+    if (ua.ie && ua.mac) { return; }
+    var h = doc.getElementsByTagName("head")[0];
+    if (!h) { return; } // to also support badly authored HTML pages that lack a head element
+    var m = (media && typeof media == "string") ? media : "screen";
+    if (newStyle) {
+      dynamicStylesheet = null;
+      dynamicStylesheetMedia = null;
+    }
+    if (!dynamicStylesheet || dynamicStylesheetMedia != m) { 
+      // create dynamic stylesheet + get a global reference to it
+      var s = createElement("style");
+      s.setAttribute("type", "text/css");
+      s.setAttribute("media", m);
+      dynamicStylesheet = h.appendChild(s);
+      if (ua.ie && ua.win && typeof doc.styleSheets != UNDEF && doc.styleSheets.length > 0) {
+        dynamicStylesheet = doc.styleSheets[doc.styleSheets.length - 1];
+      }
+      dynamicStylesheetMedia = m;
+    }
+    // add style rule
+    if (ua.ie && ua.win) {
+      if (dynamicStylesheet && typeof dynamicStylesheet.addRule == OBJECT) {
+        dynamicStylesheet.addRule(sel, decl);
+      }
+    }
+    else {
+      if (dynamicStylesheet && typeof doc.createTextNode != UNDEF) {
+        dynamicStylesheet.appendChild(doc.createTextNode(sel + " {" + decl + "}"));
+      }
+    }
+  }
+  
+  function setVisibility(id, isVisible) {
+    if (!autoHideShow) { return; }
+    var v = isVisible ? "visible" : "hidden";
+    if (isDomLoaded && getElementById(id)) {
+      getElementById(id).style.visibility = v;
+    }
+    else {
+      createCSS("#" + id, "visibility:" + v);
+    }
+  }
+
+  
+  function urlEncodeIfNecessary(s) {
+    var regex = /[\\\"<>\.;]/;
+    var hasBadChars = regex.exec(s) != null;
+    return hasBadChars && typeof encodeURIComponent != UNDEF ? encodeURIComponent(s) : s;
+  }
+  
+  
+  var cleanup = function() {
+    if (ua.ie && ua.win) {
+      window.attachEvent("onunload", function() {
+        // remove listeners to avoid memory leaks
+        var ll = listenersArr.length;
+        for (var i = 0; i < ll; i++) {
+          listenersArr[i][0].detachEvent(listenersArr[i][1], listenersArr[i][2]);
+        }
+        // cleanup dynamically embedded objects to fix audio/video threads and force open sockets and NetConnections to disconnect
+        var il = objIdArr.length;
+        for (var j = 0; j < il; j++) {
+          removeSWF(objIdArr[j]);
+        }
+        // cleanup library's main closures to avoid memory leaks
+        for (var k in ua) {
+          ua[k] = null;
+        }
+        ua = null;
+        for (var l in swfobject) {
+          swfobject[l] = null;
+        }
+        swfobject = null;
+      });
+    }
+  }();
+  
+  return {
+     
+    registerObject: function(objectIdStr, swfVersionStr, xiSwfUrlStr, callbackFn) {
+      if (ua.w3 && objectIdStr && swfVersionStr) {
+        var regObj = {};
+        regObj.id = objectIdStr;
+        regObj.swfVersion = swfVersionStr;
+        regObj.expressInstall = xiSwfUrlStr;
+        regObj.callbackFn = callbackFn;
+        regObjArr[regObjArr.length] = regObj;
+        setVisibility(objectIdStr, false);
+      }
+      else if (callbackFn) {
+        callbackFn({success:false, id:objectIdStr});
+      }
+    },
+    
+    getObjectById: function(objectIdStr) {
+      if (ua.w3) {
+        return getObjectById(objectIdStr);
+      }
+    },
+    
+    embedSWF: function(swfUrlStr, replaceElemIdStr, widthStr, heightStr, swfVersionStr, xiSwfUrlStr, flashvarsObj, parObj, attObj, callbackFn) {
+      var callbackObj = {success:false, id:replaceElemIdStr};
+      if (ua.w3 && !(ua.wk && ua.wk < 312) && swfUrlStr && replaceElemIdStr && widthStr && heightStr && swfVersionStr) {
+        setVisibility(replaceElemIdStr, false);
+        addDomLoadEvent(function() {
+          widthStr += ""; // auto-convert to string
+          heightStr += "";
+          var att = {};
+          if (attObj && typeof attObj === OBJECT) {
+            for (var i in attObj) { // copy object to avoid the use of references, because web authors often reuse attObj for multiple SWFs
+              att[i] = attObj[i];
+            }
+          }
+          att.data = swfUrlStr;
+          att.width = widthStr;
+          att.height = heightStr;
+          var par = {}; 
+          if (parObj && typeof parObj === OBJECT) {
+            for (var j in parObj) { // copy object to avoid the use of references, because web authors often reuse parObj for multiple SWFs
+              par[j] = parObj[j];
+            }
+          }
+          if (flashvarsObj && typeof flashvarsObj === OBJECT) {
+            for (var k in flashvarsObj) { // copy object to avoid the use of references, because web authors often reuse flashvarsObj for multiple SWFs
+              if (typeof par.flashvars != UNDEF) {
+                par.flashvars += "&" + k + "=" + flashvarsObj[k];
+              }
+              else {
+                par.flashvars = k + "=" + flashvarsObj[k];
+              }
+            }
+          }
+          if (hasPlayerVersion(swfVersionStr)) { // create SWF
+            var obj = createSWF(att, par, replaceElemIdStr);
+            if (att.id == replaceElemIdStr) {
+              setVisibility(replaceElemIdStr, true);
+            }
+            callbackObj.success = true;
+            callbackObj.ref = obj;
+          }
+          else if (xiSwfUrlStr && canExpressInstall()) { // show Adobe Express Install
+            att.data = xiSwfUrlStr;
+            showExpressInstall(att, par, replaceElemIdStr, callbackFn);
+            return;
+          }
+          else { // show alternative content
+            setVisibility(replaceElemIdStr, true);
+          }
+          if (callbackFn) { callbackFn(callbackObj); }
+        });
+      }
+      else if (callbackFn) { callbackFn(callbackObj); }
+    },
+    
+    switchOffAutoHideShow: function() {
+      autoHideShow = false;
+    },
+    
+    ua: ua,
+    
+    getFlashPlayerVersion: function() {
+      return { major:ua.pv[0], minor:ua.pv[1], release:ua.pv[2] };
+    },
+    
+    hasFlashPlayerVersion: hasPlayerVersion,
+    
+    createSWF: function(attObj, parObj, replaceElemIdStr) {
+      if (ua.w3) {
+        return createSWF(attObj, parObj, replaceElemIdStr);
+      }
+      else {
+        return undefined;
+      }
+    },
+    
+    showExpressInstall: function(att, par, replaceElemIdStr, callbackFn) {
+      if (ua.w3 && canExpressInstall()) {
+        showExpressInstall(att, par, replaceElemIdStr, callbackFn);
+      }
+    },
+    
+    removeSWF: function(objElemIdStr) {
+      if (ua.w3) {
+        removeSWF(objElemIdStr);
+      }
+    },
+    
+    createCSS: function(selStr, declStr, mediaStr, newStyleBoolean) {
+      if (ua.w3) {
+        createCSS(selStr, declStr, mediaStr, newStyleBoolean);
+      }
+    },
+    
+    addDomLoadEvent: addDomLoadEvent,
+    
+    addLoadEvent: addLoadEvent,
+    
+    getQueryParamValue: function(param) {
+      var q = doc.location.search || doc.location.hash;
+      if (q) {
+        if (/\?/.test(q)) { q = q.split("?")[1]; } // strip question mark
+        if (param == null) {
+          return urlEncodeIfNecessary(q);
+        }
+        var pairs = q.split("&");
+        for (var i = 0; i < pairs.length; i++) {
+          if (pairs[i].substring(0, pairs[i].indexOf("=")) == param) {
+            return urlEncodeIfNecessary(pairs[i].substring((pairs[i].indexOf("=") + 1)));
+          }
+        }
+      }
+      return "";
+    },
+    
+    // For internal usage only
+    expressInstallCallback: function() {
+      if (isExpressInstallActive) {
+        var obj = getElementById(EXPRESS_INSTALL_ID);
+        if (obj && storedAltContent) {
+          obj.parentNode.replaceChild(storedAltContent, obj);
+          if (storedAltContentId) {
+            setVisibility(storedAltContentId, true);
+            if (ua.ie && ua.win) { storedAltContent.style.display = "block"; }
+          }
+          if (storedCallbackFn) { storedCallbackFn(storedCallbackObj); }
+        }
+        isExpressInstallActive = false;
+      } 
+    }
+  };
+}();
+// Copyright: Hiroshi Ichikawa <http://gimite.net/en/>
+// License: New BSD License
+// Reference: http://dev.w3.org/html5/websockets/
+// Reference: http://tools.ietf.org/html/rfc6455
+
+(function() {
+  
+  if (window.WEB_SOCKET_FORCE_FLASH) {
+    // Keeps going.
+  } else if (window.WebSocket) {
+    return;
+  } else if (window.MozWebSocket) {
+    // Firefox.
+    window.WebSocket = MozWebSocket;
+    return;
+  }
+  
+  var logger;
+  if (window.WEB_SOCKET_LOGGER) {
+    logger = WEB_SOCKET_LOGGER;
+  } else if (window.console && window.console.log && window.console.error) {
+    // In some environment, console is defined but console.log or console.error is missing.
+    logger = window.console;
+  } else {
+    logger = {log: function(){ }, error: function(){ }};
+  }
+  
+  // swfobject.hasFlashPlayerVersion("10.0.0") doesn't work with Gnash.
+  if (swfobject.getFlashPlayerVersion().major < 10) {
+    logger.error("Flash Player >= 10.0.0 is required.");
+    return;
+  }
+  if (location.protocol == "file:") {
+    logger.error(
+      "WARNING: web-socket-js doesn't work in file:///... URL " +
+      "unless you set Flash Security Settings properly. " +
+      "Open the page via Web server i.e. http://...");
+  }
+
+  
+  window.WebSocket = function(url, protocols, proxyHost, proxyPort, headers) {
+    var self = this;
+    self.__id = WebSocket.__nextId++;
+    WebSocket.__instances[self.__id] = self;
+    self.readyState = WebSocket.CONNECTING;
+    self.bufferedAmount = 0;
+    self.__events = {};
+    if (!protocols) {
+      protocols = [];
+    } else if (typeof protocols == "string") {
+      protocols = [protocols];
+    }
+    // Uses setTimeout() to make sure __createFlash() runs after the caller sets ws.onopen etc.
+    // Otherwise, when onopen fires immediately, onopen is called before it is set.
+    self.__createTask = setTimeout(function() {
+      WebSocket.__addTask(function() {
+        self.__createTask = null;
+        WebSocket.__flash.create(
+            self.__id, url, protocols, proxyHost || null, proxyPort || 0, headers || null);
+      });
+    }, 0);
+  };
+
+  
+  WebSocket.prototype.send = function(data) {
+    if (this.readyState == WebSocket.CONNECTING) {
+      throw "INVALID_STATE_ERR: Web Socket connection has not been established";
+    }
+    // We use encodeURIComponent() here, because FABridge doesn't work if
+    // the argument includes some characters. We don't use escape() here
+    // because of this:
+    // https://developer.mozilla.org/en/Core_JavaScript_1.5_Guide/Functions#escape_and_unescape_Functions
+    // But it looks decodeURIComponent(encodeURIComponent(s)) doesn't
+    // preserve all Unicode characters either e.g. "\uffff" in Firefox.
+    // Note by wtritch: Hopefully this will not be necessary using ExternalInterface.  Will require
+    // additional testing.
+    var result = WebSocket.__flash.send(this.__id, encodeURIComponent(data));
+    if (result < 0) { // success
+      return true;
+    } else {
+      this.bufferedAmount += result;
+      return false;
+    }
+  };
+
+  
+  WebSocket.prototype.close = function() {
+    if (this.__createTask) {
+      clearTimeout(this.__createTask);
+      this.__createTask = null;
+      this.readyState = WebSocket.CLOSED;
+      return;
+    }
+    if (this.readyState == WebSocket.CLOSED || this.readyState == WebSocket.CLOSING) {
+      return;
+    }
+    this.readyState = WebSocket.CLOSING;
+    WebSocket.__flash.close(this.__id);
+  };
+
+  
+  WebSocket.prototype.addEventListener = function(type, listener, useCapture) {
+    if (!(type in this.__events)) {
+      this.__events[type] = [];
+    }
+    this.__events[type].push(listener);
+  };
+
+  
+  WebSocket.prototype.removeEventListener = function(type, listener, useCapture) {
+    if (!(type in this.__events)) return;
+    var events = this.__events[type];
+    for (var i = events.length - 1; i >= 0; --i) {
+      if (events[i] === listener) {
+        events.splice(i, 1);
+        break;
+      }
+    }
+  };
+
+  
+  WebSocket.prototype.dispatchEvent = function(event) {
+    var events = this.__events[event.type] || [];
+    for (var i = 0; i < events.length; ++i) {
+      events[i](event);
+    }
+    var handler = this["on" + event.type];
+    if (handler) handler.apply(this, [event]);
+  };
+
+  
+  WebSocket.prototype.__handleEvent = function(flashEvent) {
+    
+    if ("readyState" in flashEvent) {
+      this.readyState = flashEvent.readyState;
+    }
+    if ("protocol" in flashEvent) {
+      this.protocol = flashEvent.protocol;
+    }
+    
+    var jsEvent;
+    if (flashEvent.type == "open" || flashEvent.type == "error") {
+      jsEvent = this.__createSimpleEvent(flashEvent.type);
+    } else if (flashEvent.type == "close") {
+      jsEvent = this.__createSimpleEvent("close");
+      jsEvent.wasClean = flashEvent.wasClean ? true : false;
+      jsEvent.code = flashEvent.code;
+      jsEvent.reason = flashEvent.reason;
+    } else if (flashEvent.type == "message") {
+      var data = decodeURIComponent(flashEvent.message);
+      jsEvent = this.__createMessageEvent("message", data);
+    } else {
+      throw "unknown event type: " + flashEvent.type;
+    }
+    
+    this.dispatchEvent(jsEvent);
+    
+  };
+  
+  WebSocket.prototype.__createSimpleEvent = function(type) {
+    if (document.createEvent && window.Event) {
+      var event = document.createEvent("Event");
+      event.initEvent(type, false, false);
+      return event;
+    } else {
+      return {type: type, bubbles: false, cancelable: false};
+    }
+  };
+  
+  WebSocket.prototype.__createMessageEvent = function(type, data) {
+    if (document.createEvent && window.MessageEvent && !window.opera) {
+      var event = document.createEvent("MessageEvent");
+      event.initMessageEvent("message", false, false, data, null, null, window, null);
+      return event;
+    } else {
+      // IE and Opera, the latter one truncates the data parameter after any 0x00 bytes.
+      return {type: type, data: data, bubbles: false, cancelable: false};
+    }
+  };
+  
+  
+  WebSocket.CONNECTING = 0;
+  WebSocket.OPEN = 1;
+  WebSocket.CLOSING = 2;
+  WebSocket.CLOSED = 3;
+
+  // Field to check implementation of WebSocket.
+  WebSocket.__isFlashImplementation = true;
+  WebSocket.__initialized = false;
+  WebSocket.__flash = null;
+  WebSocket.__instances = {};
+  WebSocket.__tasks = [];
+  WebSocket.__nextId = 0;
+  
+  
+  WebSocket.loadFlashPolicyFile = function(url){
+    WebSocket.__addTask(function() {
+      WebSocket.__flash.loadManualPolicyFile(url);
+    });
+  };
+
+  
+  WebSocket.__initialize = function() {
+    
+    if (WebSocket.__initialized) return;
+    WebSocket.__initialized = true;
+    
+    if (WebSocket.__swfLocation) {
+      // For backword compatibility.
+      window.WEB_SOCKET_SWF_LOCATION = WebSocket.__swfLocation;
+    }
+    if (!window.WEB_SOCKET_SWF_LOCATION) {
+      logger.error("[WebSocket] set WEB_SOCKET_SWF_LOCATION to location of WebSocketMain.swf");
+      return;
+    }
+    if (!window.WEB_SOCKET_SUPPRESS_CROSS_DOMAIN_SWF_ERROR &&
+        !WEB_SOCKET_SWF_LOCATION.match(/(^|\/)WebSocketMainInsecure\.swf(\?.*)?$/) &&
+        WEB_SOCKET_SWF_LOCATION.match(/^\w+:\/\/([^\/]+)/)) {
+      var swfHost = RegExp.$1;
+      if (location.host != swfHost) {
+        logger.error(
+            "[WebSocket] You must host HTML and WebSocketMain.swf in the same host " +
+            "('" + location.host + "' != '" + swfHost + "'). " +
+            "See also 'How to host HTML file and SWF file in different domains' section " +
+            "in README.md. If you use WebSocketMainInsecure.swf, you can suppress this message " +
+            "by WEB_SOCKET_SUPPRESS_CROSS_DOMAIN_SWF_ERROR = true;");
+      }
+    }
+    var container = document.createElement("div");
+    container.id = "webSocketContainer";
+    // Hides Flash box. We cannot use display: none or visibility: hidden because it prevents
+    // Flash from loading at least in IE. So we move it out of the screen at (-100, -100).
+    // But this even doesn't work with Flash Lite (e.g. in Droid Incredible). So with Flash
+    // Lite, we put it at (0, 0). This shows 1x1 box visible at left-top corner but this is
+    // the best we can do as far as we know now.
+    container.style.position = "absolute";
+    if (WebSocket.__isFlashLite()) {
+      container.style.left = "0px";
+      container.style.top = "0px";
+    } else {
+      container.style.left = "-100px";
+      container.style.top = "-100px";
+    }
+    var holder = document.createElement("div");
+    holder.id = "webSocketFlash";
+    container.appendChild(holder);
+    document.body.appendChild(container);
+    // See this article for hasPriority:
+    // http://help.adobe.com/en_US/as3/mobile/WS4bebcd66a74275c36cfb8137124318eebc6-7ffd.html
+    swfobject.embedSWF(
+      WEB_SOCKET_SWF_LOCATION,
+      "webSocketFlash",
+      "1" ,
+      "1" ,
+      "10.0.0" ,
+      null,
+      null,
+      {hasPriority: true, swliveconnect : true, allowScriptAccess: "always"},
+      null,
+      function(e) {
+        if (!e.success) {
+          logger.error("[WebSocket] swfobject.embedSWF failed");
+        }
+      }
+    );
+    
+  };
+  
+  
+  WebSocket.__onFlashInitialized = function() {
+    // We need to set a timeout here to avoid round-trip calls
+    // to flash during the initialization process.
+    setTimeout(function() {
+      WebSocket.__flash = document.getElementById("webSocketFlash");
+      WebSocket.__flash.setCallerUrl(location.href);
+      WebSocket.__flash.setDebug(!!window.WEB_SOCKET_DEBUG);
+      for (var i = 0; i < WebSocket.__tasks.length; ++i) {
+        WebSocket.__tasks[i]();
+      }
+      WebSocket.__tasks = [];
+    }, 0);
+  };
+  
+  
+  WebSocket.__onFlashEvent = function() {
+    setTimeout(function() {
+      try {
+        // Gets events using receiveEvents() instead of getting it from event object
+        // of Flash event. This is to make sure to keep message order.
+        // It seems sometimes Flash events don't arrive in the same order as they are sent.
+        var events = WebSocket.__flash.receiveEvents();
+        for (var i = 0; i < events.length; ++i) {
+          WebSocket.__instances[events[i].webSocketId].__handleEvent(events[i]);
+        }
+      } catch (e) {
+        logger.error(e);
+      }
+    }, 0);
+    return true;
+  };
+  
+  // Called by Flash.
+  WebSocket.__log = function(message) {
+    logger.log(decodeURIComponent(message));
+  };
+  
+  // Called by Flash.
+  WebSocket.__error = function(message) {
+    logger.error(decodeURIComponent(message));
+  };
+  
+  WebSocket.__addTask = function(task) {
+    if (WebSocket.__flash) {
+      task();
+    } else {
+      WebSocket.__tasks.push(task);
+    }
+  };
+  
+  
+  WebSocket.__isFlashLite = function() {
+    if (!window.navigator || !window.navigator.mimeTypes) {
+      return false;
+    }
+    var mimeType = window.navigator.mimeTypes["application/x-shockwave-flash"];
+    if (!mimeType || !mimeType.enabledPlugin || !mimeType.enabledPlugin.filename) {
+      return false;
+    }
+    return mimeType.enabledPlugin.filename.match(/flashlite/i) ? true : false;
+  };
+  
+  if (!window.WEB_SOCKET_DISABLE_AUTO_INITIALIZATION) {
+    // NOTE:
+    //   This fires immediately if web_socket.js is dynamically loaded after
+    //   the document is loaded.
+    swfobject.addDomLoadEvent(function() {
+      WebSocket.__initialize();
+    });
+  }
+  
+})();
+
+
 document.createElement('tr8n');
 document.createElement('tml');
 
@@ -11968,71 +13044,103 @@ var Tr8n = {
     var local_domain = document.location.href.split("/")[2];
     var origin_domain = origin.split("/")[2];
 
+    if (typeof msg != 'object') {
+        alert("Invalid message: " + msg + " to origin: " + origin);
+        return;
+    }
+
+    msg['source'] = 'tr8n';
+    msg_json = JSON.stringify(msg)
+
     if (local_domain == origin_domain) {
-      window.parent.Tr8n.onMessage(msg);
+      if (msg['subject'] == 'proxy') { // for now same origin proxy messages should be reloaded
+        window.parent.location.reload();
+      } else {
+        window.parent.Tr8n.onMessage(msg_json);
+      }
     } else {
       if (parent.postMessage) {
-        parent.postMessage(msg, origin);
+        parent.postMessage(msg_json, origin);
       } else {
-        alert("Failed to deliver a tr8n message: " + msg + " to origin: " + origin);
+        alert("Failed to deliver a tr8n message: " + msg_json + " to origin: " + origin);
       }       
     }
   },
 
   onMessage:function(event) {
-    var msg = '';
+    var msg = null;
     if (typeof event == 'string') {
       msg = event;
     } else {
       msg = event.data;
     }
 
-    var elements = msg.split(':');
-    // if this is not a tr8n message, ignore it
-    if (elements[0] != 'tr8n') return;
+    // not tr8n - get out
+    if (msg.indexOf('tr8n') == -1) return;
 
-    if (elements[1] == 'reload') {
-      window.location.reload();
+    try {
+      msg = JSON.parse(msg)
+    } catch(e) {
+      Tr8n.log("Failed to parse message: " + msg)
       return;
     }
 
-    if (elements[1] == 'cookie') {
-      document.cookie = escape(elements[2]) + "=" + escape(elements[3]) + "; path=/";
-      return;
+    var subject = msg['subject'];
+    var action = msg['action'];
+
+    if (subject == 'window') {
+      if (action == 'reload') {
+        window.location.reload();
+        return;
+      }
     }
 
-    if (elements[1] == 'translation') {
-      if (elements[2] == 'report') {
+    if (subject == 'proxy') {
+      if (action == 'update_translations') {
+        Tr8n.SDK.Proxy.updateMissingTranslationKeys(msg['translations']);
+        return;
+      }
+    }
+
+    if (subject == 'cookie') {
+      if (action == 'set') {
+        document.cookie = escape(msg['name']) + "=" + escape(msg['value']) + "; path=/";
+        return;
+      }
+    }
+
+    if (subject == 'translation') {
+      if (action == 'report') {
         Tr8n.UI.Translator.hide();
-        Tr8n.UI.Lightbox.show('/tr8n/translator/lb_report?translation_id=' + elements[3], {width:600, height:360});
+        Tr8n.UI.Lightbox.show('/tr8n/translator/lb_report?translation_id=' + msg['id'], {width:600, height:360});
         return;
       } 
     }
 
-    if (elements[1] == 'language_selector') {
-      if (elements[2] == 'change') { Tr8n.UI.LanguageSelector.change(elements[3]); return; } 
-      if (elements[2] == 'toggle_inline_translations') { Tr8n.UI.LanguageSelector.toggleInlineTranslations(); return; } 
+    if (subject == 'language_selector') {
+      if (action == 'change') { Tr8n.UI.LanguageSelector.change(msg['locale']); return; } 
+      if (action == 'toggle_inline_translations') { Tr8n.UI.LanguageSelector.toggleInlineTranslations(); return; } 
     }
 
-    if (elements[1] == 'language_case_map') {
-      if (elements[2] == 'report') {
+    if (subject == 'language_case_map') {
+      if (action == 'report') {
         Tr8n.UI.Translator.hide();
-        Tr8n.UI.Lightbox.show('/tr8n/translator/lb_report?language_case_map_id=' + elements[3], {width:600, height:360});
+        Tr8n.UI.Lightbox.show('/tr8n/translator/lb_report?language_case_map_id=' + msg['id'], {width:600, height:360});
         return;
       } 
     }
 
-    if (elements[1] == 'lightbox') {
-      if (elements[2] == 'resize') { Tr8n.UI.Lightbox.resize(elements[3]); return; } 
-      if (elements[2] == 'hide') { Tr8n.UI.Lightbox.hide(); return;}
+    if (subject == 'lightbox') {
+      if (action == 'resize') { Tr8n.UI.Lightbox.resize(msg['height']); return; } 
+      if (action == 'hide') { Tr8n.UI.Lightbox.hide(); return;}
     }
 
-    if (elements[1] == 'translator') {
-      if (elements[2] == 'resize') { Tr8n.UI.Translator.resize(elements[3]); return; } 
-      if (elements[2] == 'hide') { Tr8n.UI.Translator.hide(); return; }
+    if (subject == 'translator') {
+      if (action == 'resize') { Tr8n.UI.Translator.resize(msg['height']); return; } 
+      if (action == 'hide') { Tr8n.UI.Translator.hide(); return; }
     } 
 
-    alert("Unknown message: " + msg);
+    alert("Unknown message: " + subject + '.' + action);
   }
 
 };
@@ -13264,7 +14372,8 @@ Tr8n.SDK.Proxy = {
   batch_size: 5,
   language: null,
   translations: {},
-  missing_translation_keys: {},
+  translation_keys: {},
+  missing_translation_keys: [],
 
   init: function(opts) {
     Tr8n.log("Initializing Client SDK...");
@@ -13366,10 +14475,6 @@ Tr8n.SDK.Proxy = {
     }
 
     var self = this;
-    
-    // Tr8n.log("Before fetching translations " + this.options['fetch_translations_on_init']);
-
-    // Optionally, fetch translations from the server
     if (this.options['fetch_translations_on_init']) {
       Tr8n.log("Fetching translations from the server...");
 
@@ -13382,15 +14487,21 @@ Tr8n.SDK.Proxy = {
       });
     }
   },
-    
-  registerMissingTranslationKey: function(translation_key, token_values, options) {
-    if (!this.missing_translation_keys[translation_key.key]) {
+
+  registerTranslationKey: function(translation_key, token_values, options) {
+    if (!this.translation_keys[translation_key.key]) {
       // It is possible to have multiple different elements with the same key, but different tokens
-      this.missing_translation_keys[translation_key.key] = {translation_key:translation_key, tr8n_elements:[]};
+      this.translation_keys[translation_key.key] = {translation_key:translation_key, tr8n_elements:[]};
     }
     var tr8n_element = {tr8n_element_id:translation_key.element_id, token_values:token_values, options:options};
     // Tr8n.log("Registering missing key data: " + JSON.stringify(tr8n_element));
-    this.missing_translation_keys[translation_key.key].tr8n_elements.push(tr8n_element);
+    this.translation_keys[translation_key.key].tr8n_elements.push(tr8n_element);
+  },
+
+  registerMissingTranslationKey: function(missing_key) {
+    var index = this.missing_translation_keys.indexOf(missing_key.key);
+    if (index != -1) return;
+    this.missing_translation_keys.push(missing_key.key);
   },
 
   detectLocale: function(label) {
@@ -13424,16 +14535,16 @@ Tr8n.SDK.Proxy = {
     this.scheduler_enabled = false; // halt the scheduler
 
     var phrases = [];
+    var keys = this.missing_translation_keys;
 
-    var keys = Object.keys(this.missing_translation_keys);
     if (keys.length == 0) {
       this.scheduler_enabled = true;
       return;
     }
 
     for (var i=0; i<keys.length; i++) {
-      if (i>30) break; // lets do at most 50 at a time
-      var missing_key = this.missing_translation_keys[keys[i]].translation_key;
+      if (i>=50) break; 
+      var missing_key = this.translation_keys[keys[i]].translation_key;
 
       var locale = missing_key.locale || this.detectLocale(missing_key.label);
       var phrase = {label: missing_key.label, locale: locale};
@@ -13465,31 +14576,35 @@ Tr8n.SDK.Proxy = {
     // Tr8n.log("Received " + translations.length + " translation keys...");
 
     for (i=0; i<translations.length; i++) {
-       var translation_key_data = translations[i];
+      var translation_key_data = translations[i];
 
-       // Tr8n.log("Updating translation key " + JSON.stringify(translation_key_data));
-       this.translations[translation_key_data.key] = translation_key_data;
+      // Tr8n.log("Updating translation key " + JSON.stringify(translation_key_data));
+      this.translations[translation_key_data.key] = translation_key_data;
 
-       var missing_key_data = this.missing_translation_keys[translation_key_data.key];
-       if (!missing_key_data) continue; // why?
+      var missing_key_data = this.translation_keys[translation_key_data.key];
+      if (!missing_key_data) continue; // why?
 
-       var missing_key = missing_key_data.translation_key;
-       var tr8n_elements = missing_key_data.tr8n_elements;
-       
-       for (j=0; j<tr8n_elements.length; j++) {
-          var tr8n_element_data = tr8n_elements[j];
-          var tr8n_element = Tr8n.element(tr8n_element_data.tr8n_element_id);
-          if (!tr8n_element) continue; 
-          missing_key.original = translation_key_data.original;
-          tr8n_element.setAttribute('translation_key_id', translation_key_data['id']);
-           // Tr8n.log(missing_key_data.translation_key.decorationClasses());
-          tr8n_element.setAttribute('class', missing_key_data.translation_key.decorationClasses());
-          tr8n_element.innerHTML = missing_key.translate(this.language, tr8n_element_data.token_values, {'skip_decorations': true});
-       }
-       delete this.missing_translation_keys[translation_key_data.key];
+      var missing_key = missing_key_data.translation_key;
+      var tr8n_elements = missing_key_data.tr8n_elements;
+
+      for (j=0; j<tr8n_elements.length; j++) {
+        var tr8n_element_data = tr8n_elements[j];
+        var tr8n_element = Tr8n.element(tr8n_element_data.tr8n_element_id);
+        if (!tr8n_element) continue; 
+
+        missing_key.original = translation_key_data.original;
+        tr8n_element.setAttribute('translation_key_id', translation_key_data['id']);
+        tr8n_element.setAttribute('class', missing_key_data.translation_key.decorationClasses());
+        tr8n_element.innerHTML = missing_key.translate(this.language, tr8n_element_data.token_values, {'skip_decorations': true, 'skip_registration': true});
+      }
+
+      var index = this.missing_translation_keys.indexOf(missing_key.key);
+      if (index != -1) {
+        this.missing_translation_keys.splice(index, 1);
+      }
     }
 
-    var keys = Object.keys(this.missing_translation_keys);
+    var keys = this.missing_translation_keys;
     if (keys.length > 0) {
       this.submitMissingTranslationKeys();  
     } else {
@@ -13615,6 +14730,9 @@ Tr8n.SDK.Proxy = {
       }
     }
 
+    var keys = Object.keys(this.translation_keys);
+    Tr8n.log("Registered " + keys.length + " translation keys");
+
     this.submitMissingTranslationKeys();
   },
 
@@ -13622,7 +14740,8 @@ Tr8n.SDK.Proxy = {
     var config = {
       settings: this.options,
       translations: this.translations,
-      translation_queue: this.missing_translation_keys
+      translation_keys: this.translation_keys,
+      unregistered_translation_keys: this.missing_translation_keys
     };
     Tr8n.UI.Lightbox.showHTML(Tr8n.Logger.objectToHtml(config), {width:700, height:600});
   },
@@ -13741,6 +14860,10 @@ Tr8n.SDK.TranslationKey.prototype = {
       return '';
     }
     
+    if (!options['skip_registration']) {
+      Tr8n.SDK.Proxy.registerTranslationKey(this, token_values, options);
+    }
+
     var translations = Tr8n.SDK.Proxy.translations;
     var translation_key = translations[this.key];
 
@@ -13759,13 +14882,9 @@ Tr8n.SDK.TranslationKey.prototype = {
         // Tr8n.log("No valid match found, using default language");      
         return this.substituteTokens(this.label, token_values, options);
       }
-      
-    } else {
-      // Tr8n.log("Translation not found, using default language");      
     }
 
-    Tr8n.SDK.Proxy.registerMissingTranslationKey(this, token_values, options);
-    // Tr8n.log('No translation found. Using default...');
+    Tr8n.SDK.Proxy.registerMissingTranslationKey(this);
     return this.substituteTokens(this.label, token_values, options);    
   },
   

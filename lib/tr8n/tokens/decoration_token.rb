@@ -99,7 +99,7 @@ module Tr8n
         default_decoration
       end  
       
-      def substitute(label, values = {}, options = {}, language = Tr8n::Config.current_language)
+      def substitute(translation_key, label, values = {}, options = {}, language = Tr8n::Config.current_language)
         method = values[name_key]
         substitution_value = ""
         

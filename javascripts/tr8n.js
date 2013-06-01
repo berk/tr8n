@@ -106,71 +106,103 @@ var Tr8n = {
     var local_domain = document.location.href.split("/")[2];
     var origin_domain = origin.split("/")[2];
 
+    if (typeof msg != 'object') {
+        alert("Invalid message: " + msg + " to origin: " + origin);
+        return;
+    }
+
+    msg['source'] = 'tr8n';
+    msg_json = JSON.stringify(msg)
+
     if (local_domain == origin_domain) {
-      window.parent.Tr8n.onMessage(msg);
+      if (msg['subject'] == 'proxy') { // for now same origin proxy messages should be reloaded
+        window.parent.location.reload();
+      } else {
+        window.parent.Tr8n.onMessage(msg_json);
+      }
     } else {
       if (parent.postMessage) {
-        parent.postMessage(msg, origin);
+        parent.postMessage(msg_json, origin);
       } else {
-        alert("Failed to deliver a tr8n message: " + msg + " to origin: " + origin);
+        alert("Failed to deliver a tr8n message: " + msg_json + " to origin: " + origin);
       }       
     }
   },
 
   onMessage:function(event) {
-    var msg = '';
+    var msg = null;
     if (typeof event == 'string') {
       msg = event;
     } else {
       msg = event.data;
     }
 
-    var elements = msg.split(':');
-    // if this is not a tr8n message, ignore it
-    if (elements[0] != 'tr8n') return;
+    // not tr8n - get out
+    if (msg.indexOf('tr8n') == -1) return;
 
-    if (elements[1] == 'reload') {
-      window.location.reload();
+    try {
+      msg = JSON.parse(msg)
+    } catch(e) {
+      Tr8n.log("Failed to parse message: " + msg)
       return;
     }
 
-    if (elements[1] == 'cookie') {
-      document.cookie = escape(elements[2]) + "=" + escape(elements[3]) + "; path=/";
-      return;
+    var subject = msg['subject'];
+    var action = msg['action'];
+
+    if (subject == 'window') {
+      if (action == 'reload') {
+        window.location.reload();
+        return;
+      }
     }
 
-    if (elements[1] == 'translation') {
-      if (elements[2] == 'report') {
+    if (subject == 'proxy') {
+      if (action == 'update_translations') {
+        Tr8n.SDK.Proxy.updateMissingTranslationKeys(msg['translations']);
+        return;
+      }
+    }
+
+    if (subject == 'cookie') {
+      if (action == 'set') {
+        document.cookie = escape(msg['name']) + "=" + escape(msg['value']) + "; path=/";
+        return;
+      }
+    }
+
+    if (subject == 'translation') {
+      if (action == 'report') {
         Tr8n.UI.Translator.hide();
-        Tr8n.UI.Lightbox.show('/tr8n/translator/lb_report?translation_id=' + elements[3], {width:600, height:360});
+        Tr8n.UI.Lightbox.show('/tr8n/translator/lb_report?translation_id=' + msg['id'], {width:600, height:360});
         return;
       } 
     }
 
-    if (elements[1] == 'language_selector') {
-      if (elements[2] == 'change') { Tr8n.UI.LanguageSelector.change(elements[3]); return; } 
-      if (elements[2] == 'toggle_inline_translations') { Tr8n.UI.LanguageSelector.toggleInlineTranslations(); return; } 
+    if (subject == 'language_selector') {
+      if (action == 'change') { Tr8n.UI.LanguageSelector.change(msg['locale']); return; } 
+      if (action == 'toggle_inline_translations') { Tr8n.UI.LanguageSelector.toggleInlineTranslations(); return; } 
     }
 
-    if (elements[1] == 'language_case_map') {
-      if (elements[2] == 'report') {
+    if (subject == 'language_case_map') {
+      if (action == 'report') {
         Tr8n.UI.Translator.hide();
-        Tr8n.UI.Lightbox.show('/tr8n/translator/lb_report?language_case_map_id=' + elements[3], {width:600, height:360});
+        Tr8n.UI.Lightbox.show('/tr8n/translator/lb_report?language_case_map_id=' + msg['id'], {width:600, height:360});
         return;
       } 
     }
 
-    if (elements[1] == 'lightbox') {
-      if (elements[2] == 'resize') { Tr8n.UI.Lightbox.resize(elements[3]); return; } 
-      if (elements[2] == 'hide') { Tr8n.UI.Lightbox.hide(); return;}
+    if (subject == 'lightbox') {
+      if (action == 'resize') { Tr8n.UI.Lightbox.resize(msg['height']); return; } 
+      if (action == 'hide') { Tr8n.UI.Lightbox.hide(); return;}
     }
 
-    if (elements[1] == 'translator') {
-      if (elements[2] == 'resize') { Tr8n.UI.Translator.resize(elements[3]); return; } 
-      if (elements[2] == 'hide') { Tr8n.UI.Translator.hide(); return; }
+    if (subject == 'translator') {
+      if (action == 'resize') { Tr8n.UI.Translator.resize(msg['height']); return; } 
+      if (action == 'hide') { Tr8n.UI.Translator.hide(); return; }
     } 
 
-    alert("Unknown message: " + msg);
+    alert("Unknown message: " + subject + '.' + action);
   }
 
 };

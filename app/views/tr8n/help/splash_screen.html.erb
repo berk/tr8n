@@ -5,7 +5,7 @@
 		<script type="text/javascript">
 		  function resizeFrame() {
 		    var height = document.body.scrollHeight;
-				Tr8n.postMessage('tr8n:lightbox:resize:' + height, '<%=params[:origin]%>');
+				Tr8n.postMessage({'subject': 'lightbox', 'action': 'resize', 'height': height}, '<%=params[:origin]%>');
 		  }
 		</script>
   </head>	

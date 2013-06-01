@@ -45,11 +45,13 @@ class CreateTr8nTables < ActiveRecord::Migration
       t.integer :language_id, :null => false
       t.integer :translator_id
       t.string  :type
+      t.string  :keyword
       t.text    :definition
       t.timestamps
     end
     add_index :tr8n_language_rules, [:language_id], :name => :tr8n_lr_l
     add_index :tr8n_language_rules, [:language_id, :translator_id], :name => :tr8n_lr_lt
+    add_index :tr8n_language_rules, [:type, :language_id, :keyword], :name => :tr8n_lr_tlk
 
     create_table :tr8n_language_cases do |t|
       t.integer :language_id, :null => false

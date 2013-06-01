@@ -40,7 +40,7 @@
   									 
   									<ol class="tr8n_txtl" style="font-size: 12px; <%=tr8n_style_directional_attribute_tag('padding','left', '15px')%>; margin:1em; list-style-type:square; margin-top:0px;">
     									<% @rules[dependency].each do |rule| %> 
-    				            <li class="tr8n_txtl" style=""><%=rule.description %></li>
+    				            <li class="tr8n_txtl" style=""><%= "<strong>#{rule.keyword}:</strong>".html_safe unless rule.keyword.blank? %> <%=rule.description %></li>
     									<% end %>	
   			            </ol>
                   </div>  

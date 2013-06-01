@@ -149,6 +149,7 @@ class Tr8n::TranslationKey < ActiveRecord::Base
   delegate :decoration_tokens, :decoration_tokens?, :to => :tokenized_label
   delegate :translation_tokens, :translation_tokens?, :to => :tokenized_label
   delegate :sanitized_label, :tokenless_label, :suggestion_tokens, :words, :to => :tokenized_label
+  delegate :implied_tokens, :implied_tokens?, :to => :tokenized_label
 
   # returns only the tokens that depend on one or more rules of the language, if any defined for the language
   def language_rules_dependant_tokens(language = Tr8n::Config.current_language)
@@ -477,13 +478,13 @@ class Tr8n::TranslationKey < ActiveRecord::Base
     # substitute all data tokens
     Tr8n::TokenizedLabel.new(processed_label).data_tokens.each do |token|
       next unless allowed_token?(token)
-      processed_label = token.substitute(processed_label, token_values, options, language) 
+      processed_label = token.substitute(self, processed_label, token_values, options, language) 
     end
 
     # substitute all decoration tokens
     Tr8n::TokenizedLabel.new(processed_label).decoration_tokens.each do |token|
       next unless allowed_token?(token)
-      processed_label = token.substitute(processed_label, token_values, options, language) 
+      processed_label = token.substitute(self, processed_label, token_values, options, language) 
     end
     
     processed_label

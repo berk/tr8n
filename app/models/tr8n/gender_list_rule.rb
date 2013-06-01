@@ -42,6 +42,10 @@
 
 class Tr8n::GenderListRule < Tr8n::LanguageRule
   
+  def self.config
+    Tr8n::Config.rules_engine[:gender_list_rule]
+  end
+
   def self.description
     "token object may be a list, which"
   end
@@ -55,7 +59,7 @@ class Tr8n::GenderListRule < Tr8n::LanguageRule
   end
 
   def self.suffixes
-    Tr8n::Config.rules_engine[:gender_list_rule][:token_suffixes]
+    config[:token_suffixes]
   end
 
   def self.default_rules_for(language = Tr8n::Config.current_language)
@@ -81,8 +85,8 @@ class Tr8n::GenderListRule < Tr8n::LanguageRule
   end
   
   def self.list_size_token_value(token)
-    return nil unless token and token.respond_to?(Tr8n::Config.rules_engine[:gender_list_rule][:object_method])
-    token.send(Tr8n::Config.rules_engine[:gender_list_rule][:object_method])
+    return nil unless token and token.respond_to?(config[:object_method])
+    token.send(config[:object_method])
   end
 
   def list_size_token_value(token)
@@ -111,50 +115,30 @@ class Tr8n::GenderListRule < Tr8n::LanguageRule
     self.class.male_female_occupants(arr)
   end
   
-  # params: [object, one element male, one element female, at least two elements]
-  # or: [object, one element, at least two elements]
-
-  # {user_list | one element male, one element female, at least two elements}
-  # {user_list | one element, at least two elements}
-  def self.transform(*args)
-    unless [3, 4].include?(args.size)
-      raise Tr8n::Exception.new("Invalid transform arguments")
-    end
-    
-    object = args[0]
-    list_size = list_size_token_value(object)
-
-    unless list_size
-      raise Tr8n::Exception.new("Token #{object.class.name} does not respond to #{Tr8n::Config.rules_engine[:gender_list_rule][:object_method]}")
-    end
-    
-    list_size = list_size.to_i
-    
-    if args.size == 3
-      return args[1] if list_size == 1
-      return args[2]
-    end
-    
-    if list_size == 1
-      list_object = object.first
-      list_object_gender = Tr8n::GenderRule.gender_token_value(list_object)
-      if list_object_gender == Tr8n::GenderRule.gender_object_value_for("male")
-        return args[1]
-      elsif list_object_gender == Tr8n::GenderRule.gender_object_value_for("female")
-        return args[2]
+  # FORM: [one element male, one element female, at least two elements]
+  # or: [one element, at least two elements]
+  # {actors:gender_list|| likes, like} this story
+  def self.transform_params_to_options(params)
+    options = {}
+    if params[0].index(':')
+      params.each do |arg|
+        parts = arg.split(':')
+        options[parts.first.strip.to_sym] = parts.last.strip
       end
+    else # default falback to {|| male, female} or {|| male, female, unknown} 
+      if params.size == 2 # doesn't matter
+        options[:one] = params[0]
+        options[:other] = params[1]
+      else
+        raise Tr8n::Exception.new("Invalid number of parameters in the transform token #{token}")
+      end  
     end
-    
-    args[3]
-  end  
-  
-  # params: [one element, at least two elements]
-  def self.default_transform(*args)
-    unless [2, 3].include?(args.size)
-      raise Tr8n::Exception.new("Invalid transform arguments for list token")
-    end
-    
-    args.last
+    options    
+  end
+
+  def self.default_transform(token, params)
+    options = transform_params_to_options(params)
+    options[:many] || options[:other]
   end  
   
   def evaluate(token)

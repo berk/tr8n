@@ -39,7 +39,7 @@
           <% if notification.language %>
             <%= tr8n_language_flag_tag(notification.language) %> &nbsp;
           <% end %>
-          <%= tr8n_when_string_tag(notification.created_at) %>
+          <%= tr8n_when_string_tag(notification.created_at).html_safe %>
         </div>
       </td>
     </tr>

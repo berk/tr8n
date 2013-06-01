@@ -57,6 +57,7 @@ module Tr8n
         old_rule_ids = tr8n_current_language.rules.collect{|rule| rule.id}
         parse_language_rules.each do |rule|
           rule.language = tr8n_current_language
+          rule.keyword = rule[:keyword]
           rule.save_with_log!(tr8n_current_translator)
           old_rule_ids.delete(rule.id)
         end
@@ -286,13 +287,21 @@ module Tr8n
 
     # inline translator popup window as well as translation backend method
     def translator
-      if params[:translation_key_id]
-        @translation_key = Tr8n::TranslationKey.find_by_id(params[:translation_key_id].to_i)
+      @translation_key = Tr8n::TranslationKey.find_by_id(params[:translation_key_id])
+      @mode = params[:mode]
+
+      if @mode == 'done'
+        @translations = @translation_key.translate(tr8n_current_language, {}, {:api => :translate})
+        @translations = [@translations] unless @translations.is_a?(Array)
+      elsif @mode == 'rules' 
+        @permutations = Tr8n::Translation.where("id in (?)", params[:ids].split(',')).all if params[:ids]
+        @permutations ||= []
         @translations = @translation_key.inline_translations_for(tr8n_current_language)
         @translation = Tr8n::Translation.default_translation(@translation_key, tr8n_current_language, tr8n_current_translator)
-        @mode = params[:mode] || (@translations.empty? ? 'submit' : 'votes')
-      else  
-        @mode = 'done'
+      else
+        @translations = @translation_key.inline_translations_for(tr8n_current_language)
+        @translation = Tr8n::Translation.default_translation(@translation_key, tr8n_current_language, tr8n_current_translator)
+        @mode ||= (@translations.empty? ? 'submit' : 'votes')
       end
       render(:layout => false)
     end
@@ -338,12 +347,14 @@ module Tr8n
           end
   
           rule_id = rule_params[:id]
+          keyword = rule_params[:keyword]
         
           if rule_id.blank?
-            rulz << cls.new(:definition => rule_definition)
+            rulz << cls.new(:keyword => keyword, :definition => rule_definition)
           else
             rule = cls.find_by_id(rule_id)
             rule = cls.new unless rule
+            rule.keyword = keyword
             rule.definition = rule_definition
             rulz << rule
           end

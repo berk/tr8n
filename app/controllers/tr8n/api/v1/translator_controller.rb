@@ -38,7 +38,7 @@ class Tr8n::Api::V1::TranslatorController < Tr8n::Api::V1::BaseController
   end
 
   def authorize
-    ensure_get
+    ensure_post
 
     # ensure that there is a way to authenticate the user in the container application
     user = Tr8n::Config.user_class_name.constantize.authenticate(params[:email], params[:password])

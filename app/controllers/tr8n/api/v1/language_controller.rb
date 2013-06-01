@@ -36,6 +36,10 @@ class Tr8n::Api::V1::LanguageController < Tr8n::Api::V1::BaseController
       return render_error("Unknown language locale")
     end
 
+    if params[:with_definition]
+      return render_response(lang.to_api_hash(:definition => true))
+    end
+
     render_response(lang)
   end
 

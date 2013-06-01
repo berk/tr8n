@@ -399,9 +399,8 @@ class Tr8n::Language < ActiveRecord::Base
     super || Tr8n::Config.translation_threshold
   end
 
-  def to_api_hash
-    {
-      :id => self.id,
+  def to_api_hash(opts = {})
+    hash = {
       :locale => self.locale,  
       :name => self.full_name, 
       :english_name => self.english_name, 
@@ -412,6 +411,23 @@ class Tr8n::Language < ActiveRecord::Base
       :facebook_key => self.facebook_key,
       :myheritage_key => self.myheritage_key,
      }
+
+    if opts[:definition]
+      hash[:curse_words] = curse_words
+      hash[:fallback] = fallback_language.locale if fallback_language
+
+      hash[:context_rules] = []
+      Tr8n::Config.language_rule_classes.each do |rule_class|
+        hash[:context_rules] << rule_class.to_api_hash(:language => self)
+      end
+
+      hash[:language_cases] = []
+      Tr8n::LanguageCase.where(:language_id => self.id).each do |lc|
+        hash[:language_cases] << lc.to_api_hash(:rules => true)
+      end
+
+    end
+    hash
   end
 
 end

@@ -210,4 +210,23 @@ class Tr8n::LanguageCase < ActiveRecord::Base
     Tr8n::Cache.delete(language_case_rules_cache_key) 
   end
 
+  def to_api_hash(opts = {})
+    hash = {
+      :keyword => keyword,
+      :latin_name => latin_name,
+      :native_name => native_name,
+      :description => description,
+      :application => application,
+    }
+
+    if opts[:rules]
+      hash[:rules] = []
+      language_case_rules.each do |lcr|
+        hash[:rules] << lcr.to_api_hash
+      end
+    end
+
+    hash
+  end
+
 end

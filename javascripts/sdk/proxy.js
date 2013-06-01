@@ -100,7 +100,8 @@ Tr8n.SDK.Proxy = {
   batch_size: 5,
   language: null,
   translations: {},
-  missing_translation_keys: {},
+  translation_keys: {},
+  missing_translation_keys: [],
 
   init: function(opts) {
     Tr8n.log("Initializing Client SDK...");
@@ -202,10 +203,6 @@ Tr8n.SDK.Proxy = {
     }
 
     var self = this;
-    
-    // Tr8n.log("Before fetching translations " + this.options['fetch_translations_on_init']);
-
-    // Optionally, fetch translations from the server
     if (this.options['fetch_translations_on_init']) {
       Tr8n.log("Fetching translations from the server...");
 
@@ -218,15 +215,21 @@ Tr8n.SDK.Proxy = {
       });
     }
   },
-    
-  registerMissingTranslationKey: function(translation_key, token_values, options) {
-    if (!this.missing_translation_keys[translation_key.key]) {
+
+  registerTranslationKey: function(translation_key, token_values, options) {
+    if (!this.translation_keys[translation_key.key]) {
       // It is possible to have multiple different elements with the same key, but different tokens
-      this.missing_translation_keys[translation_key.key] = {translation_key:translation_key, tr8n_elements:[]};
+      this.translation_keys[translation_key.key] = {translation_key:translation_key, tr8n_elements:[]};
     }
     var tr8n_element = {tr8n_element_id:translation_key.element_id, token_values:token_values, options:options};
     // Tr8n.log("Registering missing key data: " + JSON.stringify(tr8n_element));
-    this.missing_translation_keys[translation_key.key].tr8n_elements.push(tr8n_element);
+    this.translation_keys[translation_key.key].tr8n_elements.push(tr8n_element);
+  },
+
+  registerMissingTranslationKey: function(missing_key) {
+    var index = this.missing_translation_keys.indexOf(missing_key.key);
+    if (index != -1) return;
+    this.missing_translation_keys.push(missing_key.key);
   },
 
   detectLocale: function(label) {
@@ -260,16 +263,16 @@ Tr8n.SDK.Proxy = {
     this.scheduler_enabled = false; // halt the scheduler
 
     var phrases = [];
+    var keys = this.missing_translation_keys;
 
-    var keys = Object.keys(this.missing_translation_keys);
     if (keys.length == 0) {
       this.scheduler_enabled = true;
       return;
     }
 
     for (var i=0; i<keys.length; i++) {
-      if (i>30) break; // lets do at most 50 at a time
-      var missing_key = this.missing_translation_keys[keys[i]].translation_key;
+      if (i>=50) break; 
+      var missing_key = this.translation_keys[keys[i]].translation_key;
 
       var locale = missing_key.locale || this.detectLocale(missing_key.label);
       var phrase = {label: missing_key.label, locale: locale};
@@ -301,31 +304,35 @@ Tr8n.SDK.Proxy = {
     // Tr8n.log("Received " + translations.length + " translation keys...");
 
     for (i=0; i<translations.length; i++) {
-       var translation_key_data = translations[i];
+      var translation_key_data = translations[i];
 
-       // Tr8n.log("Updating translation key " + JSON.stringify(translation_key_data));
-       this.translations[translation_key_data.key] = translation_key_data;
+      // Tr8n.log("Updating translation key " + JSON.stringify(translation_key_data));
+      this.translations[translation_key_data.key] = translation_key_data;
 
-       var missing_key_data = this.missing_translation_keys[translation_key_data.key];
-       if (!missing_key_data) continue; // why?
+      var missing_key_data = this.translation_keys[translation_key_data.key];
+      if (!missing_key_data) continue; // why?
 
-       var missing_key = missing_key_data.translation_key;
-       var tr8n_elements = missing_key_data.tr8n_elements;
-       
-       for (j=0; j<tr8n_elements.length; j++) {
-          var tr8n_element_data = tr8n_elements[j];
-          var tr8n_element = Tr8n.element(tr8n_element_data.tr8n_element_id);
-          if (!tr8n_element) continue; 
-          missing_key.original = translation_key_data.original;
-          tr8n_element.setAttribute('translation_key_id', translation_key_data['id']);
-           // Tr8n.log(missing_key_data.translation_key.decorationClasses());
-          tr8n_element.setAttribute('class', missing_key_data.translation_key.decorationClasses());
-          tr8n_element.innerHTML = missing_key.translate(this.language, tr8n_element_data.token_values, {'skip_decorations': true});
-       }
-       delete this.missing_translation_keys[translation_key_data.key];
+      var missing_key = missing_key_data.translation_key;
+      var tr8n_elements = missing_key_data.tr8n_elements;
+
+      for (j=0; j<tr8n_elements.length; j++) {
+        var tr8n_element_data = tr8n_elements[j];
+        var tr8n_element = Tr8n.element(tr8n_element_data.tr8n_element_id);
+        if (!tr8n_element) continue; 
+
+        missing_key.original = translation_key_data.original;
+        tr8n_element.setAttribute('translation_key_id', translation_key_data['id']);
+        tr8n_element.setAttribute('class', missing_key_data.translation_key.decorationClasses());
+        tr8n_element.innerHTML = missing_key.translate(this.language, tr8n_element_data.token_values, {'skip_decorations': true, 'skip_registration': true});
+      }
+
+      var index = this.missing_translation_keys.indexOf(missing_key.key);
+      if (index != -1) {
+        this.missing_translation_keys.splice(index, 1);
+      }
     }
 
-    var keys = Object.keys(this.missing_translation_keys);
+    var keys = this.missing_translation_keys;
     if (keys.length > 0) {
       this.submitMissingTranslationKeys();  
     } else {
@@ -451,6 +458,9 @@ Tr8n.SDK.Proxy = {
       }
     }
 
+    var keys = Object.keys(this.translation_keys);
+    Tr8n.log("Registered " + keys.length + " translation keys");
+
     this.submitMissingTranslationKeys();
   },
 
@@ -458,7 +468,8 @@ Tr8n.SDK.Proxy = {
     var config = {
       settings: this.options,
       translations: this.translations,
-      translation_queue: this.missing_translation_keys
+      translation_keys: this.translation_keys,
+      unregistered_translation_keys: this.missing_translation_keys
     };
     Tr8n.UI.Lightbox.showHTML(Tr8n.Logger.objectToHtml(config), {width:700, height:600});
   },

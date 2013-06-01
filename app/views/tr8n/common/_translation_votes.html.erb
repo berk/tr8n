@@ -19,12 +19,14 @@
               <% if trn.translation_key.locked? %>
                 <div style="text-align:center; padding-top:1px;">
                   <%=image_tag("tr8n/lock.png", :style=>"height:14px", :title => trla("This phrase is locked"))%>
-                  <%=link_to_function(image_tag("tr8n/exclamation.png", :title=> trla("Report this translation")), "Tr8n.postMessage('tr8n:translation:report:#{trn.id}')")%>
+                  <%=link_to_function(image_tag("tr8n/exclamation.png", :title=> trla("Report this translation")), 
+                  "Tr8n.postMessage({'subject': 'translation', 'action': 'report', 'id': '#{trn.id}'}, '#{params[:origin]}' )")%>
                 </div>
               <% else %>
                 <%=link_to_function(image_tag("tr8n/thumb_up.png", :title=>trla("This translation is good")), "Tr8n.Translation.vote('#{trn.translation_key.id}', '#{trn.id}', 1)")%> 
                 <%=link_to_function(image_tag("tr8n/thumb_down.png", :title=>trla("This translation is bad")), "Tr8n.Translation.vote('#{trn.translation_key.id}', '#{trn.id}', -1)")%> 
-                <%=link_to_function(image_tag("tr8n/exclamation.png", :title=>trla("This translation contains abusive language")), "Tr8n.postMessage('tr8n:translation:report:#{trn.id}')")%>
+                <%=link_to_function(image_tag("tr8n/exclamation.png", :title=>trla("This translation contains abusive language")), 
+                "Tr8n.postMessage({'subject': 'translation', 'action': 'report', 'id': '#{trn.id}'}, '#{params[:origin]}')")%>
               <% end %>   
             </td>
             <td style="<%=tr8n_style_attribute_tag('text-align', 'left')%>;vertical-align:top;font-size:11px; padding-top:3px;">

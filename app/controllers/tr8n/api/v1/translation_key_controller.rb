@@ -91,10 +91,9 @@ class Tr8n::Api::V1::TranslationKeyController < Tr8n::Api::V1::BaseController
     ensure_application
     ensure_valid_signature
 
-    if params[:source].blank?
-      raise Tr8n::Exception.new("Source must be provided. Keys cannot be registered without a source.")
+    unless params[:source].blank?
+      source = Tr8n::TranslationSource.find_or_create(params[:source], application)
     end
-    source = Tr8n::TranslationSource.find_or_create(params[:source], application)
 
     phrases = []
     if params[:phrases]

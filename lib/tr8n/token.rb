@@ -310,7 +310,8 @@ module Tr8n
         :minimizable => true,
         :to_sentence => true,
         :limit => 4,
-        :separator => ", "
+        :separator => ", ",
+        :andor => 'and'
       }
     
       if token_value.second.is_a?(Array) and token_value.size == 3
@@ -402,6 +403,10 @@ module Tr8n
       true
     end
 
+    def implied?
+      false
+    end
+
     ##############################################################################
     #
     # chooses the appropriate case for the token value. case is identified with ::
@@ -420,7 +425,7 @@ module Tr8n
       lcase.apply(object, value, options)
     end
   
-    def substitute(label, values = {}, options = {}, language = Tr8n::Config.current_language)
+    def substitute(translation_key, label, values = {}, options = {}, language = Tr8n::Config.current_language)
       # get the object from the values
       object = values[name_key]
 

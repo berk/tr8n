@@ -63,6 +63,10 @@ module Tr8n
         pipe_separator == "||" 
       end
       
+      def implied?
+        not allowed_in_translation?
+      end
+
       def token_object(object)
         # token is an array
         if object.is_a?(Array)
@@ -95,7 +99,7 @@ module Tr8n
         substitution_value = "" 
         substitution_value << sanitized_name if allowed_in_translation?
         substitution_value << " " unless substitution_value.blank?
-        substitution_value << language_rule.default_transform(*piped_params)
+        substitution_value << language_rule.default_transform(self, piped_params)
         
         label.gsub(full_name, substitution_value)    
       end
@@ -103,13 +107,10 @@ module Tr8n
       # return only the internal part
       def prepare_label_for_suggestion(label, index)
         validate_language_rule
-        label.gsub(full_name, language_rule.default_transform(*piped_params))    
+        label.gsub(full_name, language_rule.default_transform(self, piped_params))    
       end
       
-      def substitute(label, values = {}, options = {}, language = Tr8n::Config.current_language)
-        # only the default language allows for the transform tokens
-        return label unless language.default?
-        
+      def substitute(translation_key, label, values = {}, options = {}, language = Tr8n::Config.current_language)
         object = values[name_key]
         unless object
           raise Tr8n::TokenException.new("Missing value for a token: #{full_name}")
@@ -117,13 +118,18 @@ module Tr8n
         
         validate_language_rule
         
-        params = [token_object(object)] + piped_params
-        substitution_value = "" 
-        substitution_value << token_value(object, options, language) if allowed_in_translation?
-        substitution_value << " " unless substitution_value.blank?
-        substitution_value << language_rule.transform(*params)
+        substitution_value = [] 
+        if allowed_in_translation?
+          substitution_value << token_value(object, options, language) 
+          substitution_value << " " 
+        end
+        substitution_value << language_rule.transform(self, token_object(object), piped_params, translation_key.language)
+
+        # if translation_key.language.right_to_left?
+        #   substitution_value.reverse!
+        # end
         
-        label.gsub(full_name, substitution_value)    
+        label.gsub(full_name, substitution_value.join(""))    
       end
       
     end

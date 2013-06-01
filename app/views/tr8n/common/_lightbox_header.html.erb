@@ -9,15 +9,15 @@
 		<script type="text/javascript">
 		  function resizeFrame() {
 		    var height = document.body.scrollHeight;
-				Tr8n.postMessage('tr8n:lightbox:resize:' + height, '<%=params[:origin]%>');
+				Tr8n.postMessage({'subject': 'lightbox', 'action': 'resize', 'height': height}, '<%=params[:origin]%>');
 		  }
 		  
 		  function hideLightbox() {
-		  	Tr8n.postMessage('tr8n:lightbox:hide', '<%=params[:origin]%>');
+		  	Tr8n.postMessage({'subject': 'lightbox', 'action': 'hide'}, '<%=params[:origin]%>');
 		  }
 
 		  function reloadOrigin() {
-		  	Tr8n.postMessage('tr8n:reload', '<%=params[:origin]%>');
+		  	Tr8n.postMessage({'subject': 'window', 'action': 'reload'}, '<%=params[:origin]%>');
 		  }
 
 	    Tr8n.Utils.addEvent(document, "keyup", function(event) {
@@ -27,9 +27,8 @@
 	    });		  
 
 	    Tr8n.Utils.addEvent(window, "load", function(event) {
-	    	Tr8n.postMessage('tr8n:cookie:tr8n_signed_request:<%=Tr8n::Config.generate_signed_request%>;', '<%=params[:origin]%>');
+	    	Tr8n.postMessage({'subject': 'cookie', 'action': 'set', 'name': 'tr8n_signed_request', 'value': '<%=Tr8n::Config.generate_signed_request%>'}, '<%=params[:origin]%>');
 	    });		  
-
 		</script>
 		<style>
 			body {

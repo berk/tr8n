@@ -273,7 +273,7 @@ class Tr8n::Translation < ActiveRecord::Base
   end
 
   def rules_sync_hash(opts = {})
-    @rules_sync_hash ||= (rules || []).collect{|rule| rule[:rule].to_api_hash(rule[:token], opts)}
+    @rules_sync_hash ||= (rules || []).collect{|rule| rule[:rule].to_api_hash(opts.merge(:token => rule[:token]))}
   end
 
   # serilaize translation to API hash to be used for synchronization

@@ -64,7 +64,7 @@ class Tr8n::Api::V1::SourceController < Tr8n::Api::V1::BaseController
   def register
     ensure_post
     ensure_application
-    ensure_application_admin
+    ensure_authorized_call
 
     if params[:source]
       source_names = [params[:source]]
@@ -80,10 +80,29 @@ class Tr8n::Api::V1::SourceController < Tr8n::Api::V1::BaseController
     source_names.each do |name|
       sources << Tr8n::TranslationSource.find_or_create(name, application)
     end
-
     
     return render_response(sources.first) if sources.size == 1
     render_response(sources)
+  end
+
+  def register_keys
+    ensure_post
+    ensure_application
+    ensure_authorized_call
+
+    if params[:source_keys].blank?
+      raise Tr8n::Exception.new("Source keys must be provided.")
+    end
+
+    source_keys = JSON.parse(params[:source_keys])  
+    source_keys.each do |data|
+      source = Tr8n::TranslationSource.find_or_create(data["source"], application)
+      data["keys"].each do |key|
+        Tr8n::TranslationKey.find_or_create(key["label"], key["description"], {:source => source})
+      end
+    end
+    
+    render_success
   end
 
   # returns only the keys, without translations
@@ -105,7 +124,7 @@ class Tr8n::Api::V1::SourceController < Tr8n::Api::V1::BaseController
     ensure_sources
 
     source_ids = sources.collect{|src| src.id}
-    keys = Tr8n::TranslationKey.join(:sources).where("tr8n_translation_sources.id in (?)", source_ids).uniq
+    keys = Tr8n::TranslationKey.joins(:translation_sources).where("tr8n_translation_sources.id in (?)", source_ids).uniq
     results = []
     keys.each do |tkey|
       translations = tkey.valid_translations_with_rules(language)

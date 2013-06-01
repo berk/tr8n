@@ -42,6 +42,10 @@
 
 class Tr8n::ValueRule < Tr8n::LanguageRule
   
+  def self.config
+    Tr8n::Config.rules_engine[:value_rule]
+  end
+
   def self.description
     "token object may have a value, which"
   end
@@ -55,7 +59,7 @@ class Tr8n::ValueRule < Tr8n::LanguageRule
   end
 
   def self.suffixes
-    Tr8n::Config.rules_engine[:value_rule][:token_suffixes]
+    config[:token_suffixes]
   end
 
   def self.default_rules_for(language = Tr8n::Config.current_language)
@@ -73,8 +77,8 @@ class Tr8n::ValueRule < Tr8n::LanguageRule
   end
 
   def self.token_value(token)
-    return nil unless token and token.respond_to?(Tr8n::Config.rules_engine[:value_rule][:object_method])
-    token.send(Tr8n::Config.rules_engine[:value_rule][:object_method])
+    return nil unless token and token.respond_to?(config[:object_method])
+    token.send(config[:object_method])
   end
 
   def evaluate(token)

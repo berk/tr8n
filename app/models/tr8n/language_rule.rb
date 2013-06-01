@@ -42,7 +42,7 @@
 
 class Tr8n::LanguageRule < ActiveRecord::Base
   self.table_name = :tr8n_language_rules
-  attr_accessible :language_id, :translator_id, :definition
+  attr_accessible :language_id, :translator_id, :definition, :keyword
   attr_accessible :language, :translator
 
   after_save      :clear_cache
@@ -52,6 +52,25 @@ class Tr8n::LanguageRule < ActiveRecord::Base
   belongs_to :translator, :class_name => "Tr8n::Translator"   
   
   serialize :definition
+
+  def self.config
+    Tr8n::Config.rules_engine
+  end
+
+  def self.to_api_hash(opts = {})
+    hash = {:keyword => keyword}.merge(config)
+    if opts[:language]
+      hash[:rules] = []
+      where(:language_id => opts[:language].id).each do |lr|
+        hash[:rules] << lr.to_api_hash
+      end
+    end
+    hash
+  end
+
+  def self.rule_for_keyword_and_language(keyword, language = Tr8n::Config.current_language)
+    self.where("language_id = ? and keyword = ?", language.id, keyword).first
+  end
 
   def self.cache_key(rule_id)
     "language_rule_[#{rule_id}]"
@@ -125,7 +144,40 @@ class Tr8n::LanguageRule < ActiveRecord::Base
   def self.transformable?
     true
   end
-  
+
+  def self.transform_params_to_options(params)
+    raise Tr8n::Exception.new("This method must be implemented in the extending rule") 
+  end
+
+  def self.transform(token, object, params, language)
+    if params.empty?
+      raise Tr8n::Exception.new("Invalid form for token #{token}")
+    end
+
+    options = transform_params_to_options(params)
+
+    matched_key = nil
+    options.keys.each do |key|
+      next if key == :other  # other is a special keyword - don't process it
+      rule = rule_for_keyword_and_language(key, language)
+      unless rule
+        raise Tr8n::Exception.new("Invalid rule name #{key} for transform token #{token}")
+      end
+
+      if rule.evaluate(object)
+        matched_key = key.to_sym
+        break
+      end
+    end
+
+    unless matched_key
+      return options[:other] if options[:other]
+      raise Tr8n::Exception.new("No rules matched for transform token #{token} : #{options.inspect} : #{object}")
+    end
+
+    options[matched_key]
+  end
+
   def save_with_log!(new_translator)
     if self.id
       if changed?
@@ -160,12 +212,18 @@ class Tr8n::LanguageRule < ActiveRecord::Base
   #     ]
   # }
 
-  def to_api_hash(token, opts = {})
-    {
-      "token" => token,  
+  def to_api_hash(opts = {})
+    hash = {
       "type" => self.class.keyword,
+      "keyword" => keyword,
       "definition" => definition
     }
+
+    if opts[:token]
+      hash["token"] = opts[:token]
+    end
+
+    hash
   end
   
   def self.create_from_sync_hash(lang, translator, rule_hash, opts = {})
@@ -180,5 +238,6 @@ class Tr8n::LanguageRule < ActiveRecord::Base
     
     rule_class.create(:language => lang, :translator => translator, :definition => rule_hash["definition"])
   end
+
 
 end

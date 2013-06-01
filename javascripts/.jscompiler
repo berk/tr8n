@@ -21,6 +21,8 @@ groups:
     -  vendor/md5.js
     -  vendor/shortcut.js
     -  vendor/keyboard_1_49.js
+    -  vendor/swfobject.js
+    -  vendor/web_socket.js
     -  tr8n.js
     -  logger.js
     -  cookie.js

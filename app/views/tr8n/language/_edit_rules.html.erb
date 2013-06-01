@@ -30,6 +30,8 @@
 								      <%=hidden_field_tag("rules[#{dependency}][#{index}][id]", rule.id)%>
 								      <%=hidden_field_tag("rules[#{dependency}][#{index}][reset_values]", "false", :id => "rule_#{index}_reset_values")%>
 								      
+                      <%=text_field_tag("rules[#{dependency}][#{index}][keyword]", rule.keyword, :style => "width:60px", :placeholder => "Keyword")%>
+
 								      <%=render :partial=> "/tr8n/language/rules/#{dependency}_rule", :locals => {:rule => rule, :index => index} %>
                     </td>
                   </tr>

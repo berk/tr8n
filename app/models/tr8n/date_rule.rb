@@ -42,6 +42,10 @@
 
 class Tr8n::DateRule < Tr8n::LanguageRule
   
+  def self.config
+    Tr8n::Config.rules_engine[:date_rule]
+  end
+  
   def self.description
     "token object may be a date, which"
   end
@@ -51,7 +55,7 @@ class Tr8n::DateRule < Tr8n::LanguageRule
   end
 
   def self.suffixes
-    Tr8n::Config.rules_engine[:date_rule][:token_suffixes]
+    config[:token_suffixes]
   end
 
   def self.default_rules_for(language = Tr8n::Config.current_language)
@@ -67,47 +71,38 @@ class Tr8n::DateRule < Tr8n::LanguageRule
   end
 
   def self.date_token_value(token)
-    return nil unless token and token.respond_to?(Tr8n::Config.rules_engine[:date_rule][:object_method])
-    token.send(Tr8n::Config.rules_engine[:date_rule][:object_method])
+    return nil unless token and token.respond_to?(config[:object_method])
+    token.send(config[:object_method])
   end
 
   def date_token_value(token)
     self.class.date_token_value(token)
   end
 
-  # params: [object, past, present, future]
-  # form: {date | did, is doing, will do}
-  def self.transform(*args)
-    if args.size != 4
-      raise Tr8n::Exception.new("Invalid transform arguments")
+  # FORM: [past, present, future]
+  # This event {date| past: took place, present: is taking place, future: will take place} on {date}.
+  def self.transform_params_to_options(params)
+    options = {}
+    if params[0].index(':')
+      params.each do |arg|
+        parts = arg.split(':')
+        options[parts.first.strip.to_sym] = parts.last.strip
+      end
+    else # default falback to {|| male, female} or {|| male, female, unknown} 
+      if params.size == 3 # doesn't matter
+        options[:past] = params[0]
+        options[:present] = params[1]
+        options[:other] = params[2]
+      else
+        raise Tr8n::Exception.new("Invalid number of parameters in the transform token #{token}")
+      end  
     end
-    
-    object = args[0]
-    object_date = date_token_value(object)
+    options    
+  end
 
-    unless object_date
-      raise Tr8n::Exception.new("Token #{object.class.name} does not respond to #{Tr8n::Config.rules_engine[:date_rule][:object_method]}")
-    end
-
-    current_date = Date.today
-    
-    if object_date < current_date
-      return args[1]
-    elsif object_date > current_date
-      return args[3]
-    end
-    
-    args[2]
-  end  
-
-  # params: [past, present, future]
-  # form: {date | did, is doing, will do}
-  def self.default_transform(*args)
-    if args.size != 3
-      raise Tr8n::Exception.new("Invalid transform arguments for date token")
-    end
-    
-    args[1]
+  def self.default_transform(token, params)
+    options = transform_params_to_options(params)
+    options[:past] || options[:other]
   end  
 
   def evaluate(token)
@@ -139,4 +134,12 @@ class Tr8n::DateRule < Tr8n::LanguageRule
     
     "has an unknown rule"
   end
+
+  def to_hash
+    { 
+      :type => self.class.dependency, 
+      :value => definition[:value]
+    }
+  end
+
 end

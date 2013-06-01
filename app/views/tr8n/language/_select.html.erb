@@ -39,7 +39,7 @@
 	                            <% end %>
                             <% end %>
                         </span>
-                        <div onClick="Tr8n.postMessage('tr8n:language_selector:change:<%=language.locale%>', '<%=params[:origin]%>')">
+                        <div onClick="Tr8n.postMessage({'subject': 'language_selector', 'action': 'change', 'locale': '<%=language.locale%>'}, '<%=params[:origin]%>')">
                             <%= tr8n_language_flag_tag(language) %>
                             <span dir="ltr">
                                 <% if language == tr8n_current_language %>
@@ -61,7 +61,7 @@
             <div id="tr8n_languages_list" style="height: 200px; overflow: auto; border:solid 1px #e8e8e8; padding:5px; background-color:white;">
                 <ul class="language_list">
                     <% @all_languages.each do |language| %>
-                    <li onClick="Tr8n.postMessage('tr8n:language_selector:change:<%=language.locale%>', '<%=params[:origin]%>')">
+                    <li onClick="Tr8n.postMessage({'subject': 'language_selector', 'action': 'change', 'locale': '<%=language.locale%>'}, '<%=params[:origin]%>')">
                         <% if Tr8n::Config.enable_language_stats? %>
                             <span style="font-size:8px; <%=tr8n_style_attribute_tag('float', 'right')%>; color:#ccc;"><%= "#{language.default? ? '100' : (language.completeness || 0)}%" %></span>
                         <% end %>
@@ -80,9 +80,9 @@
               <% if @inline_translations_allowed %>
                 <div style="padding-top:5px; padding-bottom:5px; font-size: 11px; font-weight:bold; ">
                     <% if @inline_translations_enabled %>
-                        <%=link_to_function(tra("Disable Inline Translations"), "Tr8n.postMessage('tr8n:language_selector:toggle_inline_translations', '#{params[:origin]}')") %>
+                        <%=link_to_function(tra("Disable Inline Translations"), "Tr8n.postMessage({'subject': 'language_selector', 'action': 'toggle_inline_translations'}, '#{params[:origin]}')") %>
                     <% else %>
-                        <%=link_to_function(tra("Enable Inline Translations"), "Tr8n.postMessage('tr8n:language_selector:toggle_inline_translations', '#{params[:origin]}')") %>
+                        <%=link_to_function(tra("Enable Inline Translations"), "Tr8n.postMessage({'subject': 'language_selector', 'action': 'toggle_inline_translations'}, '#{params[:origin]}')") %>
                     <% end %>
                     <div style="font-weight:normal; color:grey;"><%=tra("Use right-mouse-click or ctr+click to translate the site.") %></div>
                 </div>

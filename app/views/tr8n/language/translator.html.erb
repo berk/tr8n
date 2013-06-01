@@ -22,16 +22,15 @@
 
 		<script type="text/javascript">
 		  function resizeFrame() {
-		    var height = Tr8n.element('tr8n_translator_content').offsetHeight + 10;
-				Tr8n.postMessage('tr8n:translator:resize:' + height, '<%=params[:origin]%>');
+				Tr8n.postMessage({'subject': 'translator', 'action': 'resize', 'height': Tr8n.element('tr8n_translator_content').offsetHeight + 10}, '<%=params[:origin]%>');
 		  }
 
 		  function hideTranslator() {
-		  	Tr8n.postMessage('tr8n:translator:hide', '<%=params[:origin]%>');
+		  	Tr8n.postMessage({'subject': 'translator', 'action': 'hide'}, '<%=params[:origin]%>');
 		  }
 
 		  function reloadOrigin() {
-		  	Tr8n.postMessage('tr8n:reload', '<%=params[:origin]%>');
+		  	Tr8n.postMessage({'subject': 'window', 'action': 'reload'}, '<%=params[:origin]%>');
 		  }
 
 	    Tr8n.Utils.addEvent(document, "keyup", function(event) {

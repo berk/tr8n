@@ -122,15 +122,8 @@ private
     end
   end
 
-  def ensure_application_admin
-    ensure_translator
-    unless translator.admin?
-      raise Tr8n::Exception.new("Must be an administrator to perform this operation.")
-    end
-  end
-
   def ensure_application
-    unless translator
+    unless application
       raise Tr8n::Exception.new("Valid aplication key must be provided.")
     end
   end
@@ -139,6 +132,14 @@ private
     unless language
       raise Tr8n::Exception.new("Valid locale must be provided.")
     end
+  end
+
+  def ensure_authorized_call
+    # The call is either made on behalf a translator or application - signed with secret
+    # ensure_translator
+    # unless translator.admin?
+    #   raise Tr8n::Exception.new("Must be an administrator to perform this operation.")
+    # end
   end
 
   def ensure_valid_signature

@@ -640,6 +640,7 @@ module Tr8n
     #########################################################
     # RULES ENGINE
     #########################################################
+    
     def self.language_rule_classes
       @language_rule_classes ||= rules_engine[:language_rule_classes].collect{|lrc| lrc.constantize}
     end

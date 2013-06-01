@@ -72,8 +72,22 @@
 									<% end %>
 								</div>
              <% end %> 
-								
             <% end %> 
+
+            <% if @translation_key.implied_tokens? %>
+                <div id="tr8n_translator_tokens_simple_view" style="font-size:10px;">
+                <div class="small_section_title" style="color: #999; font-size: 10px;">
+                   <strong><%=tra("Implied Tokens")%></strong>
+                </div>
+                
+                <% @translation_key.implied_tokens.each do |token| %>
+                  <%= token.sanitized_name %>
+                <% end %>
+                <div style="color:#888;font-size:9px;padding-top:5px;">
+                  <%=tra("Implied tokens are used for generating context rules and should not be used in the actual translations.") %>
+                </div>  
+            <% end %>
+
 						
 		        <% if Tr8n::Config.enable_google_suggestions? and tr8n_current_language.suggestible? %>
 			        <div id="tr8n_google_suggestion_section" style="display:none; padding-top:10px;"> 

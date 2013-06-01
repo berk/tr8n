@@ -619,16 +619,16 @@ module Tr8n
       elsif elapsed_seconds < 12.hours
         elapsed_hours = (elapsed_seconds / 1.hour).to_i
         tr("{hours||hour} ago", 'Time reference', :hours => elapsed_hours)
-      elsif time.today_in_time_zone?
-        display_time(time, :time_am_pm)
-      elsif time.yesterday_in_time_zone?
-        tr("Yesterday at {time}", 'Time reference', :time => time.tr(:time_am_pm).gsub('/ ', '/').sub(/^[0:]*/,""))
-      elsif elapsed_seconds < 5.days
-        time.tr(:day_time).gsub('/ ', '/').sub(/^[0:]*/,"")
-      elsif time.same_year_in_time_zone?
-        time.tr(:monthname_abbr_time).gsub('/ ', '/').sub(/^[0:]*/,"")
+      # elsif time.today_in_time_zone?
+      #   display_time(time, :time_am_pm)
+      # elsif time.yesterday_in_time_zone?
+      #   tr("Yesterday at {time}", 'Time reference', :time => time.tr(:time_am_pm).gsub('/ ', '/').sub(/^[0:]*/,""))
+      # elsif elapsed_seconds < 5.days
+      #   time.tr(:day_time).gsub('/ ', '/').sub(/^[0:]*/,"")
+      # elsif time.same_year_in_time_zone?
+      #   time.tr(:monthname_abbr_time).gsub('/ ', '/').sub(/^[0:]*/,"")
       else
-        time.tr(:monthname_abbr_year_time).gsub('/ ', '/').sub(/^[0:]*/,"")
+        time.tr(:verbose).gsub('/ ', '/').sub(/^[0:]*/,"")
       end
     end
 

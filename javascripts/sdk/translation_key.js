@@ -94,6 +94,10 @@ Tr8n.SDK.TranslationKey.prototype = {
       return '';
     }
     
+    if (!options['skip_registration']) {
+      Tr8n.SDK.Proxy.registerTranslationKey(this, token_values, options);
+    }
+
     var translations = Tr8n.SDK.Proxy.translations;
     var translation_key = translations[this.key];
 
@@ -112,13 +116,9 @@ Tr8n.SDK.TranslationKey.prototype = {
         // Tr8n.log("No valid match found, using default language");      
         return this.substituteTokens(this.label, token_values, options);
       }
-      
-    } else {
-      // Tr8n.log("Translation not found, using default language");      
     }
 
-    Tr8n.SDK.Proxy.registerMissingTranslationKey(this, token_values, options);
-    // Tr8n.log('No translation found. Using default...');
+    Tr8n.SDK.Proxy.registerMissingTranslationKey(this);
     return this.substituteTokens(this.label, token_values, options);    
   },
   

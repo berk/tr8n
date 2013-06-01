@@ -64,6 +64,15 @@ module Tr8n
       end
     end
 
+    def implied_tokens
+      # if the implied token is also a translatable token, it is not really implied
+      @implied_tokens ||= tokens.select{|token| token.implied? and not translation_token_names.include?(token.name)} 
+    end
+
+    def implied_tokens?
+      implied_tokens.any?
+    end
+
     def tokens?
       tokens.any?
     end
@@ -71,6 +80,10 @@ module Tr8n
     # tokens that can be used by the user in translation
     def translation_tokens
       @translation_tokens ||= tokens.select{|token| token.allowed_in_translation?} 
+    end
+
+    def translation_token_names
+      @translation_token_names ||= translation_tokens.collect{|token| token.name} 
     end
 
     def translation_tokens?
