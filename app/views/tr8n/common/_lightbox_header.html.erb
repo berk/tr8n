@@ -26,9 +26,15 @@
 	      }
 	    });		  
 
-	    Tr8n.Utils.addEvent(window, "load", function(event) {
-	    	Tr8n.postMessage({'subject': 'cookie', 'action': 'set', 'name': 'tr8n_signed_request', 'value': '<%=Tr8n::Config.generate_signed_request%>'}, '<%=params[:origin]%>');
-	    });		  
+	    <% 
+	    	if Tr8n::Config.should_generate_signed_request?
+	    %>
+		    Tr8n.Utils.addEvent(window, "load", function(event) {
+		    	Tr8n.postMessage({'subject': 'cookie', 'action': 'set', 'name': '<%= Tr8n::Config.signed_request_name%>', 'value': '<%=Tr8n::Config.signed_request_body%>'}, '<%=params[:origin]%>');
+		    });		  
+	    <%
+	    	end 
+	    %>
 		</script>
 		<style>
 			body {

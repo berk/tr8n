@@ -1,0 +1,62 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<%=tr8n_current_language.locale%>" lang="<%=tr8n_current_language.locale%>" <%=tr8n_dir_attribute_tag%>>
+<head>
+  <script type="text/javascript">
+    VKI_default_keyboard_image = "/assets/tr8n/keyboard.png";
+  </script>
+
+  <%= stylesheet_link_tag('tr8n/tr8n.css') %>
+  <%= javascript_include_tag('tr8n/tr8n.js') %>
+  <script type="text/javascript">
+    function resizeFrame() {
+      var height = document.body.scrollHeight;
+      Tr8n.postMessage({'subject': 'lightbox', 'action': 'resize', 'height': height}, '<%=params[:origin]%>');
+    }
+    
+    function hideLightbox() {
+      Tr8n.postMessage({'subject': 'lightbox', 'action': 'hide'}, '<%=params[:origin]%>');
+    }
+
+    function reloadOrigin() {
+      Tr8n.postMessage({'subject': 'window', 'action': 'reload'}, '<%=params[:origin]%>');
+    }
+
+    Tr8n.Utils.addEvent(document, "keyup", function(event) {
+      if (event.keyCode == 27) {
+        hideLightbox();
+      }
+    });     
+  </script>
+  <style>
+    body {
+      font-family: Arial;
+    }
+    a {
+      text-decoration: none;
+      color: darkblue;
+    }
+    img {
+      border: 0px;
+    }
+    .tr8n_fltr {
+      <%=tr8n_style_attribute_tag('float', 'right')%> !important;
+    }
+    .tr8n_fltl {
+      <%=tr8n_style_attribute_tag('float', 'left')%> !important;
+    }
+    .tr8n_txtr {
+      <%=tr8n_style_attribute_tag('text-align', 'right')%> !important;
+    }
+    .tr8n_txtl {
+      <%=tr8n_style_attribute_tag('text-align', 'left')%> !important;
+    }
+  </style>
+</head> 
+<body topmargin="0" bottommargin="0" leftmargin="0" rightmargin="0" style="padding:0px;margin:0px;" onload="resizeFrame()" <%=tr8n_dir_attribute_tag%>>
+  <div class="tr8n_lightbox_content">
+    <%= tr8n_with_options_tag(:default_locale => Tr8n::Config.default_admin_locale, :admin => true) do %>
+      <%= yield %>
+    <% end %>
+  </div>
+</body> 
+</html>

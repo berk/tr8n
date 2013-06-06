@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2010-2012 Michael Berkovich, tr8nhub.com
+# Copyright (c) 2011 Michael Berkovich
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -21,34 +21,21 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-class Tr8n::Api::V1::TranslatorController < Tr8n::Api::V1::BaseController
+class Tr8n::Oauth::RefreshToken < Tr8n::Oauth::OauthToken
 
-  def index
-    ensure_get
-    ensure_translator     
-
-    render_response(translator)
+  def exchange!(params={})
+    if user
+      token = application.create_access_token(user, scope)
+    else
+      token = application.create_client_token(scope)
+    end    
+    
+    invalidate!
+    token
   end
 
-  def applications
-    ensure_get
-    ensure_translator      
-
-    render_response(translator.applications)
-  end
-
-  def enable_inline_translations
-    ensure_get
-    ensure_translator
-    Tr8n::Translator.register.enable_inline_translations!
-    render_success
-  end
-  
-  def disable_inline_translations
-    ensure_get
-    ensure_translator
-    Tr8n::Translator.register.disable_inline_translations!
-    render_success
+  def redirect_url
+    callback_url
   end
 
 end

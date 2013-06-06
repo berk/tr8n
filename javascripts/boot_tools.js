@@ -21,31 +21,12 @@
   WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ****************************************************************************/
 
-Tr8n.UI.LanguageSelector = {
+window.Tr8n = window.$tr8n = Tr8n.Utils.extend(Tr8n, {
+  element     : Tr8n.Utils.element,
+  value       : Tr8n.Utils.value,
+  log         : Tr8n.Logger.log
+});
 
-  options: {},
+Tr8n.init();
 
-  init: function(options) {
-    this.options = options || {};
-  },
-
-  hide: function() {
-    Tr8n.UI.Lightbox.hide();
-  },
-
-  show: function() {
-    Tr8n.UI.Lightbox.show('/tr8n/tools/language_selector', {height:500, width:400});
-  },
-
-  change: function(locale) {
-    Tr8n.UI.Lightbox.show('/tr8n/tools/language_selector/change?locale=' + locale, {width:400, height:480, message:"Changing language..."});      
-  },
-
-  toggleInlineTranslations: function() {
-    if (Tr8n.inline_translations_enabled) {
-        Tr8n.UI.Lightbox.show('/tr8n/tools/language_selector/toggle_inline_translations', {width:400, height:480, message:"Disabling inline translations..."});      
-    } else {
-        Tr8n.UI.Lightbox.show('/tr8n/tools/language_selector/toggle_inline_translations', {width:400, height:480, message:"Enabling inline translations..."});      
-    }
-  }
-}
+   

@@ -1,5 +1,6 @@
+
 #--
-# Copyright (c) 2010-2013 Michael Berkovich, tr8nhub.com
+# Copyright (c) 2010-2012 Michael Berkovich, tr8nhub.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -21,31 +22,15 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-class Tr8n::AccessToken < ActiveRecord::Base
-  self.table_name = :tr8n_access_tokens
-  attr_accessible :token, :application_id, :translator_id, :scope, :expires_at, :application, :translator
+class Tr8n::Tools::UtilsController < Tr8n::BaseController
 
-  belongs_to :application, :class_name => 'Tr8n::Application'
-  belongs_to :translator, :class_name => 'Tr8n::Translator'
+  skip_before_filter :validate_guest_user
+  skip_before_filter :validate_current_translator
 
-  before_create :generate_token
+  layout 'tr8n/tools/lightbox'
 
-  def self.for(token)
-    where("token = ?", token).first
-  end
-
-  def self.find_or_create(translator, application = nil)
-    if application
-      where("application_id = ? and translator_id = ?", application.id, translator.id).first || create(:application => application, :translator => translator)
-    else
-      where("translator_id = ?", translator.id).first || create(:translator => translator)
-    end
-  end
-
-protected
-
-  def generate_token
-    self.token = Tr8n::Config.guid if token.nil?
+  def message    
+    render(:layout => false)
   end
 
 end

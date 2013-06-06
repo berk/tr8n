@@ -32,8 +32,12 @@ Tr8n::Engine.routes.draw do
     match "admin/#{ctrl}(/:action)", :controller => "admin/#{ctrl}"
   end
   
-  [:application, :source, :component, :language, :translation_key, :translation, :translator, :proxy].each do |ctrl|
+  [:application, :source, :component, :language, :translation_key, :translation, :translator, :proxy, :oauth].each do |ctrl|
     match "api/v1/#{ctrl}(/:action)", :controller => "api/v1/#{ctrl}"
+  end
+
+  [:translator, :language_selector, :language_case_manager, :utils].each do |ctrl|
+    match "tools/#{ctrl}(/:action)", :controller => "tools/#{ctrl}"
   end
   
   match "api/v1/language/translate.js", :controller => "api/v1/language", :action => "translate"

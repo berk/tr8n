@@ -1,11 +1,9 @@
 <%= form_tag({:controller => "/tr8n/translations", :action => :update}, {:id => :tr8n_translator_form, :method => :post}) do |f| %>
     <%= hidden_field_tag(:translation_key_id, @translation_key.id, :id => :tr8n_translator_translation_key_id) %>
     <%= hidden_field_tag(:origin, params[:origin]) %>
-    <%= hidden_field_tag(:source_url, @source_url) %>
     
     <div style="padding:10px;">
-        <%= render(:partial => "translator_header")%>
-      
+        <%= render(:partial => "header")%>
         <div id="tr8n_translator_translation_container"> 
             <div class="strong small" style="padding-top:10px; padding-bottom:10px;">
               <%=tra("Enter {language} Translation For Each Context Rule:", nil, :language => tr8n_current_language.native_name)%>
@@ -18,7 +16,7 @@
               <% end %>
 
               <% @permutations.each do |trn| %>
-                <%= text_area_tag("translations[#{trn.id}]", trn.label, :style=>"padding:10px;height:60px;background:#feffef;border:solid 1px #ccc; padding: 5px 3px; width:100%;border-radius:10px;") %>
+                <%= text_area_tag("translations[#{trn.id}]", trn.label, :style=>"height:60px; background:#feffef; border:solid 1px #ccc; padding: 5px 3px; width:97%; border-radius:10px;") %>
                 <div style="font-size: 10px; color: grey; padding-top:3px;padding-top:5px; padding-bottom:15px; padding-left:5px;">
                   <%=trla("Context:")%> <%= trn.context.html_safe %>  
                 </div>

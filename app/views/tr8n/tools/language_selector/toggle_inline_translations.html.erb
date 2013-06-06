@@ -1,0 +1,58 @@
+<html>
+  <head>
+    <%= stylesheet_link_tag('tr8n/tr8n.css') %>
+    <%= javascript_include_tag('tr8n/tr8n.js') %>
+    <script type="text/javascript">
+      function resizeFrame() {
+        var height = document.body.scrollHeight;
+        Tr8n.postMessage({'subject': 'lightbox', 'action': 'resize', 'height': height}, '<%=params[:origin]%>');
+      }
+      function reloadOrigin() {
+        Tr8n.postMessage({'subject': 'window', 'action': 'reload'}, '<%=params[:origin]%>');
+      }
+    </script>
+  </head> 
+  <body style="padding:0px;margin:0px;" onload="resizeFrame()">
+    <div class="tr8n_lightbox_content">
+      <div class='inner' <%=tr8n_dir_attribute_tag%>>
+        <div class='bd' style="text-align:center;padding:30px;">
+          <% if tr8n_current_translator %>
+            <% if tr8n_current_translator.inline_mode %>
+                <%=tra("Inline translations have been enabled.") %>
+            <% else %>
+                <%=tra("Inline translations have been disabled.") %>
+            <% end %>            
+          <% else %>
+            <% if tr8n_current_user %>
+              <%=tra("You must agree to the terms of use.") %>
+              <div style="font-size:12px;text-align:center;padding-top:15px;">
+                <%=tra("[link: Click here] to view the terms of use.", nil, :link => lambda{|txt| link_to(txt, "/tr8n/translator/registration", :target => "_top")} ) %>
+              </div>
+            <% else %>
+              <%=tra("You must be a registered translator.") %>
+              <div style="font-size:12px;text-align:center;padding-top:15px;">
+                <%=tra("[link: Click here] to create a translator account.", nil, :link => lambda{|txt| link_to(txt, Tr8n::Config.login_url, :target => "_top")} ) %>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+      </div>    
+    </div>
+  </body> 
+</html>
+
+<script>
+  Tr8n.Utils.addEvent(window, "load", function(event) {
+    <% 
+      if @generate_signed_request
+    %>
+        Tr8n.postMessage({'subject': 'cookie', 'action': 'set', 'name': '<%= Tr8n::Config.signed_request_name%>', 'value': '<%=Tr8n::Config.signed_request_body%>'}, '<%=params[:origin]%>');
+    <%
+      end 
+    %>
+
+    window.setTimeout(function() {
+      reloadOrigin();
+    }, 500);
+  });
+</script>

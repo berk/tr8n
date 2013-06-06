@@ -24,8 +24,8 @@
 module Tr8n
   class LanguageController < Tr8n::BaseController
 
-    before_filter :validate_guest_user, :except => [:select, :switch, :translator_splash_screen, :toggle_inline_translations, :change, :table]
-    before_filter :validate_current_translator, :except => [:select, :switch, :translator_splash_screen, :toggle_inline_translations, :change, :table]
+    before_filter :validate_guest_user, :except => [:select, :switch, :toggle_inline_translations, :change, :table]
+    before_filter :validate_current_translator, :except => [:select, :switch, :toggle_inline_translations, :change, :table]
     before_filter :validate_language_management, :only => [:index]
     
     # for ssl access to the translator - using ssl_requirement plugin  
@@ -177,7 +177,6 @@ module Tr8n
       render(:partial => "edit_language_case_rules", :locals => {:lcase => lcase, :case_index => case_index})
     end
   
-  
     # language selector window
     def select
       @inline_translations_allowed = false
@@ -200,25 +199,7 @@ module Tr8n
       @all_languages = Tr8n::Language.enabled_languages
       @user_languages = Tr8n::LanguageUser.languages_for(tr8n_current_user) unless tr8n_current_user_is_guest?
     
-      if params[:lightbox]
-        render :partial => "select"
-      else
-        render :layout => false
-      end      
-    end
-  
-    # language selector management functions
-    def lists
-      if request.post? 
-        if params[:language_action] == "remove"
-          lu = Tr8n::LanguageUser.find(:first, :conditions => ["language_id = ? and user_id = ?", params[:language_id].to_i, tr8n_current_user.id])
-          lu.destroy
-        end
-      end
-    
-      @all_languages = Tr8n::Language.enabled_languages
-      @user_languages = Tr8n::LanguageUser.languages_for(tr8n_current_user)
-      render(:partial => "lists")  
+      render_lightbox
     end
   
     def remove
@@ -268,46 +249,6 @@ module Tr8n
       end
     
       redirect_to_source
-    end
-
-    # change language from lightbox
-    def change
-      Tr8n::LanguageUser.create_or_touch(tr8n_current_user, Tr8n::Language.find_by_locale(params[:locale]))
-      render(:layout => false)
-    end
-
-    # toggle inline translations popup window
-    def toggle_inline_translations
-      # redirect to login if not a translator
-      if tr8n_current_user_is_translator?
-        tr8n_current_translator.toggle_inline_translations!
-      end
-      render(:layout => false)
-    end
-
-    # inline translator popup window as well as translation backend method
-    def translator
-      @translation_key = Tr8n::TranslationKey.find_by_id(params[:translation_key_id])
-      @mode = params[:mode]
-
-      if @mode == 'done'
-        @translations = @translation_key.translate(tr8n_current_language, {}, {:api => :translate})
-        @translations = [@translations] unless @translations.is_a?(Array)
-      elsif @mode == 'rules' 
-        @permutations = Tr8n::Translation.where("id in (?)", params[:ids].split(',')).all if params[:ids]
-        @permutations ||= []
-        @translations = @translation_key.inline_translations_for(tr8n_current_language)
-        @translation = Tr8n::Translation.default_translation(@translation_key, tr8n_current_language, tr8n_current_translator)
-      else
-        @translations = @translation_key.inline_translations_for(tr8n_current_language)
-        @translation = Tr8n::Translation.default_translation(@translation_key, tr8n_current_language, tr8n_current_translator)
-        @mode ||= (@translations.empty? ? 'submit' : 'votes')
-      end
-      render(:layout => false)
-    end
-    
-    def translator_splash_screen
-      render :layout => false
     end
 
     def table

@@ -20,45 +20,46 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
-#
-#-- Tr8n::ApplicationLanguage Schema Information
-#
-# Table name: tr8n_application_languages
-#
-#  id              INTEGER         not null, primary key
-#  application_id  integer         
-#  translator_id   integer         
-#  language_id     integer         
-#  created_at      datetime        not null
-#  updated_at      datetime        not null
-#
-# Indexes
-#
-#  tr8n_app_lang_lang_id    (language_id) 
-#  tr8n_app_lang_comp_id    (application_id) 
-#
-#++
 
-class Tr8n::ApplicationTranslator < ActiveRecord::Base
-  self.table_name = :tr8n_application_translators
-  attr_accessible :application, :translator, :language
+class Tr8n::Oauth::OauthToken < ActiveRecord::Base
+  self.table_name = :tr8n_oauth_tokens
+  attr_accessible :token, :application_id, :translator_id, :scope, :expires_at, :application, :translator
 
   belongs_to :application, :class_name => 'Tr8n::Application'
   belongs_to :translator, :class_name => 'Tr8n::Translator'
-  belongs_to :language, :class_name => 'Tr8n::Language'
 
-  after_create :distribute_notification
+  before_create :generate_token
 
-  def self.find_or_create(application, translator)
-    where("application_id = ? and translator_id = ?", application.id, translator.id).first || create(:application => application, :translator => translator) 
+  def valid_token?(requested_scope = nil)
+    return false if Time.now > self.expires_at
+    return false if requested_scope and requested_scope != self.scope
+    true
   end
 
-  def self.touch(application, translator)
-    find_or_create(application, translator).touch
+  def self.for(token)
+    where("token = ?", token).first
   end
 
-  def distribute_notification
-    Tr8n::Notification.distribute(self)    
+  def self.find_or_create(translator, application = nil)
+    if application
+      where("application_id = ? and translator_id = ?", application.id, translator.id).first || create(:application => application, :translator => translator)
+    else
+      where("translator_id = ?", translator.id).first || create(:translator => translator)
+    end
+  end
+
+  def expire_in(interval)
+    return if interval.nil?
+    self.expires_at = (Time.now + interval)
+  end
+
+  def expire_in!(interval)
+    expire_in(interval)
+    save!
+  end
+
+  def generate_token
+    self.token = Tr8n::Config.guid if token.nil?
   end
 
 end

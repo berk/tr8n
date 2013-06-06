@@ -83,14 +83,14 @@ private
   end
 
   def application
-    return nil if params[:app_key].blank?
-    @application ||= Tr8n::Application.find_by_key(params[:app_key])
+    return nil if params[:client_id].blank?
+    @application ||= Tr8n::Application.find_by_key(params[:client_id])
   end
 
   def translator
     return nil if params[:access_token].blank?
     @translator ||= begin
-      token = Tr8n::AccessToken.find_by_token(params[:access_token])
+      token = Tr8n::Oauth::AccessToken.find_by_token(params[:access_token])
       if token
         token.translator
       else

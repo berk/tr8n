@@ -288,6 +288,9 @@ module Tr8n
     # acceptable params:  expandable, 
     #                     to_sentence, 
     #                     limit, 
+    #                     andor,
+    #                     more_label,
+    #                     less_label,
     #                     separator, 
     #                     translate_items,
     #                     minimizable
@@ -345,14 +348,14 @@ module Tr8n
       uniq_id = Tr8n::TranslationKey.generate_key(original_label, objects.join(","))         
       result << "<span id=\"tr8n_other_link_#{uniq_id}\">" << " " << list_options[:andor].translate("", {}, options) << " "
       result << "<a href='#' onClick=\"Tr8n.Effects.hide('tr8n_other_link_#{uniq_id}'); Tr8n.Effects.show('tr8n_other_elements_#{uniq_id}'); return false;\">"
-      result << "{num|| other}".translate("List elements joiner", {:num => remaining_ary.size}, options)
+      result << (list_options[:more_label] ? list_options[:more_label] : "{num|| other}".translate("List elements joiner", {:num => remaining_ary.size}, options))
       result << "</a></span>"
       result << "<span id=\"tr8n_other_elements_#{uniq_id}\" style='display:none'>" << list_options[:separator]
       result << "#{remaining_ary[0..-2].join(list_options[:separator])} #{list_options[:andor].translate("", {}, options)} #{remaining_ary.last}"
 
       if list_options[:minimizable]
         result << "<a href='#' style='font-size:smaller;white-space:nowrap' onClick=\"Tr8n.Effects.show('tr8n_other_link_#{uniq_id}'); Tr8n.Effects.hide('tr8n_other_elements_#{uniq_id}'); return false;\"> "
-        result << "&laquo; less".translate("List elements joiner", {}, options)    
+        result << (list_options[:less_label] ? list_options[:less_label] : "{laquo} less".translate("List elements joiner", {}, options))
         result << "</a>"
       end
     

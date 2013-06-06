@@ -1,0 +1,41 @@
+<html>
+  <head>
+    <%= stylesheet_link_tag('tr8n/tr8n.css') %>
+    <%= javascript_include_tag('tr8n/tr8n.js') %>
+    <script type="text/javascript">
+      function resizeFrame() {
+        var height = document.body.scrollHeight;
+        Tr8n.postMessage({'subject': 'lightbox', 'action': 'resize', 'height': height}, '<%=params[:origin]%>');
+      }
+      function reloadOrigin() {
+        Tr8n.postMessage({'subject': 'window', 'action': 'reload'}, '<%=params[:origin]%>');
+      }
+    </script>
+  </head> 
+  <body style="padding:0px;margin:0px;" onload="resizeFrame()">
+    <div class="tr8n_lightbox_content">
+      <div class='inner' <%=tr8n_dir_attribute_tag%>>
+        <div class='bd' style="text-align:center;padding:30px;">
+          <%=trla("Language has been changed to {language}", nil, :language => tr8n_current_language.native_name) %>
+        </div>
+      </div>    
+    </div>
+  </body> 
+</html>
+
+<script>
+  Tr8n.Utils.addEvent(window, "load", function(event) {
+    <% 
+      if @generate_signed_request
+    %>
+        Tr8n.postMessage({'subject': 'cookie', 'action': 'set', 'name': '<%= Tr8n::Config.signed_request_name%>', 'value': '<%=Tr8n::Config.signed_request_body%>'}, '<%=params[:origin]%>');
+    <%
+      end 
+    %>
+
+    window.setTimeout(function() {
+      reloadOrigin();
+    }, 500);
+  });
+</script>
+

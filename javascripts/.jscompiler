@@ -11,7 +11,7 @@ groups:
     output:
       path:              ../app/assets/javascripts/tr8n/jquery.js
       debug:             true
-  tr8n:
+  sdk:
     files:
     -  vendor/jquery.before.js
     -  vendor/jquery-1.9.1.js
@@ -21,8 +21,6 @@ groups:
     -  vendor/md5.js
     -  vendor/shortcut.js
     -  vendor/keyboard_1_49.js
-    -  vendor/swfobject.js
-    -  vendor/web_socket.js
     -  tr8n.js
     -  logger.js
     -  cookie.js

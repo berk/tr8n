@@ -1,11 +1,10 @@
 <%= form_for(@translation, :as => :translation, :url => {:controller => "/tr8n/translations", :action => :permutate, :translator => true}, :html => {:id => 'tr8n_translator_form', :method => :post}) do |f| %>
     <%= hidden_field_tag(:translation_key_id, @translation_key.id) %>
-    <%= hidden_field_tag(:source_url, @source_url) %>
     <%= hidden_field_tag(:translation_has_dependencies, "true") %>
     <%= hidden_field_tag(:origin, params[:origin]) %>
 
     <div style="padding:10px;">
-      <%= render(:partial => "translator_header")%>
+      <%= render(:partial => "header")%>
 
       <div id="tr8n_translator_translation_container">
          <div class="small_section_title">
@@ -16,7 +15,7 @@
 	        <%=render :partial => "/tr8n/common/permutations" %>
 	      </div>
 
-        <%=link_to(tra("Click here if there are no context rules for this phrase"), {:translation_key_id => @translation_key.id, :mode => :submit, :origin => params[:origin]}, :style => "font-size:10px;") %>
+        <%=link_to(tra("Click here if there are no context rules for this phrase"), {:action => :submit, :translation_key_id => @translation_key.id, :origin => params[:origin]}, :style => "font-size:10px;") %>
      </div>      
     </div>
 <% end %>

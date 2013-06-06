@@ -45,11 +45,18 @@ module Tr8n
     before_filter :validate_tr8n_enabled, :except => [:translate]
     before_filter :validate_guest_user, :except => [:select, :switch, :translate, :table, :registration]
     before_filter :validate_current_translator, :except => [:select, :switch, :translate, :table, :registration]
-  
+    before_filter :validate_remote_application
+
     layout Tr8n::Config.site_info[:tr8n_layout]
   
   private
   
+    def validate_remote_application
+      return if params[:origin].blank?
+      domain = Tr8n::TranslationDomain.find_or_create(params[:origin])
+      Tr8n::Config.set_remote_application(domain.application)
+    end
+
     def render_lightbox
       render(:layout => false)
     end

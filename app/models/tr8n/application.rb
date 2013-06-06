@@ -99,6 +99,62 @@ class Tr8n::Application < ActiveRecord::Base
     }
   end
 
+  def create_oauth_token(klass, translator, scope, expire_in) 
+    token = klass.new
+    token.application = self
+    token.translator = translator
+    token.scope = scope
+    token.generate_token
+    token.expire_in(expire_in)
+    token.save!
+    token    
+  end
+
+  def create_request_token(translator, scope = 'basic', expire_in = 3.months)
+    create_oauth_token(Tr8n::Oauth::RequestToken, translator, scope, expire_in) 
+  end
+
+  def create_refresh_token(translator, scope = 'basic', expire_in = 5.months)
+    create_oauth_token(Tr8n::Oauth::RefreshToken, translator, scope, expire_in) 
+  end
+
+  def create_client_token(scope = 'basic', expire_in = 3.months)
+    create_oauth_token(Tr8n::Oauth::ClientToken, nil, scope, expire_in) 
+  end
+
+  def create_access_token(translator, scope = 'basic', expire_in = 3.months)
+    create_oauth_token(Tr8n::Oauth::AccessToken, translator, scope, expire_in) 
+  end
+
+  def find_valid_token_for_scope(tokens, scope)
+    valid_token = nil
+    tokens.each do |token|
+      if token.valid_token?(scope) and valid_token.nil?
+        valid_token = token
+      else
+        token.destroy
+      end
+    end
+    valid_token
+  end
+
+  def find_or_create_request_token(translator, scope = 'basic', expire_in = 3.months)
+    tokens = Tr8n::Oauth::RequestToken.where("application_id = ? and translator_id = ?", self.id, translator.id).all
+    valid_token = find_valid_token_for_scope(tokens, scope)
+    valid_token ||= create_request_token(translator, scope, expire_in)
+
+    valid_token    
+  end
+
+  def find_or_create_access_token(translator, scope = 'basic', expire_in = 3.months)
+    tokens = Tr8n::Oauth::AccessToken.where("application_id = ? and translator_id = ?", self.id, translator.id).all
+    valid_token = find_valid_token_for_scope(tokens, scope)
+    valid_token ||= create_access_token(translator, scope, expire_in)
+    Tr8n::ApplicationTranslator.touch(self, user)
+
+    valid_token
+  end  
+
 protected
 
   def generate_keys

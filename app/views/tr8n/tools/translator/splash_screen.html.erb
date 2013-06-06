@@ -1,0 +1,23 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<%=tr8n_current_language.locale%>" lang="<%=tr8n_current_language.locale%>">
+<head>
+	<%= stylesheet_link_tag('tr8n/tr8n.css') %>
+  <%= javascript_include_tag('tr8n/tr8n.js') %>
+	<script type="text/javascript">
+	  function resizeFrame() {
+	    var height = Tr8n.element('tr8n_translator_content').offsetHeight + 10;
+			Tr8n.postMessage({'subject': 'translator', 'action': 'resize', 'height': height}, '<%=params[:origin]%>');
+	  }
+	</script>
+</head>	
+<body style="padding:0px;margin:0px;" onload="resizeFrame()">
+	<div id="tr8n_translator_content" class="tr8n_translator_content" <%=tr8n_dir_attribute_tag%>> 
+		<div id="tr8n_translator_container" class="bd" style="padding:15px;">
+	    <%= image_tag "tr8n/rotating_world.gif", :style => "#{tr8n_style_attribute_tag('float', 'left')};#{tr8n_style_directional_attribute_tag('margin', 'right', '10px')};" %>
+      <div style="color:#444;font-weight:bold;font-size:12px;"><%= tra('Please wait.') %></div>
+      <div style="font-size:11px"><%= tra('loading...') %></div>
+    </div> 
+	</div>
+</body>	
+</html>
+

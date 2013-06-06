@@ -72,7 +72,6 @@ Tr8n.UI.Lightbox = {
     opts = opts || {};
 
     Tr8n.UI.Translator.hide();
-    Tr8n.UI.LanguageSelector.hide();
     Tr8n.Utils.hideFlash();
 
     this.content_frame.src = 'about:blank';
@@ -111,7 +110,6 @@ Tr8n.UI.Lightbox = {
     opts = opts || {};
 
     Tr8n.UI.Translator.hide();
-    Tr8n.UI.LanguageSelector.hide();
     Tr8n.Utils.hideFlash();
 
     this.content_frame.src = Tr8n.Utils.toUrl('/tr8n/help/splash_screen', {msg: opts['message'] || 'Loading...'});

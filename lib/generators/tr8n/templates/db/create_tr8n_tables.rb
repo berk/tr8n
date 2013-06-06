@@ -432,7 +432,7 @@ class CreateTr8nTables < ActiveRecord::Migration
     add_index :tr8n_application_translators, [:translator_id], :name => "tr8n_app_trn_trn_id"
     add_index :tr8n_application_translators, [:language_id], :name => "tr8n_app_trn_lang_id"
 
-    create_table :tr8n_access_tokens do |t|
+    create_table :tr8n_oauth_tokens do |t|
       t.string    :type
       t.string    :token, :null => false
       t.integer   :application_id
@@ -441,8 +441,8 @@ class CreateTr8nTables < ActiveRecord::Migration
       t.timestamp :expires_at
       t.timestamps
     end
-    add_index :tr8n_access_tokens, [:application_id], :name => "tr8n_accsst_app_id"
-    add_index :tr8n_access_tokens, [:translator_id], :name => "tr8n_accsst_trn_id"    
+    add_index :tr8n_oauth_tokens, [:application_id], :name => "tr8n_oauth_tokens_app_id"
+    add_index :tr8n_oauth_tokens, [:translator_id], :name => "tr8n_oauth_tokens_trn_id"    
   end
 
   def self.down
@@ -481,6 +481,6 @@ class CreateTr8nTables < ActiveRecord::Migration
     drop_table :tr8n_translation_source_metrics
     drop_table :tr8n_application_languages
     drop_table :tr8n_application_translators
-    drop_table :tr8n_access_tokens
+    drop_table :tr8n_oauth_tokens
   end
 end

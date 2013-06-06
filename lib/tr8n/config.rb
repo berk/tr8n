@@ -53,51 +53,51 @@ module Tr8n
     end
   
     def self.current_user
-      Thread.current[:tr8n_current_user]
+      Thread.current[:tr8n_user]
     end
 
     def self.set_current_user(user)
-      Thread.current[:tr8n_current_user] = user
+      Thread.current[:tr8n_user] = user
     end
 
     def self.current_application
-      Thread.current[:tr8n_current_application]
+      Thread.current[:tr8n_application]
     end  
 
     def self.set_application(application)
       application = Tr8n::Application.for(application) if application.is_a?(String)
-      Thread.current[:tr8n_current_application] = application
+      Thread.current[:tr8n_application] = application
     end
 
     def self.current_source
-      Thread.current[:tr8n_current_source]
+      Thread.current[:tr8n_source]
     end
   
     def self.set_source(source)
       source = Tr8n::TranslationSource.find_or_create(source) if source.is_a?(String)
-      Thread.current[:tr8n_current_source] = source
+      Thread.current[:tr8n_source] = source
     end
 
     def self.current_component
-      Thread.current[:tr8n_current_component]
+      Thread.current[:tr8n_component]
     end  
 
     def self.set_current_component(component)
       component = Tr8n::Component.find_or_create(component) if component.is_a?(String)
-      Thread.current[:tr8n_current_component] = component
+      Thread.current[:tr8n_component] = component
     end
 
     def self.current_language
-      Thread.current[:tr8n_current_language] ||= default_language
+      Thread.current[:tr8n_language] ||= default_language
     end
   
     def self.set_language(language)
       language = Tr8n::Language.for(language) if language.is_a?(String)
-      Thread.current[:tr8n_current_language] = language
+      Thread.current[:tr8n_language] = language
     end
 
     def self.current_user_is_translator?
-      Thread.current[:tr8n_current_translator] != nil
+      Thread.current[:tr8n_translator] != nil
     end
   
     def self.current_user_is_authorized_to_view_component?(component = current_component)
@@ -134,11 +134,11 @@ module Tr8n
     end
 
     def self.current_translator
-      Thread.current[:tr8n_current_translator]
+      Thread.current[:tr8n_translator]
     end
   
     def self.set_current_translator(translator)
-      Thread.current[:tr8n_current_translator]  = translator
+      Thread.current[:tr8n_translator]  = translator
     end
 
     def self.default_language
@@ -153,12 +153,14 @@ module Tr8n
   
     def self.reset!
       # thread based variables
-      Thread.current[:tr8n_current_language]  = nil
-      Thread.current[:tr8n_current_user] = nil
-      Thread.current[:tr8n_current_translator] = nil
+      Thread.current[:tr8n_application] = nil 
+      Thread.current[:tr8n_language]  = nil
+      Thread.current[:tr8n_user] = nil
+      Thread.current[:tr8n_translator] = nil
       Thread.current[:tr8n_block_options]  = nil
-      Thread.current[:tr8n_current_source] = nil
-      Thread.current[:tr8n_current_component] = nil
+      Thread.current[:tr8n_source] = nil
+      Thread.current[:tr8n_component] = nil
+      Thread.current[:tr8n_remote_application] = nil 
     end
 
     def self.models
@@ -927,27 +929,47 @@ module Tr8n
     #########################################################
     # Sharing
     #########################################################
-    def self.generate_signed_request
-      params = []
-      params << current_language.locale
-      if current_user_is_translator?
-        params << current_translator.id
-        params << current_translator.inline_mode ? '1' : '0'
-      end
-      params.join(";")
+    def self.remote_application
+      Thread.current[:tr8n_remote_application]
+    end  
+
+    def self.set_remote_application(application)
+      application = Tr8n::Application.for(application) if application.is_a?(String)
+      Thread.current[:tr8n_remote_application] = application
     end
 
-    def self.shared_secret
-      config[:sharing][:secret]
+    def self.signed_request_name
+      "tr8n_#{remote_application.key}"
     end
 
-    def self.sign_and_encode_params(params)  
+    def self.signed_request_body
+      request_token = remote_application.find_or_create_request_token(current_translator)
+
+      params = {
+        'locale'  => current_language.locale,
+        'code' => request_token.token,
+        'translator' => {
+          'id'      => current_translator.id,
+          'inline'  => current_translator.inline_mode,
+          'manager' => current_translator.manager?,
+        },
+      }
+
+      sign_and_encode_params(params, remote_application.secret)
+    end
+
+    def self.sign_and_encode_params(params, secret)  
       payload = Base64.encode64(params.merge(:algorithm => 'HMAC-SHA256', :ts => Time.now.to_i).to_json)
-      sig = OpenSSL::HMAC.digest('sha256', shared_secret, payload)
-      "#{Base64.encode64(sig)}.#{payload}"
+      sig = OpenSSL::HMAC.digest('sha256', secret, payload)
+      encoded_sig = Base64.encode64(sig)
+      data = URI::encode("#{encoded_sig}.#{payload}")
+      pp :encoded_sig, encoded_sig
+      data
     end
 
-    def self.decode_and_verify_params(signed_request)  
+    def self.decode_and_verify_params(signed_request, secret)  
+      signed_request = URI::decode(signed_request)
+
       encoded_sig, payload = signed_request.split('.', 2)
       sig = Base64.decode64(encoded_sig)
 
@@ -955,7 +977,7 @@ module Tr8n
       if data['algorithm'].to_s.upcase != 'HMAC-SHA256'
         raise Tr8n::Exception.new("Bad signature algorithm: %s" % data['algorithm'])
       end
-      expected_sig = OpenSSL::HMAC.digest('sha256', shared_secret, payload)
+      expected_sig = OpenSSL::HMAC.digest('sha256', secret, payload)
 
       if expected_sig != sig
         raise Tr8n::Exception.new("Bad signature")

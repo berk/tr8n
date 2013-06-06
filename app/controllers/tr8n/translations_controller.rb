@@ -66,7 +66,7 @@ class Tr8n::TranslationsController < Tr8n::BaseController
   def submit
     return redirect_to_source unless request.post?
 
-    destination_url = params[:destination_url] || {:controller => '/tr8n/language', :action => '/translator', :mode => 'done', :translation_key_id => params[:translation_key_id], :origin => params[:origin]}
+    destination_url = params[:destination_url] || {:controller => '/tr8n/tools/translator', :action => 'done', :translation_key_id => params[:translation_key_id], :origin => params[:origin]}
 
     translation_key = Tr8n::TranslationKey.find_by_id(params[:translation_key_id].to_i)
     unless translation_key
@@ -138,7 +138,7 @@ class Tr8n::TranslationsController < Tr8n::BaseController
     translation_key = Tr8n::TranslationKey.find(params[:translation_key_id])
 
     if params[:translator]
-      destination_url = {:controller => '/tr8n/language', :action => :translator, :mode => :rules, :translation_key_id => translation_key.id, :origin => params[:origin]}
+      destination_url = {:controller => '/tr8n/tools/translator', :action => :permutations, :translation_key_id => translation_key.id, :origin => params[:origin]}
     else
       destination_url = {:controller => "/tr8n/phrases", :action => :view, :translation_key_id => translation_key.id, :grouped_by => :context}
     end

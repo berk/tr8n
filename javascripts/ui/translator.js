@@ -107,7 +107,7 @@ Tr8n.UI.Translator = {
 
     this.content_frame.style.width = '100%';
     this.content_frame.style.height = '10px';
-    this.content_frame.src = Tr8n.Utils.toUrl('/tr8n/language/translator_splash_screen');
+    this.content_frame.src = Tr8n.Utils.toUrl('/tr8n/tools/translator/splash_screen');
 
     var stem = {v: "top", h: "left", width: 10, height: 12};
     var label_rect = Tr8n.Utils.elementRect(translatable_node);
@@ -154,11 +154,11 @@ Tr8n.UI.Translator = {
         params['case_key'] = self.language_case_key;
       } else {
         self.translation_key_id = translatable_node.getAttribute('translation_key_id');
-        url = '/tr8n/language/translator';
+        url = '/tr8n/tools/translator/index';
         params['translation_key_id'] = self.translation_key_id;
       }
       self.content_frame.src = Tr8n.Utils.toUrl(url, params);
-    }, 500);
+    }, 1000);
   },
 
   resize: function(height) {

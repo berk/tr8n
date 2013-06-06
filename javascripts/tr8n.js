@@ -75,7 +75,7 @@ var Tr8n = {
     this.cookies    = opts.cookies  || this.cookies;
     this.host       = opts.host     || this.host;
 
-    Tr8n.log("Initializing Dispatcher...");
+    // Tr8n.log("Initializing Dispatcher...");
 
     if (window.addEventListener) {  // all browsers except IE before version 9
       window.addEventListener("message", Tr8n.onMessage, false);
@@ -103,6 +103,11 @@ var Tr8n = {
   ///////////////////////////////////////////////////////////////////////////////////////////////  
 
   postMessage: function(msg, origin) {
+    if (origin == null || origin == '') {
+      alert("Tr8n: Origin must be provided: [" + msg + "]");
+      return;
+    }
+
     var local_domain = document.location.href.split("/")[2];
     var origin_domain = origin.split("/")[2];
 

@@ -1,3 +1,4 @@
+
 #--
 # Copyright (c) 2010-2012 Michael Berkovich, tr8nhub.com
 #
@@ -21,34 +22,16 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-class Tr8n::Api::V1::TranslatorController < Tr8n::Api::V1::BaseController
+class Tr8n::Tools::LanguageCaseManagerController < Tr8n::BaseController
 
+  skip_before_filter :validate_guest_user
+  skip_before_filter :validate_current_translator
+
+  layout 'tr8n/tools/lightbox'
+
+  # language selector window
   def index
-    ensure_get
-    ensure_translator     
 
-    render_response(translator)
-  end
-
-  def applications
-    ensure_get
-    ensure_translator      
-
-    render_response(translator.applications)
-  end
-
-  def enable_inline_translations
-    ensure_get
-    ensure_translator
-    Tr8n::Translator.register.enable_inline_translations!
-    render_success
-  end
-  
-  def disable_inline_translations
-    ensure_get
-    ensure_translator
-    Tr8n::Translator.register.disable_inline_translations!
-    render_success
   end
 
 end
