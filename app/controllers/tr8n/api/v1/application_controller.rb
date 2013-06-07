@@ -32,13 +32,25 @@ class Tr8n::Api::V1::ApplicationController < Tr8n::Api::V1::BaseController
   def index
     ensure_get
     ensure_application
-    render_response(application)
+    render_response(application.to_api_hash(:definition => params[:definition]))
+  end
+
+  def version
+    ensure_get
+    ensure_application
+    render_response(:version => application.version)
   end
 
   def languages
     ensure_get
     ensure_application
     render_response(application.languages)
+  end
+
+  def featured_locales
+    ensure_get
+    ensure_application
+    render_response(application.featured_languages.collect{|lang| lang.locale})
   end
 
   def sources

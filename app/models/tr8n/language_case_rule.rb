@@ -224,14 +224,4 @@ class Tr8n::LanguageCaseRule < ActiveRecord::Base
     desc.html_safe
   end
 
-  attr_accessible :language_case_id, :language_id, :translator_id, :definition, :position
-  attr_accessible :language, :language_case, :translator
-
-  def to_api_hash(opts = {})
-    {
-      :position => position,
-      :definition => definition,
-    }
-  end  
-  
 end

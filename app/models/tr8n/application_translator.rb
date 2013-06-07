@@ -41,7 +41,7 @@
 
 class Tr8n::ApplicationTranslator < ActiveRecord::Base
   self.table_name = :tr8n_application_translators
-  attr_accessible :application, :translator, :language
+  attr_accessible :application, :translator, :language, :manager
 
   belongs_to :application, :class_name => 'Tr8n::Application'
   belongs_to :translator, :class_name => 'Tr8n::Translator'

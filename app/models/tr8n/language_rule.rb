@@ -58,7 +58,7 @@ class Tr8n::LanguageRule < ActiveRecord::Base
   end
 
   def self.to_api_hash(opts = {})
-    hash = {:keyword => keyword}.merge(config)
+    hash = {:type => keyword}.merge(config)
     if opts[:language]
       hash[:rules] = []
       where(:language_id => opts[:language].id).each do |lr|
@@ -213,17 +213,16 @@ class Tr8n::LanguageRule < ActiveRecord::Base
   # }
 
   def to_api_hash(opts = {})
-    hash = {
-      "type" => self.class.keyword,
-      "keyword" => keyword,
-      "definition" => definition
-    }
-
     if opts[:token]
-      hash["token"] = opts[:token]
+      return {
+        "token" => opts[:token],
+        "type" => self.class.keyword,
+        "keyword" => keyword,
+        "definition" => definition,
+      }
     end
 
-    hash
+    definition.merge(:keyword => keyword)
   end
   
   def self.create_from_sync_hash(lang, translator, rule_hash, opts = {})

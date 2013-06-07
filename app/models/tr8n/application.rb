@@ -58,6 +58,8 @@ class Tr8n::Application < ActiveRecord::Base
 
   before_create :generate_keys
 
+  serialize :definition
+
   after_destroy :clear_cache
   after_save :clear_cache
 
@@ -79,6 +81,10 @@ class Tr8n::Application < ActiveRecord::Base
     Tr8n::Application.find(:all, :order => "name asc").collect{|app| [app.name, app.id]}
   end
 
+  def featured_languages
+    @featured_languages ||= application_languages.where("featured_index != null").order('featured_index asc').collect{|aplang| aplang.language}
+  end
+
   def clear_cache
     Tr8n::Cache.delete(cache_key)
   end
@@ -92,11 +98,25 @@ class Tr8n::Application < ActiveRecord::Base
   end
 
   def to_api_hash(opts = {})
-    {
+    hash = {
       :key => self.key,
       :name => self.name,
       :description => self.description,
     }
+
+    if opts[:definition]
+      defs = {}
+      defs.merge!(:default_data_tokens => Tr8n::Config.default_data_tokens, :default_decoration_tokens =>  Tr8n::Config.default_decoration_tokens)
+      defs[:rules] = {}
+      Tr8n::Config.language_rule_classes.each do |rule_class|
+        defs[:rules][rule_class.keyword] = rule_class.config
+      end
+
+      hash[:definition] = defs
+      hash[:languages] = languages.collect{|l| l.to_api_hash(opts)}
+    end
+
+    hash
   end
 
   def create_oauth_token(klass, translator, scope, expire_in) 

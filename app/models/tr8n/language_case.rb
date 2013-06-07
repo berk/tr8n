@@ -211,22 +211,14 @@ class Tr8n::LanguageCase < ActiveRecord::Base
   end
 
   def to_api_hash(opts = {})
-    hash = {
+    {
       :keyword => keyword,
       :latin_name => latin_name,
       :native_name => native_name,
       :description => description,
       :application => application,
+      :rules => language_case_rules.collect{ |lcr| lcr.definition }
     }
-
-    if opts[:rules]
-      hash[:rules] = []
-      language_case_rules.each do |lcr|
-        hash[:rules] << lcr.to_api_hash
-      end
-    end
-
-    hash
   end
 
 end

@@ -40,7 +40,7 @@
 
 class Tr8n::ApplicationLanguage < ActiveRecord::Base
   self.table_name = :tr8n_application_languages
-  attr_accessible :application, :language
+  attr_accessible :application, :language, :featured_index
 
   belongs_to :application, :class_name => 'Tr8n::Application'
   belongs_to :language, :class_name => 'Tr8n::Language'
