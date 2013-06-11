@@ -6,11 +6,8 @@
       <div style="<%=tr8n_style_attribute_tag('float', 'right')%>;font-weight:normal;font-size:10px;color:grey;">
         <%=link_to(tra("view all"), {:controller => "/tr8n/phrases", :action => :view, :translation_key_id => @translation_key.id, :anchor => "translations"}) %>
 				|
-				<% 
-           comments_size = @translation_key.comments.size
-           link_title = (comments_size > 0) ? "view comments (#{comments_size})" : "add comments"
-        %>
-        <%=link_to(tra(link_title), {:controller => "/tr8n/phrases", :action => :view, :translation_key_id => @translation_key.id, :anchor => "comments"}) %>
+				<% link_title = (@translation_key.comments.count > 0) ? tra("view comments ({count})", nil, :count => @translation_key.comments.count) : tra("add comments") %>
+        <%=link_to(link_title, {:controller => "/tr8n/phrases", :action => :view, :translation_key_id => @translation_key.id, :anchor => "comments"}) %>
       </div>
       <strong><%=tra("Vote on Translations")%></strong>
     </div>
