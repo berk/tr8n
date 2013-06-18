@@ -170,14 +170,14 @@ LinkedIn Discussion
 http://www.linkedin.com/groups/Internationalizing-your-application-using-Tr8n-4090552?gid=4090552
 
 
-RailsCasts - If you would like to see a RailsCasts episode on how to get Tr8n configured and running, please visit the RailsCasts suggestion page and vote it up. Thank you!
+RailsCasts - If you would like to see a RailsCasts episode on how to get Tr8n configured and running:
   
-http://bit.ly/gz7lFw 
+Contact {@railscasts}[http://twitter.com/railscasts] on Twitter or send an email to feedback@railscasts.com or fill in this form: http://railscasts.com/feedback
 
 
 Tr8n Discussion on Hacker News
 
-http://bit.ly/hB2qmU 
+http://bit.ly/hB2qmU
 
 
 IRC Channel for Discussing Tr8n
