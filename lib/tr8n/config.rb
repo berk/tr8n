@@ -41,7 +41,7 @@ module Tr8n
       # register source with component
       unless component.nil?
         set_current_component(component)
-        Tr8n::ComponentSource.find_or_create(current_component, current_source)
+        component.register_source(current_source)
       else
         set_current_component(nil)
       end

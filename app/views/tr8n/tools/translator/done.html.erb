@@ -11,8 +11,9 @@
       <% if @translations %>        
         Tr8n.postMessage({'subject': 'proxy', 'action': 'update_translations', 'translations': <%= @translations.to_json.html_safe %>}, '<%=params[:origin]%>');
       <% else %>
-        reloadOrigin();
+        // reloadOrigin();
       <% end %>
+      reloadOrigin();
     }, 500);
   });
 </script>

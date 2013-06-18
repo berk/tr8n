@@ -3,6 +3,8 @@
 <%= form_tag({}, :id => :tr8n_form, :method => :get) do %>
   <%=hidden_field_tag(:type, :translation) %>
 
+  <% pp @results %>
+
   <%= will_filter_table_tag(@results, :columns => [
     [:flag, lambda{|t| t.language ? image_tag("tr8n/flags/#{t.language.flag}.png") : ''}, :style => 'width:20px;vertical-align:middle;', :title => ''],
     [:checkbox, :translations],
@@ -34,14 +36,14 @@
       else
          "Deleted Language"    
       end  
-    }, :filterable => true, :title => "Language"],
+    }, :title => "Language"],
     [:translator_id, lambda{|translation|
       if translation.translator
         link_to(translation.translator.name, :controller => "/tr8n/admin/translator", :action => :view, :id => translation.translator.id)
       else
         "Unknown" 
       end  
-    }, :filterable => true, :title => "Translator"],
+    }, :title => "Translator"],
     [:rank, lambda{|translation| 
       html = []
       if translation.rank >= Tr8n::Config.translation_threshold

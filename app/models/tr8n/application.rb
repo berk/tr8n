@@ -106,7 +106,11 @@ class Tr8n::Application < ActiveRecord::Base
 
     if opts[:definition]
       defs = {}
-      defs.merge!(:default_data_tokens => Tr8n::Config.default_data_tokens, :default_decoration_tokens =>  Tr8n::Config.default_decoration_tokens)
+      defs.merge!({
+        :default_data_tokens => Tr8n::Config.default_data_tokens, 
+        :default_decoration_tokens =>  Tr8n::Config.default_decoration_tokens
+      })
+      
       defs[:rules] = {}
       Tr8n::Config.language_rule_classes.each do |rule_class|
         defs[:rules][rule_class.keyword] = rule_class.config
@@ -170,7 +174,7 @@ class Tr8n::Application < ActiveRecord::Base
     tokens = Tr8n::Oauth::AccessToken.where("application_id = ? and translator_id = ?", self.id, translator.id).all
     valid_token = find_valid_token_for_scope(tokens, scope)
     valid_token ||= create_access_token(translator, scope, expire_in)
-    Tr8n::ApplicationTranslator.touch(self, user)
+    Tr8n::ApplicationTranslator.touch(self, translator)
 
     valid_token
   end  

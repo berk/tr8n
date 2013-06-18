@@ -70,13 +70,17 @@ class Tr8n::Component < ActiveRecord::Base
     self.class.cache_key(key)
   end
 
-  def self.find_or_create(key)
+  def self.find_or_create(key, application = Tr8n::Config.current_application)
     return component if key.is_a?(Tr8n::Component)
     key = key.to_s
 
     Tr8n::Cache.fetch(cache_key(key)) do 
-      where("key = ?", key.to_s).first || create(:key => key.to_s, :state => "restricted")
+      where("application_id = ? and key = ?", application.id, key.to_s).first || create(:application => application, :key => key.to_s, :state => "restricted")
     end  
+  end
+
+  def register_source(source)
+    Tr8n::ComponentSource.find_or_create(self, source)
   end
 
   def self.state_options
@@ -112,11 +116,10 @@ class Tr8n::Component < ActiveRecord::Base
 
   def to_api_hash(opts = {})
     {
-      :id => self.id,
       :key => self.key,
       :name => self.name,
       :description => self.description,
-      :state => self.state,
+      :state => self.state
     }
   end
 

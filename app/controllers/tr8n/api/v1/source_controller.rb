@@ -69,7 +69,7 @@ class Tr8n::Api::V1::SourceController < Tr8n::Api::V1::BaseController
     if params[:source]
       source_names = [params[:source]]
     elsif params[:sources]
-      source_names = params[:source].split(",").collect{|s| s.strip}
+      source_names = params[:sources].split(",").collect{|s| s.strip}
     end
 
     unless source_names

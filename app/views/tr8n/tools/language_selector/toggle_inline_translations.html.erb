@@ -51,8 +51,10 @@
       end 
     %>
 
+    <% if tr8n_current_translator %>
     window.setTimeout(function() {
       reloadOrigin();
     }, 500);
+    <% end %>
   });
 </script>

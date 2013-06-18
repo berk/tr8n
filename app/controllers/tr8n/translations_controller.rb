@@ -193,7 +193,9 @@ class Tr8n::TranslationsController < Tr8n::BaseController
         trn.save_with_log!(tr8n_current_translator)
         trn.reset_votes!(tr8n_current_translator)
       end
-      return redirect_to(:controller => '/tr8n/language', :action => :translator, :mode => :done, :translation_key_id => translation_key.id, :origin => params[:origin])
+
+      destination_url = {:controller => '/tr8n/tools/translator', :action => 'done', :translation_key_id => translation_key.id, :origin => params[:origin]}
+      return redirect_to(destination_url)
     end
 
     @translation = Tr8n::Translation.find(params[:translation_id])

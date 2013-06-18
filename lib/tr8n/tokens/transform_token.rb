@@ -125,10 +125,6 @@ module Tr8n
         end
         substitution_value << language_rule.transform(self, token_object(object), piped_params, translation_key.language)
 
-        # if translation_key.language.right_to_left?
-        #   substitution_value.reverse!
-        # end
-        
         label.gsub(full_name, substitution_value.join(""))    
       end
       
