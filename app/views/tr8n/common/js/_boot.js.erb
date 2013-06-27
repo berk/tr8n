@@ -54,7 +54,7 @@ function addTr8nScript(doc, id, src, onload) {
     <% end %>  
 
     addTr8nScript(window.document, 'tr8n-jssdk', "<%= params[:debug] ? '/assets/tr8n/tr8n.debug.js': '/assets/tr8n/tr8n.js' %>", function() {
-      addTr8nScript(window.document, 'tr8n-proxy', "/tr8n/api/v1/proxy/init.js?<%=params.slice(:debug, :tml, :text, :source, :page_locale).merge(:t => Time.now.to_i).to_query.html_safe%>", function() {
+      addTr8nScript(window.document, 'tr8n-proxy', "/tr8n/api/proxy/init.js?<%=params.slice(:debug, :tml, :text, :source, :page_locale).merge(:t => Time.now.to_i).to_query.html_safe%>", function() {
         if (typeof(onTr8nReady) === 'function') {
            onTr8nReady();
         }

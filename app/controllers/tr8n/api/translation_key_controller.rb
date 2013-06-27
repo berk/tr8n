@@ -21,7 +21,7 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-class Tr8n::Api::V1::TranslationKeyController < Tr8n::Api::V1::BaseController
+class Tr8n::Api::TranslationKeyController < Tr8n::Api::BaseController
 
   def index
     ensure_get
@@ -117,6 +117,45 @@ class Tr8n::Api::V1::TranslationKeyController < Tr8n::Api::V1::BaseController
     render_response(keys)
   end
 
+  def comments
+  end
+
+  def translations
+    ensure_post
+    ensure_application
+    ensure_valid_signature
+
+    if params[:id]
+      tkey = Tr8n::TranslationKey.find_by_id(params[:id])
+    else
+      tkey = Tr8n::TranslationKey.find_or_create(params[:label], params[:description]) 
+    end
+
+    locales = params[:locales].split(',') if params[:locales] 
+    locales ||= [params[:locale]] if params[:locale]
+
+    languages = []
+    locales.each do |locale| 
+      l = Tr8n::Language.for(locale)
+      next unless l
+      languages << l
+    end
+
+    if languages.empty?
+      raise Tr8n::Exception.new("At lease one valid locale must be provided")
+    end
+
+    translations = {}      
+    languages.each do |lang|
+      translations[lang.locale] = tkey.valid_translations_with_rules(lang)
+    end
+
+    render_response(tkey.to_api_hash(:translations => translations))
+  end
+
+  def sources
+  end
+  
 private
 
   def key_ids

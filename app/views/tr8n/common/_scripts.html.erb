@@ -59,7 +59,7 @@
         function initTr8n() {
           if (window.tr8nJQ) return;
           addTr8nScript(window.document, 'tr8n-jssdk', "<%= params[:tr8n_debug_js] ? '/assets/tr8n/tr8n.debug.js': '/assets/tr8n/tr8n.js' %>", function() {
-            addTr8nScript(window.document, 'tr8n-proxy', '/tr8n/api/v1/proxy/init.js', function() {
+            addTr8nScript(window.document, 'tr8n-proxy', '/tr8n/api/proxy/init.js', function() {
               // alert("Done");  
             });
           });

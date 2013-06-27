@@ -21,7 +21,7 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-class Tr8n::Api::V1::BaseController < ApplicationController
+class Tr8n::Api::BaseController < ApplicationController
   
   before_filter :check_api_enabled
   before_filter :cors_preflight_check

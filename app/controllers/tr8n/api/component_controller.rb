@@ -25,7 +25,7 @@
 ## API for getting translations from the main server
 ###########################################################################
 
-class Tr8n::Api::V1::ComponentController < Tr8n::Api::V1::BaseController
+class Tr8n::Api::ComponentController < Tr8n::Api::BaseController
   
   before_filter :ensure_component, :except => [:register]
 

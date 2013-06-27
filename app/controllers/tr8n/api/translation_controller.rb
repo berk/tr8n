@@ -21,7 +21,7 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-class Tr8n::Api::V1::TranslationController < Tr8n::Api::V1::BaseController
+class Tr8n::Api::TranslationController < Tr8n::Api::BaseController
 
   def submit
     ensure_post

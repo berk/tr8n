@@ -21,65 +21,37 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-class Tr8n::Api::V1::ProxyController < Tr8n::Api::V1::BaseController
+class Tr8n::Api::LanguageController < Tr8n::Api::BaseController
 
-  def ping
-    render_response(:status => "Ready for business")
+  # for ssl access to the translator - using ssl_requirement plugin  
+  ssl_allowed :translate  if respond_to?(:ssl_allowed)
+
+  def index
+    if params[:locale].blank?
+      return render_error("Locale must be provided")
+    end
+
+    lang = Tr8n::Language.for(params[:locale])
+    unless lang
+      return render_error("Unknown language locale")
+    end
+
+    render_response(lang.to_api_hash(:definition => true))
   end
 
-  def boot
-    render(:partial => "/tr8n/common/js/boot", :formats => [:js], :locals => {:uri => URI.parse(request.url)}, :content_type => "text/javascript")
+  def all
+    render_response(Tr8n::Language.order('english_name asc').all)
   end
 
-  def init
-    script = []
+  def enabled
+    render_response(Tr8n::Language.enabled_languages)
+  end
 
-    opts = {}
-
-    opts[:scheduler_interval]         = Tr8n::Config.default_client_interval
-    opts[:enable_inline_translations] = (Tr8n::Config.current_user_is_translator? and Tr8n::Config.current_translator.enable_inline_translations? and (not Tr8n::Config.current_language.default?))
-    opts[:default_decorations]        = Tr8n::Config.default_decoration_tokens
-    opts[:default_tokens]             = Tr8n::Config.default_data_tokens
-    opts[:locale]                     = Tr8n::Config.current_language.locale
-
-    if params[:text]
-      opts[:enable_text]              = (not params[:text].blank?)
-    else
-      opts[:enable_tml]               = (not params[:tml].blank?) and Tr8n::Config.enable_tml?
-    end
-
-    opts[:rules]                      = { 
-      :number => Tr8n::Config.rules_engine[:numeric_rule],      :gender => Tr8n::Config.rules_engine[:gender_rule],
-      :list   => Tr8n::Config.rules_engine[:gender_list_rule],  :date   => Tr8n::Config.rules_engine[:date_rule]
-    }
-
-    domain = Tr8n::TranslationDomain.find_or_create(request.env['HTTP_REFERER'])
-    Tr8n::Config.set_application(domain.application)
-
-    source = params[:source] || Tr8n::TranslationSource.normalize_source(request.env['HTTP_REFERER']) || 'undefined'
-    Tr8n::Config.set_source(Tr8n::TranslationSource.find_or_create(source, domain.application))
-
-    language = Tr8n::Language.for(params[:language] || params[:locale]) || Tr8n::Config.current_language
-    Tr8n::Config.set_language(language)
-
-    source_ids = Tr8n::TranslationSource.where(:source => source).all.collect{|src| src.id}
-    if source_ids.empty?
-      conditions = ["1=2"]
-    else
-      conditions = ["(id in (select distinct(translation_key_id) from tr8n_translation_key_sources where translation_source_id in (?)))"]
-      conditions << source_ids.uniq
-    end
-
-    translations = []
-    Tr8n::TranslationKey.where(conditions).all.each do |tkey|
-      translations << tkey.translate(Tr8n::Config.current_language, {}, {:api => true})
-    end
-
-    render(:partial => "/tr8n/common/js/init", :formats => [:js], :locals => {:uri => URI.parse(request.url), :opts => opts, :translations => translations, :source => source.to_s}, :content_type => "text/javascript")
+  def featured
+    render_response(Tr8n::Language.featured_languages)
   end
   
-  # Used primarely by JavaScript. 
-  # Unlike server-side, Javascript needs to get transaltions back even after registration
+  # deprecated - has been moved to proxy API  
   def translate
     domain = Tr8n::TranslationDomain.find_or_create(request.env['HTTP_REFERER'])
     language = Tr8n::Language.for(params[:language] || params[:locale]) || tr8n_current_language
@@ -117,12 +89,16 @@ class Tr8n::Api::V1::ProxyController < Tr8n::Api::V1::BaseController
       
       return render_response({:phrases => translations})
     elsif params[:phrases]
-      
-      phrases = []
-      begin
-        phrases = HashWithIndifferentAccess.new({:data => JSON.parse(params[:phrases])})[:data]
-      rescue Exception => ex
-        return render_response({"error" => "Invalid request. JSON parsing failed: #{ex.message}"})
+
+      if params[:phrases].is_a?(String)
+        phrases = []
+        begin
+          phrases = HashWithIndifferentAccess.new({:data => JSON.parse(params[:phrases])})[:data]
+        rescue Exception => ex
+          return render_error("Invalid request. JSON parsing failed: #{ex.message}")
+        end
+      else
+        phrases = params[:phrases]
       end
 
       translations = []
@@ -148,5 +124,5 @@ private
     translation_key = Tr8n::TranslationKey.find_or_create(phrase[:label], phrase[:description], opts)
     translation_key.translate(language, {}, opts)
   end
-
+  
 end

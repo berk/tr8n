@@ -57,17 +57,6 @@ class Tr8n::LanguageRule < ActiveRecord::Base
     Tr8n::Config.rules_engine
   end
 
-  def self.to_api_hash(opts = {})
-    hash = {:type => keyword}.merge(config)
-    if opts[:language]
-      hash[:rules] = []
-      where(:language_id => opts[:language].id).each do |lr|
-        hash[:rules] << lr.to_api_hash
-      end
-    end
-    hash
-  end
-
   def self.rule_for_keyword_and_language(keyword, language = Tr8n::Config.current_language)
     self.where("language_id = ? and keyword = ?", language.id, keyword).first
   end
@@ -222,7 +211,7 @@ class Tr8n::LanguageRule < ActiveRecord::Base
       }
     end
 
-    definition.merge(:keyword => keyword)
+    definition
   end
   
   def self.create_from_sync_hash(lang, translator, rule_hash, opts = {})

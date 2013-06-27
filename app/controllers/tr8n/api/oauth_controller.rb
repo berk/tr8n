@@ -21,7 +21,7 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-class Tr8n::Api::V1::OauthController < Tr8n::Api::V1::BaseController
+class Tr8n::Api::OauthController < Tr8n::Api::BaseController
   
   # http://tools.ietf.org/html/draft-ietf-oauth-v2-16#section-4.2
   # supported grant_type = authorization_code, password, refresh_token, client_credentials

@@ -21,7 +21,7 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-class Tr8n::Api::V1::SourceController < Tr8n::Api::V1::BaseController
+class Tr8n::Api::SourceController < Tr8n::Api::BaseController
   
   # shows a source
   def index
@@ -117,17 +117,34 @@ class Tr8n::Api::V1::SourceController < Tr8n::Api::V1::BaseController
     render_response(results)
   end
 
-  # returns keys with translations and context rules
+  # returns keys with translations for languages provided in locales
   def translations
     ensure_get
     ensure_application
     ensure_sources
 
+    locales = params[:locales].split(',') if params[:locales] 
+    locales ||= [params[:locale]] if params[:locale]
+
+    languages = []
+    locales.each do |locale| 
+      l = Tr8n::Language.for(locale)
+      next unless l
+      languages << l
+    end
+
+    if languages.empty?
+      raise Tr8n::Exception.new("At lease one valid locale must be provided")
+    end
+
     source_ids = sources.collect{|src| src.id}
     keys = Tr8n::TranslationKey.joins(:translation_sources).where("tr8n_translation_sources.id in (?)", source_ids).uniq
     results = []
     keys.each do |tkey|
-      translations = tkey.valid_translations_with_rules(language)
+      translations = {}      
+      languages.each do |lang|
+        translations[lang.locale] = tkey.valid_translations_with_rules(lang)
+      end
       results << tkey.to_api_hash(:translations => translations)
     end
     render_response(results)

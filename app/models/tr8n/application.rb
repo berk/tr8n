@@ -107,8 +107,10 @@ class Tr8n::Application < ActiveRecord::Base
     if opts[:definition]
       defs = {}
       defs.merge!({
-        :default_data_tokens => Tr8n::Config.default_data_tokens, 
-        :default_decoration_tokens =>  Tr8n::Config.default_decoration_tokens
+        :default_data_tokens        => Tr8n::Config.default_data_tokens, 
+        :default_decoration_tokens  =>  Tr8n::Config.default_decoration_tokens,
+        :enable_language_cases      => Tr8n::Config.config[:enable_language_cases],
+        :enable_language_flags      => Tr8n::Config.config[:enable_language_flags],
       })
       
       defs[:rules] = {}

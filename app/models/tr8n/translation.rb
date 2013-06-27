@@ -276,6 +276,19 @@ class Tr8n::Translation < ActiveRecord::Base
     @rules_sync_hash ||= (rules || []).collect{|rule| rule[:rule].to_api_hash(opts.merge(:token => rule[:token]))}
   end
 
+  def rules_api_hash(opts = {})
+    return nil if rules.nil? or rules.empty? 
+    rulz = {}
+    rules.each do |rule|
+      rulz[rule[:token]] ||= []
+      rulz[rule[:token]] << {
+        :type => rule[:rule].class.dependency,
+        :key => rule[:rule].keyword  
+      }
+    end
+    rulz
+  end
+
   # serilaize translation to API hash to be used for synchronization
   def to_api_hash(opts = {})
     return {"locale" => language.locale, "label" => label, "rules" => rules_sync_hash(opts)} if opts[:comparible]

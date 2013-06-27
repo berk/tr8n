@@ -39,7 +39,7 @@ var Tr8n = {
   inline_translations_enabled: false,
 
   url: {
-    api       : '/tr8n/api/v1',
+    api       : '/tr8n/api',
     status    : '/oauth/status',
     connect   : '/oauth/authorize',
     disconnect: '/oauth/deauthorize',

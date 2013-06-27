@@ -25,7 +25,7 @@
 ## API for getting translations from the main server
 ###########################################################################
 
-class Tr8n::Api::V1::ApplicationController < Tr8n::Api::V1::BaseController
+class Tr8n::Api::ApplicationController < Tr8n::Api::BaseController
   # for ssl access to the translator - using ssl_requirement plugin  
   ssl_allowed :sync  if respond_to?(:ssl_allowed)
 

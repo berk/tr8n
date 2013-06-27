@@ -37,7 +37,7 @@ module Tr8n
 
       if Tr8n::Config.enable_browser_cache?  
         # translations are loaded through a script
-        js_source = "/tr8n/api/v1/language/translate.js?cache=true&callback=Tr8n.SDK.Proxy.registerTranslationKeys&source=#{CGI.escape(source.source)}&t=#{source.updated_at.to_i}"
+        js_source = "/tr8n/api/language/translate.js?cache=true&callback=Tr8n.SDK.Proxy.registerTranslationKeys&source=#{CGI.escape(source.source)}&t=#{source.updated_at.to_i}"
         html << "<script type='text/javascript' src='#{js_source}'></script>"
       else  
         # translations are embedded right into the page

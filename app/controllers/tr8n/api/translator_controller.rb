@@ -21,7 +21,7 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-class Tr8n::Api::V1::TranslatorController < Tr8n::Api::V1::BaseController
+class Tr8n::Api::TranslatorController < Tr8n::Api::BaseController
 
   def index
     ensure_get
