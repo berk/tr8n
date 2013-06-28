@@ -417,7 +417,7 @@ module Tr8n::HelperMethods
     values = [language.total_metric.not_translated_count, language.total_metric.locked_key_count, language.total_metric.translated_key_count - language.total_metric.locked_key_count]
     names = [trl("Not Translated"), trl("Approved"), trl("Pending Approval")]
     colors = ['FF0000', '00FF00', 'FFFF00']
-    chart_url = "https://chart.googleapis.com/chart?cht=p3&chs=350x80&chd=t:#{values.join(',')}&chl=#{names.join('|')}&chco=#{colors.join('|')}"
+    chart_url = URI.encode "https://chart.googleapis.com/chart?cht=p3&chs=350x80&chd=t:#{values.join(',')}&chl=#{names.join('|')}&chco=#{colors.join('|')}"
     image_tag(chart_url)
   end
   
@@ -426,7 +426,7 @@ module Tr8n::HelperMethods
     values = [metric.rejected_translations, metric.accepted_translations, metric.pending_vote_translations]
     names = [trl("Rejected"), trl("Accepted"), trl("Pending Votes")]
     colors = ['FF0000', '00FF00', 'FFFF00']
-    chart_url = "https://chart.googleapis.com/chart?cht=p3&chs=350x80&chd=t:#{values.join(',')}&chl=#{names.join('|')}&chco=#{colors.join('|')}"
+    chart_url = URI.encode "https://chart.googleapis.com/chart?cht=p3&chs=350x80&chd=t:#{values.join(',')}&chl=#{names.join('|')}&chco=#{colors.join('|')}"
     image_tag(chart_url)
   end  
 
@@ -434,7 +434,7 @@ module Tr8n::HelperMethods
     values = [metric.not_translated_count, metric.locked_key_count, metric.translated_key_count - metric.locked_key_count]
     names = [trl("Not Translated"), trl("Approved"), trl("Pending Approval")]
     colors = ['FF0000', '00FF00', 'FFFF00']
-    chart_url = "https://chart.googleapis.com/chart?cht=p3&chs=350x80&chd=t:#{values.join(',')}&chl=#{names.join('|')}&chco=#{colors.join('|')}"
+    chart_url = URI.encode "https://chart.googleapis.com/chart?cht=p3&chs=350x80&chd=t:#{values.join(',')}&chl=#{names.join('|')}&chco=#{colors.join('|')}"
     image_tag(chart_url)
   end  
 
