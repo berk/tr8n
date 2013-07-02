@@ -140,6 +140,7 @@ class Tr8n::Config
     Thread.current[:tr8n_block_options]  = nil
     Thread.current[:tr8n_current_source] = nil
     Thread.current[:tr8n_current_component] = nil
+    Thread.current["tr8n_format"] = nil
   end
 
   def self.models
