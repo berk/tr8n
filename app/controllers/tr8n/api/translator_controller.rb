@@ -37,6 +37,13 @@ class Tr8n::Api::TranslatorController < Tr8n::Api::BaseController
     render_response(translator.applications)
   end
 
+  def translations
+    ensure_get
+    ensure_translator      
+
+    render_response(translator.translations)
+  end
+
   def enable_inline_translations
     ensure_get
     ensure_translator

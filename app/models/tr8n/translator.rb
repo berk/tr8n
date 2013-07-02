@@ -439,7 +439,7 @@ class Tr8n::Translator < ActiveRecord::Base
       "gender" => self.gender, 
       "mugshot" => self.mugshot, 
       "link" => self.link,
-      "inline_mode" => self.inline_mode,
+      "inline" => self.inline_mode,
       "voting_power" => self.voting_power,
       "rank" => self.rank,
       "locale" => self.locale,

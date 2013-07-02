@@ -120,6 +120,8 @@ class Tr8n::Application < ActiveRecord::Base
 
       hash[:definition] = defs
       hash[:languages] = languages.collect{|l| l.to_api_hash(opts)}
+      hash[:sources] = sources.collect{|s| s.to_api_hash(opts)}
+      hash[:components] = components.collect{|c| c.to_api_hash(opts)}
     end
 
     hash
