@@ -255,12 +255,22 @@ class Tr8n::Config
     @default_languages ||= load_yml("/config/tr8n/site/default_languages.yml", nil)
   end
 
+  def self.format
+    Thread.current["tr8n_format"] ||= 'html'
+  end
+
+  def self.set_format(request_format)
+    Thread.current["tr8n_format"] = request_format
+  end
+
   def self.default_decoration_tokens
     @default_decoration_tokens ||= load_yml("/config/tr8n/tokens/decorations.yml", nil)
+    @default_decoration_tokens[format]
   end
 
   def self.default_data_tokens
     @default_data_tokens ||= load_yml("/config/tr8n/tokens/data.yml", nil)
+    @default_data_tokens[format]
   end
 
   def self.default_glossary
