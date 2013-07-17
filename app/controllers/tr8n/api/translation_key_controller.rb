@@ -121,7 +121,7 @@ class Tr8n::Api::TranslationKeyController < Tr8n::Api::BaseController
   end
 
   def translations
-    ensure_post
+    # ensure_post
     ensure_application
     ensure_valid_signature
 
