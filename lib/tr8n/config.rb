@@ -172,11 +172,12 @@ module Tr8n
          Tr8n::TranslationSource, Tr8n::TranslationDomain, Tr8n::TranslationSourceLanguage, 
          Tr8n::Translation, Tr8n::TranslationVote, Tr8n::TranslationSourceMetric,
          Tr8n::Translator, Tr8n::TranslatorLog, Tr8n::TranslatorMetric, 
-         Tr8n::TranslatorFollowing, Tr8n::TranslatorReport, Tr8n::AccessToken,
+         Tr8n::TranslatorFollowing, Tr8n::TranslatorReport, 
          Tr8n::LanguageForumTopic, Tr8n::LanguageForumMessage,
          Tr8n::Glossary, Tr8n::IpLocation, Tr8n::SyncLog, Tr8n::Application, 
          Tr8n::Component, Tr8n::ComponentSource, Tr8n::ComponentTranslator, Tr8n::ComponentLanguage,
-         Tr8n::Notification
+         Tr8n::Notification,
+         Tr8n::Oauth::OauthToken
       ]    
     end
 
