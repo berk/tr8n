@@ -24,8 +24,7 @@ function removeLanguage(language_id) {
         </div>
         <div style="max-height:65px; overflow: auto; margin-bottom:5px; border:solid 1px #e8e8e8; padding:5px; background-color:white;">
             <ul class="language_list">
-                <% @user_languages.each do |user_language| %>
-                <% language = user_language.language %>
+                <% @user_languages.each do |language| %>
                 <% next unless language %>
                 <li id="lang_<%=language.id%>">
                     <% if language.default? %>
@@ -35,7 +34,7 @@ function removeLanguage(language_id) {
                     <% else %>
                       <div style="font-size:8px; <%=tr8n_style_attribute_tag('float', 'right')%>; color:#ccc;">
                         <%= "#{language.completeness || 0}%" if Tr8n::Config.enable_language_stats? %>
-                        <span onClick="removeLanguage('#{language.id}')">
+                        <span onClick="removeLanguage('<%=language.id%>')">
                            <%=image_tag("tr8n/close.gif", :style=>"width:5px; padding-right:3px; padding-left:3px;") %>
                         </span>
                       </div>
@@ -60,7 +59,7 @@ function removeLanguage(language_id) {
         </div>
         <% end %>
 
-        <div id="tr8n_languages_list" style="height: 200px; overflow: auto; border:solid 1px #e8e8e8; padding:5px; background-color:white;">
+        <div id="tr8n_languages_list" style="max-height: 200px; overflow: auto; border:solid 1px #e8e8e8; padding:5px; background-color:white;">
             <ul class="language_list">
                 <% @all_languages.each do |language| %>
                 <li onClick="Tr8n.postMessage({'subject': 'language_selector', 'action': 'change', 'locale': '<%=language.locale%>'}, '<%=params[:origin]%>')">
@@ -78,7 +77,7 @@ function removeLanguage(language_id) {
     </div>
     
     <div style="padding-bottom:40px;">
-        <% if tr8n_current_user_is_translator? %>
+        <% if tr8n_current_user_is_translator? and tr8n_current_translator_can_translate_remote_application? %>
           <% if @inline_translations_allowed %>
             <div style="padding-top:5px; padding-bottom:5px; font-size: 11px; font-weight:bold; ">
                 <% if @inline_translations_enabled %>

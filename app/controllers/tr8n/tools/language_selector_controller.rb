@@ -49,7 +49,15 @@ class Tr8n::Tools::LanguageSelectorController < Tr8n::BaseController
     @source_url.gsub!("locale", "previous_locale") if @source_url
   
     @all_languages = Tr8n::Language.enabled_languages
-    @user_languages = Tr8n::LanguageUser.languages_for(tr8n_current_user) unless tr8n_current_user_is_guest?
+    @user_languages = []
+    unless tr8n_current_user_is_guest?
+      @user_languages = Tr8n::LanguageUser.languages_for(tr8n_current_user).collect{|ul| ul.language}
+    end
+
+    if Tr8n::Config.remote_application
+      @all_languages = @all_languages & Tr8n::Config.remote_application.languages
+      @user_languages = @user_languages & @all_languages
+    end
   end
 
   def change
@@ -75,10 +83,22 @@ class Tr8n::Tools::LanguageSelectorController < Tr8n::BaseController
     render(:layout => false)
   end
 
+  def remove_language
+    ul = Tr8n::LanguageUser.where(:user_id=>tr8n_current_user.id, :language_id => params[:language_id]).first
+    ul.destroy if ul
+    render(:text=>'Ok')
+  end
+
+  def tr8n_current_translator_can_translate_remote_application?
+    return true unless Tr8n::Config.remote_application
+    Tr8n::Config.remote_application.translators.include?(tr8n_current_translator)
+  end
+  helper_method :tr8n_current_translator_can_translate_remote_application?
+
 private 
 
   def can_generate_signed_request?
-    Tr8n::Config.remote_application and tr8n_current_translator and Tr8n::Config.remote_application.translators.include?(tr8n_current_translator)
+    Tr8n::Config.remote_application # and tr8n_current_translator and Tr8n::Config.remote_application.translators.include?(tr8n_current_translator)
   end
 
 end
