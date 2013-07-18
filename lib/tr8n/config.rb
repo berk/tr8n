@@ -957,7 +957,7 @@ module Tr8n
             'inline'  => current_translator.inline_mode,
             'manager' => current_translator.manager?,
           }
-        )
+        })
       end
 
       sign_and_encode_params(params, remote_application.secret)
