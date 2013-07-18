@@ -944,17 +944,21 @@ module Tr8n
     end
 
     def self.signed_request_body
-      request_token = remote_application.find_or_create_request_token(current_translator)
-
       params = {
         'locale'  => current_language.locale,
-        'code' => request_token.token,
-        'translator' => {
-          'id'      => current_translator.id,
-          'inline'  => current_translator.inline_mode,
-          'manager' => current_translator.manager?,
-        },
       }
+
+      if current_translator
+        request_token = remote_application.find_or_create_request_token(current_translator)
+        params.merge!({
+          'code' => request_token.token,
+          'translator' => {
+            'id'      => current_translator.id,
+            'inline'  => current_translator.inline_mode,
+            'manager' => current_translator.manager?,
+          }
+        )
+      end
 
       sign_and_encode_params(params, remote_application.secret)
     end
