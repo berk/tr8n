@@ -56,7 +56,7 @@
   function removeSelectedKeysFromSource() {
     if (!confirm('Make sure the keys are removed from the actual source code. Otherwise they will reappear here again. \nAre you sure you want to remove selected keys from this source?'))
        return;
-    Tr8n.element('tr8n_form').action = "/tr8n/admin/applications/remove_keys_from_source";
+    Tr8n.element('tr8n_form').action = "/tr8n/admin/sources/remove_keys_from_source";
     Tr8n.element('tr8n_form').submit();
   }
 

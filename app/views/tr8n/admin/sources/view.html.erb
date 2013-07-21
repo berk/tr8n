@@ -3,6 +3,15 @@
 
 <table class="admin_table">
     <tr>
+        <th>
+            Application
+        </th>
+        <td>
+            <%=link_to(@source.application.name, :controller => "/tr8n/admin/applications", :action => "view", :id=>@source.application.id, :mode=>:sources) %>
+        </td>
+    </tr>
+
+    <tr>
         <th width="160">
             Source Id
         </th>
@@ -58,7 +67,7 @@
         <%= tr8n_actions_tag([ 
             link_to_function("Update", "Tr8n.UI.Lightbox.show('/tr8n/admin/sources/lb_update?id=#{@source.id}', {height:350})"),
             link_to("Recalculate All Metrics", "/tr8n/admin/applications/recalculate_source?source_id=#{@source.id}", :confirm => "Are you sure you want to recalculate all metrics for this source?"),
-            link_to("Remove All Keys", "/tr8n/admin/applications/remove_keys_from_source?all=true&source_id=#{@source.id}", :confirm => "Are you sure you want to remove all keys from this source?")
+            link_to("Remove All Keys", "/tr8n/admin/applications/remove_keys_from_source?all=true&id=#{@source.id}", :confirm => "Are you sure you want to remove all keys from this source?")
           ])
         %>
         </td>

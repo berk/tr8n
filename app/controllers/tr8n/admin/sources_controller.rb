@@ -108,18 +108,10 @@ class Tr8n::Admin::SourcesController < Tr8n::Admin::BaseController
       return redirect_to_source
     end
 
-    params[:keys] = [params[:key_id]] if params[:key_id]
-
     if params[:all] == "true"
-      source.translation_key_sources.each do |tks|
-        tks.destroy
-      end
-    elsif params[:keys]
-      params[:keys].each do |key_id|
-        tks = Tr8n::TranslationKeySource.find(:first, 
-          :conditions => ["translation_key_id = ? and translation_source_id = ?", key_id, source.id])
-        tks.destroy if tks
-      end  
+      Tr8n::TranslationKeySource.delete_all(["translation_source_id = ?", source.id])
+    elsif params[:ids]
+      Tr8n::TranslationKeySource.delete_all(["translation_source_id = ? and translation_key_id in (?)", source.id, params[:ids]])
     end
     
     trfn("Keys have been removed")

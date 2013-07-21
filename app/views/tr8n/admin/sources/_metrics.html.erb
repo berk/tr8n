@@ -22,7 +22,7 @@
          metric.language.english_name
       }],    
       [:key_count, lambda{|metric|
-        link_to(metric.key_count, "/tr8n/admin/applications/source?mode=translation_keys&source_id=#{metric.translation_source.id}")
+        link_to(metric.key_count, "/tr8n/admin/sources/view?mode=translation_keys&id=#{metric.translation_source.id}")
       }, 'text-align:right'],
       [:translated_key_count, lambda{|metric| 
         metric.translated_key_count
