@@ -35,7 +35,7 @@ class Tr8n::TranslationsController < Tr8n::BaseController
     begin
       @selected_application = send(:tr8n_selected_application)
     rescue 
-      @selected_application = Tr8n::Config.current_app
+      @selected_application = Tr8n::Config.current_application
     end
 
     @translations = Tr8n::Translation.for_params(params.merge(:application => @selected_application, :only_phrases => true))
