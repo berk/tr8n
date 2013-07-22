@@ -14531,7 +14531,7 @@ Tr8n.UI.LanguageSelector = {
   },
 
   toggle: function() {
-  	if($('#tr8n_languages_list').length){
+  	if(document.getElementById('tr8n_languages_list')){
   		Tr8n.UI.LanguageSelector.hide();
   	}else{
   		Tr8n.UI.LanguageSelector.show();
