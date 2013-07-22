@@ -14530,6 +14530,14 @@ Tr8n.UI.LanguageSelector = {
     Tr8n.UI.Lightbox.show('/tr8n/tools/language_selector', {height:500, width:400});
   },
 
+  toggle: function() {
+  	if($('#tr8n_languages_list').length){
+  		Tr8n.UI.LanguageSelector.hide();
+  	}else{
+  		Tr8n.UI.LanguageSelector.show();
+  	}
+  },
+
   change: function(locale) {
     Tr8n.UI.Lightbox.show('/tr8n/tools/language_selector/change?locale=' + locale, {width:400, height:480, message:"Changing language..."});      
   },
