@@ -32,7 +32,7 @@ class Tr8n::PhrasesController < Tr8n::BaseController
     begin
       @selected_application = send(:tr8n_selected_application)
     rescue 
-      @selected_application = Tr8n::Config.current_app
+      @selected_application = Tr8n::Config.current_application
     end
 
     sources = sources_from_params
