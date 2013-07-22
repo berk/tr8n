@@ -23,6 +23,17 @@
 
 module Tr8n
   class Token
+
+    def self.register_tokens(label, category, opts = {})
+      tokens = []
+      Tr8n::Config.token_classes(category).each do |token_class|
+        tokens << token_class.parse(label, opts)
+      end
+
+      tokens.flatten
+    end
+
+    # deprecated
     def self.register_data_tokens(label)
       tokens = []
       Tr8n::Config.data_token_classes.each do |token_class|
@@ -32,6 +43,7 @@ module Tr8n
       tokens.flatten
     end
 
+    # deprecated
     def self.register_decoration_tokens(label)
       tokens = []
       Tr8n::Config.decoration_token_classes.each do |token_class|
@@ -44,7 +56,7 @@ module Tr8n
       raise Tr8n::TokenException.new("This method must be implemented in the extending class")
     end
   
-    def self.parse(label)
+    def self.parse(label, opts = {})
       tokens = []
       label.scan(expression).uniq.each do |token_array|
         tokens << self.new(label, token_array.first) 

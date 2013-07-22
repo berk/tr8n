@@ -12,7 +12,6 @@ describe Tr8n::Tokens::DecorationToken do
 					'Hello [[bold]',
 					'Hello [[bold]]',
 					'Hello [[bold]]',
-					'Hello [bold:]',
 					'You have [bold {count}] messages',
       	].each do |label|
         	Tr8n::Tokens::DecorationToken.parse(label).should be_empty
@@ -42,6 +41,13 @@ describe Tr8n::Tokens::DecorationToken do
       	].each do |label|
         	Tr8n::Tokens::DecorationToken.parse(label).count.should eq(2)
         end
+      end
+    end
+
+    context 'nested tokens' do
+      it 'should be registered' do
+        Tr8n::Tokens::DecorationToken.parse('You have [italic: [bold: {count}] messages]').count.should eq(2)
+        Tr8n::Tokens::DecorationToken.parse('You have [italic: [bold: {count}] messages]', :exclude_nested => true).count.should eq(1)
       end
     end
 

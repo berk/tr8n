@@ -34,16 +34,16 @@ module Tr8n
     end
 
     # scans for all token types    
-    def data_tokens
-      @data_tokens ||= Tr8n::Token.register_data_tokens(label)
+    def data_tokens(opts = {})
+      @data_tokens ||= Tr8n::Token.register_tokens(label, :data, opts)
     end
 
     def data_tokens?
       data_tokens.any?
     end
 
-    def decoration_tokens
-      @decoration_tokens ||= Tr8n::Token.register_decoration_tokens(label)
+    def decoration_tokens(opts = {})
+      @decoration_tokens ||= Tr8n::Token.register_tokens(label, :decoration, opts)
     end
 
     def decoration_tokens?

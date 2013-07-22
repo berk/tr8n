@@ -42,6 +42,47 @@ module Tr8n
         /(\[\w+:[^\]]+\])/
       end
       
+      def self.parse(label, opts = {})
+        tokens = []
+        candidates = []
+        label.chars.each do |ch|
+          tokens.each do |token|
+            token.append_to_full_name(ch)
+          end
+          case ch
+            when "[" 
+              tokens.push(Tr8n::Tokens::DecorationToken.new(label, ch))
+            when "]"
+              candidates.push(tokens.pop) if tokens.size > 0
+          end
+        end
+
+        tokens = []
+        candidates.each do |candidate|
+          next unless candidate.is_token?
+          next if candidate.is_nested? and opts[:exclude_nested]
+          tokens.push(candidate)
+        end
+        tokens
+      end
+
+      def is_token?
+        /^\[\w+:/.match(full_name)
+      end
+
+      def is_simple?
+        not self.class.expression.match(value)
+      end
+
+      def is_nested?
+        not is_simple?
+      end
+
+      def append_to_full_name(str)
+        @full_name ||= ""
+        @full_name = @full_name + str;
+      end
+
       def decoration?
         true
       end
@@ -51,11 +92,7 @@ module Tr8n
       end
       
       def value
-        @value ||= begin
-          parts = full_name.gsub(/[\]]/, '').split(':')
-          vl = parts[1..-1].join(':')
-          vl.strip
-        end
+        @value ||= full_name[1..-2].split(':')[1..-1].join(':').strip
       end
       
       # return as is

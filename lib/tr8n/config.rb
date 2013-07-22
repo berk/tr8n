@@ -697,11 +697,17 @@ module Tr8n
     def self.allow_nil_token_values?
       rules_engine[:allow_nil_token_values]
     end
-  
+
+    def self.token_classes(category = :data)
+      rules_engine["#{category}_token_classes".to_sym].collect{|tc| tc.constantize}
+    end
+
+    # deprecated
     def self.data_token_classes
       @data_token_classes ||= rules_engine[:data_token_classes].collect{|tc| tc.constantize}
     end
 
+    # deprecated
     def self.decoration_token_classes
       @decoration_token_classes ||= rules_engine[:decoration_token_classes].collect{|tc| tc.constantize}
     end
