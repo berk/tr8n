@@ -106,11 +106,11 @@ module WillPaginate
 
       [].methods.each do |m|
         unless m =~ /(^__|^nil\?|^send|^object_id$|class|extend|^find$|count|sum|average|maximum|minimum|paginate|first|last|empty\?|respond_to\?)/
-          delegate m, :to => :proxy_found
+          delegate [m] => :proxy_found
         end
       end
 
-      delegate :scopes, :with_scope, :to => :proxy_scope
+      delegate [:scopes, :with_scope] => :proxy_scope
 
       def initialize(proxy_scope, options)
         [options[:extend]].flatten.each { |extension| extend extension } if options[:extend]
