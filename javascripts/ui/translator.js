@@ -29,6 +29,9 @@ Tr8n.UI.Translator = {
   container: null,
   stem_image: null, 
   content_frame: null,
+  resize_control: null,
+  move_control: null,
+  drag_event: null,
 
   init: function() {
     var self = this;
@@ -60,9 +63,9 @@ Tr8n.UI.Translator = {
       if (e.stopPropagation) e.stopPropagation();
 
       if (language_case_node)
-        self.show(language_case_node, true);
+        self.show(e, language_case_node, true);
       else 
-        self.show(translatable_node, false);
+        self.show(e, translatable_node, false);
 
       return false;
     });
@@ -86,7 +89,71 @@ Tr8n.UI.Translator = {
     this.content_frame.style.border = '0px';
     this.container.appendChild(this.content_frame);
 
+    this.move_control = document.createElement('div');
+//    this.move_control.style.backgroundColor = "red";
+    this.move_control.style.position = "absolute";
+    this.move_control.style.zIndex = "9999";
+    this.move_control.style.cursor = "move";
+    this.move_control.style.left = "0px";
+    this.move_control.style.top = "0px";
+    this.move_control.style.width = "350px";
+    this.move_control.style.height = "30px";
+    this.container.appendChild(this.move_control);
+    Tr8n.Utils.addEvent(this.move_control, 'mousedown', this.initMoveDrag.bind(this));
+
+    this.resize_control = document.createElement('div');
+//    this.resize_control.style.backgroundColor = "red";
+    this.resize_control.style.position = "absolute";
+    this.resize_control.style.zIndex = "9999";
+    this.resize_control.style.cursor = "se-resize";
+    this.resize_control.style.right = "0px";
+    this.resize_control.style.bottom = "0px";
+    this.resize_control.style.width = "50px";
+    this.resize_control.style.height = "50px";
+    this.container.appendChild(this.resize_control);
+    Tr8n.Utils.addEvent(this.resize_control, 'mousedown', this.initResizeDrag.bind(this));
+
+    Tr8n.Utils.addEvent(document.documentElement, 'mousemove', this.doDrag.bind(this));
+    Tr8n.Utils.addEvent(document.documentElement, 'mouseup', this.stopDrag.bind(this));
+
     document.body.appendChild(this.container);
+  },
+
+  preventDefault: function(e) {
+    if (e.stop) e.stop();
+    if (e.preventDefault) e.preventDefault();
+    if (e.stopPropagation) e.stopPropagation();
+  },
+
+  initMoveDrag: function(e) {
+    this.drag_event = {type:'move', eventX: e.clientX, eventY: e.clientY, startX: parseInt(this.container.style.left), startY: parseInt(this.container.style.top)};
+    this.preventDefault(e);
+  },
+
+  initResizeDrag: function(e) {
+    this.drag_event = {type:'resize', eventX: e.clientX, eventY: e.clientY, startWidth: parseInt(this.container.style.width), startHeight: parseInt(this.container.style.height)};
+    this.preventDefault(e);
+  },
+
+  doDrag: function(e) {
+    if (this.drag_event == null) return;
+
+    if (this.drag_event.type == 'resize') {
+      this.container.style.width = (this.drag_event.startWidth + e.clientX - this.drag_event.eventX) + 'px';
+      this.container.style.height = (this.drag_event.startHeight + e.clientY - this.drag_event.eventY) + 'px';
+      this.content_frame.style.width = this.container.style.width;
+      this.content_frame.style.height = this.container.style.height;
+      this.move_control.style.width = (parseInt(this.container.style.width) - 50) + "px";
+    } else if (this.drag_event.type == 'move') {
+      this.container.style.left = (this.drag_event.startX + e.clientX - this.drag_event.eventX) + 'px';
+      this.container.style.top = (this.drag_event.startY + e.clientY - this.drag_event.eventY) + 'px';
+    }
+    this.preventDefault(e);
+  },
+
+  stopDrag: function(e) {
+    this.drag_event = null;
+    this.preventDefault(e);
   },
 
   hide: function() {
@@ -97,7 +164,19 @@ Tr8n.UI.Translator = {
     Tr8n.Utils.showFlash();
   },
 
-  show: function(translatable_node, is_language_case) {
+  mousePosition:  function(e) {
+    var coords = {x: 0, y: 0};
+    if (e.pageX || e.pageY) 	{
+        coords.x = e.pageX;
+        coords.y = e.pageY;
+    } else if (e.clientX || e.clientY) 	{
+        coords.x = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+        coords.y = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+    }
+    return coords;
+  },
+
+  show: function(event, translatable_node, is_language_case) {
     this.initContainer();
 
     var self = this;
@@ -111,19 +190,27 @@ Tr8n.UI.Translator = {
 
     var stem = {v: "top", h: "left", width: 10, height: 12};
     var label_rect = Tr8n.Utils.elementRect(translatable_node);
-    var new_container_origin = {left: label_rect.left, top: (label_rect.top + label_rect.height + stem.height)}
-    var stem_offset = label_rect.width/2;
-    var label_center = label_rect.left + label_rect.width/2;
+    var click_coords = this.mousePosition(event);
+
+//    alert(click_coords.x + " " + click_coords.y);
+
+    var new_container_origin = {left: click_coords.x - 60, top: (label_rect.top + label_rect.height + stem.height)};
+//    var label_center = click_coords.left;
+    var stem_offset = 60;
 
     // check if the lightbox will be on the left or on the right
-    if (label_rect.left + label_rect.width + window.innerWidth/2 > window.innerWidth) {
-      new_container_origin.left = label_rect.left + label_rect.width - this.container_width;
-      stem.h = "right";
-      if (new_container_origin.left + 20 > label_center) {
-        new_container_origin.left = label_center - 150;
-        stem_offset = new_container_origin.left - 200;
-      }
-    } 
+//    if (label_rect.left + label_rect.width + window.innerWidth/2 > window.innerWidth) {
+//      new_container_origin.left = label_rect.left + label_rect.width - this.container_width;
+//      stem.h = "right";
+//      if (new_container_origin.left + 20 > label_center) {
+//        new_container_origin.left = label_center - 150;
+//        stem_offset = new_container_origin.left - 200;
+//      }
+//    }
+
+//    this.resize_control.style.right = '';
+//    this.resize_control.style.left = "100px";
+//    this.resize_control.className = 'stem top_left';
 
     this.stem_image.className = 'stem ' + stem.v + "_" + stem.h;
     

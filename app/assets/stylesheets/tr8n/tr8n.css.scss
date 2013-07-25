@@ -229,7 +229,8 @@
 .tr8n_translator_content {
 	font-family: verdana; 
 	font-size:11px; 
-	width: 400px;
+	width: 100%;
+    height: 100%;
 	background: #f4f4f4;
 	padding: 0;
 	margin: 0;
@@ -257,13 +258,11 @@
 	.keyboardInput {
 		padding:10px;
 		height:60px;
+        width:90%;
 		background:#feffef;
 		border:solid 1px #ccc;
-		min-width:365px;
-		max-width:365px;
 		min-height:60px;
-		max-height:400px;
-	 	@include rounded-corners(10px);	
+	 	@include rounded-corners(10px);
 	}
 }
 

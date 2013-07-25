@@ -75,6 +75,19 @@ Tr8n.Utils = {
     }
   },
 
+  removeEvent: function(elm, evType, fn, useCapture) {
+    useCapture = useCapture || false;
+    if (elm.removeEventListener) {
+        elm.removeEventListener(evType, fn, useCapture);
+        return true;
+    } else if (elm.detachEvent) {
+        var r = elm.detachEvent('on' + evType, fn);
+        return r;
+    } else {
+        elm['on' + evType] = null;
+    }
+  },
+
   // Create a URL-encoded query string from an object
   encodeQueryString: function(obj,prefix) {
     var str = [];
