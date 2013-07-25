@@ -737,9 +737,9 @@ module Tr8n
       @default_rules[rules_type] ||= load_yml("/config/tr8n/rules/default_#{rules_type}_rules.yml", nil)
       rules_for_locale = @default_rules[rules_type][locale.to_s]
     
-      return rules_for_locale.values unless rules_for_locale.nil?
-      return [] if @default_rules[rules_type][default_locale].nil?
-      @default_rules[rules_type][default_locale].values
+      return rules_for_locale unless rules_for_locale.nil?
+      return {} if @default_rules[rules_type][default_locale].nil?
+      @default_rules[rules_type][default_locale]
     end
 
     def self.default_gender_rules(locale = default_locale)

@@ -9,12 +9,12 @@
 #############################################################################
 
 en-US:
-  rule1:
+  male:
     operator:   is 
     value:      male
-  rule2:
+  female:
     operator:   is 
     value:      female
-  rule3:
+  unknown:
     operator:   is 
     value:      unknown

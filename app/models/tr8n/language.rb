@@ -136,8 +136,8 @@ class Tr8n::Language < ActiveRecord::Base
   def reset_language_rules!
     rules.delete_all
     Tr8n::Config.language_rule_classes.each do |rule_class|
-      rule_class.default_rules_for(self).each do |definition|
-        rule_class.create(:language => self, :definition => definition)
+      rule_class.default_rules_for(self).each do |keyword, definition|
+        rule_class.create(:language => self, :keyword => keyword, :definition => definition)
       end
     end
   end

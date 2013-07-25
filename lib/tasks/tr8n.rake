@@ -27,7 +27,17 @@ namespace :tr8n do
     raise "This action is prohibited in this environment" if ['production', 'stage', 'staging'].include?(Rails.env)
     Tr8n::Config.reset_all!
   end
-  
+
+  desc "Export languages"
+  task :export_languages => :environment do
+    path = ENV['path'] || 'config/tr8n/languages'
+    #FileUtils.mkdir_p(path)
+
+    Tr8n::Language.all.each do |lang|
+      pp lang.to_api_hash(:definition => true)
+    end
+  end
+
   desc "Resets all metrics"
   task :reset_metrics => :environment do
     Tr8n::LanguageMetric.reset_metrics

@@ -11,9 +11,9 @@
 #############################################################################
 
 en-US:
-  rule1: 
+  one:
     operator: contains
     value:    one_element
-  rule2: 
+  many:
     operator: contains
     value:    at_least_two_elements

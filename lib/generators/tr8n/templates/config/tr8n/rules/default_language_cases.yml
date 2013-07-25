@@ -182,15 +182,14 @@ en-US:
         value1:               "0,4,5,6,7,8,9,11,12,13"
         operation:            append
         operation_value:      "th"
-      
 ru:
-  case1:                
+  nom:                
     keyword:                  "nom"
     latin_name:               "Nominativus"
     native_name:              "Именительный падеж" 
     description:              "Есть - Кто? Что?"
     application:              "words"
-  case2:               
+  gen:               
     keyword:                  "gen"
     latin_name:               "Genitivus"
     native_name:              "Родительный падеж" 
@@ -225,31 +224,31 @@ ru:
         value1:                 "я"
         operation:              replace
         operation_value:        "и"
-  case3:               
+  dat:               
     keyword:          "dat"
     latin_name:       "Dativus"
     native_name:      "Дательный падеж" 
     description:      "Рад - Кому? Чему?"
     application:      "words"
-  case4:               
+  acc:               
     keyword:          "acc"
     latin_name:       "Accusativus"
     native_name:      "Винительный падеж" 
     description:      "Вижу - Кого? Что?"
     application:      "words"
-  case5:               
+  ins:               
     keyword:          "ins"
     latin_name:       "Instrumentalis"
     native_name:      "Творительный падеж" 
     description:      "Доволен - Кем? Чем?"
     application:      "words"
-  case6:               
+  pre:               
     keyword:          "pre"
     latin_name:       "Prepositivus"
     native_name:      "Предложный падеж" 
     description:      "Думаю - О ком? О чём?"
     application:      "words"
-  case7:               
+  pos:               
     keyword:          "pos"
     latin_name:       "Possessive"
     native_name:      "Притяжательный падеж" 

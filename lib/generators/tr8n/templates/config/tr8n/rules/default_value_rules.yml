@@ -10,9 +10,9 @@
 
 en-US:
 ru:
-  rule1:
+  vow:
     operator:   starts_with 
     value:      "а, и, о, у, ы, э, А, И, О, У, Э"
-  rule2:
+  con:
     operator:   does_not_start_with 
     value:      "а, и, о, у, ы, э, А, И, О, У, Э"

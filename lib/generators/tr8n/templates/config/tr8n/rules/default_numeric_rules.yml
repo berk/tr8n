@@ -13,30 +13,30 @@
 #############################################################################
 
 en-US: 
-  rule1:
+  one:
     multipart:  false 
     part1:      is
     value1:     "1"
-  rule2:
+  many:
     multipart:  false 
     part1:      is_not
     value1:     "1"
 ru: 
-  rule1:
+  one:
     multipart:  true 
     part1:      ends_in
     value1:     "1"
     operator:   and
     part2:      does_not_end_in
     value2:     "11"
-  rule2:
+  few:
     multipart:  true 
     part1:      ends_in
     value1:     "2,3,4"
     operator:   and
     part2:      does_not_end_in
     value2:     "12,13,14"
-  rule3:
+  many:
     multipart:  false 
     part1:      ends_in
     value1:     "0,5,6,7,8,9,11,12,13,14"

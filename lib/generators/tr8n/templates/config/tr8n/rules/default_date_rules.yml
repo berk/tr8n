@@ -9,12 +9,12 @@
 #############################################################################
 
 en-US: 
-  rule1:
+  past:
     operator:   is_in
     value:      past
-  rule2:
+  future:
     operator:   is_in 
     value:      future
-  rule3:
+  present:
     operator:   is_in 
     value:      present
