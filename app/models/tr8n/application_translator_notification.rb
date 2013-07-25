@@ -21,7 +21,7 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 #
-#-- Tr8n::ComponentTranslatorNotification Schema Information
+#-- Tr8n::ApplicationTranslatorNotification Schema Information
 #
 # Table name: tr8n_notifications
 #

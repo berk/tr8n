@@ -32,11 +32,13 @@
 #  definition       text            
 #  created_at       datetime        not null
 #  updated_at       datetime        not null
+#  keyword          varchar(255)    
 #
 # Indexes
 #
-#  tr8n_lr_lt    (language_id, translator_id) 
-#  tr8n_lr_l     (language_id) 
+#  tr8n_lr_tlk    (type, language_id, keyword) 
+#  tr8n_lr_lt     (language_id, translator_id) 
+#  tr8n_lr_l      (language_id) 
 #
 #++
 

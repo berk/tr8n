@@ -111,16 +111,6 @@ class Tr8n::Translator < ActiveRecord::Base
     trn
   end
 
-  def register_default_application
-    email = Tr8n::Config.user_email(user)
-    pp email
-    
-    domain_name = email.split("@").last
-    domain = Tr8n::TranslationDomain.find_or_create(nil, domain_name)
-    domain.application.add_translator(self) unless domain.application.translators.include?(self)
-    domain.application
-  end
-
   def self.register(user = Tr8n::Config.current_user)
     return nil unless user and user.id 
     return nil if Tr8n::Config.guest_user?(user)
@@ -128,13 +118,6 @@ class Tr8n::Translator < ActiveRecord::Base
     translator = Tr8n::Translator.find_or_create(user)
     return nil unless translator
 
-    translator.register_default_application
-
-    # update all language user entries to add a translator id
-    #deprecated
-    Tr8n::LanguageUser.where(:user_id => user.id).each do |lu|
-      lu.update_attributes(:translator => translator)
-    end
     translator
   end
   

@@ -1,4 +1,4 @@
-2#--
+#--
 # Copyright (c) 2010-2013 Michael Berkovich, tr8nhub.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -27,10 +27,13 @@
 #
 #  id             INTEGER         not null, primary key
 #  key            varchar(255)    
+#  secret         varchar(255)    
 #  name           varchar(255)    
 #  description    varchar(255)    
 #  created_at     datetime        not null
 #  updated_at     datetime        not null
+#  version        varchar(255)    
+#  definition     text            
 #
 # Indexes
 #
@@ -78,7 +81,7 @@ class Tr8n::Application < ActiveRecord::Base
   end
 
   def self.options
-    Tr8n::Application.find(:all, :order => "name asc").collect{|app| [app.name, app.id]}
+    Tr8n::Application.all.order("name asc").collect{|app| [app.name, app.id]}
   end
 
   def featured_languages

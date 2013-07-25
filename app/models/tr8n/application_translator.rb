@@ -21,21 +21,24 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 #
-#-- Tr8n::ApplicationLanguage Schema Information
+#-- Tr8n::ApplicationTranslator Schema Information
 #
-# Table name: tr8n_application_languages
+# Table name: tr8n_application_translators
 #
-#  id              INTEGER         not null, primary key
-#  application_id  integer         
-#  translator_id   integer         
-#  language_id     integer         
-#  created_at      datetime        not null
-#  updated_at      datetime        not null
+#  id                INTEGER     not null, primary key
+#  application_id    integer     
+#  translator_id     integer     
+#  language_id       integer     
+#  created_at        datetime    not null
+#  updated_at        datetime    not null
+#  manager           boolean     
+#  inline_mode       boolean     
 #
 # Indexes
 #
-#  tr8n_app_lang_lang_id    (language_id) 
-#  tr8n_app_lang_comp_id    (application_id) 
+#  tr8n_app_trn_lang_id    (language_id) 
+#  tr8n_app_trn_trn_id     (translator_id) 
+#  tr8n_app_trn_comp_id    (application_id) 
 #
 #++
 

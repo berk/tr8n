@@ -26,9 +26,10 @@
 # Table name: tr8n_translation_sources
 #
 #  id                       INTEGER         not null, primary key
+#  application_id           integer         
+#  translation_domain_id    integer         
 #  parent_id                integer         
 #  source                   varchar(255)    
-#  translation_domain_id    integer         
 #  completeness             integer         
 #  name                     varchar(255)    
 #  description              varchar(255)    
