@@ -185,6 +185,10 @@ module Tr8n
       (0..16).to_a.map{|a| rand(16).to_s(16)}.join
     end
 
+    def self.default_application
+       @default_application = Tr8n::Application.find_by_key("default") || init_application
+    end
+
     # will clean all tables and initialize default values
     # never ever do it on live !!!
     def self.reset_all!
@@ -195,13 +199,37 @@ module Tr8n
       end
       puts "Done."
 
-      init_default_languages
+      init_languages
       init_glossary
-    
+      init_application
+
       puts "Done."
     end
 
-    def self.init_default_languages
+    def self.init_application
+      puts "Initializing default application..."
+
+      app = Tr8n::Application.find_by_key("default") || Tr8n::Application.create(:key => "default", :name => site_title, :description => "Automatically created during initialization")
+
+      # setup for base url
+      uri = URI.parse(base_url)
+      domain = Tr8n::TranslationDomain.find_by_name(uri.host) || Tr8n::TranslationDomain.create(:name => uri.host)
+      domain.application = app
+      domain.save
+
+      # setup for development environment
+      domain = Tr8n::TranslationDomain.find_by_name("localhost") || Tr8n::TranslationDomain.create(:name => "localhost")
+      domain.application = app
+      domain.save
+
+      ["en-US", "ru", "fr", "es"].each do |locale|
+        app.add_language(Tr8n::Language.for(locale))
+      end
+
+      app
+    end
+
+    def self.init_languages
       puts "Initializing default languages..."
       default_languages.each do |locale, info|
         puts ">> Initializing #{info[:english_name]}..."

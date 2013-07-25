@@ -44,8 +44,18 @@ namespace :dev do
 
   desc "Annotates tr8n models"
   task :annotate => :environment do
-    Dir[File.expand_path("#{File.dirname(__FILE__)}/../../app/models/tr8n/*.rb")].sort.each do |file|
-      class_name = file[file.rindex('tr8n')..-1].gsub('.rb', '').camelcase
+    if ENV["app"]
+      files = Dir[File.expand_path("#{Rails.root}/app/models/*.rb")]
+    else
+      files = Dir[File.expand_path("#{File.dirname(__FILE__)}/../../app/models/tr8n/*.rb")]
+    end
+
+    files.sort.each do |file|
+      if file.rindex('tr8n')
+        class_name = file[file.rindex('tr8n')..-1].gsub('.rb', '').camelcase
+      else
+        class_name = file.split('/').last.gsub('.rb', '').camelcase
+      end
       klass = class_name.constantize
       lines = []
       lines << "#--"

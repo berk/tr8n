@@ -30,9 +30,9 @@ class Tr8n::PhrasesController < Tr8n::BaseController
   def index
     # In the embedded mode - there should be only one application
     begin
-      @selected_application = send(:tr8n_selected_application)
+      @selected_application = send(:current_application)
     rescue 
-      @selected_application = Tr8n::Config.current_app
+      @selected_application = Tr8n::Config.default_application
     end
 
     sources = sources_from_params
@@ -54,9 +54,15 @@ class Tr8n::PhrasesController < Tr8n::BaseController
       @translation_keys =  @translation_keys.where("id not in (?)", restricted_keys)
     end
 
-    @translated = Tr8n::Config.current_language.total_metric.translation_completeness
-    @locked = Tr8n::Config.current_language.completeness
     @translation_keys = @translation_keys.order("created_at desc").page(page).per(per_page)
+
+    if @translation_keys.size == 0
+      @translated = 0
+      @locked = 0
+    else
+      @translated = Tr8n::Config.current_language.total_metric.translation_completeness
+      @locked = Tr8n::Config.current_language.completeness
+    end
   end
   
   def view
@@ -324,7 +330,7 @@ private
 
     @locked = @locked/source_ids.size
     @translated = @translated/source_ids.size
-    pp source_ids
+
     keys = keys.joins(:translation_sources).where("tr8n_translation_sources.id in (?)", source_ids.uniq).uniq
     # where("(tr8n_translation_keys.id in (select distinct(tr8n_translation_key_sources.translation_key_id) from tr8n_translation_key_sources where tr8n_translation_key_sources.translation_source_id in (?)))", source_ids.uniq)
     keys.order("tr8n_translation_keys.created_at desc").page(page).per(per_page)
