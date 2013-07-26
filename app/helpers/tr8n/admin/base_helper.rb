@@ -78,7 +78,7 @@ module Tr8n::Admin::BaseHelper
     chart_params << "chco=008000"
     chart_params << "chd=t:#{counts.reverse.join(',')}"
     
-    image_tag("http://chart.apis.google.com/chart?#{chart_params.join('&')}")     
+    image_tag( URI.encode("http://chart.apis.google.com/chart?#{chart_params.join('&')}") )     
   end
   
   def tr8n_sections_tag(opts = {})
