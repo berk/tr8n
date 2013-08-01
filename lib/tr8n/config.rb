@@ -988,6 +988,8 @@ module Tr8n
           'code' => request_token.token,
           'translator' => {
             'id'      => current_translator.id,
+            'email'   => current_translator.email,
+            'name'    => current_translator.name,
             'inline'  => current_translator.inline_mode,
             'manager' => current_translator.manager?,
           }
