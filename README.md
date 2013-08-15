@@ -118,7 +118,7 @@ Below are a few screenshots of what Tr8n looks like:
 
 ## Tr8n Language Selector
 
-https://raw.github.com/tr8n/tr8n/master/doc/screenshots/language_selector.png
+![alt text](https://raw.github.com/tr8n/tr8n/master/doc/screenshots/language_selector.png "Tr8n Language Selector")
 
 ## Tr8n Translation Interface
 
