@@ -113,29 +113,29 @@ Open your browser and point to:
 
 Below are a few screenshots of what Tr8n looks like:
 
-== Tr8n Language Selector (in a lightbox)
+== Tr8n Language Selector
 
-http://img853.imageshack.us/img853/6784/tr8n1.png
+https://raw.github.com/tr8n/tr8n/master/doc/screenshots/language_selector.png
 
 == Tr8n Translation Interface
 
-http://img140.imageshack.us/img140/1272/tr8n2.png
+https://raw.github.com/tr8n/tr8n/master/doc/screenshots/submit_translation.png
 
 == Tr8n Translation Votes Interface
 
-http://img854.imageshack.us/img854/1341/tr8n3.png
+https://raw.github.com/tr8n/tr8n/master/doc/screenshots/vote_on_translation.png
 
 == Tr8n Translation Tools
 
-http://img824.imageshack.us/img824/2263/tr8n8.png
+https://raw.github.com/tr8n/tr8n/master/doc/screenshots/translation_tools.png
 
 == Tr8n Translator Dashboard
 
-http://img337.imageshack.us/img337/3180/tr8n5.png
+https://raw.github.com/tr8n/tr8n/master/doc/screenshots/translation_tools.png
 
 == Tr8n Translation Admin Tools
 
-http://img225.imageshack.us/img225/3599/tr8n7.png
+https://raw.github.com/tr8n/tr8n/master/doc/screenshots/admin_tools.png
 
 
 = External Links
