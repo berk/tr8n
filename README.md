@@ -10,7 +10,7 @@ provides a set of powerful tools that allow admins to configure any aspect of th
 and monitoring translation progress.
 
 
--![alt text](https://raw.github.com/tr8n/tr8n/master/doc/screenshots/tr8nlogo.png "Tr8n Logo")
+![alt text](https://raw.github.com/tr8n/tr8n/master/doc/screenshots/tr8nlogo.png "Tr8n Logo")
 
 
 
