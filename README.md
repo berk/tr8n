@@ -120,25 +120,21 @@ Below are a few screenshots of what Tr8n looks like:
 
 ![alt text](https://raw.github.com/tr8n/tr8n/master/doc/screenshots/language_selector.png "Tr8n Language Selector")
 
-## Tr8n Translation Interface
+## Tr8n Inline Translator
 
-https://raw.github.com/tr8n/tr8n/master/doc/screenshots/submit_translation.png
+![alt text](https://raw.github.com/tr8n/tr8n/master/doc/screenshots/submit_translation.png "Tr8n Inline Translator")
 
-## Tr8n Translation Votes Interface
+## Tr8n Translation Voting
 
-https://raw.github.com/tr8n/tr8n/master/doc/screenshots/vote_on_translation.png
+![alt text](https://raw.github.com/tr8n/tr8n/master/doc/screenshots/vote_on_translation.png "Tr8n Translation Voting")
 
 ## Tr8n Translation Tools
 
-https://raw.github.com/tr8n/tr8n/master/doc/screenshots/translation_tools.png
-
-## Tr8n Translator Dashboard
-
-https://raw.github.com/tr8n/tr8n/master/doc/screenshots/translation_tools.png
+![alt text](https://raw.github.com/tr8n/tr8n/master/doc/screenshots/translation_tools.png "Tr8n Translation Tools")
 
 ## Tr8n Translation Admin Tools
 
-https://raw.github.com/tr8n/tr8n/master/doc/screenshots/admin_tools.png
+![alt text](https://raw.github.com/tr8n/tr8n/master/doc/screenshots/admin_tools.png "Tr8n Admin Tools")
 
 
 # External Links
