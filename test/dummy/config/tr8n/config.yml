@@ -31,7 +31,7 @@ defaults:
   enable_language_stats:      true      # shows percent completion of a language
 
   enable_admin_translations:  true      # registers tr8n admin keys in the system
-  enable_admin_inline_mode:   true      # allows tr8n engine sections to be inline translated
+  enable_admin_inline_mode:   false     # allows tr8n engine sections to be inline translated
 
   enable_language_cases:      true      # enables support for language cases
   enable_client_sdk:          false     # allows javascript to use tr8nProxy object

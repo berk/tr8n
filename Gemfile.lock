@@ -1,3 +1,12 @@
+GIT
+  remote: git@github.com:berk/will_filter.git
+  revision: 269ecd842538654f100d639451b2071895f25ed6
+  specs:
+    will_filter (3.1.9)
+      kaminari
+      rails (>= 3.2.3)
+      sass
+
 PATH
   remote: .
   specs:
@@ -153,10 +162,6 @@ GEM
       execjs (>= 0.3.0)
       multi_json (~> 1.0, >= 1.0.2)
     watchr (0.7)
-    will_filter (3.1.9)
-      kaminari
-      rails (>= 3.2.3)
-      sass
 
 PLATFORMS
   ruby
@@ -182,4 +187,4 @@ DEPENDENCIES
   tr8n!
   uglifier (>= 1.0.3)
   watchr
-  will_filter
+  will_filter!
