@@ -9,7 +9,10 @@ The language specific context rules and language cases can be registered and man
 provides a set of powerful tools that allow admins to configure any aspect of the engine; enabling and disabling its features
 and monitoring translation progress.
 
-https://raw.github.com/tr8n/tr8n/master/doc/screenshots/tr8nlogo.png
+
+-![alt text](https://raw.github.com/tr8n/tr8n/master/doc/screenshots/tr8nlogo.png "Tr8n Logo")
+
+
 
 The Tr8n engine is based on a robust and flexible pluggable architecture where rule types and the syntax of the TML tokens
 can be configured or extended for any application deployment.
