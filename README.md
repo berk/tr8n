@@ -70,21 +70,27 @@ https://github.com/berk/tr8n/wiki/9.-Supported-Languages
 
 Add the following gems to your Gemfile: 
 
+```ruby
   gem 'will_filter', "~> 3.1.2" 
   gem 'tr8n', "~> 3.2.1" 
-	
+```
+
 And run:
 
+```sh
   $ bundle
+```
 
 At the top of your routes.rb file, add the following lines:
 
+```ruby
   mount WillFilter::Engine => "/will_filter"
   mount Tr8n::Engine => "/tr8n"
+```
 
 To configure and initialize Tr8n engine, run the following commands: 
 
-```shell
+```sh
   $ rails generate will_filter
   $ rails generate tr8n
   $ rake db:migrate
