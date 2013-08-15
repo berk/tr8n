@@ -23,7 +23,7 @@ Yammer Inc, http://www.yammer.com
 You can visit their web sites and see how it is being used.
 
 
-= Documentation
+# Documentation
 
 Please look through the following slides to get familiar with Tr8n concepts and features:
 
@@ -63,7 +63,7 @@ Supported Languages
 https://github.com/berk/tr8n/wiki/9.-Supported-Languages
 
 
-= Installation Instructions
+# Installation Instructions
 
 Add the following gems to your Gemfile: 
 
@@ -93,7 +93,7 @@ Open your browser and point to:
   http://localhost:3000/tr8n
 
 
-= Integration Instructions
+# Integration Instructions
 
 The best way to get going with Tr8n is to run the gem as a stand-alone application and follow the instructions and documentation in the app:
 
@@ -109,36 +109,36 @@ Open your browser and point to:
   http://localhost:3000
 
 
-= Tr8n Screenshots
+# Tr8n Screenshots
 
 Below are a few screenshots of what Tr8n looks like:
 
-== Tr8n Language Selector
+## Tr8n Language Selector
 
 https://raw.github.com/tr8n/tr8n/master/doc/screenshots/language_selector.png
 
-== Tr8n Translation Interface
+## Tr8n Translation Interface
 
 https://raw.github.com/tr8n/tr8n/master/doc/screenshots/submit_translation.png
 
-== Tr8n Translation Votes Interface
+## Tr8n Translation Votes Interface
 
 https://raw.github.com/tr8n/tr8n/master/doc/screenshots/vote_on_translation.png
 
-== Tr8n Translation Tools
+## Tr8n Translation Tools
 
 https://raw.github.com/tr8n/tr8n/master/doc/screenshots/translation_tools.png
 
-== Tr8n Translator Dashboard
+## Tr8n Translator Dashboard
 
 https://raw.github.com/tr8n/tr8n/master/doc/screenshots/translation_tools.png
 
-== Tr8n Translation Admin Tools
+## Tr8n Translation Admin Tools
 
 https://raw.github.com/tr8n/tr8n/master/doc/screenshots/admin_tools.png
 
 
-= External Links
+# External Links
 
 Yammer in Translation
 
@@ -157,23 +157,4 @@ Quora Discussion - What is the best way to deal with internationlization of text
 
 http://bit.ly/hUU6R9 
 
-
-LinkedIn Discussion 
-
-http://www.linkedin.com/groups/Internationalizing-your-application-using-Tr8n-4090552?gid=4090552
-
-
-RailsCasts - If you would like to see a RailsCasts episode on how to get Tr8n configured and running, please visit the RailsCasts suggestion page and vote it up. Thank you!
-  
-http://bit.ly/gz7lFw 
-
-
-Tr8n Discussion on Hacker News
-
-http://bit.ly/hB2qmU 
-
-
-IRC Channel for Discussing Tr8n
-
-irc://irc.freenode.net/#tr8n
 
