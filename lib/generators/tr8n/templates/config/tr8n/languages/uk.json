@@ -1,0 +1,32 @@
+{
+  "locale": "uk",
+  "english_name": "Ukranian",
+  "native_name": "Українська",
+  "google_key": "uk",
+  "context_rules": {
+    "date": {
+      "keys": ["past", "present", "future"]
+    },
+    "gender_list": {
+      "keys": ["one", "other"],
+      "rules": {
+        "one": {"rule": {"size": {"is":"1"}}, "description": "contains 1 person"},
+        "other": {"rule": {"size": {"is_not":"1"}}, "description": "contains at least 2 people"}
+      }
+    },
+    "gender": {
+      "keys": ["male", "female", "unknown"]
+    },
+    "number": {
+      "keys": ["one", "few", "many", "other"],
+      "rules": {
+        "one":    {"rule": {"mod_10_is":"1", "mod_100_is_not":"11"}, "description": "{n} mod 10 is 1 and {n} mod 100 is not 11", "examples": "1, 21, 31, 41, 51, 61..."},
+        "few":    {"rule": {"mod_10_in":"2..4", "mod_100_not_in":"12..14"}, "description": "{n} mod 10 in 2..4 and {n} mod 100 not in 12..14", "examples": "2-4, 22-24, 32-34..."},
+        "many":   {"rule": [{"mod_10_is":"0"}, {"mod_10_in":"5..9"}, {"mod_100_in":"11..14"}], "description": "{n} mod 10 is 0 or {n} mod 10 in 5..9 or {n} mod 100 in 11..14", "examples": "0, 5-20, 25-30, 35-40..."},
+        "other":  {"examples": "1.2, 2.07, 5.94..."}
+      }
+    }
+  },
+  "language_cases": {
+  }
+}

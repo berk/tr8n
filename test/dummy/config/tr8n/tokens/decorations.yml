@@ -1,0 +1,37 @@
+#############################################################################
+#
+# Tr8n Default Decoration Tokens
+#
+#############################################################################
+
+html:
+  strong:     "<strong>{$0}</strong>"
+  bold:       "<strong>{$0}</strong>"
+  b:          "<strong>{$0}</strong>"
+  em:         "<em>{$0}</em>"
+  italic:     "<i>{$0}</i>"
+  i:          "<i>{$0}</i>"
+  link:       "<a href='{$href}'>{$0}</a>"
+  br:         "<br>{$0}"
+  strike:     "<strike>{$0}</strike>"
+  div:        "<div id='{$id}' class='{$class}' style='{$style}'>{$0}</div>"
+  span:       "<span id='{$id}' class='{$class}' style='{$style}'>{$0}</span>"
+  h1:         "<h1>{$0}</h1>"
+  h2:         "<h2>{$0}</h2>"
+  h3:         "<h3>{$0}</h3>"
+
+plain:
+  strong:     "{$0}"
+  bold:       "{$0}"
+  b:          "{$0}"
+  em:         "{$0}"
+  italic:     "{$0}"
+  i:          "{$0}"
+  link:       "{$0}:{$1}"
+  br:         "\n{$0}"
+  strike:     "{$0}"
+  div:        "{$0}"
+  span:       "{$0}"
+  h1:         "{$0}"
+  h2:         "{$0}"
+  h3:         "{$0}"

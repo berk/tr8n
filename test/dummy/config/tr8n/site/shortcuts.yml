@@ -1,0 +1,71 @@
+Ctrl+Shift+S:       
+  description:  Displays Tr8n shortcuts 
+  script:       "Tr8n.UI.Lightbox.show('/tr8n/help/lb_shortcuts', {width:400, height:480});"
+
+Ctrl+Shift+I:       
+  description:  Turns on/off inline translations
+  script:       "Tr8n.UI.LanguageSelector.toggleInlineTranslations();"
+
+Ctrl+Shift+L:       
+  description:  Shows/hides language selector 
+  script:       "Tr8n.UI.LanguageSelector.show(true);"
+
+Ctrl+Shift+N:       
+  description:  Displays notifications
+  script:       "Tr8n.UI.Lightbox.show('/tr8n/translator/lb_notifications', {height:600, width:600});"
+
+Ctrl+Shift+A:       
+  description:  Displays all available languages  
+  script:       "window.location = Tr8n.host + '/tr8n/language/table';"
+
+Ctrl+Shift+K:       
+  description:  Adds software keyboard for each entry field
+  script:       "Tr8n.Utils.toggleKeyboards();"
+
+Ctrl+Shift+C:       
+  description:  Display current component status
+  script:       "Tr8n.UI.Lightbox.show('/tr8n/help/lb_source?source=' + source, {width:420, height:400});"
+
+Ctrl+Shift+T:       
+  description:  Displays Tr8n statistics
+  script:       "Tr8n.UI.Lightbox.show('/tr8n/help/lb_stats', {width:420, height:400});"
+
+Ctrl+Shift+D:       
+  description:  Debug Tr8n Proxy 
+  script:       "Tr8n.SDK.Proxy.debug();"
+
+Alt+Shift+C:       
+  description:  Displays Tr8n credits
+  script:       "window.location = Tr8n.host + '/tr8n/help/credits';"
+
+Alt+Shift+D: 
+  description:  Opens dashboard
+  script:       "window.location = Tr8n.host + '/tr8n/dashboard';"
+
+Alt+Shift+M: 
+  description:  Opens sitemap 
+  script:       "window.location = Tr8n.host + '/tr8n/phrases/map';"
+
+Alt+Shift+P: 
+  description:  Opens phrases
+  script:       "window.location = Tr8n.host + '/tr8n/phrases';"
+
+Alt+Shift+T: 
+  description:  Opens translations
+  script:       "window.location = Tr8n.host + '/tr8n/translations';"
+
+Alt+Shift+A: 
+  description:  Opens awards
+  script:       "window.location = Tr8n.host + '/tr8n/awards';"
+
+Alt+Shift+B: 
+  description:  Opens message board
+  script:       "window.location = Tr8n.host + '/tr8n/forum';"
+
+Alt+Shift+G: 
+  description:  Opens glossary
+  script:       "window.location = Tr8n.host + '/tr8n/glossary';"
+
+Alt+Shift+H: 
+  description:  Opens help
+  script:       "window.location = Tr8n.host + '/tr8n/help';"

@@ -1,0 +1,18 @@
+#############################################################################
+#
+# Tr8n Default Value Rules
+#
+# Definition:
+#   operator:     is, is_not
+#   value1:       male, female, unknown
+#
+#############################################################################
+
+en-US:
+ru:
+  vow:
+    operator:   starts_with 
+    value:      "а, и, о, у, ы, э, А, И, О, У, Э"
+  con:
+    operator:   does_not_start_with 
+    value:      "а, и, о, у, ы, э, А, И, О, У, Э"

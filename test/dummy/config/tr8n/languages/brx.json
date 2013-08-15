@@ -1,0 +1,28 @@
+{
+  "locale": "brx",
+  "english_name": "Bodo",
+  "context_rules": {
+    "date": {
+      "keys": ["past", "present", "future"]
+    },
+    "gender_list": {
+      "keys": ["one", "other"],
+      "rules": {
+        "one": {"rule": ["=", 1, "@size"], "description": "contains 1 element"},
+        "other": {"rule": [">", 1, "@size"], "description": "contains at least 2 elements"}
+      }
+    },
+    "gender": {
+      "keys": ["male", "female", "unknown"]
+    },
+    "number": {
+      "keys": ["one", "other"],
+      "rules": {
+        "one":    {"rule": ["=", 1, "@n"], "description": "{n} is 1", "examples": "1"},
+        "other":  {"examples": "0, 2-999; 1.2, 2.07..."}
+      }
+    }
+  },
+  "language_cases": {
+  }
+}

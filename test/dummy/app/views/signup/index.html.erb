@@ -1,0 +1,22 @@
+<div style="padding-top:40px;padding-bottom:40px;">
+  <div class="row">
+    <div class="span4 offset4 well">
+      <legend><%= tr("Sign Up") %></legend>
+      <%= form_for(@user, :as=>:user, :url => {}, :html => {:method => :post}) do |f| %>
+        <%=f.text_field :email, :class => "span4", :placeholder => trl("Email") %>
+        <%=f.text_field :name, :class => "span4", :placeholder => trl('Name') %>
+        <%=password_field_tag "user[password]", '', :class => "span4", :placeholder => trl('Password') %>
+        <%=password_field_tag "user[password_confirmation]", '', :class => "span4", :placeholder => trl('Confirm Password') %>
+        <button type="submit" name="submit" class="btn btn-block"><%= tr("Register") %></button>
+
+        <br>
+
+        <div style="float:right">
+        </div>
+        <div style="float:left">
+          <%=link_to(tr("Already have an account?"), :controller => :login, :mode => params[:mode], :origin => params[:origin])%>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

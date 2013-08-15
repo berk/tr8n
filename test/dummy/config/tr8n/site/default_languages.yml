@@ -1,0 +1,1591 @@
+#############################################################################
+#
+# Tr8n Default Languages
+#
+#############################################################################
+"ab":
+  english_name: "Abkhazian"
+  native_name: "Аҧсуа"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"af":
+  english_name: "Afrikaans"
+  native_name: "Afrikaans"
+  google_key: "af"
+  facebook_key: ""
+  enabled:  true
+"ak":
+  english_name: "Akan"
+  native_name: "Akan"
+  google_key: "ak"
+  facebook_key: ""
+  enabled:  false
+"sq":
+  english_name: "Albanian"
+  native_name: "Shqiptar"
+  google_key: "sq"
+  facebook_key: ""
+  enabled:  false
+"am":
+  english_name: "Amharic"
+  native_name: "Amharic"
+  google_key: "am"
+  facebook_key: ""
+  enabled:  false
+"ar":
+  english_name: "Arabic"
+  native_name: "العربية"
+  google_key: "ar"
+  facebook_key: ""
+  right_to_left: true
+  enabled:  true
+"ar-DZ":
+  english_name: "Arabic (Algeria)"
+  native_name: "العربية"
+  google_key: "ar"
+  facebook_key: ""
+  right_to_left: true
+  enabled:  false
+"ar-BH":
+  english_name: "Arabic (Bahrain)"
+  native_name: "العربية"
+  google_key: "ar"
+  facebook_key: ""
+  right_to_left: true
+  enabled:  false
+"ar-EG":
+  english_name: "Arabic (Egypt)"
+  native_name: "العربية"
+  google_key: "ar"
+  facebook_key: ""
+  right_to_left: true
+  enabled:  false
+"ar-IQ":
+  english_name: "Arabic (Iraq)"
+  native_name: "العربية"
+  google_key: "ar"
+  facebook_key: ""
+  right_to_left: true
+  enabled:  false
+"ar-JO":
+  english_name: "Arabic (Jordan)"
+  native_name: "العربية"
+  google_key: "ar"
+  facebook_key: ""
+  right_to_left: true
+  enabled:  false
+"ar-KW":
+  english_name: "Arabic (Kuwait)"
+  native_name: "العربية"
+  google_key: "ar"
+  facebook_key: ""
+  right_to_left: true
+  enabled:  false
+"ar-LB":
+  english_name: "Arabic (Lebanon)"
+  native_name: "العربية"
+  google_key: "ar"
+  facebook_key: ""
+  right_to_left: true
+  enabled:  false
+"ar-LY":
+  english_name: "Arabic (Libya)"
+  native_name: "العربية"
+  google_key: "ar"
+  facebook_key: ""
+  right_to_left: true
+  enabled:  false
+"ar-MA":
+  english_name: "Arabic (Morocco)"
+  native_name: "العربية"
+  google_key: "ar"
+  facebook_key: ""
+  right_to_left: true
+  enabled:  false
+"ar-OM":
+  english_name: "Arabic (Oman)"
+  native_name: "العربية"
+  google_key: "ar"
+  facebook_key: ""
+  right_to_left: true
+  enabled:  false
+"ar-QA":
+  english_name: "Arabic (Qatar)"
+  native_name: "العربية"
+  google_key: "ar"
+  facebook_key: ""
+  right_to_left: true
+  enabled:  false
+"ar-SA":
+  english_name: "Arabic (Saudi Arabia)"
+  native_name: "العربية"
+  google_key: "ar"
+  facebook_key: ""
+  right_to_left: true
+  enabled:  false
+"ar-SY":
+  english_name: "Arabic (Syria)"
+  native_name: "العربية"
+  google_key: "ar"
+  facebook_key: ""
+  right_to_left: true
+  enabled:  false
+"ar-TN":
+  english_name: "Arabic (Tunisia)"
+  native_name: "العربية"
+  google_key: "ar"
+  facebook_key: ""
+  right_to_left: true
+  enabled:  false
+"ar-AE":
+  english_name: "Arabic (U.A.E)"
+  native_name: "العربية"
+  google_key: "ar"
+  facebook_key: ""
+  right_to_left: true
+  enabled:  false
+"ar-YE":
+  english_name: "Arabic (Yemen)"
+  native_name: "العربية"
+  google_key: "ar"
+  facebook_key: ""
+  right_to_left: true
+  enabled:  false
+"an":
+  english_name: "Aragonese"
+  native_name: "Aragonese"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"hy":
+  english_name: "Armenian"
+  native_name: "Հայերեն"
+  google_key: "hy"
+  facebook_key: ""
+  enabled:  true
+"as":
+  english_name: "Assamese"
+  native_name: "Assamese"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"ast":
+  english_name: "Asturian"
+  native_name: "Asturian"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"ay":
+  english_name: "Aymara"
+  native_name: "Aymar aru"
+  google_key: ""
+  facebook_key: "ay-BO"
+  enabled:  false
+"az":
+  english_name: "Azerbaijani"
+  native_name: "Азәрбајҹан дили"
+  google_key: "az"
+  facebook_key: ""
+  enabled:  false
+"ba":
+  english_name: "Bashkir"
+  native_name: "Башҡорт"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"eu":
+  english_name: "Basque"
+  native_name: "Euskara"
+  google_key: "eu"
+  facebook_key: ""
+  enabled:  false
+"be":
+  english_name: "Belarusian"
+  native_name: "Беларуская"
+  google_key: "be"
+  facebook_key: ""
+  enabled:  false
+"bn":
+  english_name: "Bengali"
+  native_name: "Bengali"
+  google_key: "bn"
+  facebook_key: ""
+  enabled:  false
+"bh":
+  english_name: "Bihari"
+  native_name: "Bihari"
+  google_key: "bh"
+  facebook_key: ""
+  enabled:  false
+"bs":
+  english_name: "Bosnian"
+  native_name: "Bosanski"
+  google_key: "bs"
+  facebook_key: ""
+  enabled:  false
+"br":
+  english_name: "Breton"
+  native_name: "Breton"
+  google_key: "br"
+  facebook_key: ""
+  enabled:  false
+"bg":
+  english_name: "Bulgarian"
+  native_name: "Български"
+  google_key: "bg"
+  facebook_key: ""
+  enabled:  true
+"my":
+  english_name: "Burmese"
+  native_name: "Burmese"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"km":
+  english_name: "Cambodian"
+  native_name: "Cambodian"
+  google_key: "km"
+  facebook_key: ""
+  enabled:  false
+"ca":
+  english_name: "Catalan"
+  native_name: "Català"
+  google_key: "ca"
+  facebook_key: ""
+  enabled:  true
+"cb":
+  english_name: "Central Bikolano"
+  native_name: "Central Bikolano"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"ch":
+  english_name: "Chamorro"
+  native_name: "Chamorro"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"ce":
+  english_name: "Chechen"
+  native_name: "Chechen"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"ck-US":
+  english_name: "Cherokee"
+  native_name: "Cherokee"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"ny":
+  english_name: "Chichewa"
+  native_name: "Chichewa"
+  google_key: "ny"
+  facebook_key: ""
+  enabled:  false
+"zh":
+  english_name: "Chinese"
+  native_name: "中文(香港)"
+  google_key: "zh-CN"
+  facebook_key: ""
+  enabled:  false
+"zh-HK":
+  english_name: "Chinese (Hong Kong)"
+  native_name: "中文(香港)"
+  google_key: "zh-CN"
+  facebook_key: ""
+  enabled:  false
+  fallback_key: "zh"
+"zh-SG":
+  english_name: "Chinese (Singapore)"
+  native_name: "Chinese (Singapore)"
+  google_key: "zh-CN"
+  facebook_key: ""
+  enabled:  false
+  fallback_key: "zh"
+"zh-CN":
+  english_name: "Chinese (Simplified)"
+  native_name: "中文(简体)"
+  google_key: "zh-CN"
+  facebook_key: ""
+  enabled:  true
+  fallback_key: "zh"
+"zh-TW":
+  english_name: "Chinese (Traditional)"
+  native_name: "中文(台灣)"
+  google_key: "zh-TW"
+  facebook_key: ""
+  enabled:  true
+  fallback_key: "zh"
+  featured_index: 100
+"cv":
+  english_name: "Chuvash"
+  native_name: "чӑваш"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"co":
+  english_name: "Corsican"
+  native_name: "Corsican"
+  google_key: "co"
+  facebook_key: ""
+  enabled:  false
+"cr":
+  english_name: "Cree"
+  native_name: "Cree"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"hr":
+  english_name: "Croatian"
+  native_name: "Hrvatski"
+  google_key: "hr"
+  facebook_key: ""
+  enabled:  false
+"cs":
+  english_name: "Czech"
+  native_name: "Český"
+  google_key: "cs"
+  facebook_key: ""
+  enabled:  true
+"da":
+  english_name: "Danish"
+  native_name: "Danske"
+  google_key: "da"
+  facebook_key: ""
+  enabled:  true
+"nl":
+  english_name: "Dutch"
+  native_name: "Flemish"
+  google_key: "nl"
+  facebook_key: ""
+  enabled:  true
+"nl-NE":
+  english_name: "Dutch (Belgium)"
+  native_name: "Dutch (Belgium)"
+  google_key: "nl"
+  facebook_key: ""
+  enabled:  false
+"en":
+  english_name: "English"
+  native_name: "English"
+  google_key: "en"
+  facebook_key: ""
+  enabled:  false
+"en-AU":
+  english_name: "English (Australian)"
+  native_name: "English (Australian)"
+  google_key: "en"
+  facebook_key: ""
+  enabled:  false
+"en-BZ":
+  english_name: "English (Belize)"
+  native_name: "English (Belize)"
+  google_key: "en"
+  facebook_key: ""
+  enabled:  false
+"en-CA":
+  english_name: "English (Canadian)"
+  native_name: "English (Canadian)"
+  google_key: "en"
+  facebook_key: "en-CAN"
+  enabled:  false
+"en-IE":
+  english_name: "English (Ireland)"
+  native_name: "English (Ireland)"
+  google_key: "en"
+  facebook_key: ""
+  enabled:  false
+"en-JM":
+  english_name: "English (Jamaica)"
+  native_name: "English (Jamaica)"
+  google_key: "en"
+  facebook_key: ""
+  enabled:  false
+"en-NZ":
+  english_name: "English (New Zealand)"
+  native_name: "English (New Zealand)"
+  google_key: "en"
+  facebook_key: ""
+  enabled:  false
+"en-PH":
+  english_name: "English (Philippines)"
+  native_name: "English (Philippines)"
+  google_key: "en"
+  facebook_key: ""
+  enabled:  false
+"en-ZA":
+  english_name: "English (South Africa)"
+  native_name: "English (South Africa)"
+  google_key: "en"
+  facebook_key: ""
+  enabled:  false
+"en-PI":
+  english_name: "English (Pirate)"
+  native_name: "English (Pirate)"
+  google_key: "xx-pirate"
+  facebook_key: "en-PI"
+  enabled:  true
+"en-SC":
+  english_name: "English (Scottish)"
+  native_name: "English (Scottish)"
+  google_key: "en"
+  facebook_key: "en-SC"
+  enabled:  false
+"en-UK":
+  english_name: "English (UK)"
+  native_name: "English (UK)"
+  google_key: "en"
+  facebook_key: "en-UK"
+  enabled:  false
+"en-US":
+  english_name: "English (US)"
+  native_name: "English (US)"
+  google_key: "en"
+  facebook_key: "en-US"
+  enabled:  true
+  featured_index: 1000
+"en-ZW":
+  english_name: "English (Zimbabwe)"
+  native_name: "English (Zimbabwe)"
+  google_key: "en"
+  facebook_key: ""
+  enabled:  false
+"eo":
+  english_name: "Esperanto"
+  native_name: "Esperanto"
+  google_key: "eo"
+  facebook_key: "eo-EO"
+  enabled:  false
+"et":
+  english_name: "Estonian"
+  native_name: "Eesti"
+  google_key: "et"
+  facebook_key: ""
+  enabled:  true
+  featured_index: 300
+"fo":
+  english_name: "Faroese"
+  native_name: "Føroyskt"
+  google_key: "fo"
+  facebook_key: "fo-FO"
+  enabled:  false
+"fj":
+  english_name: "Fijian"
+  native_name: "Vakaviti"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"tl":
+  english_name: "Filipino"
+  native_name: "Filipino"
+  google_key: "tl"
+  facebook_key: ""
+  enabled:  false
+"fi":
+  english_name: "Finnish"
+  native_name: "Suomi"
+  google_key: "fi"
+  facebook_key: ""
+  enabled:  true
+"fr":
+  english_name: "French"
+  native_name: "Français"
+  google_key: "fr"
+  facebook_key: ""
+  enabled:  true
+  featured_index: 700
+"fr-BE":
+  english_name: "French (Belgium)"
+  native_name: "Français (Belgium)"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"fr-CA":
+  english_name: "French (Canadian)"
+  native_name: "Français (Canada)"
+  google_key: ""
+  facebook_key: "fr-CAN"
+  enabled:  false
+"fr-FR":
+  english_name: "French (France)"
+  native_name: "Français (France)"
+  google_key: "fr"
+  facebook_key: ""
+  enabled:  false
+"fr-LU":
+  english_name: "French (Luxembourg)"
+  native_name: "Français (Luxembourg)"
+  google_key: "fr"
+  facebook_key: ""
+  enabled:  false
+"fr-MC":
+  english_name: "French (Monaco)"
+  native_name: "Français (Monaco)"
+  google_key: "fr"
+  facebook_key: ""
+  enabled:  false
+"fr-CH":
+  english_name: "French (Switzerland)"
+  native_name: "Français (Switzerland)"
+  google_key: "fr"
+  facebook_key: ""
+  enabled:  false
+"fy":
+  english_name: "Frisian"
+  native_name: "Frisian"
+  google_key: "fy"
+  facebook_key: ""
+  enabled:  false
+"fur":
+  english_name: "Friulian"
+  native_name: "Friulian"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"gl":
+  english_name: "Galician"
+  native_name: "Galician"
+  google_key: "gl"
+  facebook_key: ""
+  enabled:  false
+"ka":
+  english_name: "Georgian"
+  native_name: "ქართული"
+  google_key: "ka"
+  facebook_key: ""
+  enabled:  false
+"de":
+  english_name: "German"
+  native_name: "Deutsch"
+  google_key: "de"
+  facebook_key: ""
+  enabled:  true
+  featured_index: 600
+"de-AT":
+  english_name: "German (Austria)" 
+  native_name: "Deutsch (Austria)"
+  google_key: "de"
+  facebook_key: ""
+  enabled:  false
+"de-DE":
+  english_name: "German (Germany)" 
+  native_name: "Deutsch (Germany)"
+  google_key: "de"
+  facebook_key: ""
+  enabled:  false
+"de-LI":
+  english_name: "German (Liechtenstein)" 
+  native_name: "Deutsch (Liechtenstein)"
+  google_key: "de"
+  facebook_key: ""
+  enabled:  false
+"de-LU":
+  english_name: "German (Luxembourg)" 
+  native_name: "Deutsch (Luxembourg)"
+  google_key: "de"
+  facebook_key: ""
+  enabled:  false
+"de-CH":
+  english_name: "German (Switzerland)" 
+  native_name: "Deutsch (Switzerland)"
+  google_key: "de"
+  facebook_key: ""
+  enabled:  false
+"el":
+  english_name: "Greek"
+  native_name: "Ελληνικά"
+  google_key: "el"
+  facebook_key: ""
+  enabled:  true
+"kl":
+  english_name: "Greenlandic"
+  native_name: "Greenlandic"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"gn":
+  english_name: "Guarani"
+  native_name: "Avañe"
+  google_key: "gn"
+  facebook_key: "gn-PY"
+  enabled:  false
+"gu":
+  english_name: "Gujarati"
+  native_name: "ગુજરાતી"
+  google_key: "gu"
+  facebook_key: "gu-IN"
+  enabled:  false
+"ht":
+  english_name: "Haitian Creole"
+  native_name: "Ayisyen"
+  google_key: "ht"
+  facebook_key: ""
+  enabled:  false
+"ha":
+  english_name: "Hausa"
+  native_name: "Hausa"
+  google_key: "ha"
+  facebook_key: ""
+  enabled:  false
+"haw":
+  english_name: "Hawaiian"
+  native_name: "Hawaiian"
+  google_key: "haw"
+  facebook_key: ""
+  enabled:  false
+"he":
+  english_name: "Hebrew"
+  native_name: "עברית"
+  google_key: "iw"
+  facebook_key: "iw"
+  right_to_left: true
+  enabled:  true
+  featured_index: 200
+"hi":
+  english_name: "Hindi"
+  native_name: "हिन्दी"
+  google_key: "hi"
+  facebook_key: ""
+  enabled:  true
+"hu":
+  english_name: "Hungarian"
+  native_name: "Magyar"
+  google_key: "hu"
+  facebook_key: ""
+  enabled:  true
+"is":
+  english_name: "Icelandic"
+  native_name: "Íslenska"
+  google_key: "is"
+  facebook_key: ""
+  enabled:  false
+"ig":
+  english_name: "Igbo"
+  native_name: "Igbo"
+  google_key: "ig"
+  facebook_key: ""
+  enabled:  false
+"id":
+  english_name: "Indonesian"
+  native_name: "Indonesia"
+  google_key: "id"
+  facebook_key: ""
+  enabled:  false
+"ia":
+  english_name: "Interlingua"
+  native_name: "Interlingua"
+  google_key: "ia"
+  facebook_key: ""
+  enabled:  false
+"ie":
+  english_name: "Interlingue"
+  native_name: "Interlingue"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"iu":
+  english_name: "Inuktitut"
+  native_name: "Inuktitut"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"ga":
+  english_name: "Irish"
+  native_name: "Gaeilge"
+  google_key: "ga"
+  facebook_key: ""
+  enabled:  true
+"it":
+  english_name: "Italian"
+  native_name: "Italiano"
+  google_key: "it"
+  facebook_key: ""
+  enabled:  true
+  featured_index: 500
+"it-ch":
+  english_name: "Italian (Switzerland)"
+  native_name: "Italiano (Switzerland)"
+  google_key: "it"
+  facebook_key: ""
+  enabled:  false
+"ja":
+  english_name: "Japanese"
+  native_name: "日本語"
+  google_key: "ja"
+  facebook_key: ""
+  enabled:  true
+"jw":
+  english_name: "Javanese"
+  native_name: "Basa Jawa"
+  google_key: "jw"
+  facebook_key: "jv-ID"
+  enabled:  false
+"kn":
+  english_name: "Kannada"
+  native_name: "Kannada"
+  google_key: "kn"
+  facebook_key: ""
+  enabled:  false
+"ks":
+  english_name: "Kashmiri"
+  native_name: "कश्मीरी"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"kk":
+  english_name: "Kazakh"
+  native_name: "Қазақша"
+  google_key: "kk"
+  facebook_key: ""
+  enabled:  false
+"km":
+  english_name: "Khmer"
+  native_name: "Khmer"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"rw":
+  english_name: "Kinyarwanda"
+  native_name: "Kinyarwanda"
+  google_key: "rw"
+  facebook_key: ""
+  enabled:  false
+"ky":
+  english_name: "Kirghiz"
+  native_name: "Кыргыз"
+  google_key: "ky"
+  facebook_key: ""
+  enabled:  false
+"rn":
+  english_name: "Kirundi"
+  native_name: "Kirundi"
+  google_key: "rn"
+  facebook_key: ""
+  enabled:  false
+"tlh":
+  english_name: "Klingon"
+  native_name: "tlhIngan"
+  google_key: "xx-klingon"
+  facebook_key: ""
+  enabled:  false
+"kok":
+  english_name: "Konkani"
+  native_name: "Konkani"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"ko":
+  english_name: "Korean"
+  native_name: "한국어"
+  google_key: "ko"
+  facebook_key: ""
+  enabled:  true
+"ko-KP":
+  english_name: "Korean (North Korea)"
+  native_name: "Korean (North Korea)"
+  google_key: "ko"
+  facebook_key: ""
+  enabled:  false
+"ko-KR":
+  english_name: "Korean (South Korea)"
+  native_name: "Korean (South Korea)"
+  google_key: "ko"
+  facebook_key: ""
+  enabled:  false
+"ku":
+  english_name: "Kurdish"
+  native_name: "كوردی‎"
+  google_key: "ku"
+  facebook_key: ""
+  right_to_left: true
+  enabled:  false
+"lo":
+  english_name: "Laothian"
+  native_name: "Laothian"
+  google_key: "lo"
+  facebook_key: ""
+  enabled:  false
+"la":
+  english_name: "Latin"
+  native_name: "Latina"
+  google_key: "la"
+  facebook_key: ""
+  enabled:  false
+"lv":
+  english_name: "Latvian"
+  native_name: "Latviešu"
+  google_key: "lv"
+  facebook_key: ""
+  enabled:  false
+"fb-LT":
+  english_name: "Leet Speak"
+  native_name: "1337"
+  google_key: ""
+  facebook_key: "fb-LT"
+  enabled:  false
+"li-NL":
+  english_name: "Limburgish"
+  native_name: "Limburgs"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"ln":
+  english_name: "Lingala"
+  native_name: "Lingala"
+  google_key: "ln"
+  facebook_key: ""
+  enabled:  false
+"lt":
+  english_name: "Lithuanian"
+  native_name: "Lietuvių"
+  google_key: "lt"
+  facebook_key: ""
+  enabled:  false
+"lb":
+  english_name: "Luxembourgish"
+  native_name: "Luxembourgish"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"lg":
+  english_name: "Luganda"
+  native_name: "Luganda"
+  google_key: "lg"
+  facebook_key: ""
+  enabled:  false
+"ach":
+  english_name: "Luo"
+  native_name: "Luo"
+  google_key: "ach"
+  facebook_key: ""
+  enabled:  false
+"mk":
+  english_name: "Macedonian"
+  native_name: "Македонски"
+  google_key: "mk"
+  enabled:  false
+  facebook_key: ""
+"mg":
+  english_name: "Malagasy"
+  native_name: "Malagasy"
+  google_key: "mg"
+  facebook_key: "mg-MG"
+  enabled:  false
+"ms":
+  english_name: "Malay"
+  native_name: "Melayu"
+  google_key: "ms"
+  facebook_key: ""
+  enabled:  false
+"ml":
+  english_name: "Malayalam"
+  native_name: "Malayalam"
+  google_key: "ml"
+  facebook_key: ""
+  enabled:  false
+"mt":
+  english_name: "Maltese"
+  native_name: "Malti"
+  google_key: "mt"
+  facebook_key: ""
+  enabled:  false
+"gv":
+  english_name: "Manx"
+  native_name: "Manx"
+  google_key: "mt"
+  facebook_key: ""
+  enabled:  false
+"mi":
+  english_name: "Maori"
+  native_name: "Maori"
+  google_key: "mi"
+  facebook_key: ""
+  enabled:  false
+"mr":
+  english_name: "Marathi"
+  native_name: "मराठी"
+  google_key: "mr"
+  facebook_key: "mr-IN"
+  enabled:  false
+"mh":
+  english_name: "Marshallese"
+  native_name: "Marshallese"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"mfe":
+  english_name: "Mauritian Creole"
+  native_name: "Mauritian Creole"
+  google_key: "mfe"
+  facebook_key: ""
+  enabled:  false
+"mo":
+  english_name: "Mohawk"
+  native_name: "Mohawk"
+  google_key: "mo"
+  facebook_key: ""
+  enabled:  false
+"md":
+  english_name: "Moldavian"
+  native_name: "Moldavian"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"mn":
+  english_name: "Mongolian"
+  native_name: "Монгол"
+  google_key: "mn"
+  facebook_key: ""
+  enabled:  false
+"sr-ME":
+  english_name: "Montenegrin"
+  native_name: "Montenegrin"
+  google_key: "sr-ME"
+  facebook_key: ""
+  enabled:  false
+"na":
+  english_name: "Nauru"
+  native_name: "Nauru"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"nv":
+  english_name: "Navajo"
+  native_name: "Dinékʼehǰí"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"nd":
+  english_name: "Ndebele (North)"
+  native_name: "Ndebele (North)"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"nr":
+  english_name: "Ndebele (South)"
+  native_name: "Ndebele (South)"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"ng":
+  english_name: "Ndonga"
+  native_name: "Ndonga"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"ne":
+  english_name: "Nepali"
+  native_name: "नेपाली"
+  google_key: "ne"
+  facebook_key: ""
+  enabled:  false
+"se-NO":
+  english_name: "North Sami"
+  native_name: "Davvisámegiella"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"no":
+  english_name: "Norwegian"
+  native_name: "Norsk (bokmål)"
+  google_key: "no"
+  facebook_key: ""
+  enabled:  true
+"nn":
+  english_name: "Norwegian (Nynorsk)"
+  native_name: "Norwegian (Nynorsk)"
+  google_key: "nn"
+  facebook_key: ""
+  enabled:  false
+"nb":
+  english_name: "Norwegian (Bokmal)"
+  native_name: "Norwegian (Bokmal)"
+  google_key: "no"
+  facebook_key: ""
+  enabled:  false
+"oc":
+  english_name: "Occitan"
+  native_name: "Occitan"
+  google_key: "oc"
+  facebook_key: ""
+  enabled:  false
+"or":
+  english_name: "Oriya"
+  native_name: "Oriya"
+  google_key: "or"
+  facebook_key: ""
+  enabled:  false
+"om":
+  english_name: "Oromo"
+  native_name: "Oromo"
+  google_key: "om"
+  facebook_key: ""
+  enabled:  false
+"pa":
+  english_name: "Punjabi"
+  native_name: "ਪੰਜਾਬੀ"
+  google_key: "pa"
+  facebook_key: ""
+  enabled:  true
+"pa-IN":
+  english_name: "Punjabi (India)"
+  native_name: "Punjabi (India)"
+  google_key: "pa"
+  facebook_key: ""
+  enabled:  false
+"pa-PK":
+  english_name: "Punjabi (Pakistan)"
+  native_name: "Punjabi (Pakistan)"
+  google_key: "pa"
+  facebook_key: ""
+  enabled:  false
+"pp":
+  english_name: "Papiamento"
+  native_name: "Papiamento"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"ps":
+  english_name: "Pashto"
+  native_name: "پښتو"
+  google_key: "ps"
+  facebook_key: "ps-AF"
+  right_to_left: true
+  enabled:  false
+"fa":
+  english_name: "Persian"
+  native_name: "فارسی"
+  google_key: "fa"
+  facebook_key: ""
+  right_to_left: true
+  enabled:  true
+"fa-IR":
+  english_name: "Persian (Iran)"
+  native_name: "Persian (Iran)"
+  google_key: "fa"
+  facebook_key: ""
+  right_to_left: true
+  enabled:  false
+"pl":
+  english_name: "Polish"
+  native_name: "Polski"
+  google_key: "pl"
+  facebook_key: ""
+  enabled:  true
+"pt":
+  english_name: "Portuguese (Portugal)"
+  native_name: "Português (Portugal)"
+  google_key: "pt-PT"
+  facebook_key: ""
+  enabled:  true
+  featured_index: 800
+"pt-BZ":
+  english_name: "Portuguese (Brazil)"
+  native_name: "Português (Brazil)"
+  google_key: "pt-BR"
+  facebook_key: ""
+  enabled:  false
+"qu-PE":
+  english_name: "Quechua"
+  native_name: "Qhichwa"
+  google_key: "qu"
+  facebook_key: "qu-PE"
+  enabled:  false
+"rj":
+  english_name: "Rajasthani"
+  native_name: "Rajasthani"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"ro":
+  english_name: "Romanian"
+  native_name: "Română"
+  google_key: "ro"
+  facebook_key: ""
+  enabled:  false
+"ro-RO":
+  english_name: "Romanian (Romania)"
+  native_name: "Română (Romania)"
+  google_key: "ro"
+  facebook_key: ""
+  enabled:  false
+"ro-MD":
+  english_name: "Romanian (Molodova)"
+  native_name: "Română (Molodova)"
+  google_key: "ro"
+  facebook_key: ""
+  enabled:  false
+"rm":
+  english_name: "Romansh"
+  native_name: "Rumantsch"
+  google_key: "rm"
+  facebook_key: "rm-CH"
+  enabled:  false
+"nyn":
+  english_name: "Runyakitara"
+  native_name: "Runyakitara"
+  google_key: "nyn"
+  facebook_key: ""
+  enabled:  false
+"ru":
+  english_name: "Russian"
+  native_name: "Русский"
+  google_key: "ru"
+  facebook_key: ""
+  enabled:  true
+  featured_index: 400
+"sm":
+  english_name: "Samoan"
+  native_name: "Samoan"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"sg":
+  english_name: "Sango"
+  native_name: "Sango"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"sa":
+  english_name: "Sanskrit"
+  native_name: "संस्कृतम्"
+  google_key: ""
+  facebook_key: "sa-IN"
+  enabled:  false
+"sc":
+  english_name: "Sardinian"
+  native_name: "Sardinian"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"gd":
+  english_name: "Scots Gaelic"
+  native_name: "Scots Gaelic"
+  google_key: "gd"
+  facebook_key: ""
+  enabled:  false
+"sr":
+  english_name: "Serbian"
+  native_name: "Српски"
+  google_key: "sr"
+  facebook_key: ""
+  enabled:  false
+"sd":
+  english_name: "Sindhi"
+  native_name: "Sindhi"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"sh":
+  english_name: "Serbo-Croatian"
+  native_name: "Serbo-Croatian"
+  google_key: "sh"
+  facebook_key: ""
+  enabled:  false
+"st":
+  english_name: "Sesotho"
+  native_name: "Sesotho"
+  google_key: "st"
+  facebook_key: ""
+  enabled:  false
+"tn":
+  english_name: "Setswana"
+  native_name: "Setswana"
+  google_key: "tn"
+  facebook_key: ""
+  enabled:  false
+"sn":
+  english_name: "Shona"
+  native_name: "Shona"
+  google_key: "sn"
+  facebook_key: ""
+  enabled:  false
+"sd":
+  english_name: "Sindhi"
+  native_name: "Sindhi"
+  google_key: "sd"
+  facebook_key: ""
+  enabled:  false
+"si":
+  english_name: "Singhalese"
+  native_name: "Singhalese"
+  google_key: "si"
+  facebook_key: ""
+  enabled:  false
+"ss":
+  english_name: "Siswati"
+  native_name: "Siswati"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"sk":
+  english_name: "Slovak"
+  native_name: "Slovenský jazyk"
+  google_key: "sk"
+  facebook_key: ""
+  enabled:  false
+"sl":
+  english_name: "Slovenian"
+  native_name: "Slovenski"
+  google_key: "sl"
+  facebook_key: ""
+  enabled:  false
+"so":
+  english_name: "Somali"
+  native_name: "Somali"
+  google_key: "so"
+  facebook_key: ""
+  enabled:  false
+"nso":
+  english_name: "Sotho (Northern)"
+  native_name: "Sotho (Northern)"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"st":
+  english_name: "Sotho (Southern)"
+  native_name: "Sotho (Southern)"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"es":
+  english_name: "Spanish"
+  native_name: "Español"
+  google_key: "es"
+  facebook_key: ""
+  enabled:  true
+  featured_index: 900
+"es-AR":
+  english_name: "Spanish (Argentina)"
+  native_name: "Español (Argentina)"
+  google_key: "es"
+  facebook_key: ""
+  enabled:  false
+"es-BO":
+  english_name: "Spanish (Bolivia)"
+  native_name: "Español (Bolivia)"
+  google_key: "es"
+  facebook_key: ""
+  enabled:  false
+"es-CL":
+  english_name: "Spanish (Chile)"
+  native_name: "Español (Chile)"
+  google_key: "es"
+  facebook_key: ""
+  enabled:  false
+"es-CO":
+  english_name: "Spanish (Colombia)"
+  native_name: "Español (Colombia)"
+  google_key: "es"
+  facebook_key: ""
+  enabled:  false
+"es-CR":
+  english_name: "Spanish (Costa Rica)"
+  native_name: "Español (Costa Rica)"
+  google_key: "es"
+  facebook_key: ""
+  enabled:  false
+"es-DO":
+  english_name: "Spanish (Dominican Republic)"
+  native_name: "Español (Dominican Republic)"
+  google_key: "es"
+  facebook_key: ""
+  enabled:  false
+"es-EC":
+  english_name: "Spanish (Ecuador)"
+  native_name: "Español (Ecuador)"
+  google_key: "es"
+  facebook_key: ""
+  enabled:  false
+"es-SV":
+  english_name: "Spanish (El Salvador)"
+  native_name: "Español (El Salvador)"
+  google_key: "es"
+  facebook_key: ""
+  enabled:  false
+"es-GT":
+  english_name: "Spanish (Guatemala)"
+  native_name: "Español (Guatemala)"
+  google_key: "es"
+  facebook_key: ""
+  enabled:  false
+"es-HN":
+  english_name: "Spanish (Honduras)"
+  native_name: "Español (Honduras)"
+  google_key: "es"
+  facebook_key: ""
+  enabled:  false
+"es-MX":
+  english_name: "Spanish (Mexico)"
+  native_name: "Español (México)"
+  google_key: "es"
+  facebook_key: ""
+  enabled:  false
+"es-NI":
+  english_name: "Spanish (Nicaragua)"
+  native_name: "Español (Nicaragua)"
+  google_key: "es"
+  facebook_key: ""
+  enabled:  false
+"es-PA":
+  english_name: "Spanish (Panama)"
+  native_name: "Español (Panama)"
+  google_key: "es"
+  facebook_key: ""
+  enabled:  false
+"es-PY":
+  english_name: "Spanish (Paraguay)"
+  native_name: "Español (Paraguay)"
+  google_key: "es"
+  facebook_key: ""
+  enabled:  false
+"es-PE":
+  english_name: "Spanish (Peru)"
+  native_name: "Español (Peru)"
+  google_key: "es"
+  facebook_key: ""
+  enabled:  false
+"es-PR":
+  english_name: "Spanish (Puerto Rico)"
+  native_name: "Español (Puerto Rico)"
+  google_key: "es"
+  facebook_key: ""
+  enabled:  false
+"es-ES":
+  english_name: "Spanish (Spain)"
+  native_name: "Español (España)"
+  google_key: "es"
+  facebook_key: ""
+  enabled:  false
+"es-UY":
+  english_name: "Spanish (Uruguay)"
+  native_name: "Español (Uruguay)"
+  google_key: "es"
+  facebook_key: ""
+  enabled:  false
+"es-VE":
+  english_name: "Spanish (Venezuela)"
+  native_name: "Español (Venezuela)"
+  google_key: "es"
+  facebook_key: ""
+  enabled:  false
+"su":
+  english_name: "Sundanese"
+  native_name: "Sundanese"
+  google_key: "su"
+  facebook_key: ""
+  enabled:  false
+"sw":
+  english_name: "Swahili"
+  native_name: "Swahili"
+  google_key: "sw"
+  facebook_key: ""
+  enabled:  false
+"sv":
+  english_name: "Swedish"
+  native_name: "Svenska"
+  google_key: "sv"
+  facebook_key: ""
+  enabled:  true
+"sv-FI":
+  english_name: "Swedish (Finland)"
+  native_name: "Svenska (Finland)"
+  google_key: "sv"
+  facebook_key: ""
+  enabled:  false
+"sv-SE":
+  english_name: "Swedish (Sweden)"
+  native_name: "Svenska (Sweden)"
+  google_key: "sv"
+  facebook_key: ""
+  enabled:  false
+"tl":
+  english_name: "Tagalog"
+  native_name: "Tagalog"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"pf":
+  english_name: "Tahitian"
+  native_name: "Mā`ohi"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"tg":
+  english_name: "Tajik"
+  native_name: "Тоҷикӣ"
+  google_key: "tg"
+  facebook_key: ""
+  enabled:  false
+"ta":
+  english_name: "Tamil"
+  native_name: "தமிழ்"
+  google_key: "ta"
+  facebook_key: "ta-IN"
+  enabled:  false
+"tt":
+  english_name: "Tatar"
+  native_name: "Татарча"
+  google_key: "tt"
+  facebook_key: ""
+  enabled:  false
+"te":
+  english_name: "Telugu"
+  native_name: "Telugu"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"th":
+  english_name: "Thai"
+  native_name: "ภาษาไทย"
+  google_key: "th"
+  facebook_key: ""
+  enabled:  false
+"tig":
+  english_name: "Tigre"
+  native_name: "Tigre"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"bo":
+  english_name: "Tibetan"
+  native_name: "བོད་ཡིག"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"ti":
+  english_name: "Tigrinya"
+  native_name: "Tigrinya"
+  google_key: "ti"
+  facebook_key: ""
+  enabled:  false
+"to":
+  english_name: "Tonga"
+  native_name: "Tonga"
+  google_key: "to"
+  facebook_key: ""
+  enabled:  false
+"ts":
+  english_name: "Tsonga"
+  native_name: "Tsonga"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"tn":
+  english_name: "Tswana"
+  native_name: "Tswana"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"tr":
+  english_name: "Turkish"
+  native_name: "Türkçe"
+  google_key: "tr"
+  facebook_key: ""
+  enabled:  true
+"tk":
+  english_name: "Turkmen"
+  native_name: "Türkmen"
+  google_key: "tk"
+  facebook_key: ""
+  enabled:  false
+"tw":
+  english_name: "Twi"
+  native_name: "Twi"
+  google_key: "tw"
+  facebook_key: ""
+  enabled:  false
+"ug":
+  english_name: "Uighur"
+  native_name: "Uighur"
+  google_key: "ug"
+  facebook_key: ""
+  enabled:  false
+"uk":
+  english_name: "Ukranian"
+  native_name: "Українська"
+  google_key: "uk"
+  facebook_key: ""
+  enabled:  true
+"hsb":
+  english_name: "Upper Sorbian"
+  native_name: "Upper Sorbian"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"ur":
+  english_name: "Urdu"
+  native_name: "اردو"
+  google_key: "ur"
+  facebook_key: ""
+  right_to_left: true
+  enabled:  false
+"uz":
+  english_name: "Uzbek"
+  native_name: "Ўзбек"
+  google_key: "uz"
+  facebook_key: ""
+  enabled:  false
+"ve":
+  english_name: "Venda"
+  native_name: "Venda"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"vi":
+  english_name: "Vietnamese"
+  native_name: "Tiếng Việt"
+  google_key: "vi"
+  facebook_key: ""
+  enabled:  true
+"vo":
+  english_name: "Volapük"
+  native_name: "Volapük"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"wa":
+  english_name: "Walloon"
+  native_name: "Walloon"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"cy":
+  english_name: "Welsh"
+  native_name: "Cymraeg"
+  google_key: "cy"
+  facebook_key: ""
+  enabled:  false
+"wo":
+  english_name: "Wolof"
+  native_name: "Wolof"
+  google_key: ""
+  facebook_key: ""
+  enabled:  false
+"xh":
+  english_name: "Xhosa"
+  native_name: "isiXhosa"
+  google_key: "xh"
+  facebook_key: "xh-ZA"
+  enabled:  false
+"yi":
+  english_name: "Yiddish"
+  native_name: "ייִדיש"
+  google_key: "yi"
+  facebook_key: ""
+  right_to_left: true
+  enabled:  false
+"yo":
+  english_name: "Yoruba"
+  native_name: "Yoruba"
+  google_key: "yo"
+  facebook_key: ""
+  enabled:  false
+"zu":
+  english_name: "Zulu"
+  native_name: "isiZulu"
+  google_key: "zu"
+  facebook_key: "zu-ZA"
+  enabled:  false

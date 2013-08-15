@@ -1,0 +1,28 @@
+<div style="padding-top:40px;padding-bottom:40px;">
+  <div class="row">
+    <div class="span4 offset4 well">
+      <legend><%= tr("Login to Tr8n") %></legend>
+      <%= form_tag(:controller=>:login, :action=>:index) do %>
+        <%=hidden_field_tag(:mode, params[:mode]) %>
+        <%=hidden_field_tag(:origin, params[:origin]) %>
+
+        <% if lightbox? %>
+          <%=render :partial => "/layouts/flashes" %>
+        <% end %>
+
+        <%=text_field_tag :email, params[:email], :class => "span4", :placeholder => trl("Email") %>
+        <%=password_field_tag :password, "", :class => "span4", :placeholder => trl("Password")  %>
+
+        <button type="submit" name="submit" class="btn btn-block"><%= tr("Login") %></button>
+
+        <br>
+
+        <div style="float:right">
+        </div>
+        <div style="float:left">
+          <%=tr("New user? [link: Register here].", "", :link => lambda{|text| link_to(text, :controller => :signup, :action => :index, :mode => params[:mode], :origin => params[:origin])})%>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,29 @@
+{
+  "locale": "md",
+  "english_name": "Moldavian",
+  "context_rules": {
+    "date": {
+      "keys": ["past", "present", "future"]
+    },
+    "gender_list": {
+      "keys": ["one", "other"],
+      "rules": {
+        "one": {"rule": ["=", 1, "@size"], "description": "contains 1 element"},
+        "other": {"description": "contains at least 2 elements"}
+      }
+    },
+    "gender": {
+      "keys": ["male", "female", "unknown"]
+    },
+    "number": {
+      "keys": ["one", "few", "other"],
+      "rules": {
+        "one":    {"rule": {"is":"1"}, "description": "{n} is 1", "examples": "1"},
+        "few":    {"rule": [{"is":"0"}, {"is_not":"1", "mod_100_in":"1..19"}], "description": "{n} is 0 OR {n} is not 1 AND {n} mod 100 in 1..19", "examples": "0, 2-19, 101-119, 201-219..."},
+        "other":  {"examples": "20-100, 120-200, 220-300...; 1.2, 2.07, 20.94..."}
+      }
+    }
+  },
+  "language_cases": {
+  }
+}

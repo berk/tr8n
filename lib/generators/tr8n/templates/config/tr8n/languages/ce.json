@@ -1,0 +1,34 @@
+{
+  "locale": "ce",
+  "name": "Chechen",
+  "english_name": "Chechen",
+  "native_name": "Chechen",
+  "context_rules": {
+    "date": {
+      "keys": ["past", "present", "future"]
+    },
+    "gender_list": {
+      "keys": ["one", "other"],
+      "rules": {
+        "one": {"rule": ["=", 1, "@size"], "description": "contains 1 element"},
+        "other": {"rule": [">", 1, "@size"], "description": "contains at least 2 elements"}
+      }
+    },
+    "gender": {
+      "keys": ["male", "female", "unknown"]
+    },
+    "number": {
+      "keys": ["zero", "one", "two", "few", "many", "other"],
+      "rules": {
+        "zero":   {"rule": ["=", 0, "@n"], "description": "{n} is 0", "examples": "0"},
+        "one":    {"rule": ["=", 1, "@n"], "description": "{n} is 1", "examples": "1"},
+        "two":    {"rule": ["=", 2, "@n"], "description": "{n} is 2", "examples": "2"},
+        "few":    {"rule": ["=", 3, "@n"], "description": "{n} is 3", "examples": "3"},
+        "many":   {"rule": ["=", 6, "@n"], "description": "{n} is 6", "examples": "6"},
+        "other":  {"examples": "4, 5, 7-999; 0.2, 1.07, 2.94, 3.81, 6.68, 4.55..."}
+      }
+    }
+  },
+  "language_cases": {
+  }
+}

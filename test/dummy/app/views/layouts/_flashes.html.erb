@@ -1,0 +1,35 @@
+<% if flash[:trfn] %>
+  <div id="flash_notice">
+    <div class="alert alert-success strong">
+      <%=link_to_function("×", "$('#flash_notice').hide();", :class => "close") %>
+      <%= flash[:trfn] %>
+    </div>
+    <%flash[:trfn] = nil%>
+  </div>
+<% end %>
+
+<% if flash[:trfe] %>
+  <div id="flash_error">
+    <div class="alert alert-danger strong">
+      <%=link_to_function("×", "$('#flash_error').hide();", :class => "close") %>
+      <%= flash[:trfe] %>
+    </div>
+    <%flash[:trfe] = nil%>
+  </div>    
+<% end %>
+
+<% if flash[:trfw] %>
+  <div id="flash_warning">
+    <div class="alert strong">
+      <%=link_to_function("×", "$('#flash_warning').hide();", :class => "close") %>     
+      <%= flash[:trfw] %>
+    </div>
+    <%flash[:trfw] = nil%>
+  </div>    
+<% end %>
+
+<noscript>
+  <div class="flash_error alert danger">
+    <%=tr("This site requires JavaScript! Please enable JavaScript in your browser's settings to use this part of the site.")%>
+  </div>
+</noscript>

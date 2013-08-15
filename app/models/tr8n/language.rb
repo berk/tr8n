@@ -426,8 +426,8 @@ class Tr8n::Language < ActiveRecord::Base
       Tr8n::LanguageCase.where(:language_id => self.id).each do |lc|
         hash[:language_cases][lc.keyword] = lc.to_api_hash(:rules => true)
       end
-
     end
+
     hash
   end
 

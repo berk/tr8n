@@ -1,0 +1,33 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<%= tr8n_current_language.locale %>" lang="<%= tr8n_current_language.locale %>">
+<html>
+<head>
+  <%=render :partial => "/layouts/head" %>
+  <%= javascript_include_tag('tr8n/tr8n.js') %>
+
+  <script type="text/javascript">
+    function resizeFrame() {
+      var height = document.body.scrollHeight;
+      Tr8n.postMessage({'subject': 'lightbox', 'action': 'resize', 'height': height}, '<%=params[:origin]%>');
+    }
+
+    function hideLightbox() {
+      Tr8n.postMessage({'subject': 'lightbox', 'action': 'hide'}, '<%=params[:origin]%>');
+    }
+
+    function reloadOrigin() {
+      Tr8n.postMessage({'subject': 'window', 'action': 'reload'}, '<%=params[:origin]%>');
+    }
+
+    Tr8n.Utils.addEvent(document, "keyup", function(event) {
+      if (event.keyCode == 27) {
+        hideLightbox();
+      }
+    });
+  </script>
+
+</head>
+<body onload="resizeFrame()">
+  <%= yield %>
+</body>
+</html>

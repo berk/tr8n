@@ -1,0 +1,28 @@
+{
+  "locale": "nv",
+  "name": "Navajo - Dinékʼehǰí",
+  "english_name": "Navajo",
+  "native_name": "Dinékʼehǰí",
+  "context_rules": {
+    "date": {
+      "past": {"operator":"is_in","value":"past"},
+      "future": {"operator":"is_in","value":"future"},
+      "present": {"operator":"is_in","value":"present"}
+},
+    "gender_list": {
+"one": {"part1":"contains","value1":"one_element"},
+"other": {"part1":"contains","value1":"at_least_two_elements"}
+},
+    "gender": {
+"male": {"operator":"is","value":"male"},
+"female": {"operator":"is","value":"female"},
+"unknown": {"operator":"is","value":"unknown"}
+},
+    "number": {
+"one": {"part1":"is","value1":"1"},
+"many": {"part1":"is_not","value1":"1"}
+}
+},
+  "language_cases": {
+}
+}

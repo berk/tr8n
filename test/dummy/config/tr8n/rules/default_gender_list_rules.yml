@@ -1,0 +1,82 @@
+#############################################################################
+#
+# Tr8n Default Gender List Rules
+#
+# Definition:
+#   multipart:    true, false
+#   part1:        contains
+#   value1:       one_element, at_least_two_elements
+#   part2:        is, is_not, are, are_not
+#   value2:       male, female, unknown, all_male, all_female, mixed
+# 
+#############################################################################
+
+en-US:
+  one: 
+    multipart:    false
+    part1:        contains
+    value1:       one_element
+  other: 
+    multipart:    false
+    part1:        contains
+    value1:       at_least_two_elements
+iw: 
+  one_male: 
+    multipart:    true
+    part1:        contains
+    value1:       one_element
+    part2:        is
+    value2:       male
+  one_female: 
+    multipart:    true
+    part1:        contains
+    value1:       one_element
+    part2:        is
+    value2:       female
+  one_unknown: 
+    multipart:    true
+    part1:        contains
+    value1:       one_element
+    part2:        is
+    value2:       unknown
+  all_male: 
+    multipart:    true
+    part1:        contains
+    value1:       at_least_two_elements
+    part2:        are
+    value2:       all_male
+  all_female: 
+    multipart:    true
+    part1:        contains
+    value1:       at_least_two_elements
+    part2:        are
+    value2:       all_female
+  mixed: 
+    multipart:    true
+    part1:        contains
+    value1:       at_least_two_elements
+    part2:        are
+    value2:       mixed
+ru: 
+  one_male: 
+    multipart:    true
+    part1:        contains
+    value1:       one_element
+    part2:        is
+    value2:       male
+  one_female: 
+    multipart:    true
+    part1:        contains
+    value1:       one_element
+    part2:        is
+    value2:       female
+  one_unknown: 
+    multipart:    true
+    part1:        contains
+    value1:       one_element
+    part2:        is
+    value2:       unknown
+  many: 
+    multipart:    false
+    part1:        contains
+    value1:       at_least_two_elements

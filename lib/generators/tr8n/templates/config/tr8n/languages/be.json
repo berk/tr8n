@@ -1,0 +1,32 @@
+{
+  "locale": "be",
+  "english_name": "Belarusian",
+  "native_name": "Беларуская",
+  "google_key": "be",
+  "context_rules": {
+    "date": {
+      "keys": ["past", "present", "future"]
+    },
+    "gender_list": {
+      "keys": ["one", "other"],
+      "rules": {
+        "one": {"rule": ["=", 1, "@size"], "description": "contains 1 element"},
+        "other": {"rule": [">", 1, "@size"], "description": "contains at least 2 elements"}
+      }
+    },
+    "gender": {
+      "keys": ["male", "female", "unknown"]
+    },
+    "number": {
+      "keys": ["one", "few", "many", "other"],
+      "rules": {
+        "one":    {"rule": ["&&", ["=", 1, ["mod", 10, "@n"]], ["!=", 11, ["mod", 100, "@n"]]], "description": "{n} mod 10 is 1 and {n} mod 100 is not 11", "examples": "1, 21, 31, 41, 51, 61..."},
+        "few":    {"rule": ["&&", ["in", "2..4", ["mod", 10, "@n"]], ["!", ["in", "12..14", ["mod", 100, "@n"]]]], "description": "{n} mod 10 in 2..4 and {n} mod 100 not in 12..14", "examples": "2-4, 22-24, 32-34..."},
+        "many":   {"rule": ["||", ["=", 0, ["mod", 10, "@n"]], ["in", "5..9", ["mod", 10, "@n"]], ["in", "11..14", ["mod", 100, "@n"]]], "description": "{n} mod 10 is 0 or {n} mod 10 in 5..9 or {n} mod 100 in 11..14", "examples": "0, 5-20, 25-30, 35-40..."},
+        "other":  {"examples": "1.2, 2.07, 5.94..."}
+      }
+    }
+  },
+  "language_cases": {
+  }
+}

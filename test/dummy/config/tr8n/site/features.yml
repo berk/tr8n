@@ -1,0 +1,106 @@
+#############################################################################
+# Tr8n Features Configuration
+#
+# Default settings for all environments
+# 
+# You can overload any feature for any environment by changing the 
+# environment settings at the bottom of the file
+#############################################################################
+
+defaults:
+  enabled_features: [dashboard, sitemap, phrases, translations, awards, forum, glossary, help]
+
+  dashboard:
+    title:            Dashboard
+    link:             /tr8n/translator/index
+    controller:       translator
+    actions:          [index]
+    default_language: true
+    manager_only:     false
+
+  phrases:
+    title:            Phrases
+    link:             /tr8n/phrases
+    controller:       phrases
+    actions:          [index, view]
+    default_language: false
+    manager_only:     false
+
+  sitemap:
+    title:            Site Map
+    link:             /tr8n/phrases/map
+    controller:       phrases
+    actions:          [map, index, view]
+    default_language: false
+    manager_only:     false
+
+  translations:
+    title:            Translations
+    link:             /tr8n/translations
+    controller:       translations
+    actions:          [index, view]
+    default_language: false
+    manager_only:     false
+
+  awards:
+    title:            Awards
+    link:             /tr8n/awards
+    controller:       awards
+    actions:          [index]
+    default_language: true
+    manager_only:     false
+
+  forum:
+    title:            Discussions
+    link:             /tr8n/forum
+    controller:       forum
+    actions:          [index, topic, message]
+    default_language: true
+    manager_only:     false
+
+  glossary:
+    title:            Glossary
+    link:             /tr8n/glossary
+    controller:       glossary
+    actions:          [index]
+    default_language: true
+    manager_only:     false
+
+  rules:
+    title:            Manage Language
+    link:             /tr8n/language
+    controller:       language
+    actions:          [index]
+    default_language: true
+    manager_only:     true
+
+  help:
+    title:            Help
+    link:             /tr8n/help
+    controller:       help
+    actions:          []
+    default_language: true
+    manager_only:     false
+
+  test:
+    title:            Test
+    link:             http://www.google.com
+    controller:       test
+    actions:          [index]
+    default_language: true
+    manager_only:     false
+
+
+#############################################################################
+# Environment Settings
+# You can overload any feature defined in the defaults for any environment
+#############################################################################
+development:
+
+test:
+
+qa:
+
+stage:
+
+production:

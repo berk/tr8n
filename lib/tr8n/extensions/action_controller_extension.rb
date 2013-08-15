@@ -78,7 +78,7 @@ module Tr8n
       rescue
         # fallback to the default session based locale implementation
         # choose the first language from the accepted languages header
-        session[:locale] = tr8n_user_preffered_locale unless session[:locale]
+        session[:locale] = tr8n_user_preferred_locale unless session[:locale]
         session[:locale] = params[:locale] if params[:locale]
         session[:locale]
       end

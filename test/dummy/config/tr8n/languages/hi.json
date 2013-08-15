@@ -1,0 +1,33 @@
+{
+  "locale": "hi",
+  "name": "Hindi - हिन्दी",
+  "english_name": "Hindi",
+  "native_name": "हिन्दी",
+  "enabled": true,
+  "google_key": "hi",
+  "context_rules": {
+    "date": {
+      "keys": ["past", "present", "future"]
+    },
+    "gender_list": {
+      "keys": ["one", "other"],
+      "rules": {
+        "one": {"rule": ["=", 1, "@size"], "description": "contains 1 element"},
+        "other": {"rule": [">", 1, "@size"], "description": "contains at least 2 elements"}
+      }
+    },
+    "gender": {
+      "keys": ["male", "female", "unknown"]
+    },
+    "number": {
+      "keys": ["one", "other"],
+      "rules": {
+        "one":    {"rule": ["in", "0..1", "@n"], "description": "{n} in 0..1", "examples": "0, 1"},
+        "other":  {"examples": "2-999; 1.2, 2.07..."}
+      }
+    }
+  },
+  "language_cases": {
+  }
+}
+

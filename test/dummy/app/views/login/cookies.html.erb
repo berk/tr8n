@@ -1,0 +1,20 @@
+<div class="text-center" style="padding:40px;">
+<% if current_user %>
+
+  You have been logged in as <%= current_user.name %>.
+<% else %>
+
+  You have been logged out.
+<% end %>
+
+</div>
+
+<script>
+  Tr8n.Utils.addEvent(window, "load", function(event) {
+    Tr8n.postMessage({'subject': 'lightbox', 'action': 'resize', 'height': '100px'}, '<%=params[:origin]%>');
+    Tr8n.postMessage({'subject': 'cookie', 'action': 'set', 'name': '<%= Tr8n::Config.signed_request_name%>', 'value': '<%=Tr8n::Config.signed_request_body%>'}, '<%=params[:origin]%>');
+    window.setTimeout(function() {
+      reloadOrigin();
+    }, 500);
+  });
+</script>

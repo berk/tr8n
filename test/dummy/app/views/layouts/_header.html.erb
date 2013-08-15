@@ -1,0 +1,62 @@
+<div class="navbar navbar-fixed-top">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="/home">
+        <span class="h3"><%= tr("Tr8n Service") %></span>
+      </a>
+       
+      <ul class="nav">
+          <li class="<%= 'active' if controller_name == 'home' %>">
+            <%=link_to(tr("Home"), "/home") %>
+          </li>
+          <li class="<%= 'active' if request.url.index('/docs') %>">
+            <%=link_to(tr("Documentation"), "/docs") %>
+          </li>
+
+        <% if current_user %>
+          <li class="<%= 'active' if request.url.index('/tr8n') and not request.url.index('/tr8n/admin') %>">
+            <%=link_to(tr("Translation Tools"), "/tr8n/translator") %>
+          </li>
+          <li class="<%= 'active' if request.url.index('/tr8n/admin') %>">
+            <%=link_to(tr("Administration Tools"), "/tr8n/admin/applications") %>
+          </li>
+        <% end %>
+      </ul>
+    
+      <ul class="nav pull-right">
+        <% if current_user %>
+          <li>
+            <a href="#" onClick="Tr8n.UI.LanguageSelector.show(true)" class="dropdown-toggle" data-toggle="dropdown">
+              <%= image_tag("tr8n/flags/#{tr8n_current_language.flag}.png", :style => "align:middle") %>
+              &nbsp; 
+              <%= tr8n_current_language.native_name %>
+            </a>
+          </li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <%=image_tag(current_user.mugshot, :style=>"max-width:16px;max-height:16px;padding:1px;border:1px solid #888;") %> &nbsp;
+              <%=current_user.name %>
+              <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu pas">
+              <li role="presentation" class="text-center">
+                <%=image_tag(current_user.mugshot, :style=>"width:80px;height:80px;border:1px solid #eee", :class=>"img-circle") %>
+              </li>
+              <li class="divider"></li>
+              <li><%= link_to_function tr("Change Language"), "Tr8n.UI.LanguageSelector.show(true)" %></li>
+              <li class="divider"></li>
+              <li><%=link_to(tr("Logout"), "/login/out")%></li>
+            </ul>
+          </li>
+        <% else %>
+          <li><%=link_to(tr("Login"), "/login")%></li>
+        <% end %>
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <%=render :partial => "/layouts/flashes" %>
+</div>

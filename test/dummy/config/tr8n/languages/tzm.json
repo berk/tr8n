@@ -1,0 +1,28 @@
+{
+  "locale": "tzm",
+  "english_name": "Central Atlas Tamazight",
+  "context_rules": {
+    "date": {
+      "keys": ["past", "present", "future"]
+    },
+    "gender_list": {
+      "keys": ["one", "other"],
+      "rules": {
+        "one": {"contains":"one_element"},
+        "other": {"contains":"at_least_two_elements"}
+      }
+    },
+    "gender": {
+      "keys": ["male", "female", "unknown"]
+    },
+    "number": {
+      "keys": ["one", "other"],
+      "rules": {
+        "one":    {"rule": {"in":"0,1,11-99"}, "description": "{n} in 0..1 or {n} in 11..99", "examples": "0, 1, 11-99"},
+        "other":  {"examples": "2-10, 100-999; 1.2, 2.07..."}
+      }
+    }
+  },
+  "language_cases": {
+  }
+}

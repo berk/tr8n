@@ -5,7 +5,7 @@ require 'spork'
 
 Spork.prefork do
 
-	require File.expand_path("../../sample/service/config/environment.rb",  __FILE__)
+	require File.expand_path("../../test/dummy/config/environment.rb",  __FILE__)
 	require 'rspec/rails'
 
 	ENGINE_RAILS_ROOT=File.join(File.dirname(__FILE__), '../')

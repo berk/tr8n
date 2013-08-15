@@ -155,6 +155,13 @@ private
     params[:offset] || 0
   end
 
+  def page
+    (params[:page] || 1).to_i
+  end
+
+  def per_page
+    (params[:per_page] || 20).to_i
+  end
   
   def sanitize_label(label)
     label.strip

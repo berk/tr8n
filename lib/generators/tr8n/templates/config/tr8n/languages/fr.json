@@ -1,0 +1,34 @@
+{
+  "locale": "fr",
+  "name": "French - Français",
+  "english_name": "French",
+  "native_name": "Français",
+  "enabled": true,
+  "google_key": "fr",
+  "context_rules": {
+    "date": {
+      "keys": ["past", "present", "future"]
+    },
+    "gender_list": {
+      "keys": ["one", "other"],
+      "rules": {
+        "one": {"rule": ["=", 1, "@size"], "description": "contains 1 element"},
+        "other": {"rule": [">", 1, "@size"], "description": "contains at least 2 elements"}
+      }
+    },
+    "gender": {
+      "keys": ["male", "female", "unknown"]
+    },
+    "number": {
+      "keys": ["one", "other"],
+      "rules": {
+        "one":    {"rule": ["&&", ["!=", 2, "@n"], ["within", "0..2", "@n"]], "description": "{n} within 0..2 and {n} is not 2", "examples": "0, 1, 1.2..."},
+        "other":  {"examples": "2-999; 2.07..."}
+      }
+    }
+  },
+  "language_cases": {
+  }
+}
+
+

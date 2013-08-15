@@ -1,3 +1,4 @@
+.idea
 .bundle/
 pkg/
 *.sqlite3
@@ -14,3 +15,5 @@ log/*
 Thumbs.db
 .tmp*
 tmp/
+test/dummy/db/*.sqlite3
+test/dummy/.sass-cache

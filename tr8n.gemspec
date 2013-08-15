@@ -26,15 +26,4 @@ Gem::Specification.new do |s|
   s.add_dependency 'sass', '>= 0'
   s.add_dependency 'faraday', '>= 0'
   s.add_dependency 'money', '>= 0'
-  s.add_development_dependency 'dalli'
-  s.add_development_dependency 'fssm', ['>= 0']
-  s.add_development_dependency 'pry', ['>= 0']
-  s.add_development_dependency 'bundler', ['>= 1.0.0']
-  s.add_development_dependency 'sqlite3', ['>= 0']
-  s.add_development_dependency 'rspec', ['>= 0']
-  s.add_development_dependency 'rspec-rails', ['>= 2.1.0']
-  s.add_development_dependency 'spork', ['>= 0']
-  s.add_development_dependency 'watchr', ['>= 0']
-  s.add_development_dependency 'rr', ['>= 0']
-  s.add_development_dependency 'dalli'
 end

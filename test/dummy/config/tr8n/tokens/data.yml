@@ -1,0 +1,45 @@
+#############################################################################
+#
+# Tr8n Default Data Tokens
+#
+#############################################################################
+
+html:
+  ndash:    "&ndash;"       # –
+  mdash:    "&mdash;"       # —
+  iexcl:    "&iexcl;"       # ¡
+  iquest:   "&iquest;"      # ¿
+  quot:     "&quot;"        # "
+  ldquo:    "&ldquo;"       # “
+  rdquo:    "&rdquo;"       # ”
+  lsquo:    "&lsquo;"       # ‘
+  rsquo:    "&rsquo;"       # ’
+  laquo:    "&laquo;"       # «
+  raquo:    "&raquo;"       # »
+  nbsp:     "&nbsp;"        # space
+  lsaquo:   "&lsaquo;"      # ‹
+  rsaquo:   "&rsaquo;"      # ›
+  br:       "<br/>"         # line break
+  lbrace:   "{"
+  rbrace:   "}"
+  trade:    "&trade;"       # TM
+
+plain:
+  ndash:        "–"         # –
+  mdash:        "—"         # —
+  iexcl:        "¡"         # ¡
+  iquest:       "¿"         # ¿
+  quot:         '"'         # "
+  ldquo:        "“"         # “
+  rdquo:        "”"         # ”
+  lsquo:        "‘"         # ‘
+  rsquo:        "’"         # ’
+  laquo:        "«"         # «
+  raquo:        "»"         # »
+  nbsp:         " "         # space
+  lsaquo:       "‹"         # ‹
+  rsaquo:       "›"         # ›
+  br:           "\n"        # line break
+  lbrace:       "{"
+  rbrace:       "}"
+  trade:        "™"         # TM

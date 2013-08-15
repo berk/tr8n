@@ -1,0 +1,30 @@
+{
+  "locale": "se-NO",
+  "english_name": "Northern Sami",
+  "native_name": "Davvisámegiella",
+  "context_rules": {
+    "date": {
+      "keys": ["past", "present", "future"]
+    },
+    "gender_list": {
+      "keys": ["one", "other"],
+      "rules": {
+        "one": {"rule": {"size": {"is":"1"}}, "description": "contains 1 person"},
+        "other": {"rule": {"size": {"is_not":"1"}}, "description": "contains at least 2 people"}
+      }
+    },
+    "gender": {
+      "keys": ["male", "female", "unknown"]
+    },
+    "number": {
+      "keys": ["one", "two", "other"],
+      "rules": {
+        "one":    {"rule": {"is":"1"}, "description": "{n} is 1", "examples": "1"},
+        "two":    {"rule": {"is":"2"}, "description": "{n} is 2", "examples": "2"},
+        "other":  {"examples": "0, 3-999; 1.2, 2.07..."}
+      }
+    }
+  },
+  "language_cases": {
+  }
+}

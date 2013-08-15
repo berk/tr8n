@@ -1,0 +1,32 @@
+{
+  "locale": "gd",
+  "english_name": "Scots Gaelic",
+  "native_name": "Scots Gaelic",
+  "google_key": "gd",
+  "context_rules": {
+    "date": {
+      "keys": ["past", "present", "future"]
+    },
+    "gender_list": {
+      "keys": ["one", "other"],
+      "rules": {
+        "one": {"rule": ["=", 1, "@size"], "description": "contains 1 element"},
+        "other": {"rule": [">", 1, "@size"], "description": "contains at least 2 elements"}
+      }
+    },
+    "gender": {
+      "keys": ["male", "female", "unknown"]
+    },
+    "number": {
+      "keys": ["one", "two", "few", "other"],
+      "rules": {
+        "one":    {"rule": ["in", "1,11", "@n"], "description": "{n} in 1, 11", "examples": "1, 11"},
+        "two":    {"rule": ["in", "1,12", "@n"], "description": "{n} in 2, 12", "examples": "2, 12"},
+        "few":    {"rule": ["in", "3..10, 13..19", "@n"], "description": "{n} in 3..10, 13..19", "examples": "3-10, 13-19"},
+        "other":  {"examples": "0, 20-999; 1.2, 2.07, 3.94, 20.81..."}
+      }
+    }
+  },
+  "language_cases": {
+  }
+}

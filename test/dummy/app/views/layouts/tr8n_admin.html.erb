@@ -1,0 +1,14 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<%= tr8n_current_language.locale %>" lang="<%= tr8n_current_language.locale %>">
+<html>
+<head>
+  <%=render :partial => "/layouts/head" %>
+</head>
+<body>
+  <%=render :partial => "/layouts/header" %>
+  <div style="padding:10px; background:#fefefe; margin-bottom:20px;">
+    <%= yield %>
+  </div>
+  <%=render :partial =>"/layouts/footer" %>
+</body>
+</html>

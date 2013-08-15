@@ -1,0 +1,29 @@
+{
+  "locale": "yo",
+  "english_name": "Yoruba",
+  "native_name": "Yoruba",
+  "google_key": "yo",
+  "context_rules": {
+    "date": {
+      "keys": ["past", "present", "future"]
+    },
+    "gender_list": {
+      "keys": ["one", "other"],
+      "rules": {
+        "one": {"rule": {"size": {"is":"1"}}, "description": "contains 1 person"},
+        "other": {"rule": {"size": {"is_not":"1"}}, "description": "contains at least 2 people"}
+      }
+    },
+    "gender": {
+      "keys": ["male", "female", "unknown"]
+    },
+    "number": {
+      "keys": ["other"],
+      "rules": {
+        "other":  {"examples": "0-999; 1.2, 2.07..."}
+      }
+    }
+  },
+  "language_cases": {
+  }
+}

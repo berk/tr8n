@@ -1,0 +1,28 @@
+{
+  "locale": "kab",
+  "english_name": "Kabyle",
+  "context_rules": {
+    "date": {
+      "keys": ["past", "present", "future"]
+    },
+    "gender_list": {
+      "keys": ["one", "other"],
+      "rules": {
+        "one": {"rule": ["=", 1, "@size"], "description": "contains 1 element"},
+        "other": {"description": "contains at least 2 elements"}
+      }
+    },
+    "gender": {
+      "keys": ["male", "female", "unknown"]
+    },
+    "number": {
+      "keys": ["one", "other"],
+      "rules": {
+        "one":    {"rule": {"within":"0..2", "is_not":"2"}, "description": "{n} within 0..2 and {n} is not 2", "examples": "0, 1, 1.2..."},
+        "other":  {"examples": "2-999; 2.07..."}
+      }
+    }
+  },
+  "language_cases": {
+  }
+}
