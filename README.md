@@ -107,12 +107,14 @@ Open your browser and point to:
 
 The best way to get going with Tr8n is to run the gem as a stand-alone application and follow the instructions and documentation in the app:
 
+```sh
   $ git clone git://github.com/tr8n/tr8n.git
   $ cd tr8n/test/dummy
   $ bundle install
   $ rake db:migrate
   $ rake tr8n:init
   $ rails s
+```
 
 Open your browser and point to:
 
