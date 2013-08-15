@@ -84,12 +84,13 @@ At the top of your routes.rb file, add the following lines:
 
 To configure and initialize Tr8n engine, run the following commands: 
 
+```shell
   $ rails generate will_filter
   $ rails generate tr8n
   $ rake db:migrate
   $ rake tr8n:init
   $ rails s
-
+```
 
 Open your browser and point to:
 
