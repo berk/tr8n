@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
 
   s.files         = `git ls-files`.split("\n") - Dir.glob("app/javascripts/**/*")
   s.test_files    = `git ls-files -- {test,local,spec,features}/*`.split("\n")
-  s.extra_rdoc_files = ['README.rdoc']
+  s.extra_rdoc_files = ['README.md']
   s.require_paths = ['lib']
 
   s.licenses = ['MIT']
