@@ -59,15 +59,10 @@ class User < ActiveRecord::Base
     save!
   end
 
-  def password_set?
-    not password_set_at.nil?
-  end
-
   def encrypt_password
     if password.present?
       self.salt = BCrypt::Engine.generate_salt
       self.crypted_password = BCrypt::Engine.hash_secret(password, salt)
-      self.password_set_at = Time.now
     end
   end
     
