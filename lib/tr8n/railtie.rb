@@ -26,7 +26,8 @@ require 'pp'
 
 [
  ".",
- "./tokens"
+ "./tokens",
+ "./rules_engine"
 ].each do |dir|
     Dir[File.expand_path("#{File.dirname(__FILE__)}/#{dir}/*.rb")].sort.each do |file|
       require(file)

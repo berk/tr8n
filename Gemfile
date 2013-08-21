@@ -16,13 +16,13 @@ gem 'kaminari'
 gem 'will_filter', '~> 3.1.10'
 
 group :development do
-  # gem 'rspec'
-  # gem 'rspec-rails'
-  # gem 'pry'
+  gem 'rspec'
+  gem 'rspec-rails'
+  gem 'pry'
   gem 'sqlite3'
-  # gem 'spork'
-  # gem 'watchr'
-  # gem 'rr'
+  gem 'spork'
+  gem 'watchr'
+  gem 'rr'
 end
 
 group :assets do
