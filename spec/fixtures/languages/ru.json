@@ -1,0 +1,112 @@
+{
+  "locale": "ru",
+  "english_name": "Russian",
+  "native_name": "Русский",
+  "google_key": "ru",
+  "context_rules": {
+    "date": {
+      "keys": ["past", "present", "future"]
+    },
+    "gender_list": {
+      "keys": ["one_male", "one_female", "one_unknown", "other"],
+      "rules": {
+        "one_male":     {"rule": ["&&", ["=", 1, "@size"], ["=", "male", "@gender"]],     "description": "contains 1 male person"},
+        "one_female":   {"rule": ["&&", ["=", 1, "@size"], ["=", "female", "@gender"]],   "description": "contains 1 female person"},
+        "one_unknown":  {"rule": ["&&", ["=", 1, "@size"], ["=", "unknown", "@gender"]],  "description": "contains 1 person with an unknown gender"},
+        "other":        {"description": "contains at least 2 people"}
+      }
+    },
+    "gender": {
+      "keys": ["male", "female", "unknown"]
+    },
+    "number": {
+      "keys": ["one", "few", "many", "other"],
+      "rules": {
+        "one":    {"rule": ["&&", ["=", 1, ["mod", 10, "@n"]], ["!=", 11, ["mod", 100, "@n"]]], "description": "{n} mod 10 is 1 and {n} mod 100 is not 11", "examples": "1, 21, 31, 41, 51, 61..."},
+        "few":    {"rule": ["&&", ["in", "2..4", ["mod", 10, "@n"]], ["not", ["in", "12..14", ["mod", 100, "@n"]]]], "description": "{n} mod 10 in 2..4 and {n} mod 100 not in 12..14", "examples": "2-4, 22-24, 32-34..."},
+        "many":   {"rule": ["||", ["=", 0, ["mod", 10, "@n"]], ["in", "5..9", ["mod", 10, "@n"]], ["in", "11..14", ["mod", 100, "@n"]]], "description": "{n} mod 10 is 0 or {n} mod 10 in 5..9 or {n} mod 100 in 11..14", "examples": "0, 5-20, 25-30, 35-40..."},
+        "other":  {"examples": "1.2, 2.07, 5.94..."}
+      }
+    },
+    "value": {
+      "vow": {"rule": ["match", "/^[аиоуыэАИОУЭ]/", "@value"], "description": "starts with a vowel", "examples": "а, и, о, у, ы, э"},
+      "con": {"rules": ["not", ["match", "/^[аиоуыэАИОУЭ]/", "@value"]], "description": "starts with a consonant", "examples": "б, в, г, д, к..."}
+    }
+  },
+  "language_cases": {
+    "acc": {
+      "keyword": "acc",
+      "latin_name": "Accusativus",
+      "native_name": "Винительный падеж",
+      "description": "Вижу - Кого? Что?",
+      "application": "words",
+      "rules": [
+
+      ]
+    },
+    "dat": {
+      "keyword": "dat",
+      "latin_name": "Dativus",
+      "native_name": "Дательный падеж",
+      "description": "Рад - Кому? Чему?",
+      "application": "words",
+      "rules": [
+
+      ]
+    },
+    "gen": {
+      "keyword": "gen",
+      "latin_name": "Genitivus",
+      "native_name": "Родительный падеж",
+      "description": "Нет - Кого? Чего?",
+      "application": "words",
+      "rules": [
+        {"rule": ["match", "/[бвгджзклмнпрстфхцчшщ]$/", "@value"],                 "operation": ["append",  "a",         "@value"]},
+        {"rule": ["&&", ["=", "male", "@gender"],   ["match", "/й$/", "@value"]],  "operation": ["replace", "/й$/", "я", "@value"]},
+        {"rule": ["&&", ["=", "male", "@gender"],   ["match", "/а$/", "@value"]],  "operation": ["replace", "/а$/", "ы", "@value"]},
+        {"rule": ["&&", ["=", "female", "@gender"], ["match", "/а$/", "@value"]],  "operation": ["replace", "/а$/", "ы", "@value"]}
+      ]
+    },
+    "ins": {
+      "keyword": "ins",
+      "latin_name": "Instrumentalis",
+      "native_name": "Творительный падеж",
+      "description": "Доволен - Кем? Чем?",
+      "application": "words",
+      "rules": [
+
+      ]
+    },
+    "nom": {
+      "keyword": "nom",
+      "latin_name": "Nominativus",
+      "native_name": "Именительный падеж",
+      "description": "Есть - Кто? Что?",
+      "application": "words",
+      "rules": [
+
+      ]
+    },
+    "pos": {
+      "keyword": "pos",
+      "latin_name": "Possessive",
+      "native_name": "Притяжательный падеж",
+      "description": "Чей?",
+      "application": "words",
+      "rules": [
+        {"rule": ["&&", ["=", "female", "@gender"], ["match", "/ва$/", "@value"]],  "operation": ["replace", "/ва$/", "вой", "@value"]},
+        {"rule": ["&&", ["=", "male", "@gender"],   ["match", "/[бвгджзклмнпрстфхцчшщ]$/", "@value"]],  "operation": ["append", "а", "@value"]}
+      ]
+    },
+    "pre": {
+      "keyword": "pre",
+      "latin_name": "Prepositivus",
+      "native_name": "Предложный падеж",
+      "description": "Думаю - О ком? О чём?",
+      "application": "words",
+      "rules": [
+
+      ]
+    }
+  }
+}

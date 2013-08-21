@@ -3,6 +3,22 @@ ENV["RAILS_ENV"] = "test"
 require 'pp'
 require 'spork'
 
+def fixtures_root
+  File.join(File.dirname(__FILE__), 'fixtures')
+end
+
+def load_json(file_path)
+  JSON.parse(File.read("#{fixtures_root}/#{file_path}"))
+end
+
+def stub_user(attrs)
+  user = double()
+  attrs.each do |key, value|
+    user.stub(key) { value }
+  end
+  user
+end
+
 Spork.prefork do
 
 	require File.expand_path("../../test/dummy/config/environment.rb",  __FILE__)
