@@ -13,7 +13,7 @@ gem 'jquery-rails'
 gem 'jquery-ui-rails'
 gem 'bootstrap-sass'
 gem 'kaminari'
-gem 'will_filter', :git => 'git@github.com:berk/will_filter.git'
+gem 'will_filter', '~> 3.1.10'
 
 group :development do
   gem 'rspec'
