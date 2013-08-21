@@ -25,5 +25,5 @@ Gem::Specification.new do |s|
   s.add_dependency 'kaminari', '>= 0'
   s.add_dependency 'sass', '>= 0'
   s.add_dependency 'faraday', '>= 0'
-  s.add_dependency 'money', '>= 0'
+  # s.add_dependency 'money', '>= 0'
 end

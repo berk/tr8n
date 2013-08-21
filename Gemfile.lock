@@ -13,7 +13,6 @@ PATH
     tr8n (3.2.4)
       faraday
       kaminari
-      money
       rails (~> 3.2.3)
       sass
       will_filter (~> 3.1.9)
@@ -92,8 +91,6 @@ GEM
       treetop (~> 1.4.8)
     method_source (0.7.1)
     mime-types (1.23)
-    money (5.1.1)
-      i18n (~> 0.6.0)
     multi_json (1.2.0)
     multipart-post (1.2.0)
     polyglot (0.3.3)
