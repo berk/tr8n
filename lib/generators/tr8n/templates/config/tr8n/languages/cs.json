@@ -10,8 +10,8 @@
     "gender_list": {
       "keys": ["one", "other"],
       "rules": {
-        "one": {"rule": ["=", 1, "@size"], "description": "contains 1 element"},
-        "other": {"rule": [">", 1, "@size"], "description": "contains at least 2 elements"}
+        "one": {"rule": "(= 1 @size)", "description": "contains 1 element"},
+        "other": {"rule": "(> 1 @size)", "description": "contains at least 2 elements"}
       }
     },
     "gender": {
@@ -20,8 +20,8 @@
     "number": {
       "keys": ["one", "few", "other"],
       "rules": {
-        "one":    {"rule": ["&&", ["=", 1, "@n"], ["!", ["=", 11, ["mod", 100, "@n"]]]], "description": "{n} is 1", "examples": "1"},
-        "few":    {"rule": ["in", "2..4", "@n"], "description": "{n} in 2..4", "examples": "2-4"},
+        "one":    {"rule": "(&& (= 1 @n) (! (= 11 (mod 100 @n))))", "description": "{n} is 1", "examples": "1"},
+        "few":    {"rule": "(in '2..4' @n)", "description": "{n} in 2..4", "examples": "2-4"},
         "other":  {"examples": "0, 5-999; 1.2, 2.07, 5.94..."}
       }
     }

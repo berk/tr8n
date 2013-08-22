@@ -9,8 +9,8 @@
     "gender_list": {
       "keys": ["one", "other"],
       "rules": {
-        "one": {"rule": ["=", 1, "@size"], "description": "contains 1 element"},
-        "other": {"rule": [">", 1, "@size"], "description": "contains at least 2 elements"}
+        "one": {"rule": "(= 1 @size)", "description": "contains 1 element"},
+        "other": {"rule": "(> 1 @size)", "description": "contains at least 2 elements"}
       }
     },
     "gender": {
