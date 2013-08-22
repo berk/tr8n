@@ -12,11 +12,11 @@
     "gender_list": {
       "keys": ["one", "other"],
       "rules": {
-        "one_male":     {"rule": ["&&", ["=", 1, "@size"], ["=", "male", "@gender"]],       "description": "contains one male person"},
-        "one_female":   {"rule": ["&&", ["=", 1, "@size"], ["=", "female", "@gender"]],     "description": "contains one female person"},
-        "one_unknown":  {"rule": ["&&", ["=", 1, "@size"], ["=", "unknown", "@gender"]],    "description": "contains one person with an unknown gender"},
-        "all_male":     {"rule": ["&&", [">", 1, "@size"], ["all", "male", "@genders"]],    "description": "contains at least two people, both male"},
-        "all_female":   {"rule": ["&&", [">", 1, "@size"], ["all", "female", "@genders"]],  "description": "contains at least two people, both female"},
+        "one_male":     {"rule": "(&& (= 1 @size) (= 'male' @gender))",       "description": "contains one male person"},
+        "one_female":   {"rule": "(&& (= 1 @size) (= 'female' @gender))",     "description": "contains one female person"},
+        "one_unknown":  {"rule": "(&& (= 1 @size) (= 'unknown' @gender))",    "description": "contains one person with an unknown gender"},
+        "all_male":     {"rule": "(&& (> 1 @size) (all 'male' @genders))",    "description": "contains at least two people, both male"},
+        "all_female":   {"rule": "(&& (> 1 @size) (all 'female' @genders))",  "description": "contains at least two people, both female"},
         "other":        {"description": "contains at least one male and one female"}
       }
     },
@@ -26,9 +26,9 @@
     "number": {
       "keys": ["one", "two", "many", "other"],
       "rules": {
-        "one":    {"rule": ["=", 1, "@n"], "description": "{n} is 1", "examples": "1"},
-        "two":    {"rule": ["=", 2, "@n"], "description": "{n} is 2", "examples": "2"},
-        "many":   {"rule": ["&&", ["!=", 0, "@n"], ["=", 0, ["mod", 10, "@n"]]], "description": "{n} is not 0 AND {n} mod 10 is 0", "examples": "10, 20, 30, 40, 50, 60..."},
+        "one":    {"rule": "(= 1 @n)", "description": "{n} is 1", "examples": "1"},
+        "two":    {"rule": "(= 2 @n)", "description": "{n} is 2", "examples": "2"},
+        "many":   {"rule": "(&& (!= 0 @n) (= 0 (mod 10 @n)))", "description": "{n} is not 0 AND {n} mod 10 is 0", "examples": "10, 20, 30, 40, 50, 60..."},
         "other":  {"examples": "0, 3-9, 11-19, 21-29...; 1.2, 2.07, 10.94, 3.81..."}
       }
     }

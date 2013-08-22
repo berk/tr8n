@@ -11,8 +11,8 @@
     "gender_list": {
       "keys": ["one", "other"],
       "rules": {
-        "one": {"rule": ["=", 1, "@size"], "description": "contains 1 element"},
-        "other": {"rule": [">", 1, "@size"], "description": "contains at least 2 elements"}
+        "one": {"rule": "(= 1 @size)", "description": "contains 1 element"},
+        "other": {"rule": "(> 1 @size)", "description": "contains at least 2 elements"}
       }
     },
     "gender": {
@@ -21,7 +21,7 @@
     "number": {
       "keys": ["one", "other"],
       "rules": {
-        "one":    {"rule": [{"mod_10_in":"1..2"}, {"mod_20_is":"0"}], "description": "{n} mod 10 in 1..2 or {n} mod 20 is 0", "examples": "0-2, 11, 12, 20-22..."},
+        "one":    {"rule": "(|| (in '1..2' (mod 10 @n)) (= 0 (mod 20 @n)))", "description": "{n} mod 10 in 1..2 or {n} mod 20 is 0", "examples": "0-2, 11, 12, 20-22..."},
         "other":  {"examples": "3-10, 13-19, 23-30...; 1.2, 3.07..."}
       }
     }

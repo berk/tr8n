@@ -9,8 +9,8 @@
     "gender_list": {
       "keys": ["one", "other"],
       "rules": {
-        "one": {"rule": ["=", 1, "@size"], "description": "contains 1 element"},
-        "other": {"rule": [">", 1, "@size"], "description": "contains at least 2 elements"}
+        "one": {"rule": "(= 1 @size)", "description": "contains 1 element"},
+        "other": {"rule": "(> 1 @size)", "description": "contains at least 2 elements"}
       }
     },
     "gender": {
@@ -19,7 +19,7 @@
     "number": {
       "keys": ["one", "other"],
       "rules": {
-        "one":    {"rule": ["=", 1, "@n"], "description": "{n} is 1", "examples": "1"},
+        "one":    {"rule": "(= 1 @n)", "description": "{n} is 1", "examples": "1"},
         "other":  {"examples": "0, 2-999; 1.2, 2.07..."}
       }
     }
@@ -30,28 +30,28 @@
       "description": "The adjective form of the cardinal numbers",
       "application": "phrase",
       "rules": [
-        { "rule": ["&&", ["match", "/1$/", "@value"], ["!", ["match", "/11$/", "@value"]]],
-          "operation": ["append",  "st", "@value"],
+        { "rule": "(&& (match '/1$/' @value) (! (match '/11$/' @value)))",
+          "operation": "(append 'st' @value)",
           "description": "append 'st' if value ends in 1, but not in 11",
           "examples": "1, 21, 31, 41, 101, 121..."
         },
-        { "rule": ["&&", ["match", "/2$/", "@value"], ["!", ["match", "/12$/", "@value"]]],
-          "operation": ["append",  "nd", "@value"],
+        { "rule": "(&& (match '/2$/' @value) (! (match '/12$/' @value)))",
+          "operation": "(append 'nd' @value)",
           "description": "append 'nd' if value ends in 2, but not in 12",
           "examples": "2, 22, 32, 42, 102, 122..."
         },
-        { "rule": ["&&", ["match", "/3$/", "@value"], ["!", ["match", "/13$/", "@value"]]],
-          "operation": ["append",  "rd", "@value"],
+        { "rule": "(&& (match '/3$/' @value) (! (match '/13$/' @value)))",
+          "operation": "(append 'rd' @value)",
           "description": "append 'nd' if value ends in 3, but not in 13",
           "examples": "3, 23, 33, 43, 103, 123..."
         },
-        { "rule": ["&&", ["match", "/3$/", "@value"], ["!", ["match", "/13$/", "@value"]]],
-          "operation": ["append",  "rd", "@value"],
+        { "rule": "(&& (match '/3$/' @value) (! (match '/13$/' @value)))",
+          "operation": "(append 'rd' @value)",
           "description": "append 'nd' if value ends in 3, but not in 13",
           "examples": "3, 23, 33, 43, 103, 123..."
         },
-        { "rule": ["true"],
-          "operation": {"append":"th"},
+        { "rule": "(true)",
+          "operation": "(append 'th' @value)",
           "description": "append 'th' in all other cases",
           "examples": "0, 4, 5, 6, 7, 8, 9, 11, 12, 13, 111, 113..."
         }
@@ -62,16 +62,16 @@
       "description": "The adjective form of the cardinal numbers",
       "application": "phrase",
       "rules": [
-        { "rule": ["=", 1, "@value"],
-          "operation": ["replace",  "1", "first", "@value"],
+        { "rule": "(= 1 @value)",
+          "operation": "(replace 1 'first' @value)",
           "description": "replace 1 with 'first'"
         },
-        { "rule": ["=", 2, "@value"],
-          "operation": ["replace",  "2", "first", "@value"],
+        { "rule": "(= 2 @value)",
+          "operation": "(replace 2 'first' @value)",
           "description": "replace 2 with 'second'"
         },
-        { "rule": ["=", 3, "@value"],
-          "operation": ["replace",  "3", "third", "@value"],
+        { "rule": "(= 3 @value)",
+          "operation": "(replace 3 'third' @value)",
           "description": "replace 3 with 'third'"
         }
       ]
@@ -81,12 +81,12 @@
       "description": "Used to indicate possession (i.e., ownership). It is usually created by adding 's to the word",
       "application": "phrase",
       "rules": [
-        { "rule": ["match", "/s$/", "@value"],
-          "operation": ["append",  "'", "@value"],
+        { "rule": "(match '/s$/' @value)",
+          "operation": "(append \"'\" @value)",
           "description": "if value ends in s, append '"
         },
-        { "rule": ["true"],
-          "operation": ["append",  "'s", "@value"],
+        { "rule": "(true)",
+          "operation": "(append \"'s\" @value",
           "description": "in all other cases, append 's"
         }
       ]
@@ -96,16 +96,16 @@
       "description": "The iteration form of the cardinal numbers",
       "application": "phrase",
       "rules": [
-        { "rule": ["=", 1, "@value"],
-          "operation": ["replace",  "1", "once", "@value"],
+        { "rule": "(= 1 @value)",
+          "operation": "(replace 2 'once' @value)",
           "description": "replace 1 with 'once'"
         },
-        { "rule": ["=", 2, "@value"],
-          "operation": ["replace",  "2", "twice", "@value"],
+        { "rule": "(= 2 @value)",
+          "operation": "(replace 2 'twice' @value)",
           "description": "replace 2 with 'twice'"
         },
-        { "rule": ["true"],
-          "operation": ["append",  " times", "@value"],
+        { "rule": "(true)",
+          "operation": "(append ' times' @value)",
           "description": "in all other cases, append x times"
         }
       ]
@@ -118,16 +118,16 @@
       "default_month_names":      ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
       "default_abbr_month_names": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
       "custom_date_formats":      {
-        "default":                "%m/%d/%Y",            
+        "default":                "%m/%d/%Y",
         "short_numeric":          "%m/%d",
-        "short_numeric_year":     "%m/%d/%y",           
-        "long_numeric":           "%m/%d/%Y",           
-        "verbose":                "%A, %B %d, %Y",      
-        "monthname":              "%B %d",              
-        "monthname_year":         "%B %d, %Y",          
-        "monthname_abbr":         "%b %d",              
-        "monthname_abbr_year":    "%b %d, %Y",          
-        "date_time":              "%m/%d/%Y at %H:%M"  
+        "short_numeric_year":     "%m/%d/%y",
+        "long_numeric":           "%m/%d/%Y",
+        "verbose":                "%A, %B %d, %Y",
+        "monthname":              "%B %d",
+        "monthname_year":         "%B %d, %Y",
+        "monthname_abbr":         "%b %d",
+        "monthname_abbr_year":    "%b %d, %Y",
+        "date_time":              "%m/%d/%Y at %H:%M"
       }
     }
   }
