@@ -6,6 +6,8 @@
 	  <% form_tag({:action => :index}, {:method => :get, :id => "translations_search_form"}) do %>
 	      <%=hidden_field_tag(:section_key, @section_key) %>
 	      <%=hidden_field_tag(:source, params[:source]) %>
+	      <%=hidden_field_tag(:component_id, params[:component_id]) %>
+	      <%=hidden_field_tag(:source_id, params[:source_id]) %>
 			  <div style="<%=tr8n_style_attribute_tag('float', 'right')%>">
 	        <button type="submit" class="translator_btn translator_small_btn" onClick="Tr8n.Effects.submit('translations_search_form'); return false;">
 	            <span><%=tra("Search", "Search button label")%></span>
