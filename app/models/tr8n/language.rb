@@ -198,7 +198,9 @@ class Tr8n::Language < ActiveRecord::Base
     end
 
     translation_key = Tr8n::TranslationKey.find_or_create(label, desc, options)
-    translation_key.translate(self, tokens.merge(:viewing_user => Tr8n::Config.current_user), options).tr8n_translated
+
+    tokens.merge(:viewing_user => Tr8n::Config.current_user) unless tokens[:viewing_user]
+    translation_key.translate(self, tokens, options).tr8n_translated
   end
   alias :tr :translate
 
