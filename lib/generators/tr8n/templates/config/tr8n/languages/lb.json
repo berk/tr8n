@@ -9,7 +9,7 @@
     "gender_list": {
       "keys": ["one", "other"],
       "rules": {
-        "one": {"rule": ["=", 1, "@size"], "description": "contains 1 element"},
+        "one": {"rule": "(= 1 @size)", "description": "contains 1 element"},
         "other": {"description": "contains at least 2 elements"}
       }
     },
@@ -19,7 +19,7 @@
     "number": {
       "keys": ["one", "other"],
       "rules": {
-        "one":    {"rule": {"is":"1"}, "description": "{n} is 1", "examples": "1"},
+        "one":    {"rule": "(= 1 @n)", "description": "{n} is 1", "examples": "1"},
         "other":  {"examples": "0, 2-999; 1.2, 2.07..."}
       }
     }

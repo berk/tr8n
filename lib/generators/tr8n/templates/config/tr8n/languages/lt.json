@@ -10,7 +10,7 @@
     "gender_list": {
       "keys": ["one", "other"],
       "rules": {
-        "one": {"rule": ["=", 1, "@size"], "description": "contains 1 element"},
+        "one": {"rule": "(= 1 @size)", "description": "contains 1 element"},
         "other": {"description": "contains at least 2 elements"}
       }
     },
@@ -20,8 +20,8 @@
     "number": {
       "keys": ["one", "few", "other"],
       "rules": {
-        "one":    {"rule": {"mod_10_is":"1", "mod_100_not_in":"11..19"}, "description": "{n} mod 10 is 1 and {n} mod 100 not in 11..19", "examples": "1, 21, 31, 41, 51, 61..."},
-        "few":    {"rule": {"mod_10_in":"2..9", "mod_100_not_in":"11..19"}, "description": "{n} mod 10 in 2..9 and {n} mod 100 not in 11..19", "examples": "2-9, 22-29, 32-39..."},
+        "one":    {"rule": "(&& (= 1 (mod 10 @n)) (! (in '11..19' (mod 100 @n))))", "description": "{n} mod 10 is 1 and {n} mod 100 not in 11..19", "examples": "1, 21, 31, 41, 51, 61..."},
+        "few":    {"rule": "(&& (in '2..9' (mod 10 @n)) (! (in '11..19' (mod 100 @n))))", "description": "{n} mod 10 in 2..9 and {n} mod 100 not in 11..19", "examples": "2-9, 22-29, 32-39..."},
         "other":  {"examples": "0, 10-20, 30, 40, 50...; 1.2, 2.07, 10.94..."}
       }
     }

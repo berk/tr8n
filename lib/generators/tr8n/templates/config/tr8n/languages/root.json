@@ -8,8 +8,8 @@
     "gender_list": {
       "keys": ["one", "other"],
       "rules": {
-        "one": {"rule": {"size": {"is":"1"}}, "description": "contains 1 person"},
-        "other": {"rule": {"size": {"is_not":"1"}}, "description": "contains at least 2 people"}
+        "one": {"rule": "(= 1 @size)", "description": "contains 1 person"},
+        "other": {"rule": "(!= 1 @size)"{"size": {"is_not":"1"}}, "description": "contains at least 2 people"}
       }
     },
     "gender": {

@@ -9,8 +9,8 @@
     "gender_list": {
       "keys": ["one", "other"],
       "rules": {
-        "one": {"rule": {"size": {"is":"1"}}, "description": "contains 1 person"},
-        "other": {"rule": {"size": {"is_not":"1"}}, "description": "contains at least 2 people"}
+        "one": {"rule": "(= 1 @size)", "description": "contains 1 person"},
+        "other": {"rule": "(!= 1 @size)", "description": "contains at least 2 people"}
       }
     },
     "gender": {
@@ -19,7 +19,7 @@
     "number": {
       "keys": ["one", "other"],
       "rules": {
-        "one":    {"rule": {"in":"0,1"}, "description": "{n} in 0..1", "examples": "0, 1"},
+        "one":    {"rule": "(in '0,1' @n)", "description": "{n} in 0..1", "examples": "0, 1"},
         "other":  {"examples": "2-999; 1.2, 2.07..."}
       }
     }

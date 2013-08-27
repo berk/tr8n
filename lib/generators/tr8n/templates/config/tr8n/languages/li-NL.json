@@ -5,24 +5,26 @@
   "native_name": "Limburgs",
   "context_rules": {
     "date": {
-      "past": {"operator":"is_in","value":"past"},
-      "future": {"operator":"is_in","value":"future"},
-      "present": {"operator":"is_in","value":"present"}
-},
+      "keys": ["past", "present", "future"],
+    },
     "gender_list": {
-"one": {"part1":"contains","value1":"one_element"},
-"other": {"part1":"contains","value1":"at_least_two_elements"}
-},
+      "keys": ["one", "other"],
+      "rules": {
+        "one": {"rule": "(= 1 @size)"},
+        "other": {"rule": "(> 1 @size)"}
+      }
+    },
     "gender": {
-"male": {"operator":"is","value":"male"},
-"female": {"operator":"is","value":"female"},
-"unknown": {"operator":"is","value":"unknown"}
-},
+      "keys": ["male", "female", "unknown"]
+    },
     "number": {
-"one": {"part1":"is","value1":"1"},
-"many": {"part1":"is_not","value1":"1"}
-}
-},
+      "keys": ["one", "many"],
+      "rules": {
+        "one": {"rule": "(= 1 @n)"},
+        "many": {"rule": "(> 1 @n)"}
+      }
+    }
+  },
   "language_cases": {
-}
+  }
 }

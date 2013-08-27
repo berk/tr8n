@@ -10,8 +10,8 @@
     "gender_list": {
       "keys": ["one", "other"],
       "rules": {
-        "one": {"rule": {"size": {"is":"1"}}, "description": "contains 1 person"},
-        "other": {"rule": {"size": {"is_not":"1"}}, "description": "contains at least 2 people"}
+        "one": {"rule": "(= 1 @size)", "description": "contains 1 person"},
+        "other": {"rule": "(!= 1 @size)", "description": "contains at least 2 people"}
       }
     },
     "gender": {
@@ -20,9 +20,9 @@
     "number": {
       "keys": ["one", "few", "many", "other"],
       "rules": {
-        "one":    {"rule": {"is":"1"}, "description": "{n} is 1", "examples": "1"},
-        "few":    {"rule": {"mod_10_in":"2..4", "mod_100_not_in":"12..14"}, "description": "{n} mod 10 in 2..4 and {n} mod 100 not in 12..14", "examples": "2-4, 22-24, 32-34..."},
-        "many":   {"rule": [{"is_not":"1", "mod_10_in":"0..1"}, {"mod_10_in":"5..9"}, {"mod_100_in":"12..14"}], "description": "{n} is not 1 and {n} mod 10 in 0..1 or {n} mod 10 in 5..9 or {n} mod 100 in 12..14", "examples": "0, 5-21, 25-31, 35-41..."},
+        "one":    {"rule": "(= 1 @n)", "description": "{n} is 1", "examples": "1"},
+        "few":    {"rule": "(&& (in '2..4' (mod 10 @n)) (! (in '12..14' (mod 100 @n))))", "description": "{n} mod 10 in 2..4 and {n} mod 100 not in 12..14", "examples": "2-4, 22-24, 32-34..."},
+        "many":   {"rule": "(|| (&& (!= 1 @n) (! (in '0..1' (mod 10 @n)))) (in '5..9' (mod 10 @n)) (in '12..14' (mod 100 @n)))", "description": "{n} is not 1 and {n} mod 10 in 0..1 or {n} mod 10 in 5..9 or {n} mod 100 in 12..14", "examples": "0, 5-21, 25-31, 35-41..."},
         "other":  {"examples": "1.2, 2.07, 5.94..."}
       }
     }

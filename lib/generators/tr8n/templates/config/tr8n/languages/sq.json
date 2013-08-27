@@ -11,8 +11,8 @@
     "gender_list": {
       "keys": ["one", "other"],
       "rules": {
-        "one": {"contains":"one_element"},
-        "other": {"contains":"at_least_two_elements"}
+        "one": {"contains": "(= 1 @size)"},
+        "other": {"contains": "(!= 1 @size)"}
       }
     },
     "gender": {
@@ -21,7 +21,7 @@
     "number": {
       "keys": ["one", "other"],
       "rules": {
-        "one":    {"rule": {"is":"1"}, "description": "is 1", "examples": "1"},
+        "one":    {"rule": "(= 1 @n)", "description": "is 1", "examples": "1"},
         "other":  {"examples": "0, 2-999; 1.2, 2.07..."}
       }
     }

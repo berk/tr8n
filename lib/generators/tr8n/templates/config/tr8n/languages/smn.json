@@ -8,8 +8,8 @@
     "gender_list": {
       "keys": ["one", "other"],
       "rules": {
-        "one": {"size":"one_element"},
-        "other": {"size":"at_least_two_elements"}
+        "one": {"size": "(= 1 @size)"},
+        "other": {"size": "(!= 1 @size)"}
       }
     },
     "gender": {
@@ -18,8 +18,8 @@
     "number": {
       "keys": ["one", "two", "other"],
       "rules": {
-        "one":    {"rule": {"is":"1"}, "description": "{n} is 1", "examples": "1"},
-        "two":    {"rule": {"is":"2"}, "description": "{n} is 2", "examples": "2"},
+        "one":    {"rule": "(= 1 @n)", "description": "{n} is 1", "examples": "1"},
+        "two":    {"rule": "(= 2 @n)", "description": "{n} is 2", "examples": "2"},
         "other":  {"examples": "0, 3-999; 1.2, 2.07, 3.94..."}
       }
     }

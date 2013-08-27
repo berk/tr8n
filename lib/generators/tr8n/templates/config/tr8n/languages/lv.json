@@ -10,7 +10,7 @@
     "gender_list": {
       "keys": ["one", "other"],
       "rules": {
-        "one": {"rule": ["=", 1, "@size"], "description": "contains 1 element"},
+        "one": {"rule": "(= 1 @size)", "description": "contains 1 element"},
         "other": {"description": "contains at least 2 elements"}
       }
     },
@@ -20,8 +20,8 @@
     "number": {
       "keys": ["zero", "one", "other"],
       "rules": {
-        "zero":   {"rule": {"is":"0"}, "description": "{n} is 0", "examples": "0"},
-        "one":    {"rule": {"mod_10_is":"1", "mod_100_is_not":"11"}, "description": "{n} mod 10 is 1 and {n} mod 100 is not 11", "examples": "1, 21, 31, 41, 51, 61..."},
+        "zero":   {"rule": "(= 0 @n)", "description": "{n} is 0", "examples": "0"},
+        "one":    {"rule": "(&& (= 1 (mod 10 @n)) (!= 11 (mod 100 @n)))", "description": "{n} mod 10 is 1 and {n} mod 100 is not 11", "examples": "1, 21, 31, 41, 51, 61..."},
         "other":  {"examples": "2-20, 22-30, 32-40...; 0.2, 1.07, 2.94..."}
       }
     }

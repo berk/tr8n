@@ -11,8 +11,8 @@
     "gender_list": {
       "keys": ["one", "other"],
       "rules": {
-        "one": {"contains":"one_element"},
-        "other": {"contains":"at_least_two_elements"}
+        "one": {"contains": "(= 1 @size)"},
+        "other": {"contains": "(!= 1 @size)"}
       }
     },
     "gender": {
