@@ -1,33 +1,64 @@
-<style type="text/css">
-.tr8n_paginator {
-  padding:10px;
-  border:1px dotted #eee; 
-  margin-bottom:10px; 
-  margin-top:10px;
-}
-.tr8n_paginator table {
-  width: 100%;
-}
-.tr8n_paginator td {
-  vertical-align:top; font-size:11px; font-family:arial;
-}
-.tr8n_paginator .page {
-  border: 1px solid #eee;
-  padding: 2px;
-}
-.tr8n_paginator .current {
-  background: #eee;
-}
-</style>
-<div class="tr8n_paginator">
-  <table>
-    <tr>
-      <td class="tr8n_txtl">
-        <%=tr8n_page_entries_info_tag(collection, options) %>
-      </td>
-      <td class="tr8n_txtr">
-        <%= tr8n_page_links_tag(collection, options) %>
-			</td>
-    </tr>
-  </table>
+<%
+   paginator = Kaminari::Helpers::Paginator.new(self, options.reverse_merge(:current_page => collection.current_page, :total_pages => collection.num_pages, :per_page => collection.limit_value, :param_name => Kaminari.config.param_name, :remote => false, :params => params))
+%>
+<div style="margin-top:5px;">
+  <div style="float:right;padding-top:5px;">
+    <%
+       entry_name = options[:subject] || (collection.empty? ? 'entry' : collection.first.class.name.underscore.sub('_', ' ').split('/').last)
+    %>
+
+    <%=
+        if collection.num_pages < 2
+          case collection.size
+            when 0
+              tra("None found", {}, options)
+            when 1
+              tra("Displaying [strong: {count}] {count|#{entry_name}}", nil, {:count => 1}, options)
+            else
+              tra("Displaying [strong: all {count}] {count|#{entry_name}}", nil, {:count => collection.size}, options)
+          end
+        else
+          tra("Displaying #{entry_name.pluralize} [strong: {start_num} - {end_num}] of [strong: {total_count}] in total",
+              "", {
+                  :start_num    => collection.offset_value + 1,
+                  :end_num      => collection.offset_value + collection.length,
+                  :total_count  => collection.total_count
+              }, options
+          )
+        end
+    %>
+
+  </div>
+
+  <div class="pagination">
+    <ul>
+      <% unless collection.current_page == 1 %>
+        <li class="<%= "disabled" if collection.current_page == 1 %>">
+          <%=link_to(tra('{lsaquo} Previous', 'Previous page'), params.merge(:page => collection.current_page - 1))%>
+        </li>
+      <% end %>
+
+      <% collection.num_pages.times do |page| %>
+        <% if page == 0 or page == (collection.num_pages - 1) %>
+          <li class="<%= "active" if collection.current_page == (page+1) %>"><%=link_to(page+1, params.merge(:page => page+1))%></li>
+        <% elsif collection.current_page < page - 2 %>
+          <% next %>
+        <% elsif collection.current_page == page - 2 %>
+          <li class=""><%=link_to('...', params.merge(:page => page+1))%></li>
+        <% elsif collection.current_page == page + 4 %>
+          <li class=""><%=link_to('...', params.merge(:page => page+1))%></li>
+        <% elsif collection.current_page > page + 4 %>
+          <% next %>
+        <% else %>
+          <li class="<%= "active" if collection.current_page == (page+1) %>"><%=link_to(page+1, params.merge(:page => page+1))%></li>
+        <% end %>
+      <% end %>
+
+      <% unless collection.current_page == collection.num_pages %>
+        <li class="<%= "disabled" if collection.current_page == collection.num_pages %>">
+          <%=link_to(tra("Next {rsaquo}", 'Next page'), params.merge(:page => collection.current_page + 1))%>
+        </li>
+      <% end %>
+    </ul>
+  </div>
 </div>
