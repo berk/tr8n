@@ -9,7 +9,7 @@ https://github.com/tr8n/tr8n
 This repository is now deprecated and will be permanently removed in the near future.
 
 
-THE PROJECT IS NOW UNDER A FULL TIME DEVELOPMENT!
+THE PROJECT IS NOW UNDER FULL TIME DEVELOPMENT!
 
 
 If you would like to follow the project's progress, please follow the repository above.
