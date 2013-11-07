@@ -1,168 +1,77 @@
-# Welcome to Tr8n Translation Engine
+# Tr8n Update
 
-Tr8n Translation Engine is a Rails Engine Plugin/Gem that provides a platform for crowd-sourced translations of your Rails application.
-The power of the engine comes from its simple and friendly user interface that allows site users as well as professional translators to rapidly 
-translate the site into hundreds of languages. 
+Dear all,
 
-The rules engine that powers Tr8n allows translators to indicate whether sentences depend on gender rules, numeric rules or combinations of rules configured for each language.
-The language specific context rules and language cases can be registered and managed in the administrative user interface. The engine
-provides a set of powerful tools that allow admins to configure any aspect of the engine; enabling and disabling its features
-and monitoring translation progress.
+the repository has now been permanently moved to:
 
+https://github.com/tr8n/tr8n
 
-![alt text](https://raw.github.com/tr8n/tr8n/master/doc/screenshots/tr8nlogo.png "Tr8n Logo")
+This repository is now deprecated and will be permanently removed in the near future.
 
 
+THE PROJECT IS NOW UNDER A FULL TIME DEVELOPMENT!
 
-The Tr8n engine is based on a robust and flexible pluggable architecture where rule types and the syntax of the TML tokens
-can be configured or extended for any application deployment.
 
-Tr8n translation engine has been successfully deployed by Geni and Yammer:
+If you would like to follow the project's progress, please follow the repository above.
 
-Geni Inc, http://www.geni.com
 
-Yammer Inc, http://www.yammer.com 
+Unfortunately, i will no longer be supporting the 2.3.x branch. If there are any volunteers who want to support it, let me know.
 
-You can visit their web sites and see how it is being used.
+The new development will only support Rails 3.2.x and 4.0.x
 
 
-# Documentation
+# What has happened to Tr8n thus far?
 
-Please look through the following slides to get familiar with Tr8n concepts and features:
 
-http://wiki.tr8n.org/slides
+* Tr8n has undergone a complete core redesign: it can now be integrated as a rails/engine gem into a host application (the old way) or it can run as a stand-alone service application.
 
-Once you are done, you can try out Tr8n features yourself by following the deployement instructions from one of the examples:
+* A fully functional PHP Client SDK is now available for integration with any PHP application and Tr8n Service.
 
-https://github.com/tr8n
+* A sample Wordpress and Mediawiki plugins are available. The plugins demonstrate how blogs and wiki articles can be translated inline and the translations can be managed by tr8n service.
 
+* Tr8n is now using a brand new powerful rules engine, based on LISP like symbolic expressions.
 
-Configuration Guide
+* Tr8n now supports over 300 languages with context rules and language cases.
 
-https://github.com/berk/tr8n/wiki/4.-Configuration-Instructions
+* Tr8n UI has been completely rewritten - it is now simple, lightweight and sexy.
 
-Integration Guide
+* Tons of new features have been added to the management and administration tools.
 
-https://github.com/berk/tr8n/wiki/5.-Integration-Instructions
 
-Translation Markup Language (TML)
 
-https://github.com/berk/tr8n/wiki/6.-Tr8n-Syntax-and-Translation-Markup-Language
+# Where can i see it in action?
 
-Rules Engine 
+Tr8nhub Sandbox Server is now up and running at:
 
-https://github.com/berk/tr8n/wiki/7.-Tr8n-Rules-Engine
+http://sandbox.tr8nhub.com
 
-Language Context Rules
+The service is currently by invitation only. Please request an invitation and i will gladly add you in.
 
-https://github.com/berk/tr8n/wiki/7.1-Language-Context-Rules
 
-Language Case Rules
+I am looking for volunteers who are not afraid of giving tr8n a try and integrate it in their applications.
 
-https://github.com/berk/tr8n/wiki/7.2-Language-Case-Rules
+I am also available to help the early adopters to integrate tr8n into their applications or setup a service integration.
 
-Supported Languages
 
-https://github.com/berk/tr8n/wiki/9.-Supported-Languages
 
+# Where can i get more information?
 
-# Installation Instructions
+* Visit Tr8n's documentation:  http://wiki.tr8nhub.com/
 
-Add the following gems to your Gemfile: 
+* Follow Tr8nHub on Twitter: https://twitter.com/Tr8nHub
 
-```ruby
-  gem 'will_filter', "~> 3.1.2" 
-  gem 'tr8n', "~> 3.2.1" 
-```
+* Connect with Tr8n on Facebook: https://www.facebook.com/pages/tr8nhubcom/138407706218622
 
-And run:
 
-```sh
-  $ bundle
-```
 
-At the top of your routes.rb file, add the following lines:
+Thank you,
 
-```ruby
-  mount WillFilter::Engine => "/will_filter"
-  mount Tr8n::Engine => "/tr8n"
-```
+Michael Berkovich (Berk)
 
-To configure and initialize Tr8n engine, run the following commands: 
 
-```sh
-  $ rails generate will_filter
-  $ rails generate tr8n
-  $ rake db:migrate
-  $ rake tr8n:init
-  $ rails s
-```
 
-Open your browser and point to:
 
-  http://localhost:3000/tr8n
 
 
-# Integration Instructions
-
-The best way to get going with Tr8n is to run the gem as a stand-alone application and follow the instructions and documentation in the app:
-
-```sh
-  $ git clone git://github.com/tr8n/tr8n.git
-  $ cd tr8n/test/dummy
-  $ bundle install
-  $ rake db:migrate
-  $ rake tr8n:init
-  $ rails s
-```
-
-Open your browser and point to:
-
-  http://localhost:3000
-
-
-# Tr8n Screenshots
-
-Below are a few screenshots of what Tr8n looks like:
-
-## Tr8n Language Selector
-
-![alt text](https://raw.github.com/tr8n/tr8n/master/doc/screenshots/language_selector.png "Tr8n Language Selector")
-
-## Tr8n Inline Translator
-
-![alt text](https://raw.github.com/tr8n/tr8n/master/doc/screenshots/submit_translation.png "Tr8n Inline Translator")
-
-## Tr8n Translation Voting
-
-![alt text](https://raw.github.com/tr8n/tr8n/master/doc/screenshots/vote_on_translation.png "Tr8n Translation Voting")
-
-## Tr8n Translation Tools
-
-![alt text](https://raw.github.com/tr8n/tr8n/master/doc/screenshots/translation_tools.png "Tr8n Translation Tools")
-
-## Tr8n Translation Admin Tools
-
-![alt text](https://raw.github.com/tr8n/tr8n/master/doc/screenshots/admin_tools.png "Tr8n Admin Tools")
-
-
-# External Links
-
-Yammer in Translation
-
-http://bit.ly/g5GQDt 
-
-Yammer Now Available in Dutch, French, German, Japanese, Korean, and Spanish
-
-http://bit.ly/heNIPr 
-
-
-Geni Goes Global With 20 New Languages And A Crowdsourced Translation Tool 
-
-http://tcrn.ch/f1VLnj 
-
-Quora Discussion - What is the best way to deal with internationlization of text on a large social site?
-
-http://bit.ly/hUU6R9 
 
 
