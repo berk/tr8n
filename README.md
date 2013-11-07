@@ -6,7 +6,7 @@ the repository has now been permanently moved to:
 
 https://github.com/tr8n/tr8n
 
-This repository is now deprecated and will be permanently removed in the near future.
+This repository is now deprecated and will be removed in the near future.
 
 
 THE PROJECT IS NOW UNDER FULL TIME DEVELOPMENT!
