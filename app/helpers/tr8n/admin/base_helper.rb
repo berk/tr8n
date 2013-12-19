@@ -68,9 +68,9 @@ module Tr8n::Admin::BaseHelper
     counts = counts.collect{|c| c/(max_count * 1.0) * 100}
     
     chart_params = []
-    chart_params << "chxl=1:|#{labels.join('|')}|" 
+    chart_params << "chxl=" + CGI.escape("1:|#{labels.join('|')}|")
     chart_params << "chxp=#{label_positions.join(',')}"
-    chart_params << "chxr=0,0,#{limit}|0,0,#{max_count}"
+    chart_params << "chxr=" + CGI.escape("0,0,#{limit}|0,0,#{max_count}")
     chart_params << "chxt=x,y"
     chart_params << "chs=1000x300"
     chart_params << "cht=bhs"
