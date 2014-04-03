@@ -62,7 +62,7 @@ There are many more features you get with UTM and TML. Please view our wiki site
 http://wiki.tr8nhub.com
 
 
-# SDKs and Supported Platform
+# SDKs and Supported Platforms
 
 All SDKs are open sourced and available at:
 http://github.com/tr8n
