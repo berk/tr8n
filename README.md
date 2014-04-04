@@ -1,5 +1,7 @@
 # Goodbye Tr8n Gem, Hello Tr8nHub.com
 
+[![Project status](http://stillmaintained.com/berk/tr8n.png)](http://stillmaintained.com/berk/tr8n.png)
+
 After years of using Tr8n Rails Gem it became very clear that there must exist a central repository for language rules, translation keys and translations that could be shared across all applications. 
 
 Should we keep translating "Hello World" into every language over and over again? Or should we just translate it once into every possible language and never do it again. How about "Home" link (in a context of home page). Once something is translated in a well defined context, it is translated forever (unless a better translation is provided for the same key). 
