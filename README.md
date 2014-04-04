@@ -1,5 +1,3 @@
-![alt text](https://raw.github.com/tr8n/tr8n/master/doc/screenshots/tr8nlogo.png "Tr8n Logo")
-
 # Goodbye Tr8n Gem, Hello Tr8nHub.com
 
 After years of using Tr8n Rails Gem it became very clear that there must exist a central repository for language rules, translation keys and translations that could be shared across all applications. 
