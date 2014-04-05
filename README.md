@@ -108,7 +108,7 @@ http://wiki.tr8nhub.com/index.php?title=Rails_Integration
 
 
 
-# Where can i get more information?
+# Where can I get more information?
 
 * Visit Tr8n's documentation:  http://wiki.tr8nhub.com/
 
