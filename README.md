@@ -77,7 +77,8 @@ Web:
 * PHP
 * PHP Wordpress Extensions
 * PHP MediaWiki Extensions
-* Java J2EE, Java Struts 2 Extensions
+* Java J2EE
+* Java Struts 2 Extensions
 * JavaScript for Dynamic Web Apps
 * JavaScript for Static HTML Sites (using Backbone.js and JST templates)
 
@@ -89,6 +90,10 @@ Mobile:
 Desktop:
 
 * Java Swing
+
+Work in Progress:
+* Python SDK
+* .Net C# SDK
 
 
 # If you are already using Tr8n Gem
