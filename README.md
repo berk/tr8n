@@ -1,20 +1,20 @@
-# Goodbye Tr8n Gem, Hello Tr8nHub.com
+# TranslationExchange.com
 
 [![Project status](http://stillmaintained.com/berk/tr8n.png)](http://stillmaintained.com/berk/tr8n.png)
 
 After years of using Tr8n Rails Gem it became very clear that there must exist a central repository for language rules, translation keys and translations that could be shared across all applications. 
 
-Should we keep translating "Hello World" into every language over and over again? Or should we just translate it once into every possible language and never do it again. How about "Home" link (in a context of home page). Once something is translated in a well defined context, it is translated forever (unless a better translation is provided for the same key). 
+Should we keep translating "Hello World" to every language over and over again? Or should we just translate it once into every language and never do it again. How about "Home" link (in a context of home page). Once something is translated in a well defined context, it is translated for good (unless a better translation is provided for the same key). 
 
 Same goes to Language Context Rules and Language Cases. Once those rules are defined, everyone else should be able to use them.
 
 This is why this gem (as good as it is) will no longer be actively supported. 
 
-Please welcome Tr8nHub.com 
+Please welcome TranslationExchange.com 
 
-# What is Tr8nHub.com?
+# What is TranslationExchange?
 
-Tr8nHub.com is a Software as a Service (SaaS) Crowdsourced Translation Platform (CTP) that provides powerful frameworks and tools for rapid translation of web, desktop and mobile applications. The two main features of the platform are Translation Markup Language (TML) and Universal Translation Memory (UTM).
+TranslationExchange.com is a Software as a Service (SaaS) Crowdsourced Translation Platform (CTP) that provides powerful frameworks and tools for rapid translation of web, desktop and mobile applications. The two main features of the platform are Translation Markup Language (TML) and Universal Translation Memory (UTM).
 
 # Translation Markup Language (TML)
 
@@ -40,9 +40,9 @@ And, similarly, an iOS app uses it as well:
 [Tr8n translate:"Home" withDescription:"Main page of the site"]
 ```
 
-All of the application connected to Tr8nHub will automatically share the same translations.
+All of the application connected to TranslationExchange will automatically share the same translations.
 
-Since all translation keys in Tr8nHub use the same convention, Tr8nHub can now provide a Universal Translation Memory that shares all translation keys and translation across all applications in all languages.
+Since all translation keys in TranslationExchange use the same convention, TranslationExchange can now provide a Universal Translation Memory that shares all translation keys and translation across all applications in all languages.
 
 # Universal Translation Memory (UTM)
 
@@ -59,7 +59,7 @@ Application have an option to namespace all translation keys within the app. Thi
 
 There are many more features you get with UTM and TML. Please view our wiki site to learn more:
 
-http://wiki.tr8nhub.com
+http://wiki.TranslationExchange.com
 
 
 # SDKs and Supported Platforms
@@ -110,13 +110,13 @@ http://wiki.tr8nhub.com/index.php?title=Rails_Integration
 
 # Where can I get more information?
 
-* Visit Tr8n's documentation:  http://wiki.tr8nhub.com/
+* Visit TranslationExchange's documentation:  http://wiki.TranslationExchange.com/
 
-* Follow Tr8nHub on Twitter: https://twitter.com/Tr8nHub
+* Follow TranslationExchange on Twitter: https://twitter.com/translationx
 
-* Connect with Tr8n on Facebook: https://www.facebook.com/pages/tr8nhubcom/138407706218622
+* Connect with TranslationExchange on Facebook: https://www.facebook.com/translationexchange
 
-* If you have any questions contact: michael@tr8nhub.com
+* If you have any questions contact: info@translationexchange.com
 
 
 
