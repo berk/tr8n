@@ -50,7 +50,7 @@ Universal Translation Memory is a MASSIVE database of translation keys and trans
 
 The translations data uses a smart ranking system that ensures that only top ranked translations are accepted and distributed to the applications. The ranking system is based on the individual translation ranks derived from the voting powers of the translators who provided them or who voted on them - inclding low ranked machine translations, medium ranked crowdsourced user translations and hight ranked professional translator translations. 
 
-Each application connected to Tr8nHub.com provides the rank threshold, the minimal rank of a translation, which the application would accept. The higher the threshold is, the better quality translations the application would accept.
+Each application connected to TranslationExchange.com provides the rank threshold, the minimal rank of a translation, which the application would accept. The higher the threshold is, the better quality translations the application would accept.
 
 Translation keys in UTM are mapped to the application sources. So application don't actually own copies of translation keys, but are linked to the keys in UTM instead. When application submits new keys, the keys are looked up in UTM and linked back to the application. If the keys don't exist, they will be created in UTM and linked back to the apps.
 
@@ -104,7 +104,7 @@ All SDKs fully support the old TML syntax, as well as provide powerful enhanceme
 
 To learn more about Rails integration, visit the wiki page:
 
-http://wiki.tr8nhub.com/index.php?title=Rails_Integration
+http://wiki.TranslationExchange.com/index.php?title=Rails_Integration
 
 
 
