@@ -96,7 +96,7 @@ http://wiki.TranslationExchange.com/index.php?title=Rails_Integration
 
 # Where can I get more information?
 
-* Visit TranslationExchange's documentation:  http://wiki.TranslationExchange.com/
+* Visit TranslationExchange's documentation:  http://translationexchange.com/docs
 
 * Follow TranslationExchange on Twitter: https://twitter.com/translationx
 
