@@ -1,19 +1,5 @@
 # TranslationExchange.com
 
-[![Project status](http://stillmaintained.com/berk/tr8n.png)](http://stillmaintained.com/berk/tr8n.png)
-
-After years of using Tr8n Rails Gem it became very clear that there must exist a central repository for language rules, translation keys and translations that could be shared across all applications. 
-
-Should we keep translating "Hello World" to every language over and over again? Or should we just translate it once into every language and never do it again. How about "Home" link (in a context of home page). Once something is translated in a well defined context, it is translated for good (unless a better translation is provided for the same key). 
-
-Same goes to Language Context Rules and Language Cases. Once those rules are defined, everyone else should be able to use them.
-
-This is why this gem (as good as it is) will no longer be actively supported. 
-
-Please welcome TranslationExchange.com 
-
-# What is TranslationExchange?
-
 TranslationExchange.com is a Software as a Service (SaaS) Crowdsourced Translation Platform (CTP) that provides powerful frameworks and tools for rapid translation of web, desktop and mobile applications. The two main features of the platform are Translation Markup Language (TML) and Universal Translation Memory (UTM).
 
 # Translation Markup Language (TML)
