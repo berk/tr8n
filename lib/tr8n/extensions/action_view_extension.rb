@@ -118,7 +118,7 @@ module Tr8n
           trl(label, desc, tokens, options)
         end
       else
-        Tr8n::Config.default_language.translate(label, desc, tokens, options)
+        Tr8n::TranslationKey.substitute_tokens(label, tokens, options).tr8n_translated.html_safe
       end
     end
     
