@@ -50,7 +50,7 @@
 
 class Tr8n::Language < ActiveRecord::Base
   self.table_name = :tr8n_languages  
-  attr_accessible :locale, :english_name, :native_name, :enabled, :right_to_left, :completenss, :fallback_language_id, :curse_words, :featured_index
+  attr_accessible :locale, :english_name, :native_name, :enabled, :right_to_left, :completeness, :fallback_language_id, :curse_words, :featured_index
   attr_accessible :google_key, :facebook_key, :myheritage_key
   attr_accessible :fallback_language
 
